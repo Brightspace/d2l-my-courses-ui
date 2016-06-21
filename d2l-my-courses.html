@@ -54,7 +54,7 @@
 			locale="[[locale]]"
 			with-backdrop>
 
-			<div class="overlay-content">
+			<div class="all-courses">
 				<h3 class="d2l-heading-3">{{localize('pinnedCourses')}}</h3>
 				<d2l-alert visible="{{!_hasPinnedCourses}}">
 					{{localize('noPinnedCoursesMessage')}}
@@ -111,7 +111,7 @@
 				this._alertMessage = this.localize('noPinnedCoursesMessage');
 
 				var overlay = this.$$('d2l-simple-overlay');
-				var allCourses = this.$$('.overlay-content');
+				var allCourses = this.$$('.all-courses');
 				overlay.focusableNodesOverride = this.focusableNodesOverride.bind(allCourses);
 			},
 			attached: function() {
@@ -122,7 +122,7 @@
 			focusableNodesOverride: function() {
 				var courseTileFocusables = [];
 
-				Polymer.dom(this.root).querySelectorAll('d2l-course-tile').forEach(function(courseTile) {
+				Polymer.dom(this).querySelectorAll('d2l-course-tile').forEach(function(courseTile) {
 					Array.prototype.push.apply(courseTileFocusables, Polymer.dom(courseTile.root).querySelectorAll('a'));
 				});
 

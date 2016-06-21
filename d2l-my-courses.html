@@ -146,6 +146,10 @@
 				e.preventDefault();
 				e.stopPropagation();
 				this.$$('d2l-simple-overlay').open();
+
+				setTimeout(function() {
+					this._rescaleCourseTileRegions();
+				}.bind(this), 100);
 			},
 			get courseTileItemCount() {
 				return this.pinnedCoursesEntities.length;

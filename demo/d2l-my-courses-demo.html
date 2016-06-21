@@ -21,11 +21,5 @@
 			<h1>d2l-my-courses demo</h1>
 			<d2l-my-courses id="my-courses" enrollments-url="all-courses.json"></d2l-my-courses>
 		</main>
-		<script>
-			// In the demo, we need to override the pinned courses request URL, as it's normally created by adding a query string to the enrollments URL -
-			// but we're loading a different file altogether.
-			var myCoursesWidget = document.getElementById('my-courses');
-			myCoursesWidget.$.pinnedCoursesRequest.url = 'my-courses.json';
-		</script>
 	</body>
 </html>

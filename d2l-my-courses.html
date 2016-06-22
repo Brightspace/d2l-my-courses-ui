@@ -136,7 +136,7 @@
 						this._alertMessage = this.localize('noCoursesMessage');
 					}
 
-					this._rescaleCourseTileRegions();
+					this._setupColumns();
 				}
 			},
 			refreshPage: function() {
@@ -148,7 +148,8 @@
 				this.$$('d2l-simple-overlay').open();
 
 				setTimeout(function() {
-					this._rescaleCourseTileRegions();
+					var itemCount = Math.max(this.pinnedCoursesEntities.length, this.unpinnedCoursesEntities.length);
+					this._setupColumns(itemCount, this.$$('.all-courses'));
 				}.bind(this), 100);
 			},
 			get courseTileItemCount() {

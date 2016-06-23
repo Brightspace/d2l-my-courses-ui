@@ -6,7 +6,6 @@
 <link rel="import" href="d2l-alert.html">
 <link rel="import" href="d2l-course-tile.html">
 <link rel="import" href="d2l-simple-overlay.html">
-<link rel="import" href="d2l-all-courses.html">
 <link rel="import" href="d2l-course-tile-region-behavior.html">
 <link rel="import" href="localize-behavior.html">
 <link rel="import" href="d2l-interaction-detection-behavior.html">
@@ -17,17 +16,10 @@
 		<style include="d2l-my-courses-styles"></style>
 
 		<d2l-ajax
-			id="pinnedCoursesRequest"
-			url="[[_pinnedCoursesUrl]]"
-			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-response="onPinnedCoursesResponse">
-		</d2l-ajax>
-
-		<d2l-ajax
-			id="allCoursesRequest"
+			id="enrollmentsRequest"
 			url="[[enrollmentsUrl]]"
 			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-response="onAllCoursesResponse">
+			on-response="onEnrollmentsResponse">
 		</d2l-ajax>
 
 		<d2l-alert visible="[[!_hasPinnedCourses]]">
@@ -62,12 +54,34 @@
 			locale="[[locale]]"
 			with-backdrop>
 
-			<d2l-all-courses
-				enrollments-url="[[enrollmentsUrl]]"
-				pinned-courses-entities="{{pinnedCoursesEntities}}"
-				unpinned-courses-entities="{{unpinnedCoursesEntities}}"
-				locale="[[locale]]">
-			</d2l-all-courses>
+			<div class="all-courses">
+				<h3 class="d2l-heading-3">{{localize('pinnedCourses')}}</h3>
+				<d2l-alert visible="{{!_hasPinnedCourses}}">
+					{{localize('noPinnedCoursesMessage')}}
+				</d2l-alert>
+				<div class="my-courses-container" role="region">
+					<template is="dom-repeat" items="[[pinnedCoursesEntities]]">
+						<d2l-course-tile
+							enrollment="[[item]]"
+							hover-enabled="[[_hoverInteractionEnabled]]"
+							touch-enabled="[[_touchInteractionEnabled]]"
+							animate-insertion="[[removeCourseFromTransitionList(item.properties.id)]]">
+						</d2l-course-tile>
+					</template>
+				</div>
+
+				<h3 class="d2l-heading-3">{{localize('unpinnedCourses')}}</h3>
+				<div class="my-courses-container" role="region">
+					<template is="dom-repeat" items="[[unpinnedCoursesEntities]]">
+						<d2l-course-tile
+							enrollment="[[item]]"
+							hover-enabled="[[_hoverInteractionEnabled]]"
+							touch-enabled="[[_touchInteractionEnabled]]"
+							animate-insertion="[[removeCourseFromTransitionList(item.properties.id)]]">
+						</d2l-course-tile>
+					</template>
+				</div>
+			</div>
 		</d2l-simple-overlay>
 
 	</template>
@@ -85,10 +99,6 @@
 				},
 				_alertMessage: {
 					type: String
-				},
-				_pinnedCoursesUrl: {
-					type: String,
-					computed: '_getPinnedCoursesUrl(enrollmentsUrl)'
 				}
 			},
 			behaviors: [
@@ -101,37 +111,32 @@
 				this._alertMessage = this.localize('noPinnedCoursesMessage');
 
 				var overlay = this.$$('d2l-simple-overlay');
-				var allCourses = this.$$('d2l-all-courses');
-				overlay.focusableNodesOverride = allCourses.focusableNodesOverride.bind(allCourses);
+				var allCourses = this.$$('.all-courses');
+				overlay.focusableNodesOverride = this.focusableNodesOverride.bind(allCourses);
 			},
 			attached: function() {
 				if (!this.delayLoad) {
-					this.$.pinnedCoursesRequest.generateRequest();
+					this.$.enrollmentsRequest.generateRequest();
 				}
 			},
-			onPinnedCoursesResponse: function(response) {
-				if (response.detail.status === 200) {
-					this.setAllCoursesFromSirenResponse(response.detail.xhr.response);
+			focusableNodesOverride: function() {
+				var courseTileFocusables = [];
 
-					if (this.pinnedCoursesEntities.length === 0) {
-						this.$.allCoursesRequest.generateRequest();
-					} else {
-						this._rescaleCourseTileRegions();
-					}
-				}
+				Polymer.dom(this).querySelectorAll('d2l-course-tile').forEach(function(courseTile) {
+					Array.prototype.push.apply(courseTileFocusables, Polymer.dom(courseTile.root).querySelectorAll('a'));
+				});
+
+				return courseTileFocusables;
 			},
-			onAllCoursesResponse: function(response) {
+			onEnrollmentsResponse: function(response) {
 				if (response.detail.status === 200) {
 					this.setAllCoursesFromSirenResponse(response.detail.xhr.response);
-
-					// Since we've already fetched all enrollments, prevent All Courses from doing so
-					this.$$('d2l-all-courses').fetchEnrollments = false;
 
 					if (!this._hasCourses) {
 						this._alertMessage = this.localize('noCoursesMessage');
 					}
 
-					this._rescaleCourseTileRegions();
+					this._setupColumns();
 				}
 			},
 			refreshPage: function() {
@@ -141,10 +146,11 @@
 				e.preventDefault();
 				e.stopPropagation();
 				this.$$('d2l-simple-overlay').open();
-				this.$$('d2l-all-courses').refresh();
-			},
-			_getPinnedCoursesUrl: function(enrollmentsUrl) {
-				return enrollmentsUrl + '?filter=pinned';
+
+				setTimeout(function() {
+					var itemCount = Math.max(this.pinnedCoursesEntities.length, this.unpinnedCoursesEntities.length);
+					this._setupColumns(itemCount, this.$$('.all-courses'));
+				}.bind(this), 100);
 			},
 			get courseTileItemCount() {
 				return this.pinnedCoursesEntities.length;

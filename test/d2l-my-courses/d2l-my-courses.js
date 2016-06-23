@@ -105,6 +105,92 @@ describe('smoke test', function() {
 			properties: {
 				name: 'Test Name'
 			}
+		},
+		allEnrollmentsResponse = {
+			headers: { },
+			body: {
+				class: ['enrollments'],
+				rel: ['enrollments'],
+				links: [],
+				actions: [],
+				properties: {},
+				entities: [{
+					class: ['course-offering', 'active'],
+					rel: ['enrollment'],
+					entities: [{
+						rel: ['preferences'],
+						class: [],
+						properties: { }
+					}],
+					properties: {
+						name: 'Course 1',
+						id: 1
+					},
+					links: []
+				}, {
+					class: ['course-offering', 'active'],
+					rel: ['enrollment'],
+					entities: [{
+						rel: ['preferences'],
+						class: [
+							'preferences',
+							'pinned'
+						],
+						properties: {
+							'pinDate': '2016-06-18T16:36:05Z'
+						}
+					}],
+					properties: {
+						name: 'Course 2',
+						id: 2
+					},
+					links: []
+				}, {
+					class: ['course-offering', 'active'],
+					rel: ['enrollment'],
+					entities: [{
+						rel: ['preferences'],
+						class: [],
+						properties: { }
+					}],
+					properties: {
+						name: 'Course 3',
+						id: 3
+					},
+					links: []
+				}, {
+					class: ['course-offering', 'active'],
+					rel: ['enrollment'],
+					entities: [{
+						rel: ['preferences'],
+						class: [
+							'preferences',
+							'pinned'
+						],
+						properties: {
+							'pinDate': '2016-06-18T16:35:05Z'
+						}
+					}],
+					properties: {
+						name: 'Course 4',
+						id: 4
+					},
+					links: []
+				}, {
+					class: ['course-offering', 'inactive'],
+					rel: ['enrollment'],
+					properties: {
+						name: 'Inactive Course',
+						id: 5
+					},
+					links: [],
+					actions: [],
+					entities: [{
+						rel: ['preferences'],
+						actions: []
+					}]
+				}]
+			}
 		};
 
 	beforeEach(function() {
@@ -126,14 +212,14 @@ describe('smoke test', function() {
 		it('should not display inactive courses', function(done) {
 			server.respondWith(
 				'GET',
-				widget._pinnedCoursesUrl,
+				widget._enrollmentsUrl,
 				function(req) {
 					req.respond(200, enrollmentsResponseInactiveCourse.headers, JSON.stringify(enrollmentsResponseInactiveCourse.body));
 				});
 
-			widget.$.pinnedCoursesRequest.generateRequest();
+			widget.$.enrollmentsRequest.generateRequest();
 
-			widget.$.pinnedCoursesRequest.addEventListener('response', function() {
+			widget.$.enrollmentsRequest.addEventListener('response', function() {
 				expect(widget.courseTileItemCount).to.equal(0);
 				done();
 			});
@@ -141,51 +227,23 @@ describe('smoke test', function() {
 	});
 
 	describe('Enrollments requests', function() {
-		it('should send a request for pinned courses', function(done) {
+		it('should send a request for courses', function(done) {
 			server.respondWith(
 				'GET',
-				widget._pinnedCoursesUrl,
+				widget._enrollmentsUrl,
 				function(req) {
 					expect(req.requestHeaders['accept']).to.equal('application/vnd.siren+json');
 					req.respond(200, emptyResponse.headers, JSON.stringify(emptyResponse.body));
 				});
 
-			var onPinnedCoursesResponseSpy = sinon.spy(widget, 'onPinnedCoursesResponse');
+			var onEnrollmentsResponseSpy = sinon.spy(widget, 'onEnrollmentsResponse');
 
-			widget.$.pinnedCoursesRequest.generateRequest();
+			widget.$.enrollmentsRequest.generateRequest();
 
-			widget.$.pinnedCoursesRequest.addEventListener('response', function() {
+			widget.$.enrollmentsRequest.addEventListener('response', function() {
 				expect(Array.isArray(widget.pinnedCoursesEntities)).to.be.true;
-				expect(onPinnedCoursesResponseSpy.calledOnce).to.be.true;
-				widget.onPinnedCoursesResponse.restore();
-				done();
-			});
-		});
-
-		it('should send a request for all courses if there are no pinned courses', function(done) {
-			server.respondWith(
-				'GET',
-				widget._pinnedCoursesUrl,
-				function(req) {
-					expect(req.requestHeaders['accept']).to.equal('application/vnd.siren+json');
-					req.respond(200, emptyResponse.headers, JSON.stringify(emptyResponse.body));
-				});
-
-			server.respondWith(
-				'GET',
-				widget.enrollmentsUrl,
-				function(req) {
-					expect(req.requestHeaders['accept']).to.equal('application/vnd.siren+json');
-					req.respond(200, emptyResponse.headers, JSON.stringify(emptyResponse.body));
-				});
-
-			var allCoursesResponseSpy =  sinon.spy(widget, 'onAllCoursesResponse');
-
-			widget.$.pinnedCoursesRequest.generateRequest();
-
-			widget.$.allCoursesRequest.addEventListener('response', function() {
-				expect(allCoursesResponseSpy.called);
-				widget.onAllCoursesResponse.restore();
+				expect(onEnrollmentsResponseSpy.calledOnce).to.be.true;
+				widget.onEnrollmentsResponse.restore();
 				done();
 			});
 		});
@@ -195,7 +253,7 @@ describe('smoke test', function() {
 		it('should display appropriate message when no enrolled courses', function(done) {
 			server.respondWith(
 				'GET',
-				widget._pinnedCoursesUrl,
+				widget._enrollmentsUrl,
 				function(req) {
 					req.respond(200, emptyResponse.headers, JSON.stringify(emptyResponse.body));
 				});
@@ -207,9 +265,9 @@ describe('smoke test', function() {
 					req.respond(200, enrollmentsResponseWithOrgOnly.headers, JSON.stringify(enrollmentsResponseWithOrgOnly.body));
 				});
 
-			widget.$.pinnedCoursesRequest.generateRequest();
+			widget.$.enrollmentsRequest.generateRequest();
 
-			widget.$.allCoursesRequest.addEventListener('response', function() {
+			widget.$.enrollmentsRequest.addEventListener('response', function() {
 				expect(widget._hasCourses).to.equal(false);
 				expect(widget._alertMessage).to.equal('Your courses aren\'t quite ready. Please check back soon.');
 				done();
@@ -219,7 +277,7 @@ describe('smoke test', function() {
 		it('should display appropriate message when no pinned courses', function(done) {
 			server.respondWith(
 				'GET',
-				widget._pinnedCoursesUrl,
+				widget._enrollmentsUrl,
 				function(req) {
 					req.respond(200, emptyResponse.headers, JSON.stringify(emptyResponse.body));
 				});
@@ -231,9 +289,9 @@ describe('smoke test', function() {
 					req.respond(200, enrollmentsResponseWithCourse.headers, JSON.stringify(enrollmentsResponseWithCourse.body));
 				});
 
-			widget.$.pinnedCoursesRequest.generateRequest();
+			widget.$.enrollmentsRequest.generateRequest();
 
-			widget.$.allCoursesRequest.addEventListener('response', function() {
+			widget.$.enrollmentsRequest.addEventListener('response', function() {
 				expect(widget._hasCourses).to.equal(true);
 				expect(widget._alertMessage).to.equal('You don\'t have any pinned courses. Pin your favorite courses to make them easier to find.');
 				done();
@@ -260,6 +318,97 @@ describe('smoke test', function() {
 			});
 			widget.dispatchEvent(event);
 			expect(widget.ariaMessage).to.equal(courseEntity.properties.name + ' has been unpinned');
+		});
+	});
+
+	describe('Course entity management', function() {
+		beforeEach(function() {
+			server.respondImmediately = true;
+			server.respondWith(
+				'GET',
+				widget.enrollmentsUrl,
+				function(req) {
+					expect(req.requestHeaders['accept']).to.equal('application/vnd.siren+json');
+					req.respond(200, allEnrollmentsResponse.headers, JSON.stringify(allEnrollmentsResponse.body));
+				});
+		});
+
+		it('should move an unpinned course to the pinned list when pinned', function(done) {
+			widget.$.enrollmentsRequest.generateRequest();
+
+			widget.$.enrollmentsRequest.addEventListener('response', function() {
+				var course = {
+					properties: {
+						id: 1
+					}
+				};
+
+				widget._moveCourseToPinnedList(course);
+				expect(widget.pinnedCoursesEntities.length).to.equal(3);
+				expect(widget.unpinnedCoursesEntities.length).to.equal(1);
+				expect(widget.pinnedCoursesEntities[0].properties.id).to.equal(1);
+				done();
+			});
+		});
+
+		it('should move a pinned course to the unpinned list when unpinned', function(done) {
+			widget.$.enrollmentsRequest.generateRequest();
+
+			widget.$.enrollmentsRequest.addEventListener('response', function() {
+				var course = {
+					properties: {
+						id: 2
+					}
+				};
+
+				widget._moveCourseToUnpinnedList(course);
+				expect(widget.pinnedCoursesEntities.length).to.equal(1);
+				expect(widget.unpinnedCoursesEntities.length).to.equal(3);
+				expect(widget.unpinnedCoursesEntities[0].properties.id).to.equal(2);
+				done();
+			});
+		});
+
+		it('should pin a course whose removal animation has completed, and add it to the beginning of the pinned courses list', function(done) {
+			widget.$.enrollmentsRequest.generateRequest();
+
+			widget._tilesInPinStateTransition.push(1);
+
+			widget.$.enrollmentsRequest.addEventListener('response', function() {
+				var pinAnimationEvent = new CustomEvent('tile-remove-complete', {
+					detail: {
+						course: widget.unpinnedCoursesEntities[0],
+						pinned: true
+					}
+				});
+
+				widget.dispatchEvent(pinAnimationEvent);
+				expect(widget.pinnedCoursesEntities.length).to.equal(3);
+				expect(widget.unpinnedCoursesEntities.length).to.equal(1);
+				expect(widget.pinnedCoursesEntities[0].properties.id).to.equal(1);
+				done();
+			});
+		});
+
+		it('should unpin a course whose removal animation has completed, and add it to the beginning of the unpinned courses list', function(done) {
+			widget.$.enrollmentsRequest.generateRequest();
+
+			widget._tilesInPinStateTransition.push(2);
+
+			widget.$.enrollmentsRequest.addEventListener('response', function() {
+				var pinAnimationEvent = new CustomEvent('tile-remove-complete', {
+					detail: {
+						course: widget.pinnedCoursesEntities[0],
+						pinned: false
+					}
+				});
+
+				widget.dispatchEvent(pinAnimationEvent);
+				expect(widget.pinnedCoursesEntities.length).to.equal(1);
+				expect(widget.unpinnedCoursesEntities.length).to.equal(3);
+				expect(widget.unpinnedCoursesEntities[0].properties.id).to.equal(2);
+				done();
+			});
 		});
 	});
 

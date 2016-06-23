@@ -11,9 +11,6 @@
 		:host {
 			display: block;
 		}
-		:focus {
-			text-decoration: underline;
-		}
 		@media not all and (hover: hover) {
 			:host {
 				-webkit-user-select: none;
@@ -37,8 +34,17 @@
 		.all-courses-button:hover {
 			text-decoration: underline;
 		}
+		.all-courses-button:focus {
+			text-decoration: underline;
+		}
 		d2l-alert {
 			margin-bottom: 30px;
+		}
+		h3 {
+			/* overrides to d2l-heading-3 */
+			margin: 20px 0 10px 0;
+			font-size: 20px;
+			/* end overrides */
 		}
 		</style>
 	</template>

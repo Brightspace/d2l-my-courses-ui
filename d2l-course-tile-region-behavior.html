@@ -26,11 +26,6 @@
 			get courseTileItemCount() {
 				throw 'Must implement courseTileItemCount in behavior consumer';
 			},
-			_rescaleCourseTileRegions: function(forcedWidth) {
-				var itemCount = this.courseTileItemCount;
-
-				this._setupColumns(itemCount, forcedWidth);
-			},
 			_calcNumColumns: function(width, itemCount) {
 				var numCols = 1;
 
@@ -56,8 +51,11 @@
 
 				return numCols;
 			},
-			_setupColumns: function(itemCount, forcedWidth) {
-				var containers = Polymer.dom(this.root).querySelectorAll('.my-courses-container');
+			_setupColumns: function(itemCount, rootNode) {
+				itemCount = itemCount || this.courseTileItemCount;
+				rootNode = rootNode || this.root;
+
+				var containers = Polymer.dom(rootNode).querySelectorAll('.my-courses-container');
 				var colClasses = ['columns-2', 'columns-3', 'columns-4'];
 				var currentColClass = function(domNode) {
 					var foundClass = '';
@@ -70,7 +68,7 @@
 				};
 
 				containers.forEach(function(container) {
-					var width = forcedWidth || this._getAvailableWidth(container);
+					var width = this._getAvailableWidth(container);
 					var numCols = this._calcNumColumns(width, itemCount);
 					var domNode = Polymer.dom(container);
 					var oldClassName = currentColClass(domNode);
@@ -110,7 +108,7 @@
 				return this._getAvailableWidth(node.parentElement);
 			},
 			_handleWindowResize: function() {
-				this._rescaleCourseTileRegions();
+				this._setupColumns();
 			},
 			_addThrottledEventListener: function(eventName, eventHandler) {
 				var timeout = false,

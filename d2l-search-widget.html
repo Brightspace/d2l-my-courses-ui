@@ -356,22 +356,24 @@
 			 * @param {String} Search string
 			 */
 			_addSearchToHistory: function(searchTerm) {
+				var previousSearches = this._previousSearches.slice();
+
 				// Remove prior existence of this search term if it exists
-				var currSearchHistoryIndex = this._previousSearches.indexOf(searchTerm);
+				var currSearchHistoryIndex = previousSearches.indexOf(searchTerm);
 
 				if (currSearchHistoryIndex !== -1) {
-					this.splice('_previousSearches', currSearchHistoryIndex, 1);
+					previousSearches.splice(currSearchHistoryIndex, 1);
 				}
 
-				if (this.unshift('_previousSearches', searchTerm) > 5) {
-					this.splice('_previousSearches', this._previousSearches.length - 1, 1);
+				if (previousSearches.unshift(searchTerm) > 5) {
+					previousSearches.splice(previousSearches.length - 1, 1);
 				}
 
 				try {
 					window.localStorage.setItem(
 						'myCourses.previousSearches',
 						JSON.stringify({
-							searches: this._previousSearches
+							searches: previousSearches
 						})
 					);
 				} catch (e) {
@@ -423,7 +425,7 @@
 			},
 
 			/*
-			* Handles iron-select events, fired when listbox items are selected
+			* Handles iron-select events, which are fired when listbox items are selected and dropdown pages are changed
 			*/
 			_onIronSelect: function(e) {
 				switch (e.target.nodeName) {

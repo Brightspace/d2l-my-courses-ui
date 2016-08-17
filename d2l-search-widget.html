@@ -227,14 +227,21 @@
 				Polymer.D2L.MyCourses.UtilityBehavior
 			],
 
+			ready: function() {
+				this._checkFocusLostBound = this._checkFocusLost.bind(this);
+				this._checkFocusLostClickBound = this._checkFocusLostClick.bind(this);
+			},
+
 			attached: function() {
 				var i = 0;
 				var searchBarElements = this.$$('.search-bar').children;
 
 				for (i = 0; i < searchBarElements.length; i++) {
-					this.listen(searchBarElements[i], 'blur', '_onElementBlur');
 					this.listen(searchBarElements[i], 'focus', '_onElementFocus');
 				}
+
+				document.body.addEventListener('focus', this._checkFocusLostBound, true);
+				document.body.addEventListener('click', this._checkFocusLostClickBound, true);
 
 				this._listboxes = Polymer.dom(this.root).querySelectorAll('d2l-search-listbox').slice();
 
@@ -249,9 +256,11 @@
 			detached: function() {
 				var searchBarElements = this.$$('.search-bar').children;
 				for (var i = 0; i < searchBarElements.length; i++) {
-					this.unlisten(searchBarElements[i], 'blur', '_onElementBlur');
 					this.unlisten(searchBarElements[i], 'focus', '_onElementFocus');
 				}
+
+				document.body.removeEventListener('focus', this._checkFocusLostBound, true);
+				document.body.removeEventListener('click', this._checkFocusLostClickBound, true);
 			},
 
 			/*
@@ -471,16 +480,37 @@
 			},
 
 			/*
-			* Called when an element within the search bar loses focus.
-			* If the search bar isn't an ancestor of the newly focused item (e.relatedTarget),
-			* the search listbox is closed.
-			*/
-			_onElementBlur: function(e) {
-				if (this.$.dropdown.opened) {
-					if (!e.relatedTarget || !Polymer.dom(this).deepContains(e.relatedTarget)) {
-						this.$.dropdown.close();
-					}
+			 * Determines whether the current active element is a descendant of this element,
+			 * and closes the dropdown if not.
+			 */
+			_checkFocusLost: function() {
+				if (this.$.dropdown.opened && !this._isDescendant(document.activeElement)) {
+					this.$.dropdown.close();
 				}
+			},
+
+			/*
+			 * Determines whether the target of a click event is a descendant of this element,
+			 * and closes the dropdown if not.
+			 */
+			_checkFocusLostClick: function(e) {
+				if (this.$.dropdown.opened && !this._isDescendant(Polymer.dom(e).rootTarget)) {
+					this.$.dropdown.close();
+				}
+			},
+
+			/*
+			 * Determines whether the given element is a descendant of this element.
+			 */
+			_isDescendant: function(element) {
+				var parentNode = element.parentNode;
+				while (parentNode) {
+					if (Polymer.dom(parentNode).node === this) {
+						return true;
+					}
+					parentNode = parentNode.parentNode;
+				}
+				return false;
 			}
 		});
 	</script>

@@ -23,8 +23,9 @@
 				color: var(--d2l-color-ferrite);
 				list-style-type: none;
 				width: 100%;
-				line-height: 3rem;
 				padding-left: 30px;
+				padding-top: 0.9rem;
+				padding-bottom: 0.9rem;
 				font-weight: 300;
 			}
 
@@ -46,8 +47,9 @@
 			}
 
 			::content > [data-list-title] {
-				line-height: 4rem;
 				font-weight: 400;
+				padding-top: 1rem;
+				padding-bottom: 1rem;
 			}
 		</style>
 		<content></content>
@@ -160,7 +162,7 @@
 			* Handle keyboard selection of listbox items, as IronMenuBehavior leaves it to the item to handle
 			*/
 			_onKeydown: function(e) {
-				if (e.detail.event === 'keydown' && this.keyboardEventMatchesKeys(e, 'space enter')) {
+				if (e.detail.event === 'keydown' && this.keyboardEventMatchesKeys(e, 'space')) {
 					e.preventDefault();
 					if (this.focusedItem && !this.focusedItem.hasAttribute('disabled')) {
 						this.fire('iron-select', {item: this.focusedItem});

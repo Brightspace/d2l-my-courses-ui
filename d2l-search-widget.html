@@ -228,8 +228,8 @@
 			],
 
 			ready: function() {
-				this._checkFocusLostBound = this._checkFocusLost.bind(this);
-				this._checkFocusLostClickBound = this._checkFocusLostClick.bind(this);
+				this._handleFocusBound = this._handleFocus.bind(this);
+				this._handleClickBound = this._handleClick.bind(this);
 			},
 
 			attached: function() {
@@ -240,8 +240,8 @@
 					this.listen(searchBarElements[i], 'focus', '_onElementFocus');
 				}
 
-				document.body.addEventListener('focus', this._checkFocusLostBound, true);
-				document.body.addEventListener('click', this._checkFocusLostClickBound, true);
+				document.body.addEventListener('focus', this._handleFocusBound, true);
+				document.body.addEventListener('click', this._handleClickBound, true);
 
 				this._listboxes = Polymer.dom(this.root).querySelectorAll('d2l-search-listbox').slice();
 
@@ -259,8 +259,8 @@
 					this.unlisten(searchBarElements[i], 'focus', '_onElementFocus');
 				}
 
-				document.body.removeEventListener('focus', this._checkFocusLostBound, true);
-				document.body.removeEventListener('click', this._checkFocusLostClickBound, true);
+				document.body.removeEventListener('focus', this._handleFocusBound, true);
+				document.body.removeEventListener('click', this._handleClickBound, true);
 			},
 
 			/*
@@ -480,21 +480,24 @@
 			},
 
 			/*
-			 * Determines whether the current active element is a descendant of this element,
-			 * and closes the dropdown if not.
+			 * Handles loss of focus of this element due to focus event.
 			 */
-			_checkFocusLost: function() {
-				if (this.$.dropdown.opened && !this._isDescendant(document.activeElement)) {
-					this.$.dropdown.close();
-				}
+			_handleFocus: function() {
+				this._checkFocusLost(document.activeElement);
 			},
 
 			/*
-			 * Determines whether the target of a click event is a descendant of this element,
-			 * and closes the dropdown if not.
+			 * Handles loss of focus of this element due to click event.
 			 */
-			_checkFocusLostClick: function(e) {
-				if (this.$.dropdown.opened && !this._isDescendant(Polymer.dom(e).rootTarget)) {
+			_handleClick: function(e) {
+				this._checkFocusLost(Polymer.dom(e).rootTarget);
+			},
+
+			/*
+			* Determines whether the widget has lost focus, and closes the dropdown if it has.
+			*/
+			_checkFocusLost: function(focusedElement) {
+				if (this.$.dropdown.opened && !this._isDescendant(focusedElement)) {
 					this.$.dropdown.close();
 				}
 			},

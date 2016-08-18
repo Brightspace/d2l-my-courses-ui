@@ -53,19 +53,9 @@ in that organization - student, teacher, TA, etc.
 			</a>
 
 			<div class="hover-menu no-tap-interaction">
-				<button class="menu-item no-tap-interaction"
-					on-click="_hoverPinClickHandler"
-					on-focus="_hoverPinMenuItem"
-					on-blur="_unhoverPinMenuItem"
-					on-mouseover="_hoverPinMenuItem"
-					on-mouseout="_unhoverPinMenuItem">
-					<iron-icon class="menu-icon" icon="d2l-tier1:pin-filled" aria-hidden="true"></iron-icon>
-					<span class="menu-text pin"
-						aria-label$="[[localize('pinCourse', 'course', _organization.properties.name)]]"
-						>{{localize('pin')}}</span>
-					<span class="menu-text unpin"
-						aria-label$="[[localize('unpinCourse', 'course', _organization.properties.name)]]"
-						>{{localize('unpin')}}</span>
+				<button class="menu-item no-tap-interaction">
+					<!-- Temporary icon until 'more' icon makes it into VUI -->
+					<iron-icon style="width:18px;height:18px;" icon="d2l-tier1:chevron-down"></iron-icon>
 				</button>
 			</div>
 		</div>
@@ -139,10 +129,11 @@ in that organization - student, teacher, TA, etc.
 				* Whether the enrollment represented by this course tile is pinned or not
 				* @type {Boolean}
 				*/
-				pinned: {
-					type: Boolean,
-					observer: '_pinnedChanged'
-				},
+				// Removed to convert button from unpin to overlay
+				// pinned: {
+				// 	type: Boolean,
+				// 	observer: '_pinnedChanged'
+				// },
 				/*
 				* Specifies whether the (mobile) touch menu is enabled on the course tile
 				* @type {Boolean}

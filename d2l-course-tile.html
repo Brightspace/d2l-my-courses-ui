@@ -351,8 +351,7 @@ in that organization - student, teacher, TA, etc.
 			_overflowMenuClickHandler: function(e) {
 				var dropdown = this.$$('#overlow-dropdown');
 				var target = this.$$('.menu-item');
-				dropdown.open(target, target); //target, opener
-				// Polymer.dom(dropdown).setAttribute('opened', true);
+				dropdown.open(target, target);
 			},
 			_pinnedChanged: function(pinned) {
 				var pinButton = this.$$('#pin-button')
@@ -364,9 +363,13 @@ in that organization - student, teacher, TA, etc.
 				this.toggleClass('hover', isHovered, this.$$('.course-image-container'));
 			},
 			_unhoverCourseTile: function(force) {
-				if ((force === true || Polymer.dom(this.root).querySelectorAll(':hover').length === 0) &&
-					!this._pinAnimationInProgress) {
+				var noHover = Polymer.dom(this.root).querySelectorAll(':hover').length === 0;
+				if ((force === true || noHover) && !this._pinAnimationInProgress) {
 					this._setCourseTileHovered(false);
+					if (noHover) {
+						var dropdown = this.$$('#overlow-dropdown');
+						dropdown.close();
+					}
 				}
 			},
 			_unhoverPinMenuItem: function() {

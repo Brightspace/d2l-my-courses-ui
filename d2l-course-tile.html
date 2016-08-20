@@ -70,14 +70,6 @@ in that organization - student, teacher, TA, etc.
 							on-mouseover="_hoverPinMenuItem"
 							on-mouseout="_unhoverPinMenuItem">
 						</d2l-menu-item>
-						<d2l-menu-item id="unpin-button"
-							text="{{localize('unpin')}}"
-							on-click="_hoverPinClickHandler"
-							on-focus="_hoverPinMenuItem"
-							on-blur="_unhoverPinMenuItem"
-							on-mouseover="_hoverPinMenuItem"
-							on-mouseout="_unhoverPinMenuItem">
-						</d2l-menu-item>
 					</d2l-menu>
     		</d2l-dropdown-menu>
 			</div>
@@ -363,16 +355,8 @@ in that organization - student, teacher, TA, etc.
 				// Polymer.dom(dropdown).setAttribute('opened', true);
 			},
 			_pinnedChanged: function(pinned) {
-				var pinButton = this.$$('#pin-button'),
-					unpinButton = this.$$('#unpin-button');
-
-				if (pinned) {
-					Polymer.dom(pinButton).setAttribute('style', 'display: none');
-					Polymer.dom(unpinButton).setAttribute('style', 'display: flex');
-				} else {
-					Polymer.dom(pinButton).setAttribute('style', 'display: flex');
-					Polymer.dom(unpinButton).setAttribute('style', 'display: none');
-				}
+				var pinButton = this.$$('#pin-button')
+				Polymer.dom(pinButton).setAttribute('text', pinned ? this.localize('unpin') : this.localize('pin'));
 			},
 			_setCourseTileHovered: function(isHovered) {
 				this.toggleClass('hover', isHovered, this.$$('.tile-container'));

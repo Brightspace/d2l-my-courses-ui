@@ -339,6 +339,7 @@ in that organization - student, teacher, TA, etc.
 					}
 
 					this._organization = organization;
+					this._pinnedChanged(); // Update aria-label with orginization
 					this._organizationHomepageUrl = organization.getLinkByRel(/\/organization-homepage$/).href;
 				}
 			},
@@ -354,8 +355,13 @@ in that organization - student, teacher, TA, etc.
 				dropdown.open(target, target);
 			},
 			_pinnedChanged: function(pinned) {
-				var pinButton = this.$$('#pin-button')
-				Polymer.dom(pinButton).setAttribute('text', pinned ? this.localize('unpin') : this.localize('pin'));
+				var pinButton = this.$$('#pin-button');
+				this._pinned = pinned === undefined ? this._pinned : pinned;
+				if (this._organization) {
+					Polymer.dom(pinButton).setAttribute('aria-label', this.localize(this._pinned ?
+						'unpinCourse' : 'pinCourse', 'course', this._organization.properties.name));
+				}
+				Polymer.dom(pinButton).setAttribute('text', this.localize(this._pinned ? 'unpin' : 'pin'));
 			},
 			_setCourseTileHovered: function(isHovered) {
 				this.toggleClass('hover', isHovered, this.$$('.tile-container'));

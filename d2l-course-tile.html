@@ -7,6 +7,7 @@
 <link rel="import" href="localize-behavior.html">
 <link rel="import" href="d2l-touch-menu.html">
 <link rel="import" href="d2l-touch-menu-item.html">
+<link rel="import" href="../d2l-dropdown/d2l-dropdown.html">
 
 <!--
 `<d2l-course-tile>` is a clickable, interactable tile that represents a course
@@ -53,10 +54,17 @@ in that organization - student, teacher, TA, etc.
 			</a>
 
 			<div class="hover-menu no-tap-interaction">
-				<button class="menu-item no-tap-interaction">
-					<!-- Temporary icon until 'more' icon makes it into VUI -->
-					<iron-icon style="width:18px;height:18px;" icon="d2l-tier1:chevron-down"></iron-icon>
+				<button
+					class="menu-item no-tap-interaction"
+					on-click="_overflowMenuClickHandler">
+					<iron-icon style="width:18px;height:18px;" icon="d2l-tier1:more"></iron-icon>
 				</button>
+				<d2l-dropdown-menu id="overlow-dropdown" style="width:200px">
+					<d2l-menu>
+        		<d2l-menu-item-link text="Change image">Change image</d2l-menu-item-link>
+						<d2l-menu-item-link text="Unpin">Unpin</d2l-menu-item-link>
+					</d2l-menu>
+    		</d2l-dropdown>
 			</div>
 		</div>
 	</template>
@@ -129,11 +137,10 @@ in that organization - student, teacher, TA, etc.
 				* Whether the enrollment represented by this course tile is pinned or not
 				* @type {Boolean}
 				*/
-				// Removed to convert button from unpin to overlay
-				// pinned: {
-				// 	type: Boolean,
-				// 	observer: '_pinnedChanged'
-				// },
+				pinned: {
+					type: Boolean,
+					observer: '_pinnedChanged'
+				},
 				/*
 				* Specifies whether the (mobile) touch menu is enabled on the course tile
 				* @type {Boolean}
@@ -334,20 +341,27 @@ in that organization - student, teacher, TA, etc.
 			_onUnpinHover: function(e) {
 				this.toggleClass('unpin-hovered', e.detail.hoverState, this);
 			},
+			_overflowMenuClickHandler: function(e) {
+				var dropdown = this.$$('#overlow-dropdown');
+				var target = this.$$('.menu-item');
+				dropdown.open(target, target); //target, opener
+				// Polymer.dom(dropdown).setAttribute('opened', true);
+			},
 			_pinnedChanged: function(pinned) {
-				var pinIcon = this.$$('.menu-item iron-icon.menu-icon'),
-					pinText = this.$$('.menu-item .menu-text.pin'),
-					unpinText = this.$$('.menu-item .menu-text.unpin');
-
-				if (pinned) {
-					Polymer.dom(pinIcon).setAttribute('icon', 'd2l-tier1:pin-hollow');
-					Polymer.dom(pinText).setAttribute('style', 'display: none');
-					Polymer.dom(unpinText).setAttribute('style', 'display: inline');
-				} else {
-					Polymer.dom(pinIcon).setAttribute('icon', 'd2l-tier1:pin-filled');
-					Polymer.dom(pinText).setAttribute('style', 'display: inline');
-					Polymer.dom(unpinText).setAttribute('style', 'display: none');
-				}
+				// var pinIcon = this.$$('.menu-item iron-icon.menu-icon'),
+				// 	pinText = this.$$('.menu-item .menu-text.pin'),
+				// 	unpinText = this.$$('.menu-item .menu-text.unpin');
+				//
+				// if (pinned) {
+				// 	Polymer.dom(pinIcon).setAttribute('icon', 'd2l-tier1:pin-hollow');
+				// 	Polymer.dom(pinText).setAttribute('style', 'display: none');
+				// 	Polymer.dom(unpinText).setAttribute('style', 'display: inline');
+				// } else {
+				// 	Polymer.dom(pinIcon).setAttribute('icon', 'd2l-tier1:pin-filled');
+				// 	Polymer.dom(pinText).setAttribute('style', 'display: inline');
+				// 	Polymer.dom(unpinText).setAttribute('style', 'display: none');
+				// }
+				console.log('event < pinndedChanged');
 			},
 			_setCourseTileHovered: function(isHovered) {
 				this.toggleClass('hover', isHovered, this.$$('.tile-container'));

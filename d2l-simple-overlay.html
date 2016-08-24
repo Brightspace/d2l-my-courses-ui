@@ -182,6 +182,9 @@ The overlay supports using different animations and transitions for desktop and 
 				var style = document.createElement('style', 'custom-style');
 				style.innerHTML = 'iron-overlay-backdrop { --iron-overlay-backdrop-opacity: 0.0; }';
 				document.body.appendChild(style);
+			},
+			get scrollRegion() {
+				return this.$$('.scrollable');
 			}
 		});
 	</script>

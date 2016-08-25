@@ -56,15 +56,22 @@ in that organization - student, teacher, TA, etc.
 			<div class="hover-menu no-tap-interaction">
 				<button
 					class="menu-item no-tap-interaction"
-					on-click="_overflowMenuClickHandler">
-					<iron-icon style="width:18px;height:18px;" icon="d2l-tier1:more"></iron-icon>
+					on-click="_overflowMenuClickHandler"
+					on-focus="_hoverCourseTile">
+					<iron-icon class="menu-icon" style="width:18px;height:18px;" icon="d2l-tier1:more"></iron-icon>
+					<span aria-label="Overflow menu"></span>
 				</button>
 				<d2l-dropdown-menu id="overlow-dropdown" horizontal-offset="-20" style="width:200px">
-					<d2l-menu>
-						<d2l-menu-item text="Change image"></d2l-menu-item>
+					<d2l-menu role="menu" on-blur="test">
+						<d2l-menu-item
+							role="menuitem"
+							text="Change image">
+						</d2l-menu-item>
 						<d2l-menu-item id="pin-button"
+							role="menuitem"
 							text="{{localize('pin')}}"
 							on-click="_hoverPinClickHandler"
+							on-select="_hoverPinClickHandler"
 							on-focus="_hoverPinMenuItem"
 							on-blur="_unhoverPinMenuItem"
 							on-mouseover="_hoverPinMenuItem"
@@ -380,7 +387,6 @@ in that organization - student, teacher, TA, etc.
 			},
 			_unhoverPinMenuItem: function() {
 				this._onUnpinHover({detail: {hoverState: false}});
-				this._unhoverCourseTile();
 			}
 		});
 	</script>

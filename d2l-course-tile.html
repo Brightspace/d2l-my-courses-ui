@@ -206,6 +206,7 @@ in that organization - student, teacher, TA, etc.
 				}
 				var tileContainerEl = this.$$('.tile-container');
 				tileContainerEl.addEventListener('blur', this._focusOutBound, true);
+				tileContainerEl.addEventListener('focus', this._focusInBound, true);
 			},
 			ready: function() {
 				// Currently only needed in tests, but it is entirely possible
@@ -222,6 +223,7 @@ in that organization - student, teacher, TA, etc.
 					this.$.organizationRequest.generateRequest();
 				}
 				this._focusOutBound = this._focusOut.bind(this);
+				this._focusInBound = this._focusIn.bind(this);
 				this._closeDropdownBound = this._closeDropdown.bind(this);
 			},
 			/*
@@ -402,15 +404,21 @@ in that organization - student, teacher, TA, etc.
 			},
 
 			_focusOut: function(e) {
-				if (!this._isDescendant(e.relatedTarget)) {
+				var target = !e.relatedTarget ? e.target : e.relatedTarget; // IE fix
+				if (!this._isDescendant(target)) {
 					this._unhoverCourseTile();
 				}
+			},
+
+			_focusIn: function() {
+				this._hoverCourseTile();
 			},
 
 			_closeDropdown: function() {
 				if (Polymer.dom(this.root).querySelectorAll(':hover').length === 0) {
 					var dropdown = this.$$('#overlow-dropdown');
 					dropdown.close();
+					this._setCourseTileHovered(false);
 				}
 			}
 		});

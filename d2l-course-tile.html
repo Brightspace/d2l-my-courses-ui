@@ -41,7 +41,8 @@ in that organization - student, teacher, TA, etc.
 
 		<div class="tile-container"
 			on-mouseover="_hoverCourseTile"
-			on-mouseout="_onTileMouseOut">
+			on-mouseout="_onTileMouseOut"
+			on-focusout="_focusOut">
 			<a href$="[[_organizationHomepageUrl]]" class="no-tap-interaction"
 				on-focus="_hoverCourseTile">
 				<div class="course-image-container">

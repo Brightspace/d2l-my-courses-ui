@@ -82,7 +82,11 @@
 			last-response="{{_lastEnrollmentsSearchResponse}}">
 		</d2l-ajax>
 
-		<d2l-loading-spinner size="100"></d2l-loading-spinner>
+		<d2l-loading-spinner
+			id="initialLoadingSpinner"
+			class="hidden"
+			size="100">
+		</d2l-loading-spinner>
 
 		<div class="my-courses-content hidden">
 			<d2l-alert visible="[[!_hasPinnedEnrollments]]">
@@ -119,6 +123,11 @@
 				unpinned-enrollments="{{unpinnedEnrollments}}"
 				locale="[[locale]]">
 			</d2l-all-courses>
+			<d2l-loading-spinner
+				id="lazyLoadSpinner"
+				class="hidden"
+				size="150">
+			</d2l-loading-spinner>
 		</d2l-simple-overlay>
 
 		<d2l-simple-overlay
@@ -198,7 +207,7 @@
 					this.$.enrollmentsRootRequest.generateRequest();
 				}
 
-				this.$$('iron-scroll-threshold').scrollTarget = this.$$('d2l-simple-overlay').scrollRegion;
+				this.$$('iron-scroll-threshold').scrollTarget = this.$['all-courses'].scrollRegion;
 			},
 			/*
 			* Count of `d2l-course-tile` elements in grid.
@@ -235,14 +244,35 @@
 					var parser = document.createElement('d2l-siren-parser');
 					var enrollments = parser.parse(response.detail.xhr.response);
 					var enrollmentEntities = enrollments.getSubEntitiesByClass('enrollment');
+					var newPinnedEnrollments = [];
+					var newUnpinnedEnrollments = [];
 
 					enrollmentEntities.forEach(function(enrollment) {
 						if (enrollment.hasClass('pinned')) {
-							this.push('pinnedEnrollments', enrollment);
+							newPinnedEnrollments.push(enrollment);
 						} else {
-							this.push('unpinnedEnrollments', enrollment);
+							newUnpinnedEnrollments.push(enrollment);
 						}
 					}, this);
+
+					this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
+					this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
+
+					this.notifySplices('pinnedEnrollments', [{
+						index: this.pinnedEnrollments.length - newPinnedEnrollments.length,
+						removed: [],
+						addedCount: newPinnedEnrollments.length,
+						object: this.pinnedEnrollments,
+						type: 'splice'
+					}]);
+
+					this.notifySplices('unpinnedEnrollments', [{
+						index: this.unpinnedEnrollments.length - newUnpinnedEnrollments.length,
+						removed: [],
+						addedCount: newUnpinnedEnrollments.length,
+						object: this.unpinnedEnrollments,
+						type: 'splice'
+					}]);
 
 					this.set('enrollments', enrollmentEntities);
 
@@ -256,6 +286,7 @@
 					this.fire('recalculate-columns');
 				}
 
+				this.toggleClass('hidden', true, this.$.lazyLoadSpinner);
 				this.$$('iron-scroll-threshold').clearTriggers();
 				this._showContent();
 			},
@@ -281,7 +312,7 @@
 				document.location.reload(true);
 			},
 			_showContent: function() {
-				this.toggleClass('hidden', true, this.$$('d2l-loading-spinner'));
+				this.toggleClass('hidden', true, this.$.initialLoadingSpinner);
 				this.toggleClass('hidden', false, this.$$('.my-courses-content'));
 			},
 			_loadNextEnrollmentsPage: function() {
@@ -292,6 +323,7 @@
 					if (lastResponseEntity.hasLink('next')) {
 						this._enrollmentsSearchUrl = lastResponseEntity.getLinkByRel('next').href;
 						this.$.enrollmentsSearchRequest.generateRequest();
+						this.toggleClass('hidden', false, this.$.lazyLoadSpinner);
 					}
 				}
 			}

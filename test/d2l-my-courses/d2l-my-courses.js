@@ -145,6 +145,17 @@ describe('d2l-my-courses', function() {
 	});
 
 	describe('Enrollments requests and responses', function() {
+		beforeEach( function() {
+			server.respondWith(
+				'GET',
+				widget.enrollmentsUrl,
+				function(req) {
+					expect(req.requestHeaders['accept']).to.equal('application/vnd.siren+json');
+					req.respond(200, {}, JSON.stringify(enrollmentsRootResponse));
+				}
+			);
+		});
+
 		it('should not send a search request if the root request fails', function(done) {
 			server.respondWith(
 				'GET',
@@ -168,14 +179,6 @@ describe('d2l-my-courses', function() {
 		it('should send a search request for enrollments', function(done) {
 			server.respondWith(
 				'GET',
-				widget.enrollmentsUrl,
-				function(req) {
-					expect(req.requestHeaders['accept']).to.equal('application/vnd.siren+json');
-					req.respond(200, {}, JSON.stringify(enrollmentsRootResponse));
-				});
-
-			server.respondWith(
-				'GET',
 				new RegExp(searchHref),
 				function(req) {
 					expect(req.requestHeaders['accept']).to.equal('application/vnd.siren+json');
@@ -193,15 +196,31 @@ describe('d2l-my-courses', function() {
 			});
 		});
 
-		it('should set the request URL for pinned courses, sortDescending', function(done) {
+		it('should append enrollments on successive search requests', function(done) {
 			server.respondWith(
 				'GET',
-				widget.enrollmentsUrl,
+				new RegExp(searchHref),
 				function(req) {
 					expect(req.requestHeaders['accept']).to.equal('application/vnd.siren+json');
-					req.respond(200, {}, JSON.stringify(enrollmentsRootResponse));
+					req.respond(200, {}, JSON.stringify(enrollmentsSearchResponse));
 				});
 
+			var enrollmentsSearchSpy = sinon.spy(widget, '_onEnrollmentsSearchResponse');
+
+			widget.$.enrollmentsRootRequest.generateRequest();
+
+			widget.$.enrollmentsSearchRequest.addEventListener('iron-ajax-response', function() {
+				if (enrollmentsSearchSpy.calledOnce) {
+					widget.$.enrollmentsRootRequest.generateRequest();
+				} else if (enrollmentsSearchSpy.calledTwice) {
+					expect(widget.pinnedEnrollments.length).to.equal(2);
+					widget._onEnrollmentsSearchResponse.restore();
+					done();
+				}
+			});
+		});
+
+		it('should set the request URL for pinned courses, sortDescending', function(done) {
 			widget.$.enrollmentsRootRequest.generateRequest();
 
 			widget.$.enrollmentsRootRequest.addEventListener('iron-ajax-response', function() {
@@ -212,14 +231,6 @@ describe('d2l-my-courses', function() {
 		});
 
 		it('should rescale the course tile grid on search response', function(done) {
-			server.respondWith(
-				'GET',
-				widget.enrollmentsUrl,
-				function(req) {
-					expect(req.requestHeaders['accept']).to.equal('application/vnd.siren+json');
-					req.respond(200, {}, JSON.stringify(enrollmentsRootResponse));
-				});
-
 			server.respondWith(
 				'GET',
 				new RegExp(searchHref),
@@ -242,13 +253,6 @@ describe('d2l-my-courses', function() {
 		it('should display appropriate message when there are no enrollments', function(done) {
 			server.respondWith(
 				'GET',
-				widget.enrollmentsUrl,
-				function(req) {
-					req.respond(200, {}, JSON.stringify(enrollmentsRootResponse));
-				});
-
-			server.respondWith(
-				'GET',
 				new RegExp(searchHref),
 				function(req) {
 					req.respond(200, {}, JSON.stringify(noEnrollmentsResponse));
@@ -264,13 +268,6 @@ describe('d2l-my-courses', function() {
 		});
 
 		it('should display appropriate message when there are no pinned enrollments', function(done) {
-			server.respondWith(
-				'GET',
-				widget.enrollmentsUrl,
-				function(req) {
-					req.respond(200, {}, JSON.stringify(enrollmentsRootResponse));
-				});
-
 			server.respondWith(
 				'GET',
 				new RegExp(searchHref),

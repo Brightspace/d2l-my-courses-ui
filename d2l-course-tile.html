@@ -400,7 +400,7 @@ in that organization - student, teacher, TA, etc.
 				this._onUnpinHover({detail: {hoverState: false}});
 			},
 			_getChangeCourseImageLink: function(organization) {
-				var rel = 'https://api.brightspace.com/rels/edit-image-page';
+				var rel = /edit-image-page/;
 				if (organization && organization.hasLinkByRel(rel)) {
 					return this._organization.getLinkByRel(rel).href;
 				}

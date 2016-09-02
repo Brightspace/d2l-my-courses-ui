@@ -62,10 +62,13 @@ in that organization - student, teacher, TA, etc.
 				</button>
 				<d2l-dropdown-menu id="overlow-dropdown" horizontal-offset="-20" style="width:200px">
 					<d2l-menu role="menu" on-blur="test">
-						<d2l-menu-item
-							role="menuitem"
-							text="Change image">
-						</d2l-menu-item>
+						<template is="dom-if" if="{{_organizationChangeImageHref}}" restamp="true">
+							<d2l-menu-item-link id="change-image-link"
+								role="menuitem"
+								text="Change image"
+								href="{{_organizationChangeImageHref}}">
+							</d2l-menu-item-link>
+						</template>
 						<d2l-menu-item id="pin-button"
 							role="menuitem"
 							text="{{localize('pin')}}"
@@ -190,7 +193,12 @@ in that organization - student, teacher, TA, etc.
 				* The URL to fetch the `_organization` Entity from (determined from the `enrollment`'s Links)
 				* @type {String}
 				*/
-				_organizationUrl: String
+				_organizationUrl: String,
+				/*
+				* The url to pass to the 'Change Image' link
+				* @type {String}
+				*/
+				_organizationChangeImageHref: String
 			},
 			behaviors: [
 				Polymer.D2L.MyCourses.LocalizeBehavior
@@ -220,6 +228,7 @@ in that organization - student, teacher, TA, etc.
 
 				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
 				this._organizationUrl = organizationLink.href + '?embedDepth=1';
+
 				if (!this.delayLoad) {
 					this.$.organizationRequest.generateRequest();
 				}
@@ -350,6 +359,7 @@ in that organization - student, teacher, TA, etc.
 					}
 
 					this._organization = organization;
+					this._organizationChangeImageHref = this._getChangeCourseImageLink(organization);
 					this._pinnedChanged(); // Update aria-label with orginization
 					this._organizationHomepageUrl = organization.getLinkByRel(/\/organization-homepage$/).href;
 				}
@@ -388,6 +398,12 @@ in that organization - student, teacher, TA, etc.
 			},
 			_unhoverPinMenuItem: function() {
 				this._onUnpinHover({detail: {hoverState: false}});
+			},
+			_getChangeCourseImageLink: function(organization) {
+				var rel = 'https://api.brightspace.com/rels/edit-image-page';
+				if (organization && organization.hasLinkByRel(rel)) {
+					return this._organization.getLinkByRel(rel).href;
+				}
 			},
 
 			/*

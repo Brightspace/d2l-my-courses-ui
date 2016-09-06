@@ -181,7 +181,12 @@
 				* Object containing the last response from an enrollments search request
 				* @type Object
 				*/
-				_lastEnrollmentsSearchResponse: Object
+				_lastEnrollmentsSearchResponse: Object,
+				/*
+				* Object containing the IDs of previously loaded pinned enrollments, to avoid duplicates
+				* @type Object
+				*/
+				_pinnedCoursesMap: Object
 			},
 			behaviors: [
 				Polymer.D2L.MyCourses.CourseTileResponsiveGridBehavior,
@@ -193,6 +198,7 @@
 				'open-change-image-view': '_openChangeImageView'
 			},
 			ready: function() {
+				this._pinnedCoursesMap = {};
 				this._alertMessage = this.localize('noCoursesMessage');
 
 				this.toggleClass('hidden', true, this.$.courseTiles);
@@ -249,7 +255,11 @@
 
 					enrollmentEntities.forEach(function(enrollment) {
 						if (enrollment.hasClass('pinned')) {
-							newPinnedEnrollments.push(enrollment);
+							var enrollmentId = this.getEnrollmentIdentifier(enrollment);
+							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
+								newPinnedEnrollments.push(enrollment);
+								this._pinnedCoursesMap[enrollmentId] = true;
+							}
 						} else {
 							newUnpinnedEnrollments.push(enrollment);
 						}
@@ -259,7 +269,7 @@
 					this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
 
 					this.notifySplices('pinnedEnrollments', [{
-						index: this.pinnedEnrollments.length - newPinnedEnrollments.length,
+						index: this.pinnedEnrollments.length - newPinnedEnrollments.length + 1,
 						removed: [],
 						addedCount: newPinnedEnrollments.length,
 						object: this.pinnedEnrollments,
@@ -267,7 +277,7 @@
 					}]);
 
 					this.notifySplices('unpinnedEnrollments', [{
-						index: this.unpinnedEnrollments.length - newUnpinnedEnrollments.length,
+						index: this.unpinnedEnrollments.length - newUnpinnedEnrollments.length + 1,
 						removed: [],
 						addedCount: newUnpinnedEnrollments.length,
 						object: this.unpinnedEnrollments,

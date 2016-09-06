@@ -265,7 +265,7 @@ in that organization - student, teacher, TA, etc.
 			_pendingPinAction: false,
 			_pinAnimationInProgress: false,
 			_delayLoadChanged: function(delayLoad) {
-				if (!delayLoad && !this._organization) {
+				if (this.isAttached && !delayLoad && !this._organization) {
 					this.$.organizationRequest.generateRequest();
 				}
 			},

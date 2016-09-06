@@ -269,7 +269,7 @@
 					this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
 
 					this.notifySplices('pinnedEnrollments', [{
-						index: this.pinnedEnrollments.length - newPinnedEnrollments.length + 1,
+						index: this.pinnedEnrollments.length - newPinnedEnrollments.length,
 						removed: [],
 						addedCount: newPinnedEnrollments.length,
 						object: this.pinnedEnrollments,
@@ -277,7 +277,7 @@
 					}]);
 
 					this.notifySplices('unpinnedEnrollments', [{
-						index: this.unpinnedEnrollments.length - newUnpinnedEnrollments.length + 1,
+						index: this.unpinnedEnrollments.length - newUnpinnedEnrollments.length,
 						removed: [],
 						addedCount: newUnpinnedEnrollments.length,
 						object: this.unpinnedEnrollments,

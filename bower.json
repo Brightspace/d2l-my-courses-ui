@@ -48,7 +48,6 @@
     "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^1.7.1",
     "iron-pages": "^1.0.8",
     "neon-animation": "PolymerElements/neon-animation#^1.2.2",
-    "iron-a11y-keys": "^1.0.6",
     "iron-scroll-threshold": "PolymerElements/iron-scroll-threshold#^1.0.2"
   },
   "devDependencies": {

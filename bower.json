@@ -27,7 +27,6 @@
     "/demo/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0",
     "app-localize-behavior": "https://github.com/Brightspace/app-localize-behavior.git#master",
     "d2l-ajax": "^2.0.0",
     "d2l-colors": "^2.0.0",
@@ -48,7 +47,8 @@
     "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^1.7.1",
     "iron-pages": "^1.0.8",
     "neon-animation": "PolymerElements/neon-animation#^1.2.2",
-    "iron-scroll-threshold": "PolymerElements/iron-scroll-threshold#^1.0.2"
+    "iron-scroll-threshold": "PolymerElements/iron-scroll-threshold#^1.0.2",
+    "polymer": "Polymer/polymer#^1.4.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.2.2"

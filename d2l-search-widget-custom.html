@@ -74,12 +74,16 @@
 			.search-icon {
 				position: absolute;
 				top: 0px;
-				padding: 15px;
 				background: none;
-				border: none;
-				margin: 0;
+				border: 1px solid transparent;
+				border-radius: 0.3rem;
+				margin: 10px;
 				cursor: pointer;
-				height: 100%;
+				height: calc(100% - 20px);
+			}
+			.search-icon:hover,
+			.search-icon:focus {
+				border-color: var(--d2l-color-pressicus);
 			}
 			.search-icon iron-icon {
 				--iron-icon-height: 22px;
@@ -93,6 +97,12 @@
 
 			.clear-search-button {
 				right: 5px;
+				border: 1px solid transparent;
+			}
+			.clear-search-button:hover,
+			.clear-search-button:focus {
+				border-color: var(--d2l-color-pressicus);
+				border-radius: 0.3rem;
 			}
 		</style>
 

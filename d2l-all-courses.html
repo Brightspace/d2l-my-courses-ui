@@ -206,6 +206,10 @@
 			.highlight {
 				text-decoration: underline;
 			}
+			button:focus,
+			button:hover {
+				text-decoration: underline;
+			}
 		</style>
 
 		<d2l-ajax
@@ -332,19 +336,19 @@
 							<span class="dropdown-content-header-text">{{localize('sorting.sortBy')}}</span>
 						</div>
 						<div class="dropdown-content-gradient">
-							<button class="dropdown-content-item" value="courseCode" on-tap="_updateSortBy">
+							<button class="dropdown-content-item" value="courseCode" on-tap="_updateSortBy" tabindex="-1">
 								<iron-icon icon="d2l-tier1:check" aria-hidden="true"></iron-icon>
 								{{localize('sorting.courseCode')}}
 							</button>
-							<button class="dropdown-content-item" value="courseName" on-tap="_updateSortBy">
+							<button class="dropdown-content-item" value="courseName" on-tap="_updateSortBy" tabindex="-1">
 								<iron-icon icon="d2l-tier1:check" aria-hidden="true"></iron-icon>
 								{{localize('sorting.courseName')}}
 							</button>
-							<button class="dropdown-content-item selected" value="pinDate" on-tap="_updateSortBy">
+							<button class="dropdown-content-item selected" value="pinDate" on-tap="_updateSortBy" tabindex="-1">
 								<iron-icon icon="d2l-tier1:check" aria-hidden="true"></iron-icon>
 								{{localize('sorting.datePinned')}}
 							</button>
-							<button class="dropdown-content-item" value="lastAccessed" on-tap="_updateSortBy">
+							<button class="dropdown-content-item" value="lastAccessed" on-tap="_updateSortBy" tabindex="-1">
 								<iron-icon icon="d2l-tier1:check" aria-hidden="true"></iron-icon>
 								{{localize('sorting.lastAccessed')}}
 							</button>

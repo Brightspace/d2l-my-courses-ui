@@ -39,6 +39,8 @@
 		<content></content>
 	</template>
 	<script>
+		'use strict';
+
 		Polymer({
 			is: 'd2l-menu-item-selectable',
 			properties: {
@@ -218,6 +220,9 @@
 				width: 100%;
 				text-align: left;
 			}
+			button:focus,
+			button:hover,
+			.highlight,
 			.dropdown-content-item:focus,
 			.dropdown-content-item:hover {
 				text-decoration: underline;
@@ -256,22 +261,11 @@
 				--iron-icon-height: 20px;
 				--iron-icon-width: 20px;
 			}
-			#sortDropdown d2l-dropdown-content button {
-				border-bottom: 1px solid var(--d2l-color-gypsum);
-				font-size: 1rem;
-			}
 			.selected {
 				color: var(--d2l-color-celestine);
 			}
 			.selected > iron-icon {
 				visibility: visible;
-			}
-			.highlight {
-				text-decoration: underline;
-			}
-			button:focus,
-			button:hover {
-				text-decoration: underline;
 			}
 		</style>
 

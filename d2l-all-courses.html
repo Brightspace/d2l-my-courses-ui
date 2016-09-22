@@ -3,13 +3,76 @@
 <link rel="import" href="../d2l-ajax/d2l-ajax.html">
 <link rel="import" href="../d2l-dropdown/d2l-dropdown.html">
 <link rel="import" href="../d2l-dropdown/d2l-dropdown-content.html">
+<link rel="import" href="../d2l-dropdown/d2l-dropdown-menu.html">
 <link rel="import" href="../d2l-icons/d2l-icons.html">
+<link rel="import" href="../d2l-menu/d2l-menu-item-styles.html">
+<link rel="import" href="../d2l-menu/d2l-menu-item-behavior.html">
+<link rel="import" href="../d2l-menu/d2l-menu-item.html">
 <link rel="import" href="../d2l-search-widget/d2l-search-widget.html">
 <link rel="import" href="d2l-course-tile-grid.html">
 <link rel="import" href="d2l-course-tile-responsive-grid-behavior.html">
 <link rel="import" href="localize-behavior.html">
 <link rel="import" href="d2l-course-management-behavior.html">
 <link rel="import" href="d2l-search-widget-custom.html">
+
+<dom-module id="d2l-menu-item-selectable">
+	<template>
+		<style include"d2l-menu-item-styles">
+			:host {
+				display: block;
+				padding: 0.9rem 1rem;
+			}
+			:host span {
+				line-height: 1.2rem;
+			}
+			:host(:hover),
+			:host(:focus) {
+				color: var(--d2l-color-tungsten);
+			}
+			.hidden {
+				visibility: hidden;
+			}
+		</style>
+
+		<iron-icon icon="d2l-tier1:check" aria-hidden="true"></iron-icon>
+		<span>[[text]]</span>
+		<content></content>
+	</template>
+	<script>
+		Polymer({
+			is: 'd2l-menu-item-selectable',
+			properties: {
+				selected: {
+					type: Boolean,
+					value: false,
+					observer: '_onSelectedChanged',
+					reflectToAttribute: true
+				},
+				value: String
+			},
+			behaviors: [
+				window.D2L.PolymerBehaviors.MenuItemBehavior
+			],
+			listeners: {
+				'tap': '_onTap',
+				'keydown': '_onKeydown'
+			},
+			_onSelectedChanged: function(selected) {
+				this.toggleClass('hidden', !selected, this.$$('iron-icon'));
+			},
+			_onKeydown: function(e) {
+				// Select on either Enter or Space
+				if (e.keyCode === 13 || e.keyCode === 32) {
+					e.preventDefault();
+					this.fire('menu-item-selected', this.value);
+				}
+			},
+			_onTap: function() {
+				this.fire('menu-item-selected', this.value);
+			}
+		});
+	</script>
+</dom-module>
 
 <!--
 `<d2l-all-courses>` displays both pinned and unpinned courses
@@ -253,28 +316,26 @@
 								<button class="clear-button" on-tap="_clearFilters">{{localize('filtering.clear')}}</button>
 							</template>
 						</div>
-						<div class="dropdown-content-gradient">
-							<div class="dropdown-content-tabs">
-								<div class="dropdown-content-tab">
-									<div class="dropdown-content-tab-highlight" id="semesterListHighlight"></div>
-									<button
-										id="semesterListButton"
-										class="dropdown-content-tab-button selected"
-										on-tap="_selectSemesterList"
-										aria-pressed="true">
-										{{localize('filtering.semester')}}
-									</button>
-								</div>
-								<div class="dropdown-content-tab">
-									<div class="dropdown-content-tab-highlight invisible" id="departmentListHighlight"></div>
-									<button
-										id="departmentListButton"
-										class="dropdown-content-tab-button"
-										on-tap="_selectDepartmentList"
-										aria-pressed="false">
-										{{localize('filtering.department')}}
-									</button>
-								</div>
+						<div class="dropdown-content-tabs dropdown-content-gradient">
+							<div class="dropdown-content-tab">
+								<div class="dropdown-content-tab-highlight" id="semesterListHighlight"></div>
+								<button
+									id="semesterListButton"
+									class="dropdown-content-tab-button selected"
+									on-tap="_selectSemesterList"
+									aria-pressed="true">
+									{{localize('filtering.semester')}}
+								</button>
+							</div>
+							<div class="dropdown-content-tab">
+								<div class="dropdown-content-tab-highlight invisible" id="departmentListHighlight"></div>
+								<button
+									id="departmentListButton"
+									class="dropdown-content-tab-button"
+									on-tap="_selectDepartmentList"
+									aria-pressed="false">
+									{{localize('filtering.department')}}
+								</button>
 							</div>
 						</div>
 						<div id="semesterList">
@@ -323,37 +384,24 @@
 				<span id="sortText" class="dropdown-text" on-tap="_toggleSortDropdown">{{localize('sorting.sortDatePinned')}}</span>
 				<d2l-dropdown id="sortDropdown">
 					<button
-						id="sortButton"
+						class="d2l-dropdown-opener dropdown-button"
 						on-mouseenter="_onFocusSortText"
 						on-focus="_onFocusSortText"
 						on-mouseout="_onBlurSortText"
-						on-blur="_onBlurSortText"
-						class="d2l-dropdown-opener dropdown-button">
+						on-blur="_onBlurSortText">
 						<iron-icon icon="d2l-tier1:chevron-down" aria-hidden="true"></iron-icon>
 					</button>
-					<d2l-dropdown-content no-padding min-width="350">
-						<div class="dropdown-content-header">
-							<span class="dropdown-content-header-text">{{localize('sorting.sortBy')}}</span>
-						</div>
-						<div class="dropdown-content-gradient">
-							<button class="dropdown-content-item" value="courseCode" on-tap="_updateSortBy" tabindex="-1">
-								<iron-icon icon="d2l-tier1:check" aria-hidden="true"></iron-icon>
-								{{localize('sorting.courseCode')}}
-							</button>
-							<button class="dropdown-content-item" value="courseName" on-tap="_updateSortBy" tabindex="-1">
-								<iron-icon icon="d2l-tier1:check" aria-hidden="true"></iron-icon>
-								{{localize('sorting.courseName')}}
-							</button>
-							<button class="dropdown-content-item selected" value="pinDate" on-tap="_updateSortBy" tabindex="-1">
-								<iron-icon icon="d2l-tier1:check" aria-hidden="true"></iron-icon>
-								{{localize('sorting.datePinned')}}
-							</button>
-							<button class="dropdown-content-item" value="lastAccessed" on-tap="_updateSortBy" tabindex="-1">
-								<iron-icon icon="d2l-tier1:check" aria-hidden="true"></iron-icon>
-								{{localize('sorting.lastAccessed')}}
-							</button>
-						</div>
-					</d2l-dropdown-content>
+					<d2l-dropdown-menu no-padding min-width="350">
+						<d2l-menu>
+							<div class="dropdown-content-header">
+								<span class="dropdown-content-header-text">{{localize('sorting.sortBy')}}</span>
+							</div>
+							<d2l-menu-item-selectable class="dropdown-content-gradient" value="courseCode" text="{{localize('sorting.courseCode')}}"></d2l-menu-item-selectable>
+							<d2l-menu-item-selectable value="courseName" text="{{localize('sorting.courseName')}}"></d2l-menu-item-selectable>
+							<d2l-menu-item-selectable value="pinDate" text="{{localize('sorting.datePinned')}}" selected></d2l-menu-item-selectable>
+							<d2l-menu-item-selectable value="lastAccessed" text="{{localize('sorting.lastAccessed')}}"></d2l-menu-item-selectable>
+						</d2l-menu>
+					</d2l-dropdown-menu>
 				</d2l-dropdown>
 			</div>
 		</div>
@@ -475,6 +523,9 @@
 				Polymer.D2L.MyCourses.LocalizeBehavior,
 				Polymer.D2L.MyCourses.CourseManagementBehavior
 			],
+			listeners: {
+				'menu-item-selected': '_updateSortBy'
+			},
 			ready: function() {
 				this.usePendingLists = true;
 
@@ -673,16 +724,14 @@
 					: this.localize('filtering.department');
 			},
 			_updateSortBy: function(e) {
-				this._sortField = e.target.value;
+				this.set('_sortField', e.detail);
 
-				var buttons = Polymer.dom(this.root).querySelectorAll('#sortDropdown .dropdown-content-item');
-				buttons.forEach(function(button) {
-					this.toggleClass('selected', button.value === e.target.value, button);
+				var menuItems = Polymer.dom(this.root).querySelectorAll('d2l-menu-item-selectable');
+				menuItems.forEach(function(item) {
+					item.value === this._sortField ? item.setAttribute('selected', true) : item.removeAttribute('selected');
 				}.bind(this));
 
-				var sortText = this.localize(this._sortTextOptions[this._sortField] || '');
-
-				this.$.sortText.textContent = sortText;
+				this.$.sortText.textContent = this.localize(this._sortTextOptions[this._sortField] || '');
 			}
 		});
 	</script>

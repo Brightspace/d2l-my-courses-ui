@@ -34,6 +34,7 @@
     "d2l-icons": "^2.4.0",
     "d2l-link": "^3.0.0",
     "d2l-loading-spinner": "^4.0.0",
+    "d2l-menu": "^0.0.5",
     "d2l-offscreen": "^2.1.0",
     "d2l-polymer-behaviors": "<1.0.0",
     "d2l-search-widget": "git://github.com/Brightspace/d2l-search-widget-ui.git#0.0.9",

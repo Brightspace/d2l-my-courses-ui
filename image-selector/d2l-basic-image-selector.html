@@ -83,10 +83,7 @@
 			},
 			properties: {
 				imageCatalogLocation: String,
-				organization: {
-					type: Object,
-					observer: '_updateOrganization'
-				},
+				organization: Object,
 				_searchString: String,
 				_images: Array,
 				_searchAction: String,
@@ -96,6 +93,10 @@
 				_showGrid: Boolean,
 			},
 			behaviors: [ window.D2L.MyCourses.LocalizeBehavior ],
+			listeners: {
+				'd2l-simple-overlay-opening': '_initialize',
+				'd2l-simple-overlay-closed': '_clear'
+			},
 			_sirenParser: document.createElement('d2l-siren-parser'),
 			_searchImages: [],
 			_defaultImages: [],
@@ -126,14 +127,14 @@
 
 				this._updateImages();
 			},
-			_updateOrganization: function(organization) {
+			_initialize: function() {
 				this._searchAction = JSON.stringify(this._getSearchAction());
 				this._showGrid = true;
 				this.$$('d2l-search-widget').clear();
 
 				// TODO: Add 'department' to the organization HM entity and use that information here
-				if (organization && (organization.properties || {}).name) {
-					this._searchString = this._getSearchStringValue(organization.properties.name, true);
+				if (this.organization && (this.organization.properties || {}).name) {
+					this._searchString = this._getSearchStringValue(this.organization.properties.name, true);
 				} else {
 					// This is better than 'default' because we get random defaults rather than starting at 0
 					this._searchString = this._getSearchStringValue('THIS_WILL_RETURN_NOTHING', true);
@@ -143,6 +144,10 @@
 					this.$.imagesRequest.generateRequest();
 				}
 			},
+			_clear: function() {
+				this._searchString = '';
+				this._images = [];
+			}
 			_getSearchAction: function() {
 				return {
 					name: 'search-catalog-image',

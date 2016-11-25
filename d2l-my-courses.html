@@ -210,6 +210,9 @@
 
 				this.toggleClass('d2l-my-courses-hidden', true, this.$.courseTiles);
 				this.toggleClass('d2l-my-courses-hidden', true, this.$.courseList);
+
+				window.D2L.Subscribe.subscribe('d2l:course-pinned', this._handleExternalPin.bind(this));
+				window.D2L.Subscribe.subscribe('d2l:course-unpinned', this._handleExternalUnpin.bind(this));
 			},
 			attached: function() {
 				this.$.enrollmentsRootRequest.generateRequest();
@@ -252,8 +255,11 @@
 					var newUnpinnedEnrollments = [];
 
 					enrollmentEntities.forEach(function(enrollment) {
+						var enrollmentId = this.getEntityIdentifier(enrollment);
+						var courseId = /organizations\/([0-9]+)/
+							.exec(enrollmentId)[1];
+
 						if (enrollment.hasClass('pinned')) {
-							var enrollmentId = this.getEntityIdentifier(enrollment);
 							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
 								newPinnedEnrollments.push(enrollment);
 								this._pinnedCoursesMap[enrollmentId] = true;
@@ -261,6 +267,8 @@
 						} else {
 							newUnpinnedEnrollments.push(enrollment);
 						}
+
+						this._enrollmentIdMap[courseId] = enrollmentId;
 					}, this);
 
 					this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
@@ -350,7 +358,18 @@
 			_clearImageScrollThreshold: function() {
 				this.$['image-selector-threshold'].clearTriggers();
 			},
-			_updateEnrollmentAlerts: function(hasEnrollments, hasPinnedEnrollments) {
+			_handleExternalPin: function(message) {
+				this._pinEnrollment(message);
+			},
+			_handleExternalUnpin: function(message) {
+				this._unpinEnrollment(message);
+						this._addAlert('call-to-action', 'noPinnedCourses', this.localize('noPinnedCoursesMessage'));
+					}
+				} else {
+					this._addAlert('call-to-action', 'noCourses', this.localize('noCoursesMessage'));
+				}
+			},
+			updateEnrollmentAlerts: function(hasEnrollments, hasPinnedEnrollments) {
 				this._clearAlerts();
 
 				if (hasEnrollments) {
@@ -364,6 +383,7 @@
 			_onSimpleOverlayClosed: function() {
 				this._removeAlert('setCourseImageFailure');
 			}
+		});
 		});
 	</script>
 </dom-module>

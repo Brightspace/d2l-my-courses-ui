@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../d2l-siren-parser/d2l-siren-parser.html">
+<link rel="import" href="../d2l-polymer-behaviors/d2l-subscribe.html">
 <link rel="import" href="d2l-utility-behavior.html">
 
 <script>
@@ -70,6 +71,7 @@
 					value: false
 				}
 			},
+			_enrollmentIdMap: {},
 			listeners: {
 				'tile-remove-complete': '_onTileRemoveComplete',
 				'enrollment-pin-complete': '_onEnrollmentPinComplete',
@@ -96,6 +98,16 @@
 				// Remove enrollment from unpinned list, add to pinned
 				var enrollmentId = this.getEntityIdentifier(enrollment);
 
+				this._moveEnrollmentIdToPinnedList(enrollmentId);
+			},
+			_moveEnrollmentToUnpinnedList: function(enrollment) {
+				// Remove enrollment from pinned list, add to unpinned
+				var enrollmentId = this.getEntityIdentifier(enrollment);
+
+				this._moveEnrollmentIdToUnpinnedList(enrollmentId);
+			},
+			_moveEnrollmentIdToPinnedList: function(enrollmentId) 
+			{
 				for (var index = 0; index < this.unpinnedEnrollments.length; index++) {
 					var pinnedEnrollmentId = this.getEntityIdentifier(this.unpinnedEnrollments[index]);
 					if (pinnedEnrollmentId === enrollmentId) {
@@ -115,10 +127,7 @@
 					}
 				}
 			},
-			_moveEnrollmentToUnpinnedList: function(enrollment) {
-				// Remove enrollment from pinned list, add to unpinned
-				var enrollmentId = this.getEntityIdentifier(enrollment);
-
+			_moveEnrollmentIdToUnpinnedList: function(enrollmentId) {
 				for (var index = 0; index < this.pinnedEnrollments.length; index++) {
 					var unpinnedEnrollmentId = this.getEntityIdentifier(this.pinnedEnrollments[index]);
 					if (unpinnedEnrollmentId === enrollmentId) {
@@ -163,6 +172,16 @@
 					entity.actions[0].fields[0].value = true;
 					entity._actionsByName['pin-course'] = entity.actions[0];
 				}
+			},
+			_pinEnrollment: function(message) {
+				console.log('d2l-my-courses received notification that pin state for ' + message + ' was pinned');
+				console.log('I think the URL for this ID is ' + this._enrollmentIdMap[message]);
+				this._moveEnrollmentIdToPinnedList(this._enrollmentIdMap[message]);
+			},
+			_unpinEnrollment: function(message) {
+				console.log('d2l-my-courses received notification that pin state for ' + message + ' was unpinned');
+				console.log('I think the URL for this ID is ' + this._enrollmentIdMap[message]);
+				this._moveEnrollmentIdToUnpinnedList(this._enrollmentIdMap[message]);
 			}
 		};
 

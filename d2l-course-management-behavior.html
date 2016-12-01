@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../d2l-siren-parser/d2l-siren-parser.html">
-<link rel="import" href="../d2l-polymer-behaviors/d2l-subscribe.html">
+<link rel="import" href="../d2l-polymer-behaviors/d2l-publish-subscribe.html">
 <link rel="import" href="d2l-utility-behavior.html">
 
 <script>
@@ -73,9 +73,7 @@
 			},
 			_enrollmentIdMap: {},
 			listeners: {
-				'tile-remove-complete': '_onTileRemoveComplete',
-				'enrollment-pin-complete': '_onEnrollmentPinComplete',
-				'enrollment-unpin-complete': '_onEnrollmentUnpinComplete'
+				'tile-remove-complete': '_onTileRemoveComplete'
 			},
 			observers: [
 				'_enrollmentsChanged(pinnedEnrollments.length, pinnedEnrollmentsQueue.length, unpinnedEnrollments.length, unpinnedEnrollmentsQueue.length)'
@@ -147,7 +145,7 @@
 					}
 				}
 			},
-			_onTileRemoveComplete: function(e) {
+			_onTileRemoveComplete: function(e) {							
 				if (e.detail.pinned) {
 					this._moveEnrollmentToPinnedList(e.detail.enrollment);
 				} else {
@@ -173,15 +171,11 @@
 					entity._actionsByName['pin-course'] = entity.actions[0];
 				}
 			},
-			_pinEnrollment: function(message) {
-				console.log('d2l-my-courses received notification that pin state for ' + message + ' was pinned');
-				console.log('I think the URL for this ID is ' + this._enrollmentIdMap[message]);
-				this._moveEnrollmentIdToPinnedList(this._enrollmentIdMap[message]);
+			_pinEnrollment: function(orgUnitId) {
+				this._moveEnrollmentIdToPinnedList(this._enrollmentIdMap[orgUnitId]);
 			},
-			_unpinEnrollment: function(message) {
-				console.log('d2l-my-courses received notification that pin state for ' + message + ' was unpinned');
-				console.log('I think the URL for this ID is ' + this._enrollmentIdMap[message]);
-				this._moveEnrollmentIdToUnpinnedList(this._enrollmentIdMap[message]);
+			_unpinEnrollment: function(orgUnitId) {
+				this._moveEnrollmentIdToUnpinnedList(this._enrollmentIdMap[orgUnitId]);
 			}
 		};
 

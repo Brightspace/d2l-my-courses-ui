@@ -103,8 +103,7 @@
 
 				this._moveEnrollmentIdToUnpinnedList(enrollmentId);
 			},
-			_moveEnrollmentIdToPinnedList: function(enrollmentId) 
-			{
+			_moveEnrollmentIdToPinnedList: function(enrollmentId) {
 				for (var index = 0; index < this.unpinnedEnrollments.length; index++) {
 					var pinnedEnrollmentId = this.getEntityIdentifier(this.unpinnedEnrollments[index]);
 					if (pinnedEnrollmentId === enrollmentId) {
@@ -144,7 +143,7 @@
 					}
 				}
 			},
-			_onTileRemoveComplete: function(e) {							
+			_onTileRemoveComplete: function(e) {
 				if (e.detail.pinned) {
 					this._moveEnrollmentToPinnedList(e.detail.enrollment);
 				} else {

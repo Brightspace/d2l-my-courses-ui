@@ -286,7 +286,7 @@
 				document.body.removeEventListener('click', this._handleClickBound, true);
 			},
 
-			_pageSize: 5,
+			_pageSize: 10,
 
 			// Retrieves previous searches from local storage to populate listbox
 			_initializePreviousSearches: function() {
@@ -481,7 +481,7 @@
 							self.push('_organizationRequests', ajax);
 						})(enrollmentEntities[i], i, enrollmentEntities.length, this, parser);
 					}
-					this.fire('d2l-filter-enrollments', enrollmentEntities);
+					this.fire('d2l-search-enrollment-response', response);
 
 				}
 			},

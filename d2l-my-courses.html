@@ -208,7 +208,7 @@
 				'set-course-image': '_setCourseImageEvent',
 				'clear-image-scroll-threshold': '_clearImageScrollThreshold',
 				'simple-overlay-closed': '_onSimpleOverlayClosed',
-				'd2l-filter-enrollments': '_newEnrollmentEntities'
+				'd2l-search-enrollment-response': '_updateEnrollmentEntities'
 			},
 			observers: [
 				'_updateEnrollmentAlerts(_hasEnrollments, _hasPinnedEnrollments)'
@@ -259,47 +259,45 @@
 					var parser = document.createElement('d2l-siren-parser');
 					var enrollments = parser.parse(response.detail.xhr.response);
 					var enrollmentEntities = enrollments.getSubEntitiesByClass('enrollment');
-					this._updateEnrollmentEntities(enrollmentEntities);
+					var newPinnedEnrollments = [];
+					var newUnpinnedEnrollments = [];
+					enrollmentEntities.forEach(function(enrollment) {
+						if (enrollment.hasClass('pinned')) {
+							var enrollmentId = this.getEntityIdentifier(enrollment);
+							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
+								newPinnedEnrollments.push(enrollment);
+								this._pinnedCoursesMap[enrollmentId] = true;
+							}
+						} else {
+							newUnpinnedEnrollments.push(enrollment);
+						}
+					}, this);
+
+					this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
+					this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
+					this.enrollments = enrollmentEntities;
+
+					this._hasPinnedEnrollments = this.pinnedEnrollments.length > 0;
+					this._hasEnrollments = this._hasPinnedEnrollments || this.unpinnedEnrollments.length > 0;
+
+					var colNum = this._calcNumColumns(this._getAvailableWidth(Polymer.dom(this.root).node.host), this.pinnedEnrollments.length);
+					this._tileSizes = (colNum === 2) ?
+						{ mobile: { maxwidth: 767, size: 50 }, tablet: { maxwidth: 1243, size: 33 }, desktop: { size: 20 } } :
+						{ mobile: { maxwidth: 767, size: 100 }, tablet: { maxwidth: 1243, size: 67 }, desktop: { size: 25 } };
+
+					this.fire('recalculate-columns');
+					this.toggleClass('hidden', true, this.$.lazyLoadSpinner);
+					this.$['all-courses-scroll-threshold'].clearTriggers();
+					this._showContent();
+					this._lastEnrollmentsSearchResponse = enrollments;
 				}
 			},
-			_newEnrollmentEntities: function(e,detail) {
+			_updateEnrollmentEntities: function(e,detail) {
 				this._pinnedCoursesMap = {};
 				this.splice('pinnedEnrollments',  0, this.pinnedEnrollments.length);
 				this.splice('unpinnedEnrollments', 0, this.unpinnedEnrollments.length);
-				this._updateEnrollmentEntities(detail);
-			},
-			_updateEnrollmentEntities: function(enrollmentEntities) {
-				var newPinnedEnrollments = [];
-				var newUnpinnedEnrollments = [];
+				this._onEnrollmentsSearchResponse(detail);
 
-				enrollmentEntities.forEach(function(enrollment) {
-					if (enrollment.hasClass('pinned')) {
-						var enrollmentId = this.getEntityIdentifier(enrollment);
-						if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
-							newPinnedEnrollments.push(enrollment);
-							this._pinnedCoursesMap[enrollmentId] = true;
-						}
-					} else {
-						newUnpinnedEnrollments.push(enrollment);
-					}
-				}, this);
-
-				this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
-				this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
-				this.enrollments = enrollmentEntities;
-
-				this._hasPinnedEnrollments = this.pinnedEnrollments.length > 0;
-				this._hasEnrollments = this._hasPinnedEnrollments || this.unpinnedEnrollments.length > 0;
-
-				var colNum = this._calcNumColumns(this._getAvailableWidth(Polymer.dom(this.root).node.host), this.pinnedEnrollments.length);
-				this._tileSizes = (colNum === 2) ?
-					{ mobile: { maxwidth: 767, size: 50 }, tablet: { maxwidth: 1243, size: 33 }, desktop: { size: 20 } } :
-					{ mobile: { maxwidth: 767, size: 100 }, tablet: { maxwidth: 1243, size: 67 }, desktop: { size: 25 } };
-
-				this.fire('recalculate-columns');
-				this.toggleClass('hidden', true, this.$.lazyLoadSpinner);
-				this.$['all-courses-scroll-threshold'].clearTriggers();
-				this._showContent();
 			},
 			_openChangeImageView: function(e) {
 				if (e.detail.organization) {

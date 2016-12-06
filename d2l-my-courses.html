@@ -264,8 +264,8 @@
 			},
 			_newEnrollmentEntities: function(e,detail) {
 				this._pinnedCoursesMap = {};
-				this.set('pinnedEnrollments',  []);
-				this.set('unpinnedEnrollments', []);
+				this.splice('pinnedEnrollments',  0, this.pinnedEnrollments.length);
+				this.splice('unpinnedEnrollments', 0, this.unpinnedEnrollments.length);
 				this._updateEnrollmentEntities(detail);
 			},
 			_updateEnrollmentEntities: function(enrollmentEntities) {
@@ -286,24 +286,7 @@
 
 				this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
 				this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
-
-				this.notifySplices('pinnedEnrollments', [{
-					index: this.pinnedEnrollments.length - newPinnedEnrollments.length,
-					removed: [],
-					addedCount: newPinnedEnrollments.length,
-					object: this.pinnedEnrollments,
-					type: 'splice'
-				}]);
-
-				this.notifySplices('unpinnedEnrollments', [{
-					index: this.unpinnedEnrollments.length - newUnpinnedEnrollments.length,
-					removed: [],
-					addedCount: newUnpinnedEnrollments.length,
-					object: this.unpinnedEnrollments,
-					type: 'splice'
-				}]);
-
-				this.set('enrollments', enrollmentEntities);
+				this.enrollments = enrollmentEntities;
 
 				this._hasPinnedEnrollments = this.pinnedEnrollments.length > 0;
 				this._hasEnrollments = this._hasPinnedEnrollments || this.unpinnedEnrollments.length > 0;

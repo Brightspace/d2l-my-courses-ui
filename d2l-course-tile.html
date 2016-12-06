@@ -118,7 +118,10 @@ in that organization - student, teacher, TA, etc.
 				* tile will automatically fetch information about the organization the
 				* enrollment is in.
 				*/
-				enrollment: Object,
+				enrollment: {
+					type: Object,
+					observer: '_enrollmentChanged'
+				},
 				enrollmentId: Number,
 				// Specifies whether the (desktop) hover menu is enabled on the course tile
 				hoverEnabled: {
@@ -258,6 +261,12 @@ in that organization - student, teacher, TA, etc.
 				}, { bubbles: true });
 
 				this._pendingPinAction = this.pinned;
+			},
+			_enrollmentChanged: function() {
+				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
+				this._organizationUrl = organizationLink.href + '?embedDepth=1';
+
+				this.$.organizationRequest.generateRequest();
 			},
 			// Sets classes for this tile having the touch menu on it when it is opened/closed
 			setTouchMenuOpen: function(isOpen) {

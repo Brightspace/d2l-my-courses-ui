@@ -307,10 +307,11 @@
 			// Calls the search-my-enrollments action, used to populate live search results in the listbox
 			_search: function() {
 				if (this._searchString) {
+
 					var queryParams = {
 						search: this._searchString,
 						page: 1,
-						pageSize: this._pageSi,
+						pageSize: this._pageSize,
 						parentOrganizations: this.parentOrganizations.join(','),
 						sortField: this.sortField,
 						// Need to reverse the order for sorting by name
@@ -464,8 +465,8 @@
 							if (e.detail.item.dataset.text) {
 								this._addSearchToHistory(e.detail.item.dataset.text);
 							}
-
-							console.log( e.detail.item.dataset);
+							this._searchString = e.detail.item.dataset.text;
+							this._search();
 						}
 						break;
 				}

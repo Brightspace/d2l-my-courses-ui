@@ -305,14 +305,12 @@
 			},
 
 			// Calls the search-my-enrollments action, used to populate live search results in the listbox
-			_liveSearch: function() {
+			_search: function() {
 				if (this._searchString) {
-					this.cancelDebouncer('liveSearchJob');
-
 					var queryParams = {
 						search: this._searchString,
 						page: 1,
-						pageSize: this._pageSize,
+						pageSize: this._pageSi,
 						parentOrganizations: this.parentOrganizations.join(','),
 						sortField: this.sortField,
 						// Need to reverse the order for sorting by name
@@ -344,11 +342,10 @@
 			},
 
 			_onSearchButtonClick: function() {
-				this._advancedSearch(this._searchString);
+				this._search();
 			},
 
 			_clearSearchResults: function() {
-				this.cancelDebouncer('liveSearchJob');
 				this._searchString = '';
 				this.set('_searchResults', []);
 
@@ -361,11 +358,7 @@
 
 			_onSearchStringChanged: function(newString) {
 				if (this._listboxes) {
-					if (newString.length > 0) {
-						if (!this.isDebouncerActive('liveSearchJob')) {
-							this.debounce('liveSearchJob', this._liveSearch.bind(this), 250);
-						}
-					} else {
+					if (newString.length === 0) {
 						this._clearSearchResults();
 					}
 				}
@@ -374,9 +367,8 @@
 			_onSearchInputKeyPressed: function(e) {
 				switch (e.keyCode) {
 					case this._keyCodes.ENTER:
-						this._advancedSearch(this._searchString);
+						this._search();
 						break;
-
 					case this._keyCodes.DOWN:
 						if (this._currentListbox.hasItems()) {
 							this._currentListbox.focus();
@@ -444,46 +436,15 @@
 					var parser = document.createElement('d2l-siren-parser');
 					var searchResponse = parser.parse(response.detail.xhr.response);
 					var enrollmentEntities = searchResponse.entities;
-
 					this.$$('iron-pages').select(enrollmentEntities.length > 0 ? 'search-results-page' : 'no-results-page');
 					if (!this.$.dropdown.opened) {
 						this.$.dropdown.open();
 					}
 
 					this._searchResults = [];
-					for (var i = 0; i < enrollmentEntities.length; i++) {
-						// Fetch each search result's organization's information
-						(function(enrollment, index, numEntities, self, parser) {
-							var ajax = document.createElement('d2l-ajax');
-							ajax.url = enrollment.getLinkByRel(/\/organization$/).href;
-							ajax.method = 'GET';
-							ajax.onResponse = function(response) {
-								if (response.detail.status === 200 || response.detail.status === 304) {
-									var organization = parser.parse(response.detail.response);
 
-									// Polymer's splice method causes empty results to show up for an
-									// unknown reason, so use a normal Array.prototype.splice...
-									self._searchResults.splice(index, 0, {
-										name: organization.properties.name,
-										href: organization.getLinkByRel(/\/organization-homepage$/).href
-									});
-									// ...then, if this is the last result to get spliced in, manually
-									// call notifySplices with the changes.
-									if (self._searchResults.length >= numEntities) {
-										self.notifySplices('_searchResults', [{
-											index: 0,
-											removed: [],
-											addedCount: numEntities,
-											object: self._searchResults,
-											type: 'splice'
-										}]);
-									}
-								}
-							};
-							ajax.generateRequest();
-							self.push('_organizationRequests', ajax);
-						})(enrollmentEntities[i], i, enrollmentEntities.length, this, parser);
-					}
+					this.fire('d2l-filter-enrollments', enrollmentEntities);
+
 				}
 			},
 
@@ -504,7 +465,7 @@
 								this._addSearchToHistory(e.detail.item.dataset.text);
 							}
 
-							window.location.href = e.detail.item.dataset.href;
+							console.log( e.detail.item.dataset);
 						}
 						break;
 				}

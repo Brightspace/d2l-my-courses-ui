@@ -4,7 +4,6 @@
 <link rel="import" href="../d2l-siren-parser/d2l-siren-parser.html">
 <link rel="import" href="../d2l-link/d2l-link.html">
 <link rel="import" href="../d2l-loading-spinner/d2l-loading-spinner.html">
-<link rel="import" href="../d2l-polymer-behaviors/d2l-publish-subscribe.html">
 <link rel="import" href="d2l-alert.html">
 <link rel="import" href="d2l-alert-behavior.html">
 <link rel="import" href="d2l-simple-overlay.html">
@@ -218,13 +217,13 @@
 			attached: function() {
 				this.$.enrollmentsRootRequest.generateRequest();
 
-				D2L.PublishSubscribe.subscribe('d2l.enrollments.pinned', this._onEnrollmentPinnedMessage);
+				document.body.addEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-overlay'].scrollRegion;
 			},
 			detached: function() {
-				D2L.PublishSubscribe.unsubscribe('d2l.enrollments.pinned', this._onEnrollmentPinnedMessage);
+				document.body.removeEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 			},
 			getCourseTileItemCount: function() {
 				return this.pinnedEnrollments.length;
@@ -366,27 +365,26 @@
 			},
 			_onEnrollmentPinAction: function(e) {
 				var isPinned = e.type === 'enrollment-pinned';
+				var orgUnitId = /organizations\/([0-9]+)/
+					.exec(this.getEntityIdentifier(e.detail.enrollment))[1];
 
-				D2L.PublishSubscribe.publish(
-					'd2l.enrollments.pinned', {
-						sender: this,
-						eventName: 'course-' + (isPinned ? 'pinned' : 'unpinned'),
-						detail: {
-							orgUnitId: e.detail.organization.properties.id
-						}
+				this.fire(
+					'd2l-course-pinned-change', {
+						orgUnitId: orgUnitId,
+						isPinned: isPinned
 					}
 				);
 			},
-			_onEnrollmentPinnedMessage: function(message) {
-				if (message.sender !== this) {
-					if (message.eventName === 'course-pinned') {
-						this._pinEnrollment(message.detail.orgUnitId);
-					} else if (message.eventName === 'course-unpinned') {
-						this._unpinEnrollment(message.detail.orgUnitId);
+			_onEnrollmentPinnedMessage: function(e) {
+				if (e.target !== this) {
+					if (e.detail.isPinned) {
+						this._pinEnrollment(e.detail.orgUnitId);
+					} else {
+						this._unpinEnrollment(e.detail.orgUnitId);
 					}
 				}
 			},
-			updateEnrollmentAlerts: function(hasEnrollments, hasPinnedEnrollments) {
+			_updateEnrollmentAlerts: function(hasEnrollments, hasPinnedEnrollments) {
 				this._clearAlerts();
 
 				if (hasEnrollments) {

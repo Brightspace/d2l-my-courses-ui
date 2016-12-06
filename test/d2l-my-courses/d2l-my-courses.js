@@ -1,4 +1,4 @@
-/* global describe, it, beforeEach, afterEach, fixture, expect, sinon */
+/* global describe, it, before, beforeEach, afterEach, fixture, expect, sinon */
 
 'use strict';
 
@@ -61,6 +61,26 @@ describe('d2l-my-courses', function() {
 				}, {
 					rel: ['self'],
 					href: '/enrollments/users/169/organizations/1'
+				}]
+			}, {
+				class: ['unpinned', 'enrollment'],
+				rel: ['https://api.brightspace.com/rels/user-enrollment'],
+				actions: [{
+					name: 'pin-course',
+					method: 'PUT',
+					href: '/enrollments/users/169/organizations/2',
+					fields: [{
+						name: 'pinned',
+						type: 'hidden',
+						value: true
+					}]
+				}],
+				links: [{
+					rel: ['https://api.brightspace.com/rels/organization'],
+					href: '/organizations/2'
+				}, {
+					rel: ['self'],
+					href: '/enrollments/users/169/organizations/2'
 				}]
 			}],
 			links: [{
@@ -361,6 +381,15 @@ describe('d2l-my-courses', function() {
 	});
 
 	describe('With enrollments', function() {
+		var pinnedEnrollmentEntity,
+			unpinnedEnrollmentEntity;
+
+		before(function() {
+			var parser = document.createElement('d2l-siren-parser');
+			pinnedEnrollmentEntity = parser.parse(enrollmentsSearchResponse.entities[0]);
+			unpinnedEnrollmentEntity = parser.parse(noPinnedEnrollmentsResponse.entities[0]);
+		});
+
 		beforeEach(function(done) {
 			server.respondWith(
 				'GET',
@@ -414,6 +443,106 @@ describe('d2l-my-courses', function() {
 			setCourseImageEvent = { detail: { status: 'set'} };
 			widget._setCourseImageEvent(setCourseImageEvent);
 			expect(widget._alerts).not.to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'Sorry, we\'re unable to change your image right now. Please try again later.' });
+		});
+
+		it('should bubble the correct d2l-course-pinned-change event when an enrollment is pinned', function(done) {
+			widget.fire = sinon.stub();
+
+			var enrollmentPinEvent = new CustomEvent(
+				'enrollment-pinned', {
+					detail: {
+						enrollment: pinnedEnrollmentEntity,
+						isPinned: true
+					}
+				}
+			);
+
+			widget.dispatchEvent(enrollmentPinEvent);
+
+			setTimeout(function() {
+				expect(widget.fire.calledWith('d2l-course-pinned-change',
+					sinon.match({
+						detail: {
+							orgUnitId: 1,
+							isPinned: true
+						}
+					})
+				));
+
+				done();
+			}, 0);
+		});
+
+		it('should bubble the correct d2l-course-pinned-change event when an enrollment is unpinned', function(done) {
+			widget.fire = sinon.stub();
+
+			var enrollmentUnpinEvent = new CustomEvent(
+				'enrollment-unpinned', {
+					detail: {
+						enrollment: unpinnedEnrollmentEntity,
+						isPinned: true
+					}
+				}
+			);
+
+			widget.dispatchEvent(enrollmentUnpinEvent);
+
+			setTimeout(function() {
+				expect(widget.fire.calledWith('d2l-course-pinned-change',
+					sinon.match({
+						detail: {
+							orgUnitId: 1,
+							isPinned: false
+						}
+					})
+				));
+
+				done();
+			}, 0);
+		});
+
+		it('should move the correct pinned enrollment to the unpinned list when receiving an external unpin event', function(done) {
+			var coursePinnedChangeEvent = new CustomEvent(
+				'd2l-course-pinned-change', {
+					detail: {
+						orgUnitId: 1,
+						isPinned: false
+					}
+				}
+			);
+
+			expect(widget.pinnedEnrollments.length).to.equal(1);
+			expect(widget.unpinnedEnrollments.length).to.equal(1);
+
+			document.body.dispatchEvent(coursePinnedChangeEvent);
+
+			setTimeout(function() {
+				expect(widget.pinnedEnrollments.length).to.equal(0);
+				expect(widget.unpinnedEnrollments.length).to.equal(2);
+				done();
+			}, 10);
+		});
+
+		it('should move the correct unpinned enrollment to the pinned list when receiving an external unpin event', function(done) {
+			var coursePinnedChangeEvent = new CustomEvent(
+				'd2l-course-pinned-change', {
+					detail: {
+						orgUnitId: 2,
+						isPinned: true
+					}
+				}
+			);
+
+			expect(widget.pinnedEnrollments.length).to.equal(1);
+			expect(widget.unpinnedEnrollments.length).to.equal(1);
+
+			document.body.dispatchEvent(coursePinnedChangeEvent);
+
+			setTimeout(function() {
+				expect(widget.pinnedEnrollments.length).to.equal(2);
+				expect(widget.unpinnedEnrollments.length).to.equal(0);
+				done();
+			}, 0);
 		});
 	});
 

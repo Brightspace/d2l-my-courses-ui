@@ -197,10 +197,10 @@ describe('<d2l-course-tile>', function() {
 					referrerToken: 'foo'
 				})]);
 
-				widget.$.organizationRequest.addEventListener('iron-ajax-response', function() {
-					// Ensure organization has been received before doing tests
-					done();
-				});
+			widget.$.organizationRequest.addEventListener('iron-ajax-response', function() {
+				// Ensure organization has been received before doing tests
+				done();
+			});
 
 			widget.enrollment = enrollmentEntity;
 			widget.ready();

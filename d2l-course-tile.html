@@ -261,7 +261,7 @@ in that organization - student, teacher, TA, etc.
 			_enrollmentChanged: function() {
 				if (!this.delayLoad) {
 					var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
-					if (this._organizationUrl != organizationLink.href + '?embedDepth=1' ) {
+					if (this._organizationUrl !== organizationLink.href + '?embedDepth=1' ) {
 						this._organizationUrl = organizationLink.href + '?embedDepth=1';
 						this.$.organizationRequest.generateRequest();
 					}

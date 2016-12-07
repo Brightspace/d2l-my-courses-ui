@@ -286,7 +286,7 @@
 				document.body.removeEventListener('click', this._handleClickBound, true);
 			},
 
-			_pageSize: 10,
+			_pageSize: 5,
 
 			// Retrieves previous searches from local storage to populate listbox
 			_initializePreviousSearches: function() {
@@ -363,7 +363,7 @@
 				if (this._listboxes) {
 					if (newString.length > 0) {
 						if (!this.isDebouncerActive('liveSearchJob')) {
-							this.debounce('liveSearchJob', this._search.bind(this), 500);
+							this.debounce('liveSearchJob', this._search.bind(this), 750);
 						}
 					} else {
 						this._clearSearchResults();

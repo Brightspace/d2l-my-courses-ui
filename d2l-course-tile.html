@@ -261,8 +261,10 @@ in that organization - student, teacher, TA, etc.
 			_enrollmentChanged: function() {
 				if (!this.delayLoad) {
 					var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
-					this._organizationUrl = organizationLink.href + '?embedDepth=1';
-					this.$.organizationRequest.generateRequest();
+					if (this._organizationUrl != organizationLink.href + '?embedDepth=1' ) {
+						this._organizationUrl = organizationLink.href + '?embedDepth=1';
+						this.$.organizationRequest.generateRequest();
+					}
 				}
 			},
 			// Sets classes for this tile having the touch menu on it when it is opened/closed

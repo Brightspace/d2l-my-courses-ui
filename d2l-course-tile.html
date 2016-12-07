@@ -207,10 +207,6 @@ in that organization - student, teacher, TA, etc.
 				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
 				this._organizationUrl = organizationLink.href + '?embedDepth=1';
 
-				if (!this.delayLoad) {
-					this.$.organizationRequest.generateRequest();
-				}
-
 				this._onFocus = this._onFocus.bind(this);
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);
@@ -263,10 +259,11 @@ in that organization - student, teacher, TA, etc.
 				this._pendingPinAction = this.pinned;
 			},
 			_enrollmentChanged: function() {
-				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
-				this._organizationUrl = organizationLink.href + '?embedDepth=1';
-
-				this.$.organizationRequest.generateRequest();
+				if (!this.delayLoad) {
+					var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
+					this._organizationUrl = organizationLink.href + '?embedDepth=1';
+					this.$.organizationRequest.generateRequest();
+				}
 			},
 			// Sets classes for this tile having the touch menu on it when it is opened/closed
 			setTouchMenuOpen: function(isOpen) {

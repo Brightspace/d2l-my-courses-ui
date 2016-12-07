@@ -468,7 +468,6 @@ describe('d2l-my-courses', function() {
 						}
 					})
 				));
-
 				done();
 			}, 0);
 		});
@@ -496,7 +495,6 @@ describe('d2l-my-courses', function() {
 						}
 					})
 				));
-
 				done();
 			}, 0);
 		});
@@ -523,7 +521,7 @@ describe('d2l-my-courses', function() {
 			}, 10);
 		});
 
-		it('should move the correct unpinned enrollment to the pinned list when receiving an external unpin event', function(done) {
+		it('should move the correct unpinned enrollment to the pinned list when receiving an external pin event', function(done) {
 			var coursePinnedChangeEvent = new CustomEvent(
 				'd2l-course-pinned-change', {
 					detail: {

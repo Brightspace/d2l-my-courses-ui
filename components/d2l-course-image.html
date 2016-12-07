@@ -1,4 +1,5 @@
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../d2l-utility-behavior.html">
 
 <dom-module id="d2l-course-image">
 	<template>
@@ -8,7 +9,7 @@
 				align-items: center;
 			}
 
-			.hidden {
+			.d2l-course-image-hidden {
 				opacity: 0;
 			}
 
@@ -91,7 +92,7 @@
 				if (same && shown) {
 					setTimeout(this._showImage.bind(this), 50);
 				}
-				this._imageClass = 'hidden';
+				this._imageClass = 'd2l-course-image-hidden';
 			},
 			_defaultSizes: {
 				mobile: { maxwidth: 767, size: 100 },

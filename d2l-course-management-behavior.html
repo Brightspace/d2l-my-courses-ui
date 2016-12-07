@@ -76,10 +76,21 @@
 				'enrollment-unpin-complete': '_onEnrollmentUnpinComplete'
 			},
 			observers: [
-				'_onPinnedEnrollmentsChanged(pinnedEnrollments.*)'
+				'_enrollmentsChanged(pinnedEnrollments.length, pinnedEnrollmentsQueue.length, unpinnedEnrollments.length, unpinnedEnrollmentsQueue.length)'
 			],
 			created: function() {
 				this._tilesInPinStateTransition = [];
+			},
+			_enrollmentsChanged: function() {
+				this.set('_hasPinnedEnrollments',
+					this.pinnedEnrollments.length > 0 ||
+					this.pinnedEnrollmentsQueue.length > 0);
+				// Need to factor in queues here - if user has 1 enrollment, it will briefly
+				// disappear from both enrollments arrays when pinned/unpinned
+				this.set('_hasEnrollments',
+					this._hasPinnedEnrollments ||
+					this.unpinnedEnrollments.length > 0 ||
+					this.unpinnedEnrollmentsQueue.length > 0);
 			},
 			_moveEnrollmentToPinnedList: function(enrollment) {
 				// Remove enrollment from unpinned list, add to pinned
@@ -126,9 +137,6 @@
 						break;
 					}
 				}
-			},
-			_onPinnedEnrollmentsChanged: function(newArray) {
-				this._hasPinnedEnrollments = !newArray.base || newArray.base.length > 0;
 			},
 			_onTileRemoveComplete: function(e) {
 				if (e.detail.pinned) {

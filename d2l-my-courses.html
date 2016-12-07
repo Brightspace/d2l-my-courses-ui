@@ -15,9 +15,7 @@
 
 <dom-module id="d2l-my-courses">
 	<template>
-		<style include="d2l-colors"></style>
-		<style include="d2l-typography-shared-styles"></style>
-		<style>
+		<style include="d2l-typography-shared-styles">
 			:host {
 				display: block;
 			}
@@ -47,7 +45,7 @@
 			.all-courses-button:hover, .all-courses-button:focus {
 				text-decoration: underline;
 			}
-			.hidden {
+			.d2l-my-courses-hidden {
 				display: none;
 			}
 			d2l-alert {
@@ -82,11 +80,11 @@
 
 		<d2l-loading-spinner
 			id="initialLoadingSpinner"
-			class="hidden"
+			class="d2l-my-courses-hidden"
 			size="100">
 		</d2l-loading-spinner>
 
-		<div class="my-courses-content hidden">
+		<div class="my-courses-content d2l-my-courses-hidden">
 			<template is="dom-repeat" items="{{_alerts}}">
 				<d2l-alert type="[[item.alertType]]">
 					{{item.alertMessage}}
@@ -131,7 +129,7 @@
 			</d2l-all-courses>
 			<d2l-loading-spinner
 				id="lazyLoadSpinner"
-				class="hidden"
+				class="d2l-my-courses-hidden"
 				size="100">
 			</d2l-loading-spinner>
 		</d2l-simple-overlay>
@@ -217,8 +215,8 @@
 				this._pinnedCoursesMap = {};
 				this._updateEnrollmentAlerts(this._hasEnrollments, this._hasPinnedEnrollments);
 
-				this.toggleClass('hidden', true, this.$.courseTiles);
-				this.toggleClass('hidden', true, this.$.courseList);
+				this.toggleClass('d2l-my-courses-hidden', true, this.$.courseTiles);
+				this.toggleClass('d2l-my-courses-hidden', true, this.$.courseList);
 			},
 			attached: function() {
 				if (!this.delayLoad) {
@@ -321,8 +319,8 @@
 				document.location.reload(true);
 			},
 			_showContent: function() {
-				this.toggleClass('hidden', true, this.$.initialLoadingSpinner);
-				this.toggleClass('hidden', false, this.$$('.my-courses-content'));
+				this.toggleClass('d2l-my-courses-hidden', true, this.$.initialLoadingSpinner);
+				this.toggleClass('d2l-my-courses-hidden', false, this.$$('.my-courses-content'));
 			},
 			_loadNextEnrollmentsPage: function() {
 				if (this.$['all-courses'].opened && this._lastEnrollmentsSearchResponse) {
@@ -332,7 +330,7 @@
 					if (lastResponseEntity.hasLink('next')) {
 						this._enrollmentsSearchUrl = lastResponseEntity.getLinkByRel('next').href;
 						this.$.enrollmentsSearchRequest.generateRequest();
-						this.toggleClass('hidden', false, this.$.lazyLoadSpinner);
+						this.toggleClass('d2l-my-courses-hidden', false, this.$.lazyLoadSpinner);
 						this.$.lazyLoadSpinner.scrollIntoView();
 					}
 				}

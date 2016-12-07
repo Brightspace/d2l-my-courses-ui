@@ -11,7 +11,7 @@
 <dom-module id="d2l-image-selector-tile">
 	<template>
 		<style include="d2l-image-selector-tile-styles">
-			.hidden {
+			.d2l-image-selector-tile-hidden {
 				opacity: 0;
 			}
 
@@ -115,7 +115,7 @@
 				return '';
 			},
 			_onSetImageResponse: function(response) {
-				var status = response.detail.status === 200 ? 'success': 'failure';
+				var status = response.detail.status === 200 ? 'success' : 'failure';
 				this._fireCourseImageMessage(status);
 			},
 			_onSetImageError: function() {
@@ -137,9 +137,9 @@
 			},
 			_updateImageSource: function() {
 				var courseImage = Polymer.dom(this.root).querySelector('img');
-				this._imageClass = 'hidden';
+				this._imageClass = 'd2l-image-selector-tile-hidden';
 				Polymer.dom(courseImage).setAttribute('srcset', this.getImageSrcset(this.image, 'narrow'));
-				Polymer.dom(courseImage).setAttribute('sizes', "(max-width: 767px) 100vw, (max-width: 991px) and (min-width: 768px) 50vw, 33vw");
+				Polymer.dom(courseImage).setAttribute('sizes', '(max-width: 767px) 100vw, (max-width: 991px) and (min-width: 768px) 50vw, 33vw');
 			},
 			_doTelemetrySetImageRequest: function() {
 				this._telemetryEvent = JSON.stringify({

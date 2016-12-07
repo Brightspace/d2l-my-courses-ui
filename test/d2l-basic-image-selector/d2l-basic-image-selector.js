@@ -99,12 +99,12 @@ describe('<d2l-course-tile>', function() {
 			widget._showGrid = false;
 			widget._nextSearchResultPage = 'http://test.com';
 			widget.loadMore();
-			expect(widget._loadingSpinnerClass).to.equal('hidden');
+			expect(widget._loadingSpinnerClass).to.equal('d2l-basic-image-selector-hidden');
 		});
 
 		it('hides the spinner when no response is generated', function() {
 			widget.loadMore();
-			expect(widget._loadingSpinnerClass).to.equal('hidden');
+			expect(widget._loadingSpinnerClass).to.equal('d2l-basic-image-selector-hidden');
 			expect(widget.$.moreSearchImagesRequest.generateRequest.called).to.equal(false);
 			expect(widget.$.moreDefaultImagesRequest.generateRequest.called).to.equal(false);
 		});
@@ -185,13 +185,13 @@ describe('<d2l-course-tile>', function() {
 					detail: { status: 500 }
 				};
 				widget._onImagesRequestResponse(badResponse, false, false);
-				expect(widget._loadingSpinnerClass).to.equal('hidden');
+				expect(widget._loadingSpinnerClass).to.equal('d2l-basic-image-selector-hidden');
 			});
 		});
 
 		it('hides the loading spinner', function() {
 			widget._onImagesRequestResponse(response, false, false);
-			expect(widget._loadingSpinnerClass).to.equal('hidden');
+			expect(widget._loadingSpinnerClass).to.equal('d2l-basic-image-selector-hidden');
 		});
 
 		describe('and loadMore is true', function() {

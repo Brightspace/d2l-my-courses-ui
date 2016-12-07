@@ -1,103 +1,20 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-scroll-threshold/iron-scroll-threshold.html">
-<link rel="import" href="../d2l-ajax/d2l-ajax.html">
 <link rel="import" href="../d2l-colors/d2l-colors.html">
 <link rel="import" href="../d2l-dropdown/d2l-dropdown.html">
 <link rel="import" href="../d2l-dropdown/d2l-dropdown-content.html">
 <link rel="import" href="../d2l-dropdown/d2l-dropdown-menu.html">
 <link rel="import" href="../d2l-icons/d2l-icons.html">
-<link rel="import" href="../d2l-menu/d2l-menu-item-selectable-behavior.html">
 <link rel="import" href="../d2l-menu/d2l-menu-item-radio.html">
-<link rel="import" href="../d2l-menu/d2l-menu-item-selectable-styles.html">
-<link rel="import" href="../d2l-search-widget/d2l-search-widget.html">
+<link rel="import" href="../d2l-siren-parser/d2l-siren-parser.html">
 <link rel="import" href="d2l-alert.html">
 <link rel="import" href="d2l-alert-behavior.html">
 <link rel="import" href="d2l-course-management-behavior.html">
 <link rel="import" href="d2l-course-tile-grid.html">
 <link rel="import" href="d2l-course-tile-responsive-grid-behavior.html">
+<link rel="import" href="d2l-filter-menu-content.html">
 <link rel="import" href="d2l-search-widget-custom.html">
 <link rel="import" href="localize-behavior.html">
-
-<dom-module id="d2l-list-item-filter">
-	<template>
-		<style include="d2l-menu-item-selectable-styles">
-			:host {
-				padding: 0.5rem 1rem;
-			}
-
-			:host > span {
-				font-size: 0.8rem;
-			}
-
-			:host d2l-icon {
-				--d2l-icon-height: 1rem;
-				--d2l-icon-width: 1rem;
-				visibility: visible;
-				margin-right: 0.5rem;
-			}
-		</style>
-		<d2l-ajax
-			auto
-			url="[[_organizationUrl]]"
-			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onOrganizationResponse">
-		</d2l-ajax>
-		<d2l-icon icon="d2l-tier2:check-box-unchecked" aria-hidden="true"></d2l-icon>
-		<span>[[text]]</span>
-	</template>
-	<script>
-		'use strict';
-		Polymer({
-			is: 'd2l-list-item-filter',
-			properties: {
-				enrollmentEntity: {
-					type: Object,
-					value: function() { return {}; },
-					observer: '_onEnrollmentEntityChanged'
-				},
-				selected: {
-					type: Boolean,
-					observer: '_onSelectedChanged',
-					reflectToAttribute: true
-				},
-				_organizationUrl: String
-			},
-			behaviors: [
-				window.D2L.PolymerBehaviors.MenuItemSelectableBehavior
-			],
-			listeners: {
-				'd2l-menu-item-select': '_onSelect'
-			},
-			_onEnrollmentEntityChanged: function(entity) {
-				if (entity.getLinkByRel && entity.getLinkByRel(/\/organization$/)) {
-					this.set('_organizationUrl', entity.getLinkByRel(/\/organization$/).href);
-				}
-			},
-			_onOrganizationResponse: function(response) {
-				if (response.detail.status === 200 ) {
-					if (!this._parser) {
-						this._parser = document.createElement('d2l-siren-parser');
-					}
-
-					var entity = this._parser.parse(response.detail.xhr.response);
-
-					this.set('text', entity.properties.name);
-					this.set('value', entity.getLinkByRel('self').href);
-				}
-			},
-			_onSelect: function(e) {
-				this.set('selected', !this.selected);
-				this.__onSelect(e);
-			},
-			_onSelectedChanged: function(e) {
-				// The selected state can be changed by click/tap or by _checkSelected below - need to update the icon when this happens
-				this.$$('d2l-icon').setAttribute('icon', this.selected ? 'd2l-tier2:check-box' : 'd2l-tier2:check-box-unchecked');
-				this.__onSelectedChanged(e);
-			},
-			_parser: null
-		});
-	</script>
-</dom-module>
 
 <dom-module id="d2l-all-courses">
 	<template>
@@ -120,11 +37,8 @@
 				--d2l-icon-width: 15px;
 				margin-top: -0.35rem;
 			}
-			.hidden {
+			.d2l-all-courses-hidden {
 				display: none !important;
-			}
-			.invisible {
-				visibility: hidden;
 			}
 			.search-and-filter {
 				display: flex;
@@ -165,6 +79,14 @@
 				padding: 0;
 				color: var(--d2l-color-tungsten);
 			}
+			.dropdown-content-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				border-bottom: 1px solid var(--d2l-color-gypsum);
+				width: 100%;
+				padding: 20px;
+			}
 			@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
 				#filterText {
 					padding-top: 4px;
@@ -175,60 +97,6 @@
 			}
 			#filterText {
 				padding-right: 4px;
-			}
-			.clear-button {
-				@apply(--d2l-body-small-text);
-				/* overrides to d2l-body-small-text */
-				color: var(--d2l-color-celestine);
-				/* end overrides */
-				background: none;
-				border: none;
-				cursor: pointer;
-				margin: 0;
-				padding: 0;
-			}
-			.dropdown-content-header {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				border-bottom: 1px solid var(--d2l-color-gypsum);
-				width: 100%;
-				padding: 20px;
-			}
-			.dropdown-content-header-text {
-				font-weight: bold;
-			}
-			.dropdown-content-gradient {
-				background: linear-gradient(to top, white, var(--d2l-color-regolith));
-			}
-			.dropdown-content-tabs {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-			}
-			.dropdown-content-tab {
-				flex: 1;
-			}
-			.dropdown-content-tab-button {
-				@apply(--d2l-body-small-text);
-				color: var(--d2l-color-ferrite);
-				background: none;
-				border: none;
-				padding: 10px;
-				cursor: pointer;
-				display: inherit;
-			}
-			.dropdown-content-tab-highlight {
-				background-color: var(--d2l-color-celestine);
-				border-bottom-left-radius: 4px;
-				border-bottom-right-radius: 4px;
-				height: 4px;
-				width: 80%;
-				margin: auto;
-			}
-			d2l-dropdown-content d2l-search-widget {
-				--d2l-search-widget-height: 45px;
-				margin: 10px 20px;
 			}
 			button[aria-pressed="true"] {
 				color: var(--d2l-color-celestine);
@@ -241,39 +109,23 @@
 			#filterText:focus,
 			#filterText:hover + d2l-dropdown button d2l-icon,
 			#filterText:focus + d2l-dropdown button d2l-icon,
-			d2l-dropdown-content button:hover,
-			d2l-dropdown-content button:focus,
 			.focus {
 				text-decoration: underline;
 				color: var(--d2l-color-celestine);
 			}
 		</style>
 
-		<d2l-ajax
-			id="moreDepartmentsRequest"
-			url="[[_moreDepartmentsUrl]]"
-			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onMoreDepartmentsResponse">
-		</d2l-ajax>
-
-		<d2l-ajax
-			id="moreSemestersRequest"
-			url="[[_moreSemestersUrl]]"
-			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onMoreSemestersResponse">
-		</d2l-ajax>
-
 		<div class="search-and-filter">
 			<d2l-search-widget-custom
-				hidden$="[[_hasEnrollments]]"
+				hidden$="[[!_hasEnrollments]]"
 				my-enrollments-entity="[[myEnrollmentsEntity]]"
 				parent-organizations="[[_parentOrganizations]]"
 				sort-field="[[_sortField]]">
 			</d2l-search-widget-custom>
 
-			<div id="filterAndSort" class="hidden">
-				<div id="filterSection" class="hidden">
-					<span id="filterText" class="dropdown-opener-text" on-tap="_toggleFilterDropdown">{{localize('filtering.filter')}}</span>
+			<div id="filterAndSort" class="d2l-all-courses-hidden">
+				<div id="filterSection" class="d2l-all-courses-hidden">
+					<span id="filterText" class="dropdown-opener-text" on-tap="_toggleFilterDropdown">[[_filterText]]</span>
 					<d2l-dropdown id="filterDropdown">
 						<button
 							id="filterDropdownOpener"
@@ -286,69 +138,13 @@
 							<d2l-icon icon="d2l-tier1:chevron-down" aria-hidden="true"></d2l-icon>
 						</button>
 						<d2l-dropdown-content id="filterDropdownContent" no-padding min-width="350">
-							<div class="dropdown-content-header">
-								<span class="dropdown-content-header-text">{{localize('filtering.filterBy')}}</span>
-								<template is="dom-if" if="[[_showClearButton]]">
-									<button class="clear-button" on-tap="_clearFilters">{{localize('filtering.clear')}}</button>
-								</template>
-							</div>
-							<div class="dropdown-content-tabs dropdown-content-gradient" role="tablist">
-								<div class="dropdown-content-tab" role="tab" aria-controls="semesterList">
-									<div class="dropdown-content-tab-highlight" id="semesterListHighlight"></div>
-									<button
-										id="semesterListButton"
-										class="dropdown-content-tab-button"
-										on-tap="_selectSemesterList"
-										aria-pressed="true">
-										{{localize('filtering.semester')}}
-									</button>
-								</div>
-								<div class="dropdown-content-tab" role="tab" aria-controls="departmentList">
-									<div class="dropdown-content-tab-highlight" id="departmentListHighlight"></div>
-									<button
-										id="departmentListButton"
-										class="dropdown-content-tab-button"
-										on-tap="_selectDepartmentList"
-										aria-pressed="false">
-										{{localize('filtering.department')}}
-									</button>
-								</div>
-							</div>
-							<div id="semesterList" aria-labelledby="semesterListButton" role="tabpanel">
-								<d2l-search-widget
-									id="semesterSearchWidget"
-									placeholder-text="{{localize('filtering.searchSemesters')}}"
-									search-action="[[_searchSemestersAction]]"
-									search-field-name="search"
-									cache-responses></d2l-search-widget>
-								<d2l-menu label="{{localize('filtering.semester')}}">
-									<template is="dom-repeat" items="[[_semesters]]">
-										<d2l-list-item-filter
-											enrollment-entity="[[item]]"
-											selected="[[_checkSelected(item)]]">
-										</d2l-list-item-filter>
-									</template>
-								</d2l-menu>
-							</div>
-							<div id="departmentList" aria-labelledby="departmentListButton" role="tabpanel">
-								<d2l-search-widget
-									id="departmentSearchWidget"
-									placeholder-text="{{localize('filtering.searchDepartments')}}"
-									search-action="[[_searchDepartmentsAction]]"
-									search-field-name="search"
-									cache-responses></d2l-search-widget>
-								<d2l-menu label="{{localize('filtering.department')}}">
-									<template is="dom-repeat" items="[[_departments]]">
-										<d2l-list-item-filter
-											enrollment-entity="[[item]]"
-											selected="[[_checkSelected(item)]]">
-										</d2l-list-item-filter>
-									</template>
-								</d2l-menu>
-							</div>
+							<d2l-filter-menu-content
+								id="filterMenuContent"
+								my-enrollments-entity="[[myEnrollmentsEntity]]">
+							</d2l-filter-menu-content>
 							<iron-scroll-threshold
 								id="scrollThreshold"
-								on-lower-threshold="_loadMore">
+								on-lower-threshold="_onLowerThreshold">
 							</iron-scroll-threshold>
 						</d2l-dropdown-content>
 					</d2l-dropdown>
@@ -416,42 +212,11 @@
 				},
 				myEnrollmentsEntity: {
 					type: Object,
-					observer: '_myEnrollmentsEntityChanged'
-				},
-				_departments: {
-					type: Array,
 					value: function() {
-						return [];
+						return {};
 					}
 				},
-				_showClearButton: {
-					type: Boolean,
-					value: false
-				},
-				_hasMoreDepartments: {
-					type: Boolean,
-					value: false
-				},
-				_hasMoreSemesters: {
-					type: Boolean,
-					value: false
-				},
-				_moreDepartmentsUrl: {
-					type: String,
-					value: ''
-				},
-				_moreSemestersUrl: {
-					type: String,
-					value: ''
-				},
-				_searchSemestersAction: Object,
-				_searchDepartmentsAction: Object,
-				_semesters: {
-					type: Array,
-					value: function() {
-						return [];
-					}
-				},
+				_filterText: String,
 				_sortField: {
 					type: String,
 					value: 'pinDate'
@@ -487,16 +252,14 @@
 					courseTileGrids[i].getCourseTileItemCount = this.getCourseTileItemCount.bind(this);
 				}
 				this._updateTileSizes();
+
+				this._filterText = this.localize('filtering.filter');
 			},
 			attached: function() {
 				this.listen(this.$.sortDropdown, 'd2l-menu-item-change', '_updateSortBy');
-				this.listen(this.$.filterDropdown, 'd2l-menu-item-change', '_updateFilter');
-
-				this.listen(this.$.filterDropdownContent, 'd2l-dropdown-open', '_onFilterDropdownOpen');
 				this.listen(this.$.filterDropdownContent, 'd2l-dropdown-close', '_onFilterDropdownClose');
-
-				this.listen(this.$.semesterSearchWidget, 'd2l-search-widget-results-changed', '_onSemesterSearchResults');
-				this.listen(this.$.departmentSearchWidget, 'd2l-search-widget-results-changed', '_onDepartmentSearchResults');
+				this.listen(this.$.filterMenuContent, 'd2l-filter-menu-content-filters-changed', '_onFilterChanged');
+				this.listen(this.$.filterMenuContent, 'd2l-filter-menu-content-hide', '_onFilterHideChanged');
 
 				this.$.scrollThreshold.scrollTarget = this.$.filterDropdownContent.querySelector('.d2l-dropdown-content-container');
 
@@ -506,13 +269,9 @@
 			},
 			detached: function() {
 				this.unlisten(this.$.sortDropdown, 'd2l-menu-item-change', '_updateSortBy');
-				this.unlisten(this.$.filterDropdown, 'd2l-menu-item-change', '_updateFilter');
-
-				this.unlisten(this.$.filterDropdownContent, 'd2l-dropdown-open', '_onFilterDropdownOpen');
 				this.unlisten(this.$.filterDropdownContent, 'd2l-dropdown-close', '_onFilterDropdownClose');
-
-				this.unlisten(this.$.semesterSearchWidget, 'd2l-search-widget-results-changed', '_onSemesterSearchResults');
-				this.unlisten(this.$.departmentSearchWidget, 'd2l-search-widget-results-changed', '_onDepartmentSearchResults');
+				this.unlisten(this.$.filterMenuContent, 'd2l-filter-menu-content-filters-changed', '_onFilterChanged');
+				this.unlisten(this.$.filterMenuContent, 'd2l-filter-menu-content-hide', '_onFilterHideChanged');
 			},
 			getCourseTileItemCount: function() {
 				var itemCount = Math.max(this.pinnedEnrollments.length, this.unpinnedEnrollments.length);
@@ -525,9 +284,8 @@
 				// Only make the call to load the filter menu contents if user has a
 				// substantial number of enrollments - otherwise, hide the filter menu
 				if (this.pinnedEnrollments.length + this.unpinnedEnrollments.length >= 20) {
-					this.$.departmentSearchWidget.search();
-					this.$.semesterSearchWidget.search();
-					this.toggleClass('hidden', false, this.$.filterAndSort);
+					this.$.filterMenuContent.load();
+					this.toggleClass('d2l-all-courses-hidden', false, this.$.filterAndSort);
 				}
 			},
 			setCourseImage: function(details) {
@@ -541,46 +299,12 @@
 				this.$$('#all-courses-unpinned').setCourseImage(details);
 			},
 			_filterDropdownOpen: false,
-			_numSemesterFilters: 0,
-			_numDepartmentFilters: 0,
 			_parser: null,
 			_sortTextOptions: {
 				'courseCode': 'sorting.sortCourseCode',
 				'courseName': 'sorting.sortCourseName',
 				'pinDate': 'sorting.sortDatePinned',
 				'lastAccessed': 'sorting.sortLastAccessed'
-			},
-			_checkSelected: function(entity) {
-				// Checks if the given entity should be "selected" - used when semester/department search results change mostly
-				var id = entity.getLinkByRel(/\/organization$/).href;
-				return this._parentOrganizations.indexOf(id) > -1;
-			},
-			_clearFilters: function() {
-				Polymer.dom(this.$.filterDropdown).querySelectorAll('d2l-menu-item-checkbox').forEach(function(item) {
-					item.selected = false;
-				});
-				this._showClearButton = false;
-				// Clear button is removed via dom-if, so need to manually set focus to next element
-				this.$.semesterListButton.focus();
-				this._parentOrganizations = [];
-				this.$.filterText.textContent = this.localize('filtering.filter');
-				this.$.semesterListButton.textContent = this.localize('filtering.semester');
-				this.$.departmentListButton.textContent = this.localize('filtering.department');
-				this._numSemesterFilters = 0;
-				this._numDepartmentFilters = 0;
-			},
-			_loadMore: function() {
-				// Generate the request based off of which tab is selected, and whether there are more to load or not
-				if (this.$.semesterList.classList.contains('hidden')) {
-					if (this._hasMoreDepartments) {
-						this.$.moreDepartmentsRequest.generateRequest();
-					}
-				} else {
-					if (this._hasMoreSemesters) {
-						this.$.moreSemestersRequest.generateRequest();
-					}
-				}
-				this.$.scrollThreshold.clearTriggers();
 			},
 			_blurFilterText: function() {
 				// Only de-highlight text if focus has moved AND we're not hovering over the opener button anymore
@@ -589,28 +313,12 @@
 					this.toggleClass('focus', false, this.$.filterText);
 				}
 			},
-			_myEnrollmentsEntityChanged: function(entity) {
-				// Set up search URLs and search Actions for filter dropdown
-				if (entity) {
-					var myEnrollmentsEntity = this._parser.parse(entity);
-
-					this.set('_searchDepartmentsAction', myEnrollmentsEntity.getActionByName('add-department-filter'));
-					this.set('_searchSemestersAction', myEnrollmentsEntity.getActionByName('add-semester-filter'));
-				}
-			},
 			_focusFilterText: function() {
 				this.toggleClass('focus', true, this.$.filterText);
 			},
-			_onSearchResults: function(entity, moreUrlPath, hasMorePath) {
-				this.set(hasMorePath, entity.hasLinkByRel('next'));
-				this.set(moreUrlPath, this[hasMorePath] ? entity.getLinkByRel('next').href : '');
-
-				// If user has >1 departments or >1 semesters, signal to d2l-all-courses to show filters
-				if (this._departments && this._departments.length > 1
-					|| this._semesters && this._semesters.length > 1
-				) {
-					this.toggleClass('hidden', false, this.$.filterSection);
-				}
+			_onFilterChanged: function(e) {
+				this.set('_parentOrganizations', e.detail.value);
+				this.set('_filterText', e.detail.text);
 			},
 			_onFilterDropdownClose: function() {
 				// If the dropdown is closed by clicking elsewhere, we need to manually update _filterDropdownOpen
@@ -620,59 +328,18 @@
 					this.set('_filterDropdownOpen', false);
 				}.bind(this), 100);
 			},
-			_onFilterDropdownOpen: function() {
-				this._selectSemesterList();
+			_onFilterHideChanged: function(e) {
+				this.toggleClass('hidden', e.detail.hide, this.$.filterSection);
 			},
-			_onDepartmentSearchResults: function(e) {
-				this.set('_departments', e.detail.entities);
-				this._onSearchResults(e.detail, '_moreDepartmentsUrl', '_hasMoreDepartments');
-			},
-			_onSemesterSearchResults: function(e) {
-				this.set('_semesters', e.detail.entities);
-				this._onSearchResults(e.detail, '_moreSemestersUrl', '_hasMoreSemesters');
-			},
-			_onMoreResponse: function(response, organizationsPath, moreUrlPath, hasMorePath) {
-				if (response.detail.status === 200 || response.detail.status === 304) {
-					var responseEntity = this._parser.parse(response.detail.xhr.response);
-
-					responseEntity.entities.forEach(function(entity) {
-						this.push(organizationsPath, entity);
-					}.bind(this));
-
-					this._onSearchResults(responseEntity, moreUrlPath, hasMorePath);
-				}
-			},
-			_onMoreDepartmentsResponse: function(response) {
-				this._onMoreResponse(response, '_departments', '_moreDepartmentsUrl', '_hasMoreDepartments');
-			},
-			_onMoreSemestersResponse: function(response) {
-				this._onMoreResponse(response, '_semesters', '_moreSemestersUrl', '_hasMoreSemesters');
+			_onLowerThreshold: function() {
+				this.$.scrollThreshold.clearTriggers();
+				this.$.filterMenuContent._loadMore();
 			},
 			_onResize: function() {
 				this._updateTileSizes();
 			},
-			_selectSemesterList: function() {
-				this._toggleSelectedList(this.$.semesterList, this.$.semesterListButton, this.$.semesterListHighlight, true);
-				this._toggleSelectedList(this.$.departmentList, this.$.departmentListButton, this.$.departmentListHighlight, false);
-				this.$.semesterSearchWidget.clear();
-				this.$.departmentSearchWidget.clear();
-				this.$.semesterList.querySelector('d2l-menu').resize();
-			},
-			_selectDepartmentList: function() {
-				this._toggleSelectedList(this.$.departmentList, this.$.departmentListButton, this.$.departmentListHighlight, true);
-				this._toggleSelectedList(this.$.semesterList, this.$.semesterListButton, this.$.semesterListHighlight, false);
-				this.$.semesterSearchWidget.clear();
-				this.$.departmentSearchWidget.clear();
-				this.$.departmentList.querySelector('d2l-menu').resize();
-			},
-			_updateTileSizes: function() {
-				this._rescaleCourseTileRegions();
-				this._tileSizes = Math.floor(100 / this._numColsOverlay) + 'vw';
-			},
-			_toggleSelectedList: function(list, button, highlight, selected) {
-				this.toggleClass('hidden', !selected, list);
-				this.toggleClass('invisible', !selected, highlight);
-				button.setAttribute('aria-pressed', selected);
+			_onSimpleOverlayOpening: function() {
+				this._removeAlert('setCourseImageFailure');
 			},
 			_toggleFilterDropdown: function() {
 				// This is somewhat gross, but is a side effect of using the filter text span as a secondary opener
@@ -681,42 +348,13 @@
 					this.$.filterDropdownOpener.focus();
 				} else {
 					this.$.filterDropdownContent.open();
+					this.$.filterMenuContent.load();
 				}
 				this.set('_filterDropdownOpen', !this._filterDropdownOpen);
 			},
-			_updateFilter: function(e) {
-				var isSemester = this.$.semesterList.contains(e.target);
-
-				if (e.detail.selected) {
-					this.push('_parentOrganizations', e.detail.value);
-					isSemester ? this._numSemesterFilters++ : this._numDepartmentFilters++;
-				} else {
-					var index = this._parentOrganizations.indexOf(e.detail.value);
-					this.splice('_parentOrganizations', index, 1);
-					isSemester ? this._numSemesterFilters-- : this._numDepartmentFilters--;
-				}
-
-				if (this._parentOrganizations.length === 0) {
-					this.$.filterText.textContent = this.localize('filtering.filter');
-				} else if (this._parentOrganizations.length === 1) {
-					this.$.filterText.textContent = this.localize('filtering.filterSingle');
-				} else {
-					this.$.filterText.textContent = this.localize('filtering.filterMultiple', 'num', this._parentOrganizations.length);
-				}
-
-				this._showClearButton = this._parentOrganizations.length > 0;
-				this.$.semesterListButton.textContent = this._numSemesterFilters > 0
-					? this.localize('filtering.semesterMultiple', 'num', this._numSemesterFilters)
-					: this.localize('filtering.semester');
-				this.$.departmentListButton.textContent = this._numDepartmentFilters > 0
-					? this.localize('filtering.departmentMultiple', 'num', this._numDepartmentFilters)
-					: this.localize('filtering.department');
-			},
 			_updateSortBy: function(e) {
 				this.set('_sortField', e.detail.value);
-
 				this.$.sortText.textContent = this.localize(this._sortTextOptions[this._sortField] || '');
-
 				this.$.sortDropdown.toggleOpen();
 			},
 			_updateEnrollmentAlerts: function(hasPinnedEnrollments) {
@@ -726,8 +364,9 @@
 					this._addAlert('call-to-action', 'noPinnedCourses', this.localize('noPinnedCoursesMessage'));
 				}
 			},
-			_onSimpleOverlayOpening: function() {
-				this._removeAlert('setCourseImageFailure');
+			_updateTileSizes: function() {
+				this._rescaleCourseTileRegions();
+				this._tileSizes = Math.floor(100 / this._numColsOverlay) + 'vw';
 			}
 		});
 	</script>

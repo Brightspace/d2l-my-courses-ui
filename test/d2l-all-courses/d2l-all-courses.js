@@ -53,15 +53,6 @@ describe('d2l-all-courses', function() {
 		}
 	});
 
-	it('should hide search if user has no enrollments', function() {
-		var search = widget.$$('d2l-search-widget-custom');
-		expect(search.hidden).to.be.true;
-
-		widget.pinnedEnrollments = [pinnedEnrollmentEntity];
-
-		expect(search.hidden).to.be.false;
-	});
-
 	it('should not load filter menu content when there are insufficient enrollments', function() {
 		var stub = sinon.stub(widget.$.filterMenuContent, 'load');
 

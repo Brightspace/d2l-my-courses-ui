@@ -284,7 +284,7 @@
 						{ mobile: { maxwidth: 767, size: 100 }, tablet: { maxwidth: 1243, size: 67 }, desktop: { size: 25 } };
 
 					this.fire('recalculate-columns');
-					this.toggleClass('hidden', true, this.$.lazyLoadSpinner);
+					this.toggleClass('d2l-all-courses-hidden', true, this.$.lazyLoadSpinner);
 					this.$['all-courses-scroll-threshold'].clearTriggers();
 					this._showContent();
 					this._lastEnrollmentsSearchResponse = enrollments;
@@ -292,8 +292,8 @@
 			},
 			_updateEnrollmentEntities: function(e, detail) {
 				this._pinnedCoursesMap = {};
-				this.splice('pinnedEnrollments',  0, this.pinnedEnrollments.length);
-				this.splice('unpinnedEnrollments', 0, this.unpinnedEnrollments.length);
+				this.pinnedEnrollments = [];
+				this.unpinnedEnrollments = [];
 				this._onEnrollmentsSearchResponse(detail);
 
 			},

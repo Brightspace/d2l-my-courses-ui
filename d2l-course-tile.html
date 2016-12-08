@@ -259,9 +259,9 @@ in that organization - student, teacher, TA, etc.
 				this._pendingPinAction = this.pinned;
 			},
 			_enrollmentChanged: function() {
-				if (!this.delayLoad) {
+				if (!this.delayLoad && this.enrollment) {
 					var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
-					if (this._organizationUrl !== organizationLink.href + '?embedDepth=1' ) {
+					if (!this._organizationUrl || this._organizationUrl.indexOf(organizationLink.href) !== 0) {
 						this._organizationUrl = organizationLink.href + '?embedDepth=1';
 						this.$.organizationRequest.generateRequest();
 					}

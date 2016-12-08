@@ -155,7 +155,7 @@
 							<d2l-search-listbox>
 								<div class="d2l-heading-4" data-list-title disabled>{{localize('recentSearches')}}</div>
 								<template is="dom-repeat" items="[[_previousSearches]]">
-									<div selectable data-text$="[[item]]" data-href$="[[_computePreviousSearchLink(item)]]" role="option">
+									<div selectable data-text$="[[item]]" role="option">
 										[[item]]
 									</div>
 								</template>
@@ -335,14 +335,6 @@
 				}
 			},
 
-			_advancedSearch: function(searchString) {
-				if (searchString) {
-					var queryString = this._advancedSearchUrl + searchString;
-					this._addSearchToHistory(searchString);
-					window.location.href = queryString;
-				}
-			},
-
 			_onSearchButtonClick: function() {
 				this._search();
 			},
@@ -416,11 +408,6 @@
 				} catch (e) {
 					// Local storage not available/full - oh well.
 				}
-			},
-
-			//Creates a search URL from a previous search term
-			_computePreviousSearchLink: function(searchTerm) {
-				return this._advancedSearchUrl + searchTerm;
 			},
 
 			_myEnrollmentsEntityChanged: function(entity) {

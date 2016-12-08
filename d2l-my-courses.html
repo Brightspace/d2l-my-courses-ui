@@ -364,6 +364,7 @@
 			},
 			_onSimpleOverlayClosed: function() {
 				this._removeAlert('setCourseImageFailure');
+				this.$.enrollmentsRootRequest.generateRequest();
 			}
 		});
 	</script>

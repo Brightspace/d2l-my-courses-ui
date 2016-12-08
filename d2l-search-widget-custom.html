@@ -252,6 +252,7 @@
 			],
 
 			ready: function() {
+				this._searchUrl = '';
 				this._handleFocusBound = this._handleFocus.bind(this);
 				this._handleClickBound = this._handleClick.bind(this);
 			},
@@ -348,6 +349,7 @@
 					this.$$('iron-pages').select('recent-searches-page');
 				} else {
 					this.$.dropdown.close();
+
 				}
 			},
 
@@ -501,9 +503,6 @@
 				UP: 38,
 				ENTER: 13
 			},
-
-			// URL for advanced search functionality (existing advanced search page from legacy My Courses widget).
-			_advancedSearchUrl: 'le/manageCourses/search/6606?searchTerm=',
 
 			// Called when an element within the search bar gains focus, to open the dropdown if required
 			_onElementFocus: function() {

@@ -53,14 +53,8 @@
 				margin-bottom: 20px;
 				clear: both;
 			}
-			d2l-loading-spinner {
-				display: block;
-				margin: auto;
-			}
 
-			#lazyLoadSpinner {
-				margin-bottom: 30px;
-			}
+
 		</style>
 
 		<d2l-ajax
@@ -110,29 +104,15 @@
 			</button>
 		</div>
 
-		<d2l-simple-overlay
-			id="all-courses"
-			title-name="{{localize('allCourses')}}"
-			locale="[[locale]]"
-			with-backdrop>
-
-			<iron-scroll-threshold
-				id="all-courses-scroll-threshold"
-				on-lower-threshold="_loadNextEnrollmentsPage">
-			</iron-scroll-threshold>
 
 			<d2l-all-courses
 				pinned-enrollments="{{pinnedEnrollments}}"
 				unpinned-enrollments="{{unpinnedEnrollments}}"
-				my-enrollments-entity="{{_lastEnrollmentsSearchResponse}}"
+				my-enrollments-entity="[[_lastEnrollmentsSearchResponse]]"
+				lastEnrollmentsSearchResponse="[[_lastEnrollmentsSearchResponse]]"
 				locale="[[locale]]">
 			</d2l-all-courses>
-			<d2l-loading-spinner
-				id="lazyLoadSpinner"
-				class="d2l-my-courses-hidden"
-				size="100">
-			</d2l-loading-spinner>
-		</d2l-simple-overlay>
+
 
 		<d2l-simple-overlay
 			id="basic-image-selector-overlay"
@@ -212,7 +192,7 @@
 			attached: function() {
 				this.$.enrollmentsRootRequest.generateRequest();
 
-				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
+
 				this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-overlay'].scrollRegion;
 			},
 			getCourseTileItemCount: function() {
@@ -289,7 +269,6 @@
 				}
 
 				this.toggleClass('d2l-my-courses-hidden', true, this.$.lazyLoadSpinner);
-				this.$['all-courses-scroll-threshold'].clearTriggers();
 				this._showContent();
 			},
 			_openChangeImageView: function(e) {
@@ -302,7 +281,7 @@
 			_openAllCoursesView: function(e) {
 				e.preventDefault();
 				e.stopPropagation();
-				this.$$('#all-courses').open();
+				this.$$('d2l-all-courses').lastEnrollmentsSearchResponse = this._lastEnrollmentsSearchResponse;
 				this.$$('d2l-all-courses').load();
 
 				setTimeout(function() {
@@ -316,19 +295,6 @@
 			_showContent: function() {
 				this.toggleClass('d2l-my-courses-hidden', true, this.$.initialLoadingSpinner);
 				this.toggleClass('d2l-my-courses-hidden', false, this.$$('.my-courses-content'));
-			},
-			_loadNextEnrollmentsPage: function() {
-				if (this.$['all-courses'].opened && this._lastEnrollmentsSearchResponse) {
-					var parser = document.createElement('d2l-siren-parser');
-					var lastResponseEntity = parser.parse(this._lastEnrollmentsSearchResponse);
-
-					if (lastResponseEntity.hasLink('next')) {
-						this._enrollmentsSearchUrl = lastResponseEntity.getLinkByRel('next').href;
-						this.$.enrollmentsSearchRequest.generateRequest();
-						this.toggleClass('d2l-my-courses-hidden', false, this.$.lazyLoadSpinner);
-						this.$.lazyLoadSpinner.scrollIntoView();
-					}
-				}
 			},
 			_setCourseImageEvent: function(e) {
 				this._removeAlert('setCourseImageFailure');

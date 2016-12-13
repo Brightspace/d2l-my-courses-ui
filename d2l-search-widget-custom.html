@@ -155,7 +155,7 @@
 							<d2l-search-listbox>
 								<div class="d2l-heading-4" data-list-title disabled>{{localize('recentSearches')}}</div>
 								<template is="dom-repeat" items="[[_previousSearches]]">
-									<div selectable data-text$="[[item]]" data-href$="[[_computePreviousSearchLink(item)]]" role="option">
+									<div selectable data-text$="[[item]]" role="option">
 										[[item]]
 									</div>
 								</template>
@@ -305,7 +305,7 @@
 			},
 
 			// Calls the search-my-enrollments action, used to populate live search results in the listbox
-			_liveSearch: function() {
+			_search: function() {
 				if (this._searchString) {
 					this.cancelDebouncer('liveSearchJob');
 
@@ -335,27 +335,21 @@
 				}
 			},
 
-			_advancedSearch: function(searchString) {
-				if (searchString) {
-					var queryString = this._advancedSearchUrl + searchString;
-					this._addSearchToHistory(searchString);
-					window.location.href = queryString;
-				}
-			},
-
 			_onSearchButtonClick: function() {
-				this._advancedSearch(this._searchString);
+				this._search();
 			},
 
 			_clearSearchResults: function() {
 				this.cancelDebouncer('liveSearchJob');
 				this._searchString = '';
+				this.fire('d2l-root-search');
 				this.set('_searchResults', []);
 
 				if (this._previousSearches.length > 0) {
 					this.$$('iron-pages').select('recent-searches-page');
 				} else {
 					this.$.dropdown.close();
+
 				}
 			},
 
@@ -363,7 +357,7 @@
 				if (this._listboxes) {
 					if (newString.length > 0) {
 						if (!this.isDebouncerActive('liveSearchJob')) {
-							this.debounce('liveSearchJob', this._liveSearch.bind(this), 250);
+							this.debounce('liveSearchJob', this._search.bind(this), 750);
 						}
 					} else {
 						this._clearSearchResults();
@@ -374,9 +368,8 @@
 			_onSearchInputKeyPressed: function(e) {
 				switch (e.keyCode) {
 					case this._keyCodes.ENTER:
-						this._advancedSearch(this._searchString);
+						this._search();
 						break;
-
 					case this._keyCodes.DOWN:
 						if (this._currentListbox.hasItems()) {
 							this._currentListbox.focus();
@@ -419,11 +412,6 @@
 				}
 			},
 
-			//Creates a search URL from a previous search term
-			_computePreviousSearchLink: function(searchTerm) {
-				return this._advancedSearchUrl + searchTerm;
-			},
-
 			_myEnrollmentsEntityChanged: function(entity) {
 				if (entity) {
 					var parser = document.createElement('d2l-siren-parser');
@@ -444,7 +432,6 @@
 					var parser = document.createElement('d2l-siren-parser');
 					var searchResponse = parser.parse(response.detail.xhr.response);
 					var enrollmentEntities = searchResponse.entities;
-
 					this.$$('iron-pages').select(enrollmentEntities.length > 0 ? 'search-results-page' : 'no-results-page');
 					if (!this.$.dropdown.opened) {
 						this.$.dropdown.open();
@@ -460,7 +447,6 @@
 							ajax.onResponse = function(response) {
 								if (response.detail.status === 200 || response.detail.status === 304) {
 									var organization = parser.parse(response.detail.response);
-
 									// Polymer's splice method causes empty results to show up for an
 									// unknown reason, so use a normal Array.prototype.splice...
 									self._searchResults.splice(index, 0, {
@@ -484,6 +470,8 @@
 							self.push('_organizationRequests', ajax);
 						})(enrollmentEntities[i], i, enrollmentEntities.length, this, parser);
 					}
+					this.fire('d2l-search-enrollment-response', response);
+
 				}
 			},
 
@@ -499,12 +487,9 @@
 						break;
 
 					case 'D2L-SEARCH-LISTBOX':
-						if (e.detail.item.dataset.href) {
-							if (e.detail.item.dataset.text) {
-								this._addSearchToHistory(e.detail.item.dataset.text);
-							}
-
-							window.location.href = e.detail.item.dataset.href;
+						if (e.detail.item.dataset.text) {
+							this._addSearchToHistory(e.detail.item.dataset.text);
+							this._searchString = e.detail.item.dataset.text;
 						}
 						break;
 				}
@@ -515,9 +500,6 @@
 				UP: 38,
 				ENTER: 13
 			},
-
-			// URL for advanced search functionality (existing advanced search page from legacy My Courses widget).
-			_advancedSearchUrl: 'le/manageCourses/search/6606?searchTerm=',
 
 			// Called when an element within the search bar gains focus, to open the dropdown if required
 			_onElementFocus: function() {

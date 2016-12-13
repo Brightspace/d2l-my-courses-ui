@@ -9,7 +9,6 @@
 <link rel="import" href="../d2l-siren-parser/d2l-siren-parser.html">
 <link rel="import" href="d2l-alert.html">
 <link rel="import" href="d2l-alert-behavior.html">
-<link rel="import" href="d2l-course-management-behavior.html">
 <link rel="import" href="d2l-course-tile-grid.html">
 <link rel="import" href="d2l-course-tile-responsive-grid-behavior.html">
 <link rel="import" href="d2l-filter-menu-content.html">
@@ -115,9 +114,9 @@
 			}
 		</style>
 
-		<div class="search-and-filter d2l-all-courses-hidden">
+		<div class="search-and-filter">
 			<d2l-search-widget-custom
-				hidden$="[[!_hasEnrollments]]"
+				id="search-widget"
 				my-enrollments-entity="[[myEnrollmentsEntity]]"
 				parent-organizations="[[_parentOrganizations]]"
 				sort-field="[[_sortField]]">
@@ -274,12 +273,13 @@
 					value: false
 				},
 				// True when there are pinned enrollments (i.e. `pinnedEnrollments.length > 0`)
-				_hasPinnedEnrollments: {
+				_hasFilteredPinnedEnrollments: {
 					type: Boolean,
 					value: false
 				},
+
 				// True when there are any enrollments (pinned or unpinned)
-				_hasEnrollments: {
+				_hasFilteredEnrollments: {
 					type: Boolean,
 					value: false
 				},
@@ -317,25 +317,26 @@
 				'd2l-simple-overlay-opening': '_onSimpleOverlayOpening',
 				'tile-remove-complete': '_onTileRemoveComplete',
 				'enrollment-pin-complete': '_onEnrollmentPinComplete',
-				'enrollment-unpin-complete': '_onEnrollmentUnpinComplete'
+				'enrollment-unpin-complete': '_onEnrollmentUnpinComplete',
+				'd2l-search-enrollment-response': '_updateFilteredEnrollments'
 			},
 			observers: [
-				'_updateEnrollmentAlerts(_hasPinnedEnrollments)',
-					'_enrollmentsChanged(pinnedEnrollments.length, pinnedEnrollmentsQueue.length, unpinnedEnrollments.length, unpinnedEnrollmentsQueue.length)'
+				'_updateEnrollmentAlerts(_hasFilteredPinnedEnrollments)',
+				'_enrollmentsChanged(filteredPinnedEnrollments.length, filteredPinnedEnrollmentsQueue.length, filteredUnpinnedEnrollments.length, filteredUnpinnedEnrollmentsQueue.length)'
 			],
 			created: function() {
 				this._tilesInPinStateTransition = [];
 			},
 			_enrollmentsChanged: function() {
-				this.set('_hasPinnedEnrollments',
-					this.pinnedEnrollments.length > 0 ||
-					this.pinnedEnrollmentsQueue.length > 0);
+				this._hasFilteredPinnedEnrollments =
+					this.filteredPinnedEnrollments.length > 0 ||
+					this.filteredPinnedEnrollmentsQueue.length > 0;
 				// Need to factor in queues here - if user has 1 enrollment, it will briefly
 				// disappear from both enrollments arrays when pinned/unpinned
-				this.set('_hasEnrollments',
-					this._hasPinnedEnrollments ||
-					this.unpinnedEnrollments.length > 0 ||
-					this.unpinnedEnrollmentsQueue.length > 0);
+				this._hasFilteredEnrollments =
+					this._hasFilteredPinnedEnrollments ||
+					this.filteredUnpinnedEnrollments.length > 0 ||
+					this.filteredUnpinnedEnrollmentsQueue.length > 0;
 			},
 			_moveEnrollmentToPinnedList: function(enrollment) {
 				// Remove enrollment from unpinned list, add to pinned
@@ -415,9 +416,40 @@
 					entity._actionsByName['pin-course'] = entity.actions[0];
 				}
 			},
+			_updateFilteredEnrollments: function(e, response) {
+				if (response.detail.status === 200) {
+					this.filteredPinnedEnrollments = [];
+					this.filteredUnpinnedEnrollments = [];
+					var parser = document.createElement('d2l-siren-parser');
+					var enrollments = parser.parse(response.detail.xhr.response);
+					var enrollmentEntities = enrollments.getSubEntitiesByClass('enrollment');
+					var newPinnedEnrollments = [];
+					var newUnpinnedEnrollments = [];
+					enrollmentEntities.forEach(function(enrollment) {
+						if (enrollment.hasClass('pinned')) {
+							newPinnedEnrollments.push(enrollment);
+						} else {
+							newUnpinnedEnrollments.push(enrollment);
+						}
+					}, this);
+
+					this.filteredPinnedEnrollments = newPinnedEnrollments;
+					this.filteredUnpinnedEnrollments = newUnpinnedEnrollments;
+
+					var colNum = this._calcNumColumns(this._getAvailableWidth(Polymer.dom(this.root).node.host), this.filteredPinnedEnrollments.length);
+					this._tileSizes = (colNum === 2) ?
+						{ mobile: { maxwidth: 767, size: 50 }, tablet: { maxwidth: 1243, size: 33 }, desktop: { size: 20 } } :
+						{ mobile: { maxwidth: 767, size: 100 }, tablet: { maxwidth: 1243, size: 67 }, desktop: { size: 25 } };
+
+					this.fire('recalculate-columns');
+					this.toggleClass('d2l-all-courses-hidden', true, this.$.lazyLoadSpinner);
+
+					myEnrollmentsEntity = enrollments;
+				}
+			},
 			ready: function() {
 				this.usePendingLists = true;
-				this._updateEnrollmentAlerts(this._hasPinnedEnrollments);
+				this._updateEnrollmentAlerts(this._hasFilteredPinnedEnrollments);
 
 				// Both course tile grids in this view should have the same number of columns, so use a custom getter
 				var courseTileGrids = Polymer.dom(this.root).querySelectorAll('d2l-course-tile-grid');
@@ -452,8 +484,9 @@
 			},
 			load: function() {
 				// Load course tile and filter contents. Called from d2l-my-courses.
-				this.filteredPinnedEnrollments = pinnedEnrollments;
-				this.filteredUnPinnedEnrollments = unpinnedEnrollments;
+				this.$['search-widget']._searchString = '';
+				this.filteredPinnedEnrollments = this.pinnedEnrollments;
+				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments;
 				this.set('delayLoad', false);
 
 				// Only make the call to load the filter menu contents if user has a

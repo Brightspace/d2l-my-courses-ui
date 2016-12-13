@@ -182,8 +182,8 @@
 
 		<d2l-course-tile-grid
 			id="all-courses-pinned"
-			enrollments="{{pinnedEnrollments}}"
-			enrollments-queue="{{pinnedEnrollmentsQueue}}"
+			enrollments="{{filteredPinnedEnrollments}}"
+			enrollments-queue="{{filteredPinnedEnrollmentsQueue}}"
 			delay-load="[[delayLoad]]"
 			tile-sizes="[[_tileSizes]]">
 		</d2l-course-tile-grid>
@@ -192,8 +192,8 @@
 
 		<d2l-course-tile-grid
 			id="all-courses-unpinned"
-			enrollments="{{unpinnedEnrollments}}"
-			enrollments-queue="{{unpinnedEnrollmentsQueue}}"
+			enrollments="{{filteredUnpinnedEnrollments}}"
+			enrollments-queue="{{filteredUnpinnedEnrollmentsQueue}}"
 			delay-load="[[delayLoad]]"
 			tile-sizes="[[_tileSizes]]">
 		</d2l-course-tile-grid>
@@ -205,6 +205,84 @@
 		Polymer({
 			is: 'd2l-all-courses',
 			properties: {
+					// Set of pinned enrollment Entities
+				pinnedEnrollments: {
+					type: Array,
+					value: function() {
+						return [];
+					},
+					notify: true
+				},
+				// filtered pinned enrollment entities
+				filteredPinnedEnrollments: {
+					type: Array,
+					value: function() {
+						return [];
+					}
+				},
+				// Set of unpinned enrollment Entities
+				unpinnedEnrollments: {
+					type: Array,
+					value: function() {
+						return [];
+					},
+					notify: true
+				},
+				filteredUnpinnedEnrollments: {
+					type: Array,
+					value: function() {
+						return [];
+					},
+					notify: true
+				},
+				// Set of enrollments Entities that are being transferred from unpinned to pinned state
+				// Only used by `d2l-all-courses`
+				pinnedEnrollmentsQueue: {
+					type: Array,
+					value: function() {
+						return [];
+					},
+					notify: true
+				},
+				filteredPinnedEnrollmentsQueue: {
+					type: Array,
+					value: function() {
+						return [];
+					},
+					notify: true
+				},
+				// Set of enrollments that are being transferred from pinned to unpinned state
+				// Only used by `d2l-all-courses`
+				unpinnedEnrollmentsQueue: {
+					type: Array,
+					value: function() {
+						return [];
+					},
+					notify: true
+				},
+				filteredUnpinnedEnrollmentsQueue: {
+					type: Array,
+					value: function() {
+						return [];
+					},
+					notify: true
+				},
+				// If enabled, the component will use the pinned/unpinned enrollment queues
+				// In the case of `d2l-all-courses`, the enrollments are switching lists, so this is required.
+				usePendingLists: {
+					type: Boolean,
+					value: false
+				},
+				// True when there are pinned enrollments (i.e. `pinnedEnrollments.length > 0`)
+				_hasPinnedEnrollments: {
+					type: Boolean,
+					value: false
+				},
+				// True when there are any enrollments (pinned or unpinned)
+				_hasEnrollments: {
+					type: Boolean,
+					value: false
+				},
 				// Sets the delay-load property on the course tile grid
 				delayLoad: {
 					type: Boolean,
@@ -232,16 +310,111 @@
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
 				window.D2L.MyCourses.LocalizeBehavior,
-				window.D2L.MyCourses.CourseManagementBehavior,
 				window.D2L.MyCourses.UtilityBehavior,
 				window.D2L.MyCourses.AlertBehavior
 			],
 			listeners: {
-				'd2l-simple-overlay-opening': '_onSimpleOverlayOpening'
+				'd2l-simple-overlay-opening': '_onSimpleOverlayOpening',
+				'tile-remove-complete': '_onTileRemoveComplete',
+				'enrollment-pin-complete': '_onEnrollmentPinComplete',
+				'enrollment-unpin-complete': '_onEnrollmentUnpinComplete'
 			},
 			observers: [
-				'_updateEnrollmentAlerts(_hasPinnedEnrollments)'
+				'_updateEnrollmentAlerts(_hasPinnedEnrollments)',
+					'_enrollmentsChanged(pinnedEnrollments.length, pinnedEnrollmentsQueue.length, unpinnedEnrollments.length, unpinnedEnrollmentsQueue.length)'
 			],
+			created: function() {
+				this._tilesInPinStateTransition = [];
+			},
+			_enrollmentsChanged: function() {
+				this.set('_hasPinnedEnrollments',
+					this.pinnedEnrollments.length > 0 ||
+					this.pinnedEnrollmentsQueue.length > 0);
+				// Need to factor in queues here - if user has 1 enrollment, it will briefly
+				// disappear from both enrollments arrays when pinned/unpinned
+				this.set('_hasEnrollments',
+					this._hasPinnedEnrollments ||
+					this.unpinnedEnrollments.length > 0 ||
+					this.unpinnedEnrollmentsQueue.length > 0);
+			},
+			_moveEnrollmentToPinnedList: function(enrollment) {
+				// Remove enrollment from unpinned list, add to pinned
+				var enrollmentId = this.getEntityIdentifier(enrollment);
+
+				for (var index = 0; index < this.unpinnedEnrollments.length; index++) {
+					var pinnedEnrollmentId = this.getEntityIdentifier(this.unpinnedEnrollments[index]);
+					if (pinnedEnrollmentId === enrollmentId) {
+						var foundEnrollment = this.filteredUnpinnedEnrollments[index];
+						this._setEnrollmentPinData(foundEnrollment, true);
+
+						// If enabled, add to list of "to be added" pinned entities, and let consumer move to pinned list when desired
+						if (this.usePendingLists) {
+							this.push('pinnedEnrollmentsQueue', foundEnrollment);
+							this.push('filteredPinnedEnrollmentsQueue', foundEnrollment);
+						} else {
+							this._tilesInPinStateTransition.push(enrollmentId);
+							this.unshift('pinnedEnrollments', foundEnrollment);
+							this.unshift('filteredPinnedEnrollments', foundEnrollment);
+						}
+
+						this.splice('unpinnedEnrollments', index, 1);
+						this.splice('filteredUnpinnedEnrollments', index, 1);
+						break;
+					}
+				}
+			},
+			_moveEnrollmentToUnpinnedList: function(enrollment) {
+				// Remove enrollment from pinned list, add to unpinned
+				var enrollmentId = this.getEntityIdentifier(enrollment);
+
+				for (var index = 0; index < this.pinnedEnrollments.length; index++) {
+					var unpinnedEnrollmentId = this.getEntityIdentifier(this.pinnedEnrollments[index]);
+					if (unpinnedEnrollmentId === enrollmentId) {
+						var foundEnrollment = this.filteredPinnedEnrollments[index];
+						this._setEnrollmentPinData(foundEnrollment, false);
+
+						// If enabled, add to list of "to be added" unpinned entities, and let consumer move to unpinned list when desired
+						if (this.usePendingLists) {
+							this.push('unpinnedEnrollmentsQueue', foundEnrollment);
+							this.push('filteredUnpinnedEnrollmentsQueue', foundEnrollment);
+						} else {
+							this._tilesInPinStateTransition.push(enrollmentId);
+							this.unshift('unpinnedEnrollments', foundEnrollment);
+							this.unshift('filteredUnpinnedEnrollments', foundEnrollment);
+						}
+
+						this.splice('pinnedEnrollments', index, 1);
+						this.splice('filteredPinnedEnrollments', index, 1);
+						break;
+					}
+				}
+			},
+			_onTileRemoveComplete: function(e) {
+				if (e.detail.pinned) {
+					this._moveEnrollmentToPinnedList(e.detail.enrollment);
+				} else {
+					this._moveEnrollmentToUnpinnedList(e.detail.enrollment);
+				}
+
+				e.stopPropagation();
+			},
+			_setEnrollmentPinData: function(entity, isPinned) {
+				// HACK: Because the course tiles are being removed and re-created in the DOM, we have to effectively
+				// manually update them, rather than updating them with the received enrollment from the API call.
+				if (isPinned) {
+					entity.class.splice(entity.class.indexOf('unpinned'));
+					entity.class.push('pinned');
+					entity.actions[0].name = 'unpin-course';
+					entity.actions[0].fields[0].value = false;
+					entity._actionsByName['unpin-course'] = entity.actions[0];
+				} else {
+					entity.class.splice(entity.class.indexOf('pinned'));
+					entity.class.push('unpinned');
+					entity.actions[0].name = 'pin-course';
+					entity.actions[0].fields[0].value = true;
+					entity._actionsByName['pin-course'] = entity.actions[0];
+				}
+			},
 			ready: function() {
 				this.usePendingLists = true;
 				this._updateEnrollmentAlerts(this._hasPinnedEnrollments);
@@ -279,7 +452,8 @@
 			},
 			load: function() {
 				// Load course tile and filter contents. Called from d2l-my-courses.
-
+				this.filteredPinnedEnrollments = pinnedEnrollments;
+				this.filteredUnPinnedEnrollments = unpinnedEnrollments;
 				this.set('delayLoad', false);
 
 				// Only make the call to load the filter menu contents if user has a

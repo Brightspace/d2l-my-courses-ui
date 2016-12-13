@@ -1,4 +1,4 @@
-/* global describe, it, before, beforeEach, afterEach, fixture, expect, sinon */
+/* global describe, it, beforeEach, afterEach, fixture, expect, sinon */
 
 'use strict';
 
@@ -382,15 +382,13 @@ describe('d2l-my-courses', function() {
 
 	describe('With enrollments', function() {
 		var pinnedEnrollmentEntity,
-			unpinnedEnrollmentEntity;
-
-		before(function() {
-			var parser = document.createElement('d2l-siren-parser');
-			pinnedEnrollmentEntity = parser.parse(enrollmentsSearchResponse.entities[0]);
-			unpinnedEnrollmentEntity = parser.parse(noPinnedEnrollmentsResponse.entities[0]);
-		});
+			unpinnedEnrollmentEntity,
+			parser;
 
 		beforeEach(function(done) {
+			parser = document.createElement('d2l-siren-parser');
+			pinnedEnrollmentEntity = parser.parse(enrollmentsSearchResponse.entities[0]);
+			unpinnedEnrollmentEntity = parser.parse(noPinnedEnrollmentsResponse.entities[0]);
 			server.respondWith(
 				'GET',
 				widget.enrollmentsUrl,
@@ -475,7 +473,7 @@ describe('d2l-my-courses', function() {
 						})
 					));
 					done();
-				}, 0);
+				});
 			});
 
 			it('should bubble the correct d2l-course-pinned-change event when an enrollment is unpinned', function(done) {
@@ -502,7 +500,7 @@ describe('d2l-my-courses', function() {
 						})
 					));
 					done();
-				}, 0);
+				});
 			});
 
 			it('should move the correct pinned enrollment to the unpinned list when receiving an external unpin event', function(done) {
@@ -524,7 +522,7 @@ describe('d2l-my-courses', function() {
 					expect(widget.pinnedEnrollments.length).to.equal(0);
 					expect(widget.unpinnedEnrollments.length).to.equal(2);
 					done();
-				}, 10);
+				});
 			});
 
 			it('should move the correct unpinned enrollment to the pinned list when receiving an external pin event', function(done) {
@@ -546,7 +544,7 @@ describe('d2l-my-courses', function() {
 					expect(widget.pinnedEnrollments.length).to.equal(2);
 					expect(widget.unpinnedEnrollments.length).to.equal(0);
 					done();
-				}, 0);
+				});
 			});
 		});
 	});

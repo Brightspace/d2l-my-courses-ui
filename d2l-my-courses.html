@@ -177,7 +177,8 @@
 				'open-change-image-view': '_openChangeImageView',
 				'set-course-image': '_setCourseImageEvent',
 				'clear-image-scroll-threshold': '_clearImageScrollThreshold',
-				'simple-overlay-closed': '_onSimpleOverlayClosed'
+				'simple-overlay-closed': '_onSimpleOverlayClosed',
+				'd2l-root-enrollment-search': '_rootEnrollmentRequest'
 			},
 			observers: [
 				'_updateEnrollmentAlerts(_hasEnrollments, _hasPinnedEnrollments)'
@@ -192,11 +193,13 @@
 			attached: function() {
 				this.$.enrollmentsRootRequest.generateRequest();
 
-
 				this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-overlay'].scrollRegion;
 			},
 			getCourseTileItemCount: function() {
 				return this.pinnedEnrollments.length;
+			},
+			_rootEnrollmentRequest: function() {
+				this.$.enrollmentsRootRequest.generateRequest();
 			},
 			_onEnrollmentsRootResponse: function(response) {
 				if (response.detail.status === 200) {

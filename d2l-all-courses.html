@@ -14,6 +14,7 @@
 <link rel="import" href="d2l-filter-menu-content.html">
 <link rel="import" href="d2l-search-widget-custom.html">
 <link rel="import" href="localize-behavior.html">
+<link rel="import" href="d2l-simple-overlay.html">
 
 <dom-module id="d2l-all-courses">
 	<template>
@@ -125,7 +126,7 @@
 			id="enrollmentsSearchRequest"
 			url="[[_enrollmentsSearchUrl]]"
 			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_updateFilteredEnrollments"
+			on-iron-ajax-response="_enrollmentsSearchResponse"
 			last-response="{{lastEnrollmentsSearchResponse}}">
 		</d2l-ajax>
 		<d2l-simple-overlay
@@ -243,7 +244,8 @@
 					value: function() {
 						return [];
 					},
-					notify: true
+					notify: true,
+					observer: '_setFilteredPinnedEnrollments'
 				},
 				// filtered pinned enrollment entities
 				filteredPinnedEnrollments: {
@@ -258,7 +260,8 @@
 					value: function() {
 						return [];
 					},
-					notify: true
+					notify: true,
+					observer: '_setFilteredUnpinnedEnrollments'
 				},
 				filteredUnpinnedEnrollments: {
 					type: Array,
@@ -469,7 +472,10 @@
 				this._pinnedCoursesMap = {};
 				this._updateFilteredEnrollments(detail, false);
 			},
-			_updateFilteredEnrollments: function(response, append = true) {
+			_enrollmentsSearchResponse: function(response) {
+				this._updateFilteredEnrollments(response, true);
+			},
+			_updateFilteredEnrollments: function(response, append) {
 				if (response.detail.status === 200) {
 					var parser = document.createElement('d2l-siren-parser');
 					var enrollments = parser.parse(response.detail.xhr.response);
@@ -540,6 +546,12 @@
 				var itemCount = Math.max(this.pinnedEnrollments.length, this.unpinnedEnrollments.length);
 				return itemCount;
 			},
+			_setFilteredPinnedEnrollments: function() {
+				this.filteredPinnedEnrollments = this.pinnedEnrollments;
+			},
+			_setFilteredUnpinnedEnrollments: function() {
+				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments;
+			},
 			load: function() {
 				// Load course tile and filter contents. Called from d2l-my-courses.
 				this.$$('#all-courses').open();
@@ -547,8 +559,6 @@
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 				this.$['search-widget']._searchString = '';
 				this._pinnedCoursesMap = {};
-				this.filteredPinnedEnrollments = this.pinnedEnrollments;
-				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments;
 				this.set('delayLoad', false);
 
 				// Only make the call to load the filter menu contents if user has a

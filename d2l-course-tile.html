@@ -207,10 +207,6 @@ the user has in that organization - student, teacher, TA, etc.
 				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
 				this._organizationUrl = organizationLink.href + '?embedDepth=1';
 
-				if (!this.delayLoad) {
-					this.$.organizationRequest.generateRequest();
-				}
-
 				this._onFocus = this._onFocus.bind(this);
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);

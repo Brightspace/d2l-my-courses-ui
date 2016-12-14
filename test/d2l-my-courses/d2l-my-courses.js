@@ -432,7 +432,7 @@ describe('d2l-my-courses', function() {
 			widget._addAlert('warning', 'setCourseImageFailure', 'failed to do that thing it should do');
 			clock.tick(1001);
 			expect(widget._alerts).to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
-			widget.$['all-courses']._handleClose();
+			widget.$$('d2l-all-courses').children['all-courses']._handleClose();
 			expect(widget._alerts).to.not.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
 		});
 	});

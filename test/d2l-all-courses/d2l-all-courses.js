@@ -61,15 +61,6 @@ describe('d2l-all-courses', function() {
 		}
 	});
 
-	it('should hide search if user has no enrollments', function() {
-		var search = widget.$$('d2l-search-widget-custom');
-		expect(search.hidden).to.be.true;
-
-		widget.pinnedEnrollments = [pinnedEnrollmentEntity];
-
-		expect(search.hidden).to.be.false;
-	});
-
 	it('should not load filter menu content when there are insufficient enrollments', function() {
 		var stub = sinon.stub(widget.$.filterMenuContent, 'load');
 
@@ -152,12 +143,12 @@ describe('d2l-all-courses', function() {
 		it('should update enrollment alerts when an enrollment is pinned', function() {
 			var sandbox = sinon.sandbox.create();
 
-			widget.pinnedEnrollments = [];
-			widget.unpinnedEnrollments = [unpinnedEnrollmentEntity];
-			expect(widget._hasPinnedEnrollments).to.equal(false);
+			widget.filteredPinnedEnrollments = [];
+			widget.filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
+			expect(widget._hasFilteredPinnedEnrollments).to.equal(false);
 			expect(widget._alerts).to.include({ alertName: 'noPinnedCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any pinned courses. Pin your favorite courses to make them easier to find.' });
 			var updateEnrollmentAlertsSpy = sandbox.spy(widget, '_updateEnrollmentAlerts');
-			widget._hasPinnedEnrollments = true;
+			widget._hasFilteredPinnedEnrollments = true;
 			expect(updateEnrollmentAlertsSpy.called);
 
 			sandbox.restore();

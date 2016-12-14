@@ -342,7 +342,6 @@
 			_clearSearchResults: function() {
 				this.cancelDebouncer('liveSearchJob');
 				this._searchString = '';
-				this.fire('d2l-root-search');
 				this.set('_searchResults', []);
 
 				if (this._previousSearches.length > 0) {
@@ -357,9 +356,7 @@
 			_onSearchStringChanged: function(newString) {
 				if (this._listboxes) {
 					if (newString.length > 0) {
-						if (!this.isDebouncerActive('liveSearchJob')) {
-							this.debounce('liveSearchJob', this._search.bind(this), 750);
-						}
+						this.debounce('liveSearchJob', this._search.bind(this), 750);
 					} else {
 						this._clearSearchResults();
 					}

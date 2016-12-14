@@ -15,6 +15,7 @@
 <link rel="import" href="d2l-search-widget-custom.html">
 <link rel="import" href="localize-behavior.html">
 <link rel="import" href="d2l-simple-overlay.html">
+<link rel="import" href="../d2l-loading-spinner/d2l-loading-spinner.html">
 
 <dom-module id="d2l-all-courses">
 	<template>
@@ -302,12 +303,25 @@
 					},
 					notify: true
 				},
-				_pinnedCoursesMap: Object,
+				// Object containing the IDs of previously loaded pinned enrollments, to avoid duplicates
+				_pinnedCoursesMap: {
+					type: Object,
+					value: function() {
+						return {};
+					}
+				},
+				// Object containing the IDs of previously loaded unpinned enrollments, to avoid duplicates
+				_unpinnedCoursesMap: {
+					type: Object,
+					value: function() {
+						return {};
+					}
+				},
 				// If enabled, the component will use the pinned/unpinned enrollment queues
 				// In the case of `d2l-all-courses`, the enrollments are switching lists, so this is required.
 				usePendingLists: {
 					type: Boolean,
-					value: false
+					value: true
 				},
 				// True when there are pinned enrollments (i.e. `pinnedEnrollments.length > 0`)
 				_hasFilteredPinnedEnrollments: {
@@ -394,8 +408,8 @@
 				// Remove enrollment from unpinned list, add to pinned
 				var enrollmentId = this.getEntityIdentifier(enrollment);
 
-				for (var index = 0; index < this.unpinnedEnrollments.length; index++) {
-					var pinnedEnrollmentId = this.getEntityIdentifier(this.unpinnedEnrollments[index]);
+				for (var index = 0; index < this.filteredUnpinnedEnrollments.length; index++) {
+					var pinnedEnrollmentId = this.getEntityIdentifier(this.filteredUnpinnedEnrollments[index]);
 					if (pinnedEnrollmentId === enrollmentId) {
 						var foundEnrollment = this.filteredUnpinnedEnrollments[index];
 						this._setEnrollmentPinData(foundEnrollment, true);
@@ -420,8 +434,8 @@
 				// Remove enrollment from pinned list, add to unpinned
 				var enrollmentId = this.getEntityIdentifier(enrollment);
 
-				for (var index = 0; index < this.pinnedEnrollments.length; index++) {
-					var unpinnedEnrollmentId = this.getEntityIdentifier(this.pinnedEnrollments[index]);
+				for (var index = 0; index < this.filteredPinnedEnrollments.length; index++) {
+					var unpinnedEnrollmentId = this.getEntityIdentifier(this.filteredPinnedEnrollments[index]);
 					if (unpinnedEnrollmentId === enrollmentId) {
 						var foundEnrollment = this.filteredPinnedEnrollments[index];
 						this._setEnrollmentPinData(foundEnrollment, false);
@@ -448,8 +462,6 @@
 				} else {
 					this._moveEnrollmentToUnpinnedList(e.detail.enrollment);
 				}
-
-				e.stopPropagation();
 			},
 			_setEnrollmentPinData: function(entity, isPinned) {
 				// HACK: Because the course tiles are being removed and re-created in the DOM, we have to effectively
@@ -470,6 +482,7 @@
 			},
 			_updateFilteredEnrollmentsEvent: function(e, detail) {
 				this._pinnedCoursesMap = {};
+				this._unpinnedCoursesMap = {};
 				this._updateFilteredEnrollments(detail, false);
 			},
 			_enrollmentsSearchResponse: function(response) {
@@ -483,16 +496,20 @@
 					var newPinnedEnrollments = [];
 					var newUnpinnedEnrollments = [];
 					enrollmentEntities.forEach(function(enrollment) {
+						var enrollmentId = this.getEntityIdentifier(enrollment);
 						if (enrollment.hasClass('pinned')) {
-							var enrollmentId = this.getEntityIdentifier(enrollment);
 							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
 								newPinnedEnrollments.push(enrollment);
 								this._pinnedCoursesMap[enrollmentId] = true;
 							}
 						} else {
-							newUnpinnedEnrollments.push(enrollment);
+							if (!this._unpinnedCoursesMap.hasOwnProperty(enrollmentId)) {
+								newUnpinnedEnrollments.push(enrollment);
+								this._unpinnedCoursesMap[enrollmentId] = true;
+							}
 						}
 					}, this);
+
 					if (append) {
 						this.filteredPinnedEnrollments = this.filteredPinnedEnrollments.concat(newPinnedEnrollments);
 						this.filteredUnpinnedEnrollments = this.filteredUnpinnedEnrollments.concat(newUnpinnedEnrollments);
@@ -512,7 +529,6 @@
 				}
 			},
 			ready: function() {
-				this.usePendingLists = true;
 				this._updateEnrollmentAlerts(this._hasFilteredPinnedEnrollments);
 
 				// Both course tile grids in this view should have the same number of columns, so use a custom getter
@@ -547,18 +563,29 @@
 				return itemCount;
 			},
 			_setFilteredPinnedEnrollments: function() {
+				this.filteredPinnedEnrollments = [];
 				this.filteredPinnedEnrollments = this.pinnedEnrollments;
 			},
 			_setFilteredUnpinnedEnrollments: function() {
+				this.filteredUnpinnedEnrollments = [];
 				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments;
 			},
 			load: function() {
 				// Load course tile and filter contents. Called from d2l-my-courses.
+				this.filteredPinnedEnrollments = [];
+				this.filteredPinnedEnrollments = this.pinnedEnrollments;
+				this.filteredUnpinnedEnrollments = [];
+				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments;
 				this.$$('#all-courses').open();
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 				this.$['search-widget']._searchString = '';
-				this._pinnedCoursesMap = {};
+				this.filteredPinnedEnrollments.forEach(function(enrollment) {
+					this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
+				}, this);
+				this.filteredPinnedEnrollments.forEach(function(enrollment) {
+					this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
+				}, this);
 				this.set('delayLoad', false);
 
 				// Only make the call to load the filter menu contents if user has a

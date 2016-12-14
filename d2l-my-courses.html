@@ -154,7 +154,19 @@
 				// Object containing the last response from an enrollments search request
 				_lastEnrollmentsSearchResponse: Object,
 				// Object containing the IDs of previously loaded pinned enrollments, to avoid duplicates
-				_pinnedCoursesMap: Object,
+				_pinnedCoursesMap: {
+					type: Object,
+					value: function() {
+						return {};
+					}
+				},
+				// Object containing the IDs of previously loaded unpinned enrollments, to avoid duplicates
+				_unpinnedCoursesMap: {
+					type: Object,
+					value: function() {
+						return {};
+					}
+				},
 				// URL used by the search widget to fetch semester-type organizations
 				_semestersUrl: String,
 				// The organization which the user is selecting the image of
@@ -182,14 +194,14 @@
 				'_updateEnrollmentAlerts(_hasEnrollments, _hasPinnedEnrollments)'
 			],
 			ready: function() {
-				this._pinnedCoursesMap = {};
+
 				this._updateEnrollmentAlerts(this._hasEnrollments, this._hasPinnedEnrollments);
 
 				this.toggleClass('d2l-my-courses-hidden', true, this.$.courseTiles);
 				this.toggleClass('d2l-my-courses-hidden', true, this.$.courseList);
 			},
 			attached: function() {
-				this.$.enrollmentsRootRequest.generateRequest();
+				this._rootEnrollmentRequest();
 
 				this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-overlay'].scrollRegion;
 			},
@@ -197,7 +209,12 @@
 				return this.pinnedEnrollments.length;
 			},
 			_rootEnrollmentRequest: function() {
-				this.$.enrollmentsRootRequest.generateRequest();
+				this._pinnedCoursesMap = {};
+				this._unpinnedCoursesMap = {};
+				this.unpinnedEnrollments = [];
+				this.pinnedEnrollments = [];
+				this.debounce('d2l-root-request', this.$.enrollmentsRootRequest.generateRequest(), 1000);
+
 			},
 			_onEnrollmentsRootResponse: function(response) {
 				if (response.detail.status === 200) {
@@ -231,35 +248,22 @@
 					var newUnpinnedEnrollments = [];
 
 					enrollmentEntities.forEach(function(enrollment) {
+						var enrollmentId = this.getEntityIdentifier(enrollment);
 						if (enrollment.hasClass('pinned')) {
-							var enrollmentId = this.getEntityIdentifier(enrollment);
 							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
 								newPinnedEnrollments.push(enrollment);
 								this._pinnedCoursesMap[enrollmentId] = true;
 							}
 						} else {
-							newUnpinnedEnrollments.push(enrollment);
+							if (!this._unpinnedCoursesMap.hasOwnProperty(enrollmentId)) {
+								newUnpinnedEnrollments.push(enrollment);
+								this._unpinnedCoursesMap[enrollmentId] = true;
+							}
 						}
 					}, this);
 
 					this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
 					this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
-
-					this.notifySplices('pinnedEnrollments', [{
-						index: this.pinnedEnrollments.length - newPinnedEnrollments.length,
-						removed: [],
-						addedCount: newPinnedEnrollments.length,
-						object: this.pinnedEnrollments,
-						type: 'splice'
-					}]);
-
-					this.notifySplices('unpinnedEnrollments', [{
-						index: this.unpinnedEnrollments.length - newUnpinnedEnrollments.length,
-						removed: [],
-						addedCount: newUnpinnedEnrollments.length,
-						object: this.unpinnedEnrollments,
-						type: 'splice'
-					}]);
 
 					var colNum = this._calcNumColumns(this._getAvailableWidth(Polymer.dom(this.root).node.host), this.pinnedEnrollments.length);
 					this._tileSizes = (colNum === 2) ?
@@ -269,7 +273,7 @@
 					this.fire('recalculate-columns');
 				}
 
-				this.toggleClass('d2l-my-courses-hidden', true, this.$.lazyLoadSpinner);
+				//this.toggleClass('d2l-my-courses-hidden', true, this.$.lazyLoadSpinner);
 				this._showContent();
 			},
 			_openChangeImageView: function(e) {

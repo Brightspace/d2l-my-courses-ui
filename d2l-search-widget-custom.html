@@ -239,6 +239,16 @@
 					value: function() {
 						return [];
 					}
+				},
+				_searchResponse: {
+					type: Object,
+					value: function() {
+						return {};
+					}
+				},
+				_updateTiles: {
+					type: Boolean,
+					value: false
 				}
 			},
 
@@ -335,7 +345,9 @@
 			},
 
 			_onSearchButtonClick: function() {
+				this._updateTiles = true;
 				this.debounce('liveSearchJob', this._search, 750);
+
 			},
 
 			_clearSearchResults: function() {
@@ -365,6 +377,7 @@
 			_onSearchInputKeyPressed: function(e) {
 				switch (e.keyCode) {
 					case this._keyCodes.ENTER:
+						this._updateTiles = true;
 						this.debounce('liveSearchJob', this._search, 750);
 						break;
 					case this._keyCodes.DOWN:
@@ -467,8 +480,10 @@
 							self.push('_organizationRequests', ajax);
 						})(enrollmentEntities[i], i, enrollmentEntities.length, this, parser);
 					}
-					this.fire('d2l-search-enrollment-response', response);
-
+					if (this._updateTiles) {
+						this.fire('d2l-search-enrollment-response', response);
+						this._updateTiles = false;
+					}
 				}
 			},
 

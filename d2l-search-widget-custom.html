@@ -347,7 +347,7 @@
 			_onSearchButtonClick: function() {
 				this._updateTiles = true;
 				this.debounce('liveSearchJob', this._search, 750);
-
+				this.$.dropdown.close();
 			},
 
 			_clearSearchResults: function() {
@@ -368,8 +368,6 @@
 				if (this._listboxes) {
 					if (newString.length > 0) {
 						this.debounce('liveSearchJob', this._search, 750);
-					} else {
-						this._clearSearchResults();
 					}
 				}
 			},
@@ -379,6 +377,8 @@
 					case this._keyCodes.ENTER:
 						this._updateTiles = true;
 						this.debounce('liveSearchJob', this._search, 750);
+						this.$.dropdown.close();
+						e.preventDefault();
 						break;
 					case this._keyCodes.DOWN:
 						if (this._currentListbox.hasItems()) {
@@ -444,7 +444,7 @@
 					var enrollmentEntities = searchResponse.entities;
 					this.$$('iron-pages').select(enrollmentEntities.length > 0 ? 'search-results-page' : 'no-results-page');
 					if (!this.$.dropdown.opened) {
-						this.$.dropdown.open();
+						this.$.dropdown.open(false);
 					}
 
 					this._searchResults = [];
@@ -481,8 +481,8 @@
 						})(enrollmentEntities[i], i, enrollmentEntities.length, this, parser);
 					}
 					if (this._updateTiles) {
-						this.fire('d2l-search-enrollment-response', response);
 						this._updateTiles = false;
+						this.fire('d2l-search-enrollment-response', response);
 					}
 				}
 			},
@@ -502,9 +502,12 @@
 						if (e.detail.item.dataset.text) {
 							this._addSearchToHistory(e.detail.item.dataset.text);
 							this._searchString = e.detail.item.dataset.text;
+							this._updateTiles = true;
+
 						}
 						break;
 				}
+				e.stopPropagation();
 			},
 
 			_keyCodes: {
@@ -523,14 +526,14 @@
 				if (!this._searchString) {
 					if (this._previousSearches.length > 0) {
 						this.$$('iron-pages').select('recent-searches-page');
-						this.$.dropdown.open();
+						this.$.dropdown.open(false);
 					}
 					return;
 				}
 
 				// If there is a search value, just re-open the dropdown (either results or no-results will show,
 				// depending on what was last selected).
-				this.$.dropdown.open();
+				this.$.dropdown.open(false);
 			},
 
 			_handleFocus: function() {

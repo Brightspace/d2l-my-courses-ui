@@ -307,7 +307,6 @@
 			// Calls the search-my-enrollments action, used to populate live search results in the listbox
 			_search: function() {
 				if (this._searchString) {
-					this.cancelDebouncer('liveSearchJob');
 
 					var queryParams = {
 						search: this._searchString,
@@ -336,7 +335,7 @@
 			},
 
 			_onSearchButtonClick: function() {
-				this._search();
+				this.debounce('liveSearchJob', this._search, 750);
 			},
 
 			_clearSearchResults: function() {
@@ -356,7 +355,7 @@
 			_onSearchStringChanged: function(newString) {
 				if (this._listboxes) {
 					if (newString.length > 0) {
-						this.debounce('liveSearchJob', this._search.bind(this), 750);
+						this.debounce('liveSearchJob', this._search, 750);
 					} else {
 						this._clearSearchResults();
 					}
@@ -366,7 +365,7 @@
 			_onSearchInputKeyPressed: function(e) {
 				switch (e.keyCode) {
 					case this._keyCodes.ENTER:
-						this._search();
+						this.debounce('liveSearchJob', this._search, 750);
 						break;
 					case this._keyCodes.DOWN:
 						if (this._currentListbox.hasItems()) {

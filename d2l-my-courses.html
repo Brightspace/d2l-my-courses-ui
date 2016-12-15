@@ -213,8 +213,11 @@
 				this._unpinnedCoursesMap = {};
 				this.unpinnedEnrollments = [];
 				this.pinnedEnrollments = [];
-				this.debounce('d2l-root-request', this.$.enrollmentsRootRequest.generateRequest(), 1000);
-
+				this.debounce('d2l-root-request', this._rootRequest, 1000);
+			},
+			//encapsulates root enrollment request, the debounce method loses context when directly using this
+			_rootRequest: function() {
+				this.$.enrollmentsRootRequest.generateRequest();
 			},
 			_onEnrollmentsRootResponse: function(response) {
 				if (response.detail.status === 200) {

@@ -115,6 +115,13 @@
 			on-iron-ajax-response="_onSearchResponse">
 		</d2l-ajax>
 
+		<d2l-ajax
+			id="searchRequestTiles"
+			url="[[_searchUrl]]"
+			headers='{ "Accept": "application/vnd.siren+json" }'
+			on-iron-ajax-response="_onSearchResponseTiles">
+		</d2l-ajax>
+
 		<d2l-dropdown no-auto-open>
 			<div class="search-bar d2l-dropdown-opener" id="opener">
 				<button
@@ -245,10 +252,6 @@
 					value: function() {
 						return {};
 					}
-				},
-				_updateTiles: {
-					type: Boolean,
-					value: false
 				}
 			},
 
@@ -315,7 +318,7 @@
 			},
 
 			// Calls the search-my-enrollments action, used to populate live search results in the listbox
-			_search: function() {
+			_liveSearch: function() {
 				if (this._searchString) {
 
 					var queryParams = {
@@ -344,9 +347,39 @@
 				}
 			},
 
+			// Calls the search-my-enrollments action, used to populate live search results in the listbox
+			_search: function() {
+				if (this._searchString) {
+
+					var queryParams = {
+						search: this._searchString,
+						page: 1,
+						pageSize: 20,
+						parentOrganizations: this.parentOrganizations.join(','),
+						sortField: this.sortField,
+						// Need to reverse the order for sorting by name
+						sortDescending: this.sortField !== 'courseName'
+					};
+
+					this._searchUrl = this.createActionUrl(
+						this._searchAction,
+						queryParams
+					);
+
+					this._organizationRequests.forEach(function(req) {
+						if (req.abort) {
+							req.abort();
+						}
+					});
+					this.set('_organizationRequests', []);
+
+					this.$.searchRequestTiles.generateRequest();
+				}
+			},
+
 			_onSearchButtonClick: function() {
 				this._updateTiles = true;
-				this.debounce('liveSearchJob', this._search, 750);
+				this._search();
 				this.$.dropdown.close();
 			},
 
@@ -367,7 +400,7 @@
 			_onSearchStringChanged: function(newString) {
 				if (this._listboxes) {
 					if (newString.length > 0) {
-						this.debounce('liveSearchJob', this._search, 750);
+						this.debounce('liveSearchJob', this._liveSearch, 750);
 					}
 				}
 			},
@@ -376,7 +409,7 @@
 				switch (e.keyCode) {
 					case this._keyCodes.ENTER:
 						this._updateTiles = true;
-						this.debounce('liveSearchJob', this._search, 750);
+						this._search();
 						this.$.dropdown.close();
 						e.preventDefault();
 						break;
@@ -480,13 +513,13 @@
 							self.push('_organizationRequests', ajax);
 						})(enrollmentEntities[i], i, enrollmentEntities.length, this, parser);
 					}
-					if (this._updateTiles) {
-						this._updateTiles = false;
-						this.fire('d2l-search-enrollment-response', response);
-					}
 				}
 			},
-
+			_onSearchResponseTiles: function(response) {
+				if (response.detail.status === 200 && this._searchString) {
+					this.fire('d2l-search-enrollment-response', response);
+				}
+			},
 			// Handles iron-select events, which are fired when listbox items are selected and dropdown pages are changed
 			_onIronSelect: function(e) {
 				switch (e.target.nodeName) {
@@ -502,7 +535,7 @@
 						if (e.detail.item.dataset.text) {
 							this._addSearchToHistory(e.detail.item.dataset.text);
 							this._searchString = e.detail.item.dataset.text;
-							this._updateTiles = true;
+							this._search();
 
 						}
 						break;

@@ -116,6 +116,7 @@
 			}
 			#lazyLoadSpinner {
 				margin-bottom: 30px;
+				padding-bottom: 30px;
 			}
 			d2l-loading-spinner {
 				display: block;
@@ -225,7 +226,7 @@
 		</d2l-course-tile-grid>
 			<d2l-loading-spinner
 				id="lazyLoadSpinner"
-				class="d2l-my-courses-hidden"
+				class="d2l-all-courses-hidden"
 				size="100">
 			</d2l-loading-spinner>
 		</d2l-simple-overlay>
@@ -381,15 +382,15 @@
 				this._tilesInPinStateTransition = [];
 			},
 			_loadNextEnrollmentsPage: function() {
-				if (this.lastEnrollmentsSearchResponse) {
+				if (this.$['all-courses'].opened && this.lastEnrollmentsSearchResponse) {
 					var parser = document.createElement('d2l-siren-parser');
 					var lastResponseEntity = parser.parse(this.lastEnrollmentsSearchResponse);
 
 					if (lastResponseEntity && lastResponseEntity.hasLink('next')) {
 						this._enrollmentsSearchUrl = lastResponseEntity.getLinkByRel('next').href;
-						this.$.enrollmentsSearchRequest.generateRequest();
-						this.toggleClass('d2l-my-courses-hidden', false, this.$.lazyLoadSpinner);
+						this.toggleClass('d2l-all-courses-hidden', false, this.$.lazyLoadSpinner);
 						this.$.lazyLoadSpinner.scrollIntoView();
+						this.$.enrollmentsSearchRequest.generateRequest();
 					}
 				}
 			},
@@ -403,6 +404,7 @@
 					this._hasFilteredPinnedEnrollments ||
 					this.filteredUnpinnedEnrollments.length > 0 ||
 					this.filteredUnpinnedEnrollmentsQueue.length > 0;
+				this.$['all-courses-scroll-threshold'].clearTriggers();
 			},
 			_moveEnrollmentToPinnedList: function(enrollment) {
 				// Remove enrollment from unpinned list, add to pinned

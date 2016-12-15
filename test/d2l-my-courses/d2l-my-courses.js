@@ -377,11 +377,12 @@ describe('d2l-my-courses', function() {
 				});
 
 			widget.$.enrollmentsRootRequest.generateRequest();
-
-			// Wait until the second (search) request finishes before checking things
-			widget.$.enrollmentsSearchRequest.addEventListener('iron-ajax-response', function() {
+			var doneFunc = function() {
 				done();
-			});
+				widget.$.enrollmentsSearchRequest.removeEventListener('iron-ajax-response', doneFunc);
+			};
+			// Wait until the second (search) request finishes before checking things
+			widget.$.enrollmentsSearchRequest.addEventListener('iron-ajax-response', doneFunc);
 		});
 
 		it('should return the correct value from getCourseTileItemCount', function() {

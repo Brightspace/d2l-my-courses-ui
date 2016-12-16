@@ -256,6 +256,7 @@
 			},
 
 			listeners: {
+				'iron-activate': '_onIronActivate',
 				'iron-select': '_onIronSelect'
 			},
 
@@ -285,7 +286,6 @@
 				for (i = 0; i < this._listboxes.length; i++) {
 					this._listboxes[i].owner = this.$$('input');
 				}
-
 				this._initializePreviousSearches();
 			},
 
@@ -477,7 +477,7 @@
 					var enrollmentEntities = searchResponse.entities;
 					this.$$('iron-pages').select(enrollmentEntities.length > 0 ? 'search-results-page' : 'no-results-page');
 					if (!this.$.dropdown.opened) {
-						this.$.dropdown.open(false);
+						this.$.dropdown.open();
 					}
 
 					this._searchResults = [];
@@ -520,25 +520,17 @@
 					this.fire('d2l-search-enrollment-response', response);
 				}
 			},
-			// Handles iron-select events, which are fired when listbox items are selected and dropdown pages are changed
-			_onIronSelect: function(e) {
-				switch (e.target.nodeName) {
-					case 'IRON-PAGES':
-						// @TODO: Not a fan of any of this "current listbox" handling - necessary right now due to Iron Behavior regressions.
-						// Should find a better way.
-						var ironPages = this.$$('iron-pages');
-						var pageIndex = ironPages.indexOf(ironPages.selectedItem);
-						this._currentListbox = this._listboxes[pageIndex];
-						break;
-
-					case 'D2L-SEARCH-LISTBOX':
-						if (e.detail.item.dataset.text) {
-							this._addSearchToHistory(e.detail.item.dataset.text);
-							this._searchString = e.detail.item.dataset.text;
-							this._search();
-
-						}
-						break;
+			_onIronSelect: function() {
+				var ironPages = this.$$('iron-pages');
+				var pageIndex = ironPages.indexOf(ironPages.selectedItem);
+				this._currentListbox = this._listboxes[pageIndex];
+			},
+			// Handles iron-activate events, which are fired when listbox items are selected and dropdown pages are changed
+			_onIronActivate: function(e) {
+				if (e.detail.item.dataset.text) {
+					this._addSearchToHistory(e.detail.item.dataset.text);
+					this._searchString = e.detail.item.dataset.text;
+					this._search();
 				}
 				e.stopPropagation();
 			},
@@ -559,14 +551,14 @@
 				if (!this._searchString) {
 					if (this._previousSearches.length > 0) {
 						this.$$('iron-pages').select('recent-searches-page');
-						this.$.dropdown.open(false);
+						this.$.dropdown.open();
 					}
 					return;
 				}
 
 				// If there is a search value, just re-open the dropdown (either results or no-results will show,
 				// depending on what was last selected).
-				this.$.dropdown.open(false);
+				this.$.dropdown.open();
 			},
 
 			_handleFocus: function() {

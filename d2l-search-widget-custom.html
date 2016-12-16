@@ -117,7 +117,7 @@
 
 		<d2l-ajax
 			id="searchRequestTiles"
-			url="[[_searchUrl]]"
+			url="[[_searchUrlTiles]]"
 			headers='{ "Accept": "application/vnd.siren+json" }'
 			on-iron-ajax-response="_onSearchResponseTiles">
 		</d2l-ajax>
@@ -127,7 +127,7 @@
 				<button
 					type="button"
 					aria-label$="{{localize('search.searchCourses')}}"
-					on-tap="_onSearchButtonClick"
+					on-tap="_performSearch"
 					class="search-icon search-button">
 					<d2l-icon icon="d2l-tier1:search"></d2l-icon>
 				</button>
@@ -239,18 +239,13 @@
 				},
 
 				_searchUrl: String,
+				_searchUrlTiles: String,
 
 				// List of strings containing previously searched terms/selected courses
 				_previousSearches: {
 					type: Array,
 					value: function() {
 						return [];
-					}
-				},
-				_searchResponse: {
-					type: Object,
-					value: function() {
-						return {};
 					}
 				}
 			},
@@ -347,7 +342,7 @@
 				}
 			},
 
-			// Calls the search-my-enrollments action, used to populate live search results in the listbox
+			//
 			_search: function() {
 				if (this._searchString) {
 
@@ -361,24 +356,16 @@
 						sortDescending: this.sortField !== 'courseName'
 					};
 
-					this._searchUrl = this.createActionUrl(
+					this._searchUrlTiles = this.createActionUrl(
 						this._searchAction,
 						queryParams
 					);
-
-					this._organizationRequests.forEach(function(req) {
-						if (req.abort) {
-							req.abort();
-						}
-					});
-					this.set('_organizationRequests', []);
 
 					this.$.searchRequestTiles.generateRequest();
 				}
 			},
 
-			_onSearchButtonClick: function() {
-				this._updateTiles = true;
+			_performSearch: function() {
 				this._search();
 				this.$.dropdown.close();
 			},
@@ -408,9 +395,7 @@
 			_onSearchInputKeyPressed: function(e) {
 				switch (e.keyCode) {
 					case this._keyCodes.ENTER:
-						this._updateTiles = true;
-						this._search();
-						this.$.dropdown.close();
+						this._performSearch();
 						e.preventDefault();
 						break;
 					case this._keyCodes.DOWN:
@@ -527,9 +512,10 @@
 			},
 			// Handles iron-activate events, which are fired when listbox items are selected and dropdown pages are changed
 			_onIronActivate: function(e) {
-				if (e.detail.item.dataset.text) {
-					this._addSearchToHistory(e.detail.item.dataset.text);
-					this._searchString = e.detail.item.dataset.text;
+				var text = e.detail.item.dataset.text;
+				if (text) {
+					this._addSearchToHistory(text);
+					this._searchString = text;
 					this._search();
 				}
 				e.stopPropagation();

@@ -333,13 +333,6 @@
 			},
 			_onSimpleOverlayClosed: function() {
 				this._removeAlert('setCourseImageFailure');
-				//Polymer does dirty checking, for minor changes like pinning you need to force a full reload
-				var tempPinned = this.pinnedEnrollments;
-				var tempUnpinned = this.unpinnedEnrollments;
-				this.pinnedEnrollments = [];
-				this.pinnedEnrollments = tempPinned;
-				this.unpinnedEnrollments = [];
-				this.unpinnedEnrollments = tempUnpinned;
 			}
 		});
 	</script>

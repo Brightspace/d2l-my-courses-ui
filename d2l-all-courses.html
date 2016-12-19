@@ -416,7 +416,7 @@
 
 						// If enabled, add to list of "to be added" pinned entities, and let consumer move to pinned list when desired
 						if (this.usePendingLists) {
-							this.push('pinnedEnrollmentsQueue', foundEnrollment);
+							this.push('pinnedEnrollments', foundEnrollment);
 							this.push('filteredPinnedEnrollmentsQueue', foundEnrollment);
 						} else {
 							this._tilesInPinStateTransition.push(enrollmentId);
@@ -442,7 +442,7 @@
 
 						// If enabled, add to list of "to be added" unpinned entities, and let consumer move to unpinned list when desired
 						if (this.usePendingLists) {
-							this.push('unpinnedEnrollmentsQueue', foundEnrollment);
+							this.push('unpinnedEnrollments', foundEnrollment);
 							this.push('filteredUnpinnedEnrollmentsQueue', foundEnrollment);
 						} else {
 							this._tilesInPinStateTransition.push(enrollmentId);
@@ -457,6 +457,7 @@
 				}
 			},
 			_onTileRemoveComplete: function(e) {
+				e.stopPropagation();
 				if (e.detail.pinned) {
 					this._moveEnrollmentToPinnedList(e.detail.enrollment);
 				} else {
@@ -572,14 +573,12 @@
 			},
 			load: function() {
 				// Load course tile and filter contents. Called from d2l-my-courses.
-				this.filteredPinnedEnrollments = [];
-				this.filteredPinnedEnrollments = this.pinnedEnrollments;
-				this.filteredUnpinnedEnrollments = [];
-				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments;
 				this.$$('#all-courses').open();
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 				this.$['search-widget']._searchString = '';
+				this._pinnedCouresMap = {};
+				this._unpinnedCoursesMap = {};
 				this.filteredPinnedEnrollments.forEach(function(enrollment) {
 					this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);

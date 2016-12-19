@@ -1,0 +1,88 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../d2l-ajax/d2l-ajax.html">
+<link rel="import" href="../../d2l-icons/d2l-icons.html">
+<link rel="import" href="../../d2l-menu/d2l-menu-item-selectable-behavior.html">
+<link rel="import" href="../../d2l-menu/d2l-menu-item-selectable-styles.html">
+<link rel="import" href="../../d2l-siren-parser/d2l-siren-parser.html">
+
+<dom-module id="d2l-list-item-filter">
+	<template>
+		<style include="d2l-menu-item-selectable-styles">
+			:host {
+				padding: 0.5rem 1rem;
+			}
+
+			:host > span {
+				font-size: 0.8rem;
+			}
+
+			:host d2l-icon {
+				--d2l-icon-height: 1rem;
+				--d2l-icon-width: 1rem;
+				visibility: visible;
+				margin-right: 0.5rem;
+			}
+		</style>
+		<d2l-ajax
+			auto
+			url="[[_organizationUrl]]"
+			headers='{ "Accept": "application/vnd.siren+json" }'
+			on-iron-ajax-response="_onOrganizationResponse">
+		</d2l-ajax>
+		<d2l-icon icon="d2l-tier2:check-box-unchecked" aria-hidden="true"></d2l-icon>
+		<span>[[text]]</span>
+	</template>
+	<script>
+		'use strict';
+		Polymer({
+			is: 'd2l-list-item-filter',
+			properties: {
+				enrollmentEntity: {
+					type: Object,
+					observer: '_onEnrollmentEntityChanged'
+				},
+				selected: {
+					type: Boolean,
+					observer: '_onSelectedChanged',
+					reflectToAttribute: true
+				},
+				_organizationUrl: String
+			},
+			behaviors: [
+				window.D2L.PolymerBehaviors.MenuItemSelectableBehavior
+			],
+			attached: function() {
+				Polymer.RenderStatus.afterNextRender(this, function() {
+					this.listen(this, 'd2l-menu-item-select', '_onSelect');
+				}.bind(this));
+			},
+			_onEnrollmentEntityChanged: function(entity) {
+				if (entity.getLinkByRel && entity.getLinkByRel(/\/organization$/)) {
+					this.set('_organizationUrl', entity.getLinkByRel(/\/organization$/).href);
+				}
+			},
+			_onOrganizationResponse: function(response) {
+				if (response.detail.status === 200 ) {
+					if (!this._parser) {
+						this._parser = document.createElement('d2l-siren-parser');
+					}
+
+					var entity = this._parser.parse(response.detail.xhr.response);
+
+					this.set('text', entity.properties.name);
+					this.set('value', entity.getLinkByRel('self').href);
+				}
+			},
+			_onSelect: function(e) {
+				this.set('selected', !this.selected);
+				this.__onSelect(e);
+			},
+			_onSelectedChanged: function(e) {
+				// The selected state can be changed by click/tap or by _checkSelected below - need to update the icon when this happens
+				this.$$('d2l-icon').setAttribute('icon', this.selected ? 'd2l-tier2:check-box' : 'd2l-tier2:check-box-unchecked');
+				this.__onSelectedChanged(e);
+			},
+			_parser: null
+		});
+	</script>
+</dom-module>

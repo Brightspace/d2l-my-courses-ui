@@ -133,6 +133,12 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should not show the course code if not configured', function() {
+			widget.$.courseCodeTemplate.render();
+			var courseCode = widget.$$('.course-code-text');
+			expect(courseCode).to.be.null;
+		});
+
+		it('should not show the course code if configured false', function() {
 			widget.showCourseCode = false;
 			widget.$.courseCodeTemplate.render();
 			var courseCode = widget.$$('.course-code-text');

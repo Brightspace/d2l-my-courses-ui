@@ -67,7 +67,11 @@ the user has in that organization - student, teacher, TA, etc.
 						<d2l-course-image aria-hidden="true" image="[[_image]]" sizes="[[tileSizes]]" type="tile"></d2l-course-image>
 					</div>
 				</div>
-				<div class="course-text d2l-heading-4">{{_organization.properties.name}}</div>
+				<div class="course-text d2l-heading-4">{{_organization.properties.name}}
+					<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
+						<span class="course-code-text">{{_organization.properties.code}}</span>
+					</template>
+				</div>
 			</a>
 
 			<div class="hover-menu no-tap-interaction">
@@ -143,6 +147,8 @@ the user has in that organization - student, teacher, TA, etc.
 					value: true
 				},
 				userId: String,
+				// Configuration value passed in to toggle course code
+				showCourseCode: Boolean,
 				// Body sent for pin/unpin action
 				_enrollmentPinBody: String,
 				// HTTP method used by the pin/unpin action

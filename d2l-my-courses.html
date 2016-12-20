@@ -100,7 +100,8 @@
 				tile-sizes="[[_tileSizes]]"
 				user-id="[[userId]]"
 				tenant-id="[[tenantId]]"
-				telemetry-endpoint="[[telemetryEndpoint]]">
+				telemetry-endpoint="[[telemetryEndpoint]]"
+				show-course-code="[[showCourseCode]]">
 			</d2l-course-tile-grid>
 			<button
 				class="all-courses-button"
@@ -125,7 +126,8 @@
 				pinned-enrollments="{{pinnedEnrollments}}"
 				unpinned-enrollments="{{unpinnedEnrollments}}"
 				my-enrollments-entity="[[_lastEnrollmentsSearchResponse]]"
-				locale="[[locale]]">
+				locale="[[locale]]"
+				show-course-code="[[showCourseCode]]">
 			</d2l-all-courses>
 			<d2l-loading-spinner
 				id="lazyLoadSpinner"

@@ -342,25 +342,22 @@
 			},
 
 			_search: function() {
-				if (this._searchString) {
+				var queryParams = {
+					search: this._searchString,
+					page: 1,
+					pageSize: 20,
+					parentOrganizations: this.parentOrganizations.join(','),
+					sortField: this.sortField,
+					// Need to reverse the order for sorting by name
+					sortDescending: this.sortField !== 'courseName'
+				};
 
-					var queryParams = {
-						search: this._searchString,
-						page: 1,
-						pageSize: 20,
-						parentOrganizations: this.parentOrganizations.join(','),
-						sortField: this.sortField,
-						// Need to reverse the order for sorting by name
-						sortDescending: this.sortField !== 'courseName'
-					};
+				this._searchUrlTiles = this.createActionUrl(
+					this._searchAction,
+					queryParams
+				);
 
-					this._searchUrlTiles = this.createActionUrl(
-						this._searchAction,
-						queryParams
-					);
-
-					this.$.searchRequestTiles.generateRequest();
-				}
+				this.$.searchRequestTiles.generateRequest();
 			},
 
 			_performSearch: function() {
@@ -499,7 +496,7 @@
 				}
 			},
 			_onSearchResponseTiles: function(response) {
-				if (response.detail.status === 200 && this._searchString) {
+				if (response.detail.status === 200) {
 					this.fire('d2l-search-enrollment-response', response);
 				}
 			},

@@ -209,8 +209,8 @@
 
 		<d2l-course-tile-grid
 			id="all-courses-pinned"
-			enrollments="{{filteredPinnedEnrollments}}"
-			enrollments-queue="{{filteredPinnedEnrollmentsQueue}}"
+			enrollments="[[filteredPinnedEnrollments]]"
+			enrollments-queue="[[filteredPinnedEnrollmentsQueue]]"
 			delay-load="[[delayLoad]]"
 			tile-sizes="[[_tileSizes]]"
 			show-course-code="[[showCourseCode]]">
@@ -220,8 +220,8 @@
 
 		<d2l-course-tile-grid
 			id="all-courses-unpinned"
-			enrollments="{{filteredUnpinnedEnrollments}}"
-			enrollments-queue="{{filteredUnpinnedEnrollmentsQueue}}"
+			enrollments="[[filteredUnpinnedEnrollments]]"
+			enrollments-queue="[[filteredUnpinnedEnrollmentsQueue]]"
 			delay-load="[[delayLoad]]"
 			tile-sizes="[[_tileSizes]]"
 			show-course-code="[[showCourseCode]]">
@@ -237,6 +237,14 @@
 	<script>
 		'use strict';
 
+		if (!Array.prototype.clone) {
+			Array.prototype.clone = function() {
+				return this.map( function(e) {
+					return Array.isArray(e) ? e.clone() : e;
+				});
+			};
+		}
+
 		Polymer({
 			is: 'd2l-all-courses',
 			properties: {
@@ -248,7 +256,6 @@
 					value: function() {
 						return [];
 					},
-					notify: true,
 					observer: '_setFilteredPinnedEnrollments'
 				},
 				// filtered pinned enrollment entities
@@ -264,15 +271,13 @@
 					value: function() {
 						return [];
 					},
-					notify: true,
 					observer: '_setFilteredUnpinnedEnrollments'
 				},
 				filteredUnpinnedEnrollments: {
 					type: Array,
 					value: function() {
 						return [];
-					},
-					notify: true
+					}
 				},
 				// Set of enrollments Entities that are being transferred from unpinned to pinned state
 				// Only used by `d2l-all-courses`
@@ -280,15 +285,13 @@
 					type: Array,
 					value: function() {
 						return [];
-					},
-					notify: true
+					}
 				},
 				filteredPinnedEnrollmentsQueue: {
 					type: Array,
 					value: function() {
 						return [];
-					},
-					notify: true
+					}
 				},
 				// Set of enrollments that are being transferred from pinned to unpinned state
 				// Only used by `d2l-all-courses`
@@ -296,15 +299,13 @@
 					type: Array,
 					value: function() {
 						return [];
-					},
-					notify: true
+					}
 				},
 				filteredUnpinnedEnrollmentsQueue: {
 					type: Array,
 					value: function() {
 						return [];
-					},
-					notify: true
+					}
 				},
 				// Object containing the IDs of previously loaded pinned enrollments, to avoid duplicates
 				_pinnedCoursesMap: {
@@ -412,9 +413,7 @@
 					if (pinnedEnrollmentId === enrollmentId) {
 						var foundEnrollment = this.filteredUnpinnedEnrollments[index];
 						this._setEnrollmentPinData(foundEnrollment, true);
-						this.push('pinnedEnrollments', foundEnrollment);
 						this.push('filteredPinnedEnrollmentsQueue', foundEnrollment);
-						this.splice('unpinnedEnrollments', index, 1);
 						this.splice('filteredUnpinnedEnrollments', index, 1);
 						break;
 					}
@@ -429,16 +428,13 @@
 					if (unpinnedEnrollmentId === enrollmentId) {
 						var foundEnrollment = this.filteredPinnedEnrollments[index];
 						this._setEnrollmentPinData(foundEnrollment, false);
-						this.push('unpinnedEnrollments', foundEnrollment);
 						this.push('filteredUnpinnedEnrollmentsQueue', foundEnrollment);
-						this.splice('pinnedEnrollments', index, 1);
 						this.splice('filteredPinnedEnrollments', index, 1);
 						break;
 					}
 				}
 			},
 			_onTileRemoveComplete: function(e) {
-				e.stopPropagation();
 				if (e.detail.pinned) {
 					this._moveEnrollmentToPinnedList(e.detail.enrollment);
 				} else {
@@ -543,12 +539,10 @@
 				return itemCount;
 			},
 			_setFilteredPinnedEnrollments: function() {
-				this.filteredPinnedEnrollments = [];
-				this.filteredPinnedEnrollments = this.pinnedEnrollments;
+				this.filteredPinnedEnrollments = this.pinnedEnrollments.clone();
 			},
 			_setFilteredUnpinnedEnrollments: function() {
-				this.filteredUnpinnedEnrollments = [];
-				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments;
+				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.clone();
 			},
 			load: function() {
 				// Load course tile and filter contents. Called from d2l-my-courses.
@@ -556,10 +550,10 @@
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 				this.$['search-widget']._searchString = '';
-				this._pinnedCouresMap = {};
+				this._pinnedCoursesMap = {};
 				this._unpinnedCoursesMap = {};
-				this.filteredPinnedEnrollments = this.pinnedEnrollments;
-				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments;
+				this.filteredPinnedEnrollments = this.pinnedEnrollments.clone();
+				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.clone();
 				this.filteredPinnedEnrollments.forEach(function(enrollment) {
 					this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);

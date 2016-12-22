@@ -90,7 +90,7 @@
 				</d2l-alert>
 			</template>
 			<d2l-course-tile-grid
-				enrollments="{{pinnedEnrollments}}"
+				enrollments="[[pinnedEnrollments]]"
 				tile-sizes="[[_tileSizes]]"
 				user-id="[[userId]]"
 				tenant-id="[[tenantId]]"
@@ -106,12 +106,12 @@
 		</div>
 
 		<d2l-all-courses
-			pinned-enrollments="{{pinnedEnrollments}}"
-			unpinned-enrollments="{{unpinnedEnrollments}}"
+			pinned-enrollments="[[pinnedEnrollments]]"
+			unpinned-enrollments="[[unpinnedEnrollments]]"
 			my-enrollments-entity="[[_lastEnrollmentsSearchResponse]]"
 			lastEnrollmentsSearchResponse="[[_lastEnrollmentsSearchResponse]]"
 			locale="[[locale]]"
-      show-course-code="[[showCourseCode]]">
+      		show-course-code="[[showCourseCode]]">
 		</d2l-all-courses>
 
 		<d2l-simple-overlay

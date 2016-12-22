@@ -91,56 +91,62 @@
 					this.unpinnedEnrollments.length > 0 ||
 					this.unpinnedEnrollmentsQueue.length > 0);
 			},
+			_addEnrollmentToList: function(pinned, enrollmentEntity, enrollmentId) {
+				var listName = (pinned ? 'pinned' : 'unpinned') + 'Enrollments';
+
+				this._setEnrollmentPinData(enrollmentEntity, pinned);
+
+				if (this.usePendingLists) {
+					this.push(listName + 'Queue', enrollmentEntity);
+				} else {
+					this._tilesInPinStateTransition.push(enrollmentId);
+					this.unshift(listName, enrollmentEntity);
+				}
+			},
 			_moveEnrollmentToPinnedList: function(enrollment) {
-				// Remove enrollment from unpinned list, add to pinned
-				var enrollmentId = this.getEntityIdentifier(enrollment);
+				var enrollmentId, enrollmentEntity;
 
-				this._moveEnrollmentIdToPinnedList(enrollmentId);
-			},
-			_moveEnrollmentToUnpinnedList: function(enrollment) {
-				// Remove enrollment from pinned list, add to unpinned
-				var enrollmentId = this.getEntityIdentifier(enrollment);
+				if (typeof enrollment === 'string') {
+					enrollmentId = enrollment;
+				} else {
+					enrollmentEntity = enrollment;
+					enrollmentId = this.getEntityIdentifier(enrollmentEntity);
+				}
 
-				this._moveEnrollmentIdToUnpinnedList(enrollmentId);
-			},
-			_moveEnrollmentIdToPinnedList: function(enrollmentId) {
 				for (var index = 0; index < this.unpinnedEnrollments.length; index++) {
 					var pinnedEnrollmentId = this.getEntityIdentifier(this.unpinnedEnrollments[index]);
 					if (pinnedEnrollmentId === enrollmentId) {
-						var foundEnrollment = this.unpinnedEnrollments[index];
-						this._setEnrollmentPinData(foundEnrollment, true);
-
-						// If enabled, add to list of "to be added" pinned entities, and let consumer move to pinned list when desired
-						if (this.usePendingLists) {
-							this.push('pinnedEnrollmentsQueue', foundEnrollment);
-						} else {
-							this._tilesInPinStateTransition.push(enrollmentId);
-							this.unshift('pinnedEnrollments', foundEnrollment);
-						}
-
+						enrollmentEntity = enrollmentEntity || this.unpinnedEnrollments[index];
 						this.splice('unpinnedEnrollments', index, 1);
 						break;
 					}
 				}
+
+				if (enrollmentEntity) {
+					this._addEnrollmentToList(true, enrollmentEntity, enrollmentId);
+				}
 			},
-			_moveEnrollmentIdToUnpinnedList: function(enrollmentId) {
+			_moveEnrollmentToUnpinnedList: function(enrollment) {
+				var enrollmentId, enrollmentEntity;
+
+				if (typeof enrollment === 'string') {
+					enrollmentId = enrollment;
+				} else {
+					enrollmentEntity = enrollment;
+					enrollmentId = this.getEntityIdentifier(enrollmentEntity);
+				}
+
 				for (var index = 0; index < this.pinnedEnrollments.length; index++) {
 					var unpinnedEnrollmentId = this.getEntityIdentifier(this.pinnedEnrollments[index]);
 					if (unpinnedEnrollmentId === enrollmentId) {
-						var foundEnrollment = this.pinnedEnrollments[index];
-						this._setEnrollmentPinData(foundEnrollment, false);
-
-						// If enabled, add to list of "to be added" unpinned entities, and let consumer move to unpinned list when desired
-						if (this.usePendingLists) {
-							this.push('unpinnedEnrollmentsQueue', foundEnrollment);
-						} else {
-							this._tilesInPinStateTransition.push(enrollmentId);
-							this.unshift('unpinnedEnrollments', foundEnrollment);
-						}
-
+						enrollmentEntity = enrollmentEntity || this.pinnedEnrollments[index];
 						this.splice('pinnedEnrollments', index, 1);
 						break;
 					}
+				}
+
+				if (enrollmentEntity) {
+					this._addEnrollmentToList(false, enrollmentEntity, enrollmentId);
 				}
 			},
 			_onTileRemoveComplete: function(e) {
@@ -168,10 +174,10 @@
 				}
 			},
 			_pinEnrollment: function(orgUnitId) {
-				this._moveEnrollmentIdToPinnedList(this._enrollmentIdMap[orgUnitId]);
+				this._moveEnrollmentToPinnedList(this._enrollmentIdMap[orgUnitId]);
 			},
 			_unpinEnrollment: function(orgUnitId) {
-				this._moveEnrollmentIdToUnpinnedList(this._enrollmentIdMap[orgUnitId]);
+				this._moveEnrollmentToUnpinnedList(this._enrollmentIdMap[orgUnitId]);
 			}
 		};
 

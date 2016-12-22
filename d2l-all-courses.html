@@ -237,14 +237,6 @@
 	<script>
 		'use strict';
 
-		if (!Array.prototype.clone) {
-			Array.prototype.clone = function() {
-				return this.map( function(e) {
-					return Array.isArray(e) ? e.clone() : e;
-				});
-			};
-		}
-
 		Polymer({
 			is: 'd2l-all-courses',
 			properties: {
@@ -539,10 +531,10 @@
 				return itemCount;
 			},
 			_setFilteredPinnedEnrollments: function() {
-				this.filteredPinnedEnrollments = this.pinnedEnrollments.clone();
+				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
 			},
 			_setFilteredUnpinnedEnrollments: function() {
-				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.clone();
+				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.slice();
 			},
 			load: function() {
 				// Load course tile and filter contents. Called from d2l-my-courses.
@@ -552,8 +544,8 @@
 				this.$['search-widget']._searchString = '';
 				this._pinnedCoursesMap = {};
 				this._unpinnedCoursesMap = {};
-				this.filteredPinnedEnrollments = this.pinnedEnrollments.clone();
-				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.clone();
+				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
+				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.slice();
 				this.filteredPinnedEnrollments.forEach(function(enrollment) {
 					this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);

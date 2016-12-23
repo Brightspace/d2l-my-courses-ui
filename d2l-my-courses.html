@@ -237,6 +237,7 @@
 					}
 
 					var searchAction = enrollmentsRoot.getActionByName('search-my-enrollments');
+					this.fetchEnrollmentUrl = searchAction.href + '/organizations/';
 
 					var pinDateQuery = {
 						pageSize: 25,

@@ -205,12 +205,8 @@
 					this._sirenParser = this._sirenParser || document.createElement('d2l-siren-parser');
 					var enrollmentEntity = this._sirenParser.parse(response.detail.xhr.response);
 
-					if (pinned) {
-						// Enforce specific pin state
-						this._setEnrollmentPinData(enrollmentEntity, pinned);
-					} else {
-						pinned = enrollmentEntity.hasClass('pinned');
-					}
+					// Enforce specific pin state
+					this._setEnrollmentPinData(enrollmentEntity, pinned);
 
 					if (pinned) {
 						this._moveEnrollmentToPinnedList(enrollmentEntity);

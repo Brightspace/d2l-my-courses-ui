@@ -321,7 +321,6 @@
 						pageSize: this._pageSize,
 						parentOrganizations: this.parentOrganizations.join(','),
 						sortField: this.sortField,
-						// Need to reverse the order for sorting by name
 						sortDescending: this.sortField !== 'courseName' && this.sortField !== 'courseCode'
 					};
 
@@ -348,7 +347,6 @@
 					pageSize: 20,
 					parentOrganizations: this.parentOrganizations.join(','),
 					sortField: this.sortField,
-					// Need to reverse the order for sorting by name
 					sortDescending: this.sortField !== 'courseName' && this.sortField !== 'courseCode'
 				};
 

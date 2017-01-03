@@ -349,10 +349,16 @@
 			},
 			_onEnrollmentPinnedMessage: function(e) {
 				if (e.target !== this) {
-					if (e.detail.isPinned) {
-						this._pinEnrollment(e.detail.orgUnitId);
+					var enrollmentId = this._enrollmentIdMap[e.detail.orgUnitId];
+
+					if (enrollmentId) {
+						if (e.detail.isPinned) {
+							this._moveEnrollmentToPinnedList(enrollmentId);
+						} else {
+							this._moveEnrollmentToUnpinnedList(enrollmentId);
+						}
 					} else {
-						this._unpinEnrollment(e.detail.orgUnitId);
+						this._fetchEnrollmentEntity(e.detail.orgUnitId, e.detail.isPinned);
 					}
 				}
 			},

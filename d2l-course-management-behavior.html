@@ -176,18 +176,18 @@
 			_fetchEnrollmentEntity: function(orgUnitId, pinned) {
 				if (!this._fetchEnrollmentAjaxPinned) {
 					this._fetchEnrollmentAjaxPinned = document.createElement('d2l-ajax');
-					this._fetchEnrollmentAjaxPinned.onResponse = 
+					this._fetchEnrollmentAjaxPinned.onResponse =
 						this._onFetchEnrollmentEntityPinnedResponse.bind(this);
 				}
 
 				if (!this._fetchEnrollmentAjaxUnpinned) {
 					this._fetchEnrollmentAjaxUnpinned = document.createElement('d2l-ajax');
-					this._fetchEnrollmentAjaxUnpinned.onResponse = 
+					this._fetchEnrollmentAjaxUnpinned.onResponse =
 						this._onFetchEnrollmentEntityUnpinnedResponse.bind(this);
 				}
 
-				var ajax = pinned 
-					? this._fetchEnrollmentAjaxPinned 
+				var ajax = pinned
+					? this._fetchEnrollmentAjaxPinned
 					: this._fetchEnrollmentAjaxUnpinned;
 
 				ajax.url = this.fetchEnrollmentUrl + orgUnitId;

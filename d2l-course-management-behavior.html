@@ -177,13 +177,13 @@
 				if (!this._fetchEnrollmentAjaxPinned) {
 					this._fetchEnrollmentAjaxPinned = document.createElement('d2l-ajax');
 					this._fetchEnrollmentAjaxPinned.onResponse =
-						this._onFetchEnrollmentEntityPinnedResponse.bind(this);
+						this._onFetchEnrollmentEntityResponse.bind(this, true);
 				}
 
 				if (!this._fetchEnrollmentAjaxUnpinned) {
 					this._fetchEnrollmentAjaxUnpinned = document.createElement('d2l-ajax');
 					this._fetchEnrollmentAjaxUnpinned.onResponse =
-						this._onFetchEnrollmentEntityUnpinnedResponse.bind(this);
+						this._onFetchEnrollmentEntityResponse.bind(this, false);
 				}
 
 				var ajax = pinned
@@ -194,13 +194,7 @@
 				ajax.method = 'GET';
 				ajax.generateRequest();
 			},
-			_onFetchEnrollmentEntityPinnedResponse: function(response) {
-				this._onFetchEnrollmentEntityResponse(response, true);
-			},
-			_onFetchEnrollmentEntityUnpinnedResponse: function(response) {
-				this._onFetchEnrollmentEntityResponse(response, false);
-			},
-			_onFetchEnrollmentEntityResponse: function(response, pinned) {
+			_onFetchEnrollmentEntityResponse: function(pinned, response) {
 				if (response.detail.status === 200 || response.detail.status === 304) {
 					this._sirenParser = this._sirenParser || document.createElement('d2l-siren-parser');
 					var enrollmentEntity = this._sirenParser.parse(response.detail.xhr.response);

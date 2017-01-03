@@ -285,7 +285,6 @@
 					}
 				},
 				// Set of enrollments Entities that are being transferred from unpinned to pinned state
-				// Only used by `d2l-all-courses`
 				pinnedEnrollmentsQueue: {
 					type: Array,
 					value: function() {
@@ -299,7 +298,6 @@
 					}
 				},
 				// Set of enrollments that are being transferred from pinned to unpinned state
-				// Only used by `d2l-all-courses`
 				unpinnedEnrollmentsQueue: {
 					type: Array,
 					value: function() {
@@ -618,6 +616,7 @@
 				this.toggleClass('focus', true, this.$.filterText);
 			},
 			_onFilterChanged: function(e) {
+				this._parentOrganizations = [];
 				this.set('_parentOrganizations', e.detail.filters);
 				this.set('_filterText', e.detail.text);
 			},

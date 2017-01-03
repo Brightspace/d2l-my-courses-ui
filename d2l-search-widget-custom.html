@@ -259,6 +259,10 @@
 				window.D2L.MyCourses.UtilityBehavior
 			],
 
+			observers: [
+				'_onSearchDependencyChanged(sortField, parentOrganizations)'
+			],
+
 			ready: function() {
 				this._handleFocusBound = this._handleFocus.bind(this);
 				this._handleClickBound = this._handleClick.bind(this);
@@ -445,6 +449,12 @@
 					var searchAction = enrollmentsRoot.getActionByName('search-my-enrollments');
 
 					this.set('_searchAction', searchAction);
+				}
+			},
+
+			_onSearchDependencyChanged: function(sortField, parentOrganizations) {
+				if (this.isAttached && sortField && parentOrganizations) {
+					this._search();
 				}
 			},
 

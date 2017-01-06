@@ -68,10 +68,12 @@ the user has in that organization - student, teacher, TA, etc.
 					</div>
 				</div>
 				<div class="course-text d2l-heading-4">{{_organization.properties.name}}
+
 					<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
 						<span class="course-code-text">{{_organization.properties.code}}</span>
 					</template>
 				</div>
+				<div class="update-text">5</div>
 			</a>
 
 			<div class="hover-menu no-tap-interaction">

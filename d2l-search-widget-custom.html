@@ -472,7 +472,7 @@
 									// unknown reason, so use a normal Array.prototype.splice...
 									self._searchResults.splice(index, 0, {
 										name: organization.properties.name,
-										href: organization.getLinkByRel(/\/organization-homepage$/).href
+										href: (organization.getLinkByRel(/\/organization-homepage$/) || {}).href
 									});
 									// ...then, if this is the last result to get spliced in, manually
 									// call notifySplices with the changes.

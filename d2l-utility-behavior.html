@@ -32,6 +32,23 @@
 
 			return queryString ? action.href + '?' + queryString : action.href;
 		},
+		treatAsUTC: function(date) {
+			var result = new Date(date);
+			result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
+			return result;
+		},
+		timeBetween: function(startDate, endDate) {
+			var millisecondsPerMinute = 60 * 1000;
+			var millisecondsPerHour = millisecondsPerMinute * 60;
+			var millisecondsPerDay = 24 * millisecondsPerHour;
+			var utcEnd = this.treatAsUTC(endDate);
+			var utcStart = this.treatAsUTC(startDate);
+			return {
+				days: Math.floor((utcEnd - utcStart) / millisecondsPerDay),
+				hours: Math.floor((utcEnd - utcStart) / millisecondsPerHour) % 24,
+				minutes: Math.floor((utcEnd - utcStart) / millisecondsPerMinute) % 60
+			};
+		},
 		getImageSrcset: function(image, imageClass) {
 			if (!image) { return ''; }
 			var srcset = '',

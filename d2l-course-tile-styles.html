@@ -271,6 +271,12 @@
 		}
 
 		.icon-container {
+			display: none;
+		}
+
+		.change-image-loading .icon-container,
+		.change-image-success .icon-container,
+		.change-image-failure .icon-container {
 			height: 64px;
 			width: 64px;
 			display: flex;
@@ -333,10 +339,22 @@
 			animation-fill-mode: forwards;
 		}
 
-		.image-overlay {
+		.image-overlay,
+		.notification-overlay {
 			display: none;
 			justify-content: center;
 			align-items: center;
+		}
+
+		.not-started .notification-overlay {
+			transition: filter 1s 2s, opacity 1s 2s;
+			filter: opacity(1);
+			width: 100%;
+			height: 100%;
+			display: block;
+			z-index: 2;
+			background-color: rgba(0, 0, 0, 0.5);
+			position: relative;
 		}
 
 		.change-image-loading .image-overlay,
@@ -348,6 +366,71 @@
 			z-index: 2;
 			background-color: rgba(0, 0, 0, 0.4);
 			position: relative;
+		}
+
+		.change-image-loading .notification-overlay {
+			transition: none;
+		}
+
+		/* HACK: IE doesn't support filter (and chrome has a bug with opacity transitions for this element) */
+		@media all and (-ms-high-contrast:none) {
+			.change-image-loading .notification-overlay,
+			.change-image-success .notification-overlay,
+			.change-image-failure .notification-overlay {
+				opacity: 0;
+			}
+		}
+
+		.change-image-loading .notification-overlay,
+		.change-image-success .notification-overlay,
+		.change-image-failure .notification-overlay {
+			filter: opacity(0);
+		}
+
+		.start-date-container {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			color: white;
+			padding: 10px;
+		}
+
+		.date-nums {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: row;
+		}
+
+		.date-num-container {
+			display: flex;
+			justify-content: center;
+			flex: 0.15;
+			padding: 0 10px;
+			flex-direction: column;
+			text-align: center;
+		}
+
+		.starting-in-text {
+			text-align: center;
+			@apply(--d2l-body-small-text);
+			font-size: 1rem;
+			margin: 0 0 20px 0;
+		}
+
+		.date-num-date {
+			@apply(--d2l-body-small-text);
+			font-size: 0.7rem;
+			margin-top: 10%;
+		}
+
+		.date-num-num {
+			@apply(--d2l-body-standard-text);
+			font-size: 2rem;
+			font-weight: bolder;
 		}
 		</style>
 	</template>

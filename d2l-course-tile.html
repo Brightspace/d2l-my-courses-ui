@@ -64,6 +64,27 @@ the user has in that organization - student, teacher, TA, etc.
 								<d2l-icon class$="[[_iconDetails.className]]" icon="[[_iconDetails.iconName]]"></d2l-icon>
 							</div>
 						</div>
+						<div class="notification-overlay" aria-hidden="true">
+							<template is="dom-if" restamp="true" if={{_startsIn}}>
+								<div class="start-date-container">
+									<div class="starting-in-text">{{localize('overlay.startsIn')}}</div>
+									<div class="date-nums">
+										<div class="date-num-container">
+											<div class="date-num-num date-num-days">{{_startsIn.days}}</div>
+											<div class="date-num-date">{{localize('overlay.days')}}</div>
+										</div>
+										<div class="date-num-container">
+											<div class="date-num-num date-num-hours">{{_startsIn.hours}}</div>
+											<div class="date-num-date">{{localize('overlay.hours')}}</div>
+										</div>
+										<div class="date-num-container">
+											<div class="date-num-num date-num-minutes">{{_startsIn.minutes}}</div>
+											<div class="date-num-date">{{localize('overlay.minutes')}}</div>
+										</div>
+									</div>
+								</div>
+							</template>
+						</div>
 						<d2l-course-image aria-hidden="true" image="[[_image]]" sizes="[[tileSizes]]" type="tile"></d2l-course-image>
 					</div>
 				</div>
@@ -71,6 +92,7 @@ the user has in that organization - student, teacher, TA, etc.
 					<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
 						<span class="course-code-text">{{_organization.properties.code}}</span>
 					</template>
+					<span aria-label$="[[_courseNotificationLabel]]"></span>
 				</div>
 			</a>
 
@@ -165,6 +187,7 @@ the user has in that organization - student, teacher, TA, etc.
 				_pinLabel: String,
 				// The langterm of the course settings label
 				_courseSettingsLabel: String,
+				_courseNotificationLabel: String,
 				_canChangeCourseImage: Boolean,
 				_image: Object,
 				_nextImage: Object,
@@ -176,12 +199,9 @@ the user has in that organization - student, teacher, TA, etc.
 						iconName: ''
 					}
 				},
-				/*
-				* The JSON string of the telemetry event that will be sent
-				* on the opening of the change image UI
-				* @type {String}
-				*/
-				_telemetryEvent: String
+				// The JSON string of the telemetry event that will be sent on the opening of the change image UI */
+				_telemetryEvent: String,
+				_startsIn: Object
 			},
 			behaviors: [
 				window.D2L.MyCourses.LocalizeBehavior,
@@ -404,11 +424,28 @@ the user has in that organization - student, teacher, TA, etc.
 					var organization = parser.parse(response.detail.xhr.response);
 
 					this._organization = organization;
+					this._checkStartDate(organization, response);
 					this._setCourseImageSrc();
 					this._organizationHomepageUrl = organization.getLinkByRel(/\/organization-homepage$/).href;
 					this._canChangeCourseImage = this._getCanChangeCourseImage(organization);
 					this._pinnedChanged();
 					this._courseSettingsLabel = this.localize('courseSettings', 'course', this._organization.properties.name);
+				}
+			},
+			_checkStartDate: function(organization, response) {
+				if (organization.properties.startDate) {
+					var startDate = Date.parse(organization.properties.startDate);
+					var serverDate = Date.parse(response.detail.xhr.getResponseHeader('Date'));
+					if (startDate > serverDate) {
+						this._startsIn = this.timeBetween(serverDate, startDate);
+						this._courseNotificationLabel = this.localize(
+							'overlay.startsInDate',
+							'days', this._startsIn.days.toString(),
+							'hours', this._startsIn.hours.toString(),
+							'minutes', this._startsIn.minutes.toString()
+						);
+						this.toggleClass('not-started', true, this.$$('.tile-container'));
+					}
 				}
 			},
 			_onTileMouseOut: function() {

@@ -512,6 +512,7 @@
 			},
 			attached: function() {
 				this.listen(this.$.sortDropdown, 'd2l-menu-item-change', '_updateSortBy');
+				this.listen(this.$.filterDropdownContent, 'd2l-dropdown-open', '_onFilterDropdownOpen');
 				this.listen(this.$.filterDropdownContent, 'd2l-dropdown-close', '_onFilterDropdownClose');
 				this.listen(this.$.filterMenuContent, 'd2l-filter-menu-content-change', '_onFilterChanged');
 				this.listen(this.$.filterMenuContent, 'd2l-filter-menu-content-hide', '_onFilterHideChanged');
@@ -522,6 +523,7 @@
 			},
 			detached: function() {
 				this.unlisten(this.$.sortDropdown, 'd2l-menu-item-change', '_updateSortBy');
+				this.unlisten(this.$.filterDropdownContent, 'd2l-dropdown-open', '_onFilterDropdownOpen');
 				this.unlisten(this.$.filterDropdownContent, 'd2l-dropdown-close', '_onFilterDropdownClose');
 				this.unlisten(this.$.filterMenuContent, 'd2l-filter-menu-content-change', '_onFilterChanged');
 				this.unlisten(this.$.filterMenuContent, 'd2l-filter-menu-content-hide', '_onFilterHideChanged');
@@ -573,7 +575,6 @@
 				this.$$('#all-courses-pinned').setCourseImage(details);
 				this.$$('#all-courses-unpinned').setCourseImage(details);
 			},
-			_filterDropdownOpen: false,
 			_sortTextOptions: {
 				'courseCode': 'sorting.sortCourseCode',
 				'courseName': 'sorting.sortCourseName',
@@ -594,13 +595,11 @@
 				this.set('_parentOrganizations', e.detail.filters);
 				this.set('_filterText', e.detail.text);
 			},
+			_onFilterDropdownOpen: function() {
+				this.$.filterMenuContent.open();
+			},
 			_onFilterDropdownClose: function() {
-				// If the dropdown is closed by clicking elsewhere, we need to manually update _filterDropdownOpen
-				// since _toggleFilterDropdown doesn't run.
-				// Timeout is to ensure this runs after _toggleFilterDropdown when it's clicked closed
-				setTimeout(function() {
-					this.set('_filterDropdownOpen', false);
-				}.bind(this), 100);
+				this.$.filterDropdownOpener.focus();
 			},
 			_onFilterHideChanged: function(e) {
 				this.toggleClass('d2l-all-courses-hidden', e.detail.hide, this.$.filterSection);
@@ -617,14 +616,11 @@
 			},
 			_toggleFilterDropdown: function() {
 				// This is somewhat gross, but is a side effect of using the filter text span as a secondary opener
-				if (this._filterDropdownOpen) {
+				if (this.$.filterDropdownContent.opened) {
 					this.$.filterDropdownContent.close();
-					this.$.filterDropdownOpener.focus();
 				} else {
 					this.$.filterDropdownContent.open();
-					this.$.filterMenuContent.open();
 				}
-				this.set('_filterDropdownOpen', !this._filterDropdownOpen);
 			},
 			_updateSortBy: function(e) {
 				this.set('_sortField', e.detail.value);

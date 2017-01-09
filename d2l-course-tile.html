@@ -67,13 +67,17 @@ the user has in that organization - student, teacher, TA, etc.
 						<d2l-course-image aria-hidden="true" image="[[_image]]" sizes="[[tileSizes]]" type="tile"></d2l-course-image>
 					</div>
 				</div>
-				<div class="course-text d2l-heading-4">{{_organization.properties.name}}
+				<div class="course-info">
+					<div class="course-text d2l-heading-4">{{_organization.properties.name}}
 
-					<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
-						<span class="course-code-text">{{_organization.properties.code}}</span>
+						<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
+							<span class="course-code-text">{{_organization.properties.code}}</span>
+						</template>
+					</div>
+					<template id="courseUpdates" is="dom-if" if="{{_hasCourseUpdates}}">
+						<div class="update-text-box">{{_courseUpdates}}</div>
 					</template>
 				</div>
-				<div class="update-text">5</div>
 			</a>
 
 			<div class="hover-menu no-tap-interaction">
@@ -151,6 +155,10 @@ the user has in that organization - student, teacher, TA, etc.
 				userId: String,
 				// Configuration value passed in to toggle course code
 				showCourseCode: Boolean,
+				//used for domif for course updates
+				_hasCourseUpdates: Boolean,
+				//number of course updates to show
+				_courseUpdates: String,
 				// Body sent for pin/unpin action
 				_enrollmentPinBody: String,
 				// HTTP method used by the pin/unpin action
@@ -209,7 +217,6 @@ the user has in that organization - student, teacher, TA, etc.
 				if (!this.enrollment) {
 					return;
 				}
-
 				this.pinned = this.enrollment.hasClass('pinned');
 
 				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
@@ -295,6 +302,21 @@ the user has in that organization - student, teacher, TA, etc.
 						this._displaySetImageResult(false);
 						break;
 				}
+			},
+			setCourseUpdates: function(updates) {
+				if (updates > 99) {
+					this._courseUpdates = '99+';
+					this._hasCourseUpdates = true;
+				} else if (updates > 0 && updates <= 99) {
+					this._courseUpdates = updates.toString();
+					this._hasCourseUpdates = true;
+				} else {
+					this._courseUpdates = 0;
+					this._hasCourseUpdates = false;
+				}
+			},
+			_shortCourseText: function() {
+				return this._hasCourseUpdates ? 'course-text-updates' : '';
 			},
 			_enrollmentChanged: function() {
 				if (!this.delayLoad && this.enrollment) {

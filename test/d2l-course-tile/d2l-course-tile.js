@@ -464,4 +464,30 @@ describe('<d2l-course-tile>', function() {
 			expect(widget.$.telemetryRequest.generateRequest.called).to.equal(true);
 		});
 	});
+
+	describe('setting course updates attribute', function() {
+		it('should show update number when less than 99', function() {
+			widget.setCourseUpdates(85);
+			widget.$.courseUpdates.render();
+			expect(widget._courseUpdates).to.equal('85');
+			expect(widget._hasCourseUpdates).to.be.true;
+			expect(widget.$$('.update-text-box').innerText).to.equal('85');
+
+		});
+
+		it('should show 99+ when more than 99 updates', function() {
+			widget.setCourseUpdates(100);
+			widget.$.courseUpdates.render();
+			expect(widget._courseUpdates).to.equal('99+');
+			expect(widget._hasCourseUpdates).to.be.true;
+			expect(widget.$$('.update-text-box').innerText).to.equal('99+');
+
+		});
+
+		it('should not show updatee number when 0', function() {
+			widget.setCourseUpdates(0);
+			widget.$.courseUpdates.render();
+			expect(widget.$$('.update-text-box')).to.not.exist;
+		});
+	});
 });

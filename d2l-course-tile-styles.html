@@ -128,24 +128,29 @@
 			text-transform: uppercase;
 		}
 		.course-text {
-			width: 85%;
+			width: 100%;
 			position: relative;
 			margin-top: 0.4rem;
 			float: left;
+			flex: 1;
 		}
-		.update-text {
+		.course-info {
+			display: flex;
+		}
+		.update-text-box {
 			border: 2px solid #E57231;
 			color: #E57231;
 			border-radius: 0.4rem;
 			font-size: 16px;
-			width: fit-content;
+			width: 2rem;
+			height: 2rem;
+			display: inline-block;
 			padding-left: 8px;
 			padding-right: 8px;
     		padding-bottom: 3px;
     		padding-top: 3px;
 			margin-top: 0.4rem;
    			text-align: center;
-    		float: right;
 			vertical-align: top;
 		}
 		.tile-container > a:focus,

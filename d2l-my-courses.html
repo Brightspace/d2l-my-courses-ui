@@ -71,10 +71,6 @@
 			on-iron-ajax-response="_onEnrollmentsSearchResponse"
 			last-response="{{_lastEnrollmentsSearchResponse}}">
 		</d2l-ajax>
-		<d2l-ajax
-			id="updates"
-			url="/d2l/api/le/{apiVersion}/{orgUnitId}/updates/myUpdates"
-			on-iron-ajax-response="_onUpdatesResponse">
 
 		</d2l-ajax>
 		<d2l-loading-spinner
@@ -220,9 +216,6 @@
 			},
 			getCourseTileItemCount: function() {
 				return this.pinnedEnrollments.length;
-			},
-			_onUpdatesResponse: function(response) {
-
 			},
 			_rootEnrollmentRequest: function() {
 				this._pinnedCoursesMap = {};

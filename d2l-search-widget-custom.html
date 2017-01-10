@@ -452,8 +452,8 @@
 				}
 			},
 
-			_onSearchDependencyChanged: function(sortField, parentOrganizations) {
-				if (this.isAttached && sortField && parentOrganizations) {
+			_onSearchDependencyChanged: function() {
+				if (this.isAttached) {
 					this._search();
 				}
 			},

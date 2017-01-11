@@ -454,7 +454,7 @@
 
 			_onSearchDependencyChanged: function() {
 				if (this.isAttached) {
-					this._search();
+					this.debounce('_onSearchDependencyChanged', this._search, 1000);
 				}
 			},
 

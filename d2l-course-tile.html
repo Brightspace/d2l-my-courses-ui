@@ -74,9 +74,9 @@ the user has in that organization - student, teacher, TA, etc.
 							<span class="course-code-text">{{_organization.properties.code}}</span>
 						</template>
 					</div>
-					<template id="courseUpdates" is="dom-if" if="{{_hasCourseUpdates}}">
+					<div id="courseUpdates" class="d2l-updates-hidden">
 						<div class="update-text-box">{{_courseUpdates}}</div>
-					</template>
+					</div>
 				</div>
 			</a>
 
@@ -313,24 +313,27 @@ the user has in that organization - student, teacher, TA, etc.
 				if (updates > 99) {
 					this._courseUpdates = '99+';
 					this._hasCourseUpdates = true;
+					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
 				} else if (updates > 0 && updates <= 99) {
-					this._courseUpdates = updates.toString();
+					this._courseUpdates = updates;
 					this._hasCourseUpdates = true;
+					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
 				} else {
 					this._courseUpdates = 0;
 					this._hasCourseUpdates = false;
+					this.toggleClass('d2l-updates-hidden', true, this.$.courseUpdates);
 				}
 			},
-				_onUpdatesChange: function(update) {
-					if(this.enrollmentId) {
-					var orgUnitId = /organizations\/([0-9]+)/
-								.exec(this.enrollmentId)[1];
-					var update = update.base[orgUnitId];
+			_onUpdatesChange: function(update) {
+				if(this.enrollmentId) {
+				var orgUnitId = /organizations\/([0-9]+)/
+							.exec(this.enrollmentId)[1];
+				var update = update.base[orgUnitId];
 					if (update) {
 						this.setCourseUpdates(update);
 					}
-					}
-				},
+				}
+			},
 			_shortCourseText: function() {
 				return this._hasCourseUpdates ? 'course-text-updates' : '';
 			},

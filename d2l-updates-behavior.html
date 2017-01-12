@@ -13,13 +13,13 @@
 			updateCountMap: {
 				type: Object,
 				notify: true,
-				value: function () {
+				value: function() {
 					return {};
 				}
 			},
 			_ajaxElement: {
 				type: Object,
-				value: function () {
+				value: function() {
 					return document.createElement('d2l-ajax');
 				}
 			}
@@ -28,22 +28,22 @@
 		 *When given a comma seperated list of organization IDs retrieves a list of updates and stores them in updateCountMap
 		 *
 		 */
-		getUpdates(csvOrgId) {
+		getUpdates: function(csvOrgId) {
 			var updates = '/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=' + csvOrgId;
 			this._ajaxElement.url = updates;
 			this._ajaxElement.onResponse = this._onUpdatesResponse.bind(this);
 			this._ajaxElement.method = 'GET';
 			this._ajaxElement.generateRequest();
 		},
-		_onUpdatesResponse: function (response) {
-			if (response.detail.status == 200) {
-				response.detail.xhr.response["Objects"].forEach(function (object) {
-					this.set('updateCountMap.' + object["OrgUnitId"], object["UnreadDiscussions"] + object["UnapprovedDiscussions"] +
-						object["UnreadAssignmentFeedback"] + object["UnattemptedQuizzes"] + object["UnreadAssignmentSubmissions"] +
-						object["UngradedQuizzes"]);
+		_onUpdatesResponse: function(response) {
+			if (response.detail.status === 200) {
+				response.detail.xhr.response['Objects'].forEach(function(object) {
+					this.set('updateCountMap.' + object['OrgUnitId'], object['UnreadDiscussions'] + object['UnapprovedDiscussions'] +
+						object['UnreadAssignmentFeedback'] + object['UnattemptedQuizzes'] + object['UnreadAssignmentSubmissions'] +
+						object['UngradedQuizzes']);
 				}, this);
 			}
 		}
-	}
+	};
 
 </script>

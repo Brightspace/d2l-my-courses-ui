@@ -205,7 +205,7 @@ the user has in that organization - student, teacher, TA, etc.
 				'animationend': '_onAnimationComplete'
 			},
 			observers: [
-				"_onUpdatesChange(updateCountMap.*)"
+				'_onUpdatesChange(updateCountMap.*)'
 			],
 			created: function() {
 				this.setAttribute('role', 'link');
@@ -324,11 +324,11 @@ the user has in that organization - student, teacher, TA, etc.
 					this.toggleClass('d2l-updates-hidden', true, this.$.courseUpdates);
 				}
 			},
-			_onUpdatesChange: function(update) {
-				if(this.enrollmentId) {
+			_onUpdatesChange: function(updateChange) {
+				if (this.enrollmentId) {
 					var orgUnitId = /organizations\/([0-9]+)/
 							.exec(this.enrollmentId)[1];
-					var update = update.base[orgUnitId];
+					var update = updateChange.base[orgUnitId];
 					if (update) {
 						this.setCourseUpdates(update);
 					}

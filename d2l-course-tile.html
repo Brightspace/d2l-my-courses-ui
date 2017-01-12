@@ -326,9 +326,9 @@ the user has in that organization - student, teacher, TA, etc.
 			},
 			_onUpdatesChange: function(update) {
 				if(this.enrollmentId) {
-				var orgUnitId = /organizations\/([0-9]+)/
+					var orgUnitId = /organizations\/([0-9]+)/
 							.exec(this.enrollmentId)[1];
-				var update = update.base[orgUnitId];
+					var update = update.base[orgUnitId];
 					if (update) {
 						this.setCourseUpdates(update);
 					}

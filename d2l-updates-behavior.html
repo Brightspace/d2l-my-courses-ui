@@ -1,0 +1,49 @@
+<script>
+	'use strict';
+
+	window.D2L = window.D2L || {};
+	window.D2L.MyCourses = window.D2L.MyCourses || {};
+
+	/*
+	 * General utility functions that can be used in many places.
+	 * @polymerBehavior window.D2L.MyCourses.UpdatesBehavior
+	 */
+	window.D2L.MyCourses.UpdatesBehavior = {
+		properties: {
+			updateCountMap: {
+				type: Object,
+				notify: true,
+				value: function () {
+					return {};
+				}
+			},
+			_ajaxElement: {
+				type: Object,
+				value: function () {
+					return document.createElement('d2l-ajax');
+				}
+			}
+		},
+		/**
+		 *When given a comma seperated list of organization IDs retrieves a list of updates and stores them in updateCountMap
+		 *
+		 */
+		getUpdates(csvOrgId) {
+			var updates = '/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=' + csvOrgId;
+			this._ajaxElement.url = updates;
+			this._ajaxElement.onResponse = this._onUpdatesResponse;
+			this._ajaxElement.method = 'GET';
+			this._ajaxElement.generateRequest();
+		},
+		_onUpdatesResponse: function (response) {
+			if (response.detail.status == 200) {
+				response.detail.xhr.response["Objects"].forEach(function (object) {
+					this.set('updateCountMap.' + object["OrgUnitId"], object["UnreadDiscussions"] + object["UnapprovedDiscussions"] +
+						object["UnreadAssignmentFeedback"] + object["UnattemptedQuizzes"] + object["UnreadAssignmentSubmissions"] +
+						object["UngradedQuizzes"]);
+				}, this);
+			}
+		}
+	}
+
+</script>

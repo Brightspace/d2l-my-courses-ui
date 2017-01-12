@@ -65,6 +65,11 @@
 		</d2l-ajax>
 
 		<d2l-ajax
+			id="updatesRequest"
+			on-iron-ajax-response="_onUpdatesResponse">
+		</d2l-ajax>
+
+		<d2l-ajax
 			id="enrollmentsSearchRequest"
 			url="[[_enrollmentsSearchUrl]]"
 			headers='{ "Accept": "application/vnd.siren+json" }'
@@ -95,7 +100,8 @@
 				user-id="[[userId]]"
 				tenant-id="[[tenantId]]"
 				telemetry-endpoint="[[telemetryEndpoint]]"
-				show-course-code="[[showCourseCode]]">
+				show-course-code="[[showCourseCode]]"
+				update-count-map="[[updateCountMap]]">
 			</d2l-course-tile-grid>
 			<button
 				class="all-courses-button"
@@ -111,7 +117,8 @@
 			my-enrollments-entity="[[_lastEnrollmentsSearchResponse]]"
 			lastEnrollmentsSearchResponse="[[_lastEnrollmentsSearchResponse]]"
 			locale="[[locale]]"
-      		show-course-code="[[showCourseCode]]">
+      		show-course-code="[[showCourseCode]]"
+			update-count-map="[[updateCountMap]]">
 		</d2l-all-courses>
 
 		<d2l-simple-overlay
@@ -151,6 +158,12 @@
 				tenantId: String,
 				// URL to send telemetry to
 				telemetryEndpoint: String,
+				updateCountMap: {
+					type: Object,
+					value: function() {
+						return {};
+					}
+				},
 				// URL constructed to fetch a user's enrollments with the enrollments search Action
 				_enrollmentsSearchUrl: String,
 				// Object containing the last response from an enrollments search request
@@ -216,6 +229,15 @@
 			getCourseTileItemCount: function() {
 				return this.pinnedEnrollments.length;
 			},
+			_onUpdatesResponse: function(response) {
+
+				if (response.detail.status == 200) {
+					response.detail.xhr.response["Objects"].forEach(function(object) {
+						this.set('updateCountMap.'+object["OrgUnitId"], object["UnreadDiscussions"] + object["UnapprovedDiscussions"] + object["UnreadAssignmentFeedback"] + object["UnattemptedQuizzes"] +object["UnreadAssignmentSubmissions"] + object["UngradedQuizzes"]);
+					}, this);
+
+				}
+			},
 			_rootEnrollmentRequest: function() {
 				this._pinnedCoursesMap = {};
 				this._unpinnedCoursesMap = {};
@@ -277,7 +299,9 @@
 
 						this._enrollmentIdMap[orgUnitId] = enrollmentId;
 					}, this);
-
+					var updates = '/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=' + Object.keys(this._enrollmentIdMap).join(',');
+					this.$.updatesRequest.url=updates;
+					this.$.updatesRequest.generateRequest();
 					this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
 					this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
 

@@ -132,7 +132,7 @@ the user has in that organization - student, teacher, TA, etc.
 					type: Object,
 					observer: '_enrollmentChanged'
 				},
-				enrollmentId: Number,
+				enrollmentId: String,
 				// Specifies whether the (desktop) hover menu is enabled on the course tile
 				hoverEnabled: {
 					type: Boolean,
@@ -155,6 +155,10 @@ the user has in that organization - student, teacher, TA, etc.
 				userId: String,
 				// Configuration value passed in to toggle course code
 				showCourseCode: Boolean,
+				updateCountMap: {
+					type: Object,
+					notify: true
+				},
 				//used for domif for course updates
 				_hasCourseUpdates: Boolean,
 				//number of course updates to show
@@ -200,6 +204,9 @@ the user has in that organization - student, teacher, TA, etc.
 			listeners: {
 				'animationend': '_onAnimationComplete'
 			},
+			observers: [
+				"_onUpdatesChange(updateCountMap.*)"
+			],
 			created: function() {
 				this.setAttribute('role', 'link');
 			},
@@ -225,7 +232,6 @@ the user has in that organization - student, teacher, TA, etc.
 				this._onFocus = this._onFocus.bind(this);
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);
-
 				Polymer.IronA11yAnnouncer.requestAvailability();
 			},
 			// Handler that triggers the API call to change an enrollment's pin state when the user says DO IT
@@ -315,6 +321,16 @@ the user has in that organization - student, teacher, TA, etc.
 					this._hasCourseUpdates = false;
 				}
 			},
+				_onUpdatesChange: function(update) {
+					if(this.enrollmentId) {
+					var orgUnitId = /organizations\/([0-9]+)/
+								.exec(this.enrollmentId)[1];
+					var update = update.base[orgUnitId];
+					if (update) {
+						this.setCourseUpdates(update);
+					}
+					}
+				},
 			_shortCourseText: function() {
 				return this._hasCourseUpdates ? 'course-text-updates' : '';
 			},

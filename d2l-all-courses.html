@@ -16,6 +16,7 @@
 <link rel="import" href="d2l-search-widget-custom.html">
 <link rel="import" href="localize-behavior.html">
 <link rel="import" href="d2l-simple-overlay.html">
+<link rel="import" href="d2l-updates-behavior.html">
 
 
 <dom-module id="d2l-all-courses">
@@ -357,7 +358,8 @@
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
 				window.D2L.MyCourses.LocalizeBehavior,
 				window.D2L.MyCourses.UtilityBehavior,
-				window.D2L.MyCourses.AlertBehavior
+				window.D2L.MyCourses.AlertBehavior,
+				window.D2L.MyCourses.UpdatesBehavior
 			],
 			listeners: {
 				'd2l-simple-overlay-opening': '_onSimpleOverlayOpening',
@@ -467,8 +469,10 @@
 					var enrollmentEntities = enrollments.getSubEntitiesByClass('enrollment');
 					var newPinnedEnrollments = [];
 					var newUnpinnedEnrollments = [];
+					var orgUnitIds = [];
 					enrollmentEntities.forEach(function(enrollment) {
 						var enrollmentId = this.getEntityIdentifier(enrollment);
+						orgUnitIds.push(this.getOrgUnitId(enrollmentId));
 						if (enrollment.hasClass('pinned')) {
 							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
 								newPinnedEnrollments.push(enrollment);
@@ -481,7 +485,7 @@
 							}
 						}
 					}, this);
-
+					this.getUpdates(orgUnitIds.join(','));
 					if (append) {
 						this.filteredPinnedEnrollments = this.filteredPinnedEnrollments.concat(newPinnedEnrollments);
 						this.filteredUnpinnedEnrollments = this.filteredUnpinnedEnrollments.concat(newUnpinnedEnrollments);

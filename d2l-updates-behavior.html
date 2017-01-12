@@ -31,7 +31,7 @@
 		getUpdates(csvOrgId) {
 			var updates = '/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=' + csvOrgId;
 			this._ajaxElement.url = updates;
-			this._ajaxElement.onResponse = this._onUpdatesResponse;
+			this._ajaxElement.onResponse = this._onUpdatesResponse.bind(this);
 			this._ajaxElement.method = 'GET';
 			this._ajaxElement.generateRequest();
 		},

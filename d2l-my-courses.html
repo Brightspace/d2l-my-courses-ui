@@ -265,8 +265,7 @@
 					enrollmentEntities.forEach(function(enrollment) {
 						var enrollmentId = this.getEntityIdentifier(enrollment);
 
-						var orgUnitId = /organizations\/([0-9]+)/
-							.exec(enrollmentId)[1];
+						var orgUnitId = this.getOrgUnitId(enrollmentId);
 						if (enrollment.hasClass('pinned')) {
 							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
 								newPinnedEnrollments.push(enrollment);

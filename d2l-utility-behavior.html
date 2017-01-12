@@ -66,6 +66,12 @@
 			var selfLink = entity.getLinkByRel('self');
 			return selfLink.href;
 		},
+		getOrgUnitId: function(enrollmentId) {
+			if (enrollmentId && typeof String) {
+				return /organizations\/([0-9]+)/
+							.exec(enrollmentId)[1];
+			}
+		},
 		_getImageLinks: function(image, imageClass) {
 			var imageLinks = image.getLinksByClass(imageClass || 'tile'),
 				sizes = {};

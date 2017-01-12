@@ -1,3 +1,6 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../d2l-siren-parser/d2l-siren-parser.html">
+<link rel="import" href="../d2l-ajax/d2l-ajax.html">
 <script>
 	'use strict';
 
@@ -12,9 +15,14 @@
 		properties: {
 			updateCountMap: {
 				type: Object,
-				notify: true,
 				value: function() {
 					return {};
+				}
+			},
+			_updatesURI: {
+				type: String,
+				value: function() {
+					return '/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=';
 				}
 			},
 			_ajaxElement: {
@@ -29,7 +37,7 @@
 		 *
 		 */
 		getUpdates: function(csvOrgId) {
-			var updates = '/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=' + csvOrgId;
+			var updates = this._updatesURI + csvOrgId;
 			this._ajaxElement.url = updates;
 			this._ajaxElement.onResponse = this._onUpdatesResponse.bind(this);
 			this._ajaxElement.method = 'GET';

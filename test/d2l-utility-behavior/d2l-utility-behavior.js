@@ -129,6 +129,17 @@ describe('d2l-utility-behavior', function() {
 		});
 	});
 
+	describe('getOrgunitId', function() {
+		var enrollmentid = '/enrollments/users/169/organizations/1';
+		it('should parse orgunitid from enrollment id', function() {
+			expect(component.getOrgUnitId(enrollmentid)).to.equal('1');
+		});
+
+		it('should return nothing if nothing is passed in', function() {
+			expect(component.getOrgUnitId(undefined)).to.equal(undefined);
+		});
+	});
+
 	describe('getDefaultImageLink', function() {
 		it('should return high-density max image as a default image', function() {
 			var link = component.getDefaultImageLink(imageEntity, 'tile');

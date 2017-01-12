@@ -74,9 +74,9 @@ the user has in that organization - student, teacher, TA, etc.
 							<span class="course-code-text">{{_organization.properties.code}}</span>
 						</template>
 					</div>
-					<template id="courseUpdates" is="dom-if" if="{{_hasCourseUpdates}}">
+					<div id="courseUpdates" class="d2l-updates-hidden">
 						<div class="update-text-box">{{_courseUpdates}}</div>
-					</template>
+					</div>
 				</div>
 			</a>
 
@@ -225,7 +225,6 @@ the user has in that organization - student, teacher, TA, etc.
 				this._onFocus = this._onFocus.bind(this);
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);
-
 				Polymer.IronA11yAnnouncer.requestAvailability();
 			},
 			// Handler that triggers the API call to change an enrollment's pin state when the user says DO IT
@@ -307,16 +306,16 @@ the user has in that organization - student, teacher, TA, etc.
 				if (updates > 99) {
 					this._courseUpdates = '99+';
 					this._hasCourseUpdates = true;
+					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
 				} else if (updates > 0 && updates <= 99) {
-					this._courseUpdates = updates.toString();
+					this._courseUpdates = updates;
 					this._hasCourseUpdates = true;
+					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
 				} else {
 					this._courseUpdates = 0;
 					this._hasCourseUpdates = false;
+					this.toggleClass('d2l-updates-hidden', true, this.$.courseUpdates);
 				}
-			},
-			_shortCourseText: function() {
-				return this._hasCourseUpdates ? 'course-text-updates' : '';
 			},
 			_enrollmentChanged: function() {
 				if (!this.delayLoad && this.enrollment) {

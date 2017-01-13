@@ -475,6 +475,14 @@ describe('<d2l-course-tile>', function() {
 
 		});
 
+		it('should show 99 when 99 updates', function() {
+			widget.setCourseUpdates(99);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
+			expect(widget._courseUpdates).to.equal(99);
+			expect(widget._hasCourseUpdates).to.be.true;
+			expect(widget.$$('.update-text-box').innerText).to.equal('99');
+		});
+
 		it('should show 99+ when more than 99 updates', function() {
 			widget.setCourseUpdates(100);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
@@ -488,6 +496,24 @@ describe('<d2l-course-tile>', function() {
 			widget.setCourseUpdates(0);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
 			expect(widget.$$('.update-text-box').innerText).to.equal('0');
+		});
+
+		it('should not display when given less than 0', function() {
+			widget.setCourseUpdates(-1);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('-1');
+		});
+
+		it('should not display when given null', function() {
+			widget.setCourseUpdates(null);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('');
+		});
+
+		it('should not display when given undefined', function() {
+			widget.setCourseUpdates(undefined);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('');
 		});
 	});
 });

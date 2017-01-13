@@ -378,7 +378,7 @@
 					this.$.dropdown.close();
 
 				}
-				this.fire('d2l-root-enrollment-search');
+				this._search();
 			},
 
 			_onSearchStringChanged: function(newString) {
@@ -454,7 +454,7 @@
 
 			_onSearchDependencyChanged: function() {
 				if (this.isAttached) {
-					this.debounce('_onSearchDependencyChanged', this._search, 1000);
+					this.debounce('_onSearchDependencyChanged', this._search, 500);
 				}
 			},
 

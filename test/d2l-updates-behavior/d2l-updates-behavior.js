@@ -40,23 +40,23 @@ describe('d2l-updates-behavior', function() {
 	});
 
 	describe('getUpdates', function() {
-/*
-		it('calling get updates with a csv list of orgunitids should return a list of aggregated updates', function(done) {
+
+		it('calling get updates with a csv list of orgunitids should return a list of aggregated updates', function() {
 			server.respondWith('GET', component._updatesURI + '6609,6613', JSON.stringify(updates));
 			component.getUpdates('6609,6613');
-			component.addEventListener('update-count-map-changed', function() {
+			setTimeout(function() {
 				expect(component.get('updateCountMap')[6609]).to.equal(2);
 				expect(component.get('updateCountMap')[6613]).to.equal(6);
-				done();
-			});
-
+			}, 200);
 		});
 
 		it('should do nothing if a bad response comes back', function() {
 			server.respondWith('GET', component._updatesURI + '6609,6613', [500, {}, '']);
 			component.getUpdates('6609,6613');
-			expect(component.updateCountMap).to.be.empty;
+			setTimeout(function() {
+				expect(component.updateCountMap).to.be.empty;
+			}, 200);
 
-		});*/
+		});
 	});
 });

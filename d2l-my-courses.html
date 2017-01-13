@@ -48,13 +48,16 @@
 			.d2l-my-courses-hidden {
 				display: none;
 			}
+			.spinner-container {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
 			d2l-alert {
 				display: block;
 				margin-bottom: 20px;
 				clear: both;
 			}
-
-
 		</style>
 
 		<d2l-ajax
@@ -72,11 +75,12 @@
 			last-response="{{_lastEnrollmentsSearchResponse}}">
 		</d2l-ajax>
 
-		<d2l-loading-spinner
-			id="initialLoadingSpinner"
-			class="d2l-my-courses-hidden"
-			size="100">
-		</d2l-loading-spinner>
+		<div class="spinner-container">
+			<d2l-loading-spinner
+				id="initialLoadingSpinner"
+				size="100">
+			</d2l-loading-spinner>
+		</div>
 
 		<div class="my-courses-content d2l-my-courses-hidden">
 			<template is="dom-repeat" items="{{_alerts}}">
@@ -94,25 +98,22 @@
 				tile-sizes="[[_tileSizes]]"
 				user-id="[[userId]]"
 				tenant-id="[[tenantId]]"
+				locale="[[locale]]"
 				telemetry-endpoint="[[telemetryEndpoint]]"
 				show-course-code="[[showCourseCode]]">
 			</d2l-course-tile-grid>
 			<button
 				class="all-courses-button"
 				hidden$="{{!_hasEnrollments}}"
-				on-tap="_openAllCoursesView">
+				on-tap="_openAllCoursesView"
+				on-mouseover="_createAllCourses"
+				on-focus="_createAllCourses">
 				{{localize('viewAllCourses')}}
 			</button>
 		</div>
 
-		<d2l-all-courses
-			pinned-enrollments="[[pinnedEnrollments]]"
-			unpinned-enrollments="[[unpinnedEnrollments]]"
-			my-enrollments-entity="[[_lastEnrollmentsSearchResponse]]"
-			lastEnrollmentsSearchResponse="[[_lastEnrollmentsSearchResponse]]"
-			locale="[[locale]]"
-      		show-course-code="[[showCourseCode]]">
-		</d2l-all-courses>
+		<div id="allCoursesPlaceholder">
+		</div>
 
 		<d2l-simple-overlay
 			id="basic-image-selector-overlay"
@@ -147,6 +148,8 @@
 				imageCatalogLocation: String,
 				// hashed userid to send to telemetry
 				userId: String,
+				// Configuration value passed in to toggle course code
+				showCourseCode: Boolean,
 				// hashed tenantid to send to telemetry
 				tenantId: String,
 				// URL to send telemetry to
@@ -189,8 +192,7 @@
 				'open-change-image-view': '_openChangeImageView',
 				'set-course-image': '_setCourseImageEvent',
 				'clear-image-scroll-threshold': '_clearImageScrollThreshold',
-				'simple-overlay-closed': '_onSimpleOverlayClosed',
-				'd2l-root-enrollment-search': '_rootEnrollmentRequest',
+				'd2l-simple-overlay-closed': '_onSimpleOverlayClosed',
 				'enrollment-pinned': '_onEnrollmentPinAction',
 				'enrollment-unpinned': '_onEnrollmentPinAction'
 			},
@@ -213,8 +215,16 @@
 			detached: function() {
 				document.body.removeEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 			},
+			_allCoursesCreated: false,
 			getCourseTileItemCount: function() {
 				return this.pinnedEnrollments.length;
+			},
+			_createAllCourses: function() {
+				if (!this._allCoursesCreated) {
+					var allCourses = document.createElement('d2l-all-courses');
+					this.$.allCoursesPlaceholder.appendChild(allCourses);
+					this._allCoursesCreated = true;
+				}
 			},
 			_rootEnrollmentRequest: function() {
 				this._pinnedCoursesMap = {};
@@ -237,6 +247,7 @@
 					}
 
 					var searchAction = enrollmentsRoot.getActionByName('search-my-enrollments');
+					this.fetchEnrollmentUrl = searchAction.href + '/organizations/';
 
 					var pinDateQuery = {
 						pageSize: 25,
@@ -299,15 +310,26 @@
 				this.$['basic-image-selector-overlay'].open();
 			},
 			_openAllCoursesView: function(e) {
+				this._createAllCourses();
+
+				var allCourses = this.$$('d2l-all-courses');
+				allCourses.open();
+
 				e.preventDefault();
 				e.stopPropagation();
-				this.$$('d2l-all-courses').lastEnrollmentsSearchResponse = this._lastEnrollmentsSearchResponse;
-				this.$$('d2l-all-courses').load();
 
-				setTimeout(function() {
-					// Slight delay to allow for overlay to get a DOM width before triggering the recalculation
-					this.fire('recalculate-columns');
-				}.bind(this), 50);
+				this.async(function() {
+					// The opening of the overlay lags slightly if we try to do this while it
+					// is opening - do it after the animation is finished. Animation takes
+					// 500ms, but some lag if we wait exactly that long, so +100ms for safety)
+					allCourses.pinnedEnrollments = this.pinnedEnrollments;
+					allCourses.unpinnedEnrollments = this.unpinnedEnrollments;
+					allCourses.myEnrollmentsEntity = this._lastEnrollmentsSearchResponse;
+					allCourses.lastEnrollmentsSearchResponse = this._lastEnrollmentsSearchResponse;
+					allCourses.locale = this.locale;
+					allCourses.showCourseCode = this.showCourseCode;
+					this.$$('d2l-all-courses').load();
+				}.bind(this), 600);
 			},
 			_refreshPage: function() {
 				document.location.reload(true);
@@ -325,7 +347,9 @@
 						}.bind(this), 1000); // delay until the tile fail icon animation begins to kick in (1 sec delay)
 					}
 				}
-				this.$$('d2l-all-courses').setCourseImage(e);
+				if (this._allCoursesCreated) {
+					this.$$('d2l-all-courses').setCourseImage(e);
+				}
 				this.$$('d2l-course-tile-grid').setCourseImage(e);
 			},
 			_changeImageLoadMore: function() {
@@ -348,10 +372,16 @@
 			},
 			_onEnrollmentPinnedMessage: function(e) {
 				if (e.target !== this) {
-					if (e.detail.isPinned) {
-						this._pinEnrollment(e.detail.orgUnitId);
+					var enrollmentId = this._enrollmentIdMap[e.detail.orgUnitId];
+
+					if (enrollmentId) {
+						if (e.detail.isPinned) {
+							this._moveEnrollmentToPinnedList(enrollmentId);
+						} else {
+							this._moveEnrollmentToUnpinnedList(enrollmentId);
+						}
 					} else {
-						this._unpinEnrollment(e.detail.orgUnitId);
+						this._fetchEnrollmentEntity(e.detail.orgUnitId, e.detail.isPinned);
 					}
 				}
 			},

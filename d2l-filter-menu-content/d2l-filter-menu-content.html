@@ -1,6 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../d2l-ajax/d2l-ajax.html">
 <link rel="import" href="../../d2l-colors/d2l-colors.html">
+<link rel="import" href="../../d2l-loading-spinner/d2l-loading-spinner.html">
 <link rel="import" href="../../d2l-siren-parser/d2l-siren-parser.html">
 <link rel="import" href="../d2l-utility-behavior.html">
 <link rel="import" href="../localize-behavior.html">
@@ -12,7 +13,8 @@
 	<template>
 		<style>
 			:host {
-				display: block;
+				display: flex;
+				flex-direction: column;
 			}
 			.d2l-filter-menu-content-invisible {
 				visibility: hidden;
@@ -24,6 +26,9 @@
 			button:focus {
 				text-decoration: underline;
 				color: var(--d2l-color-celestine);
+			}
+			d2l-loading-spinner {
+				align-self: center;
 			}
 			.clear-button {
 				@apply(--d2l-body-small-text);
@@ -53,24 +58,29 @@
 			id="departmentsRequest"
 			url="[[_departmentsUrl]]"
 			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onDepartmentsResponse">
+			on-iron-ajax-response="_onDepartmentsResponse"
+			on-iron-ajax-error="_onErrorResponse">
 		</d2l-ajax>
 
 		<d2l-ajax
 			id="semestersRequest"
 			url="[[_semestersUrl]]"
 			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onSemestersResponse">
+			on-iron-ajax-response="_onSemestersResponse"
+			on-iron-ajax-error="_onErrorResponse">
 		</d2l-ajax>
 
-		<div class="dropdown-content-header">
+		<d2l-loading-spinner size="50">
+		</d2l-loading-spinner>
+
+		<div id="filterHeader" class="dropdown-content-header d2l-filter-menu-content-hidden">
 			<span class="dropdown-content-header-text">{{localize('filtering.filterBy')}}</span>
 			<template is="dom-if" if="[[_showClearButton]]">
 				<button class="clear-button" on-tap="_clearFilters">{{localize('filtering.clear')}}</button>
 			</template>
 		</div>
 
-		<div id="contentView">
+		<div id="contentView" class="d2l-filter-menu-content-hidden">
 			<d2l-filter-menu-content-simple
 				id="simpleContent"
 				hidden$="[[_hasManyFilters]]">
@@ -152,6 +162,11 @@
 				this.set('_currentFilters', []);
 				this.set('filterText', this.localize('filtering.filter'));
 			},
+			_hideLoadingSpinner: function() {
+				this.toggleClass('d2l-filter-menu-content-hidden', true, this.$$('d2l-loading-spinner'));
+				this.toggleClass('d2l-filter-menu-content-hidden', false, this.$.contentView);
+				this.toggleClass('d2l-filter-menu-content-hidden', false, this.$.filterHeader);
+			},
 			_myEnrollmentsEntityChanged: function(entity) {
 				// Set up search URLs and search Actions for filter dropdown
 				if (entity && entity.actions) {
@@ -174,6 +189,8 @@
 						return;
 					}
 
+					this._hideLoadingSpinner();
+
 					this.set('_hasManyFilters', this._departments.length + this._semesters.length > 7);
 					if (this._hasManyFilters) {
 						this.$.tabbedContent.load();
@@ -188,6 +205,9 @@
 			},
 			_onDepartmentsResponse: function(response) {
 				this.__onResponse(response, '_departments');
+			},
+			_onErrorResponse: function() {
+				this._hideLoadingSpinner();
 			},
 			_onSemestersResponse: function(response) {
 				this.__onResponse(response, '_semesters');

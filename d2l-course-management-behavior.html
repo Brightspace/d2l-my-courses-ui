@@ -173,11 +173,41 @@
 					entity._actionsByName['pin-course'] = entity.actions[0];
 				}
 			},
-			_pinEnrollment: function(orgUnitId) {
-				this._moveEnrollmentToPinnedList(this._enrollmentIdMap[orgUnitId]);
+			_fetchEnrollmentEntity: function(orgUnitId, pinned) {
+				if (!this._fetchEnrollmentAjaxPinned) {
+					this._fetchEnrollmentAjaxPinned = document.createElement('d2l-ajax');
+					this._fetchEnrollmentAjaxPinned.onResponse =
+						this._onFetchEnrollmentEntityResponse.bind(this, true);
+				}
+
+				if (!this._fetchEnrollmentAjaxUnpinned) {
+					this._fetchEnrollmentAjaxUnpinned = document.createElement('d2l-ajax');
+					this._fetchEnrollmentAjaxUnpinned.onResponse =
+						this._onFetchEnrollmentEntityResponse.bind(this, false);
+				}
+
+				var ajax = pinned
+					? this._fetchEnrollmentAjaxPinned
+					: this._fetchEnrollmentAjaxUnpinned;
+
+				ajax.url = this.fetchEnrollmentUrl + orgUnitId;
+				ajax.method = 'GET';
+				ajax.generateRequest();
 			},
-			_unpinEnrollment: function(orgUnitId) {
-				this._moveEnrollmentToUnpinnedList(this._enrollmentIdMap[orgUnitId]);
+			_onFetchEnrollmentEntityResponse: function(pinned, response) {
+				if (response.detail.status === 200 || response.detail.status === 304) {
+					this._sirenParser = this._sirenParser || document.createElement('d2l-siren-parser');
+					var enrollmentEntity = this._sirenParser.parse(response.detail.xhr.response);
+
+					// Enforce specific pin state
+					this._setEnrollmentPinData(enrollmentEntity, pinned);
+
+					if (pinned) {
+						this._moveEnrollmentToPinnedList(enrollmentEntity);
+					} else {
+						this._moveEnrollmentToUnpinnedList(enrollmentEntity);
+					}
+				}
 			}
 		};
 

@@ -36,6 +36,7 @@ describe('d2l-all-courses', function() {
 		clock = sinon.useFakeTimers();
 
 		widget = fixture('d2l-all-courses-fixture');
+		sinon.stub(widget.$['search-widget'], '_search');
 	});
 
 	afterEach(function() {
@@ -86,6 +87,11 @@ describe('d2l-all-courses', function() {
 	it('should show filter menu when there are sufficient enrollments', function() {
 		widget.pinnedEnrollments = Array(20).fill(pinnedEnrollmentEntity);
 		widget.load();
+
+		// Class is only changed after column recalculation is done, which is done
+		// in a setTimeout to allow for a DOM width to be set
+		clock.tick(51);
+
 		expect(widget.$.filterAndSort.classList.contains('d2l-all-courses-hidden')).to.be.false;
 	});
 
@@ -187,7 +193,7 @@ describe('d2l-all-courses', function() {
 		it('should remove a setCourseImageFailure alert when the overlay is opened', function() {
 			widget._addAlert('warning', 'setCourseImageFailure', 'failed to do that thing it should do');
 			expect(widget._alerts).to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
-			widget._onSimpleOverlayOpening();
+			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(widget._alerts).to.not.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
 		});
 	});

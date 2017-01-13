@@ -68,10 +68,26 @@ describe('d2l-filter-menu-content', function() {
 					href: '/organizations/1'
 				}]
 			};
+
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 		});
 
 		afterEach(function() {
 			server.restore();
+		});
+
+		it('should show a spinner and hide contents until data is fetched', function(done) {
+			var handler = function() {
+				expect(component.$$('d2l-loading-spinner').classList.contains('d2l-filter-menu-content-hidden')).to.be.true;
+				document.removeEventListener('d2l-filter-menu-content-hide', handler);
+				done();
+			};
+			document.addEventListener('d2l-filter-menu-content-hide', handler);
+
+			expect(component.$$('d2l-loading-spinner').classList.contains('d2l-filter-menu-content-hidden')).to.be.false;
+			departmentsResponse = { entities: [] };
+			semestersResponse = { entities: [] };
+			component.load();
 		});
 
 		it('should signal that it should be hidden if user does not have enough departments/semesters', function(done) {
@@ -84,8 +100,6 @@ describe('d2l-filter-menu-content', function() {
 
 			departmentsResponse = { entities: [enrollment] };
 			semestersResponse = { entities: [] };
-
-			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component.load();
 		});
 
@@ -99,8 +113,6 @@ describe('d2l-filter-menu-content', function() {
 
 			departmentsResponse = { entities: [enrollment] };
 			semestersResponse = { entities: [enrollment] };
-
-			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component.load();
 		});
 
@@ -115,8 +127,6 @@ describe('d2l-filter-menu-content', function() {
 
 			departmentsResponse = { entities: [enrollment, enrollment, enrollment, enrollment] };
 			semestersResponse = { entities: [enrollment, enrollment, enrollment] };
-
-			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component.load();
 		});
 
@@ -131,10 +141,7 @@ describe('d2l-filter-menu-content', function() {
 
 			departmentsResponse = { entities: [enrollment, enrollment, enrollment, enrollment] };
 			semestersResponse = { entities: [enrollment, enrollment, enrollment, enrollment] };
-
-			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component.load();
-
 		});
 	});
 

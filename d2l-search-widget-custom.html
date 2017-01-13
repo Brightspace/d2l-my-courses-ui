@@ -259,6 +259,10 @@
 				window.D2L.MyCourses.UtilityBehavior
 			],
 
+			observers: [
+				'_onSearchDependencyChanged(sortField, parentOrganizations)'
+			],
+
 			ready: function() {
 				this._handleFocusBound = this._handleFocus.bind(this);
 				this._handleClickBound = this._handleClick.bind(this);
@@ -374,7 +378,7 @@
 					this.$.dropdown.close();
 
 				}
-				this.fire('d2l-root-enrollment-search');
+				this._search();
 			},
 
 			_onSearchStringChanged: function(newString) {
@@ -448,6 +452,12 @@
 				}
 			},
 
+			_onSearchDependencyChanged: function() {
+				if (this.isAttached) {
+					this.debounce('_onSearchDependencyChanged', this._search, 500);
+				}
+			},
+
 			_onSearchResponse: function(response) {
 				if (response.detail.status === 200 && this._searchString) {
 					var parser = document.createElement('d2l-siren-parser');
@@ -472,7 +482,7 @@
 									// unknown reason, so use a normal Array.prototype.splice...
 									self._searchResults.splice(index, 0, {
 										name: organization.properties.name,
-										href: organization.getLinkByRel(/\/organization-homepage$/).href
+										href: (organization.getLinkByRel(/\/organization-homepage$/) || {}).href
 									});
 									// ...then, if this is the last result to get spliced in, manually
 									// call notifySplices with the changes.

@@ -313,7 +313,7 @@
 				this._images = (searchImages.length > 0) ? searchImages : this._defaultImages;
 			},
 			_getChangeCourseImageLink: function(organization) {
-				var rel = /edit-image-page/;
+				var rel = /course-offering-info-page/;
 				var editImagePage = organization && organization.getLinkByRel(rel);
 				if (editImagePage) {
 					return editImagePage.href;

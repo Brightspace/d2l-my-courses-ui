@@ -23,6 +23,7 @@
 					delay-load="[[delayLoad]]"
 					tile-sizes="[[tileSizes]]"
 					user-id="[[userId]]"
+					locale="[[locale]]"
 					tenant-id="[[tenantId]]"
 					telemetry-endpoint="[[telemetryEndpoint]]"
 					show-course-code="[[showCourseCode]]">
@@ -69,7 +70,8 @@
 				tileSizes: Object,
 				userId: String,
 				tenantId: String,
-				telemetryEndpoint: String
+				telemetryEndpoint: String,
+				locale: String
 			},
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,

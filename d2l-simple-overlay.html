@@ -106,7 +106,7 @@
 			},
 			_handleClose: function() {
 				this.close();
-				this.fire('simple-overlay-closed');
+				this.fire('d2l-simple-overlay-closed');
 				this.fire('recalculate-columns');
 			},
 			_handleCloseSimpleOverlayEvent: function(e) {
@@ -143,6 +143,7 @@
 				this._onNodesChange();
 				Polymer.dom(this.root).querySelector('.scrollable').scrollTop = 0;
 				this._notifyDistributedChildren('d2l-simple-overlay-opening');
+				this.fire('d2l-simple-overlay-opening');
 
 				if (this._isMobile()) {
 					this.playAnimation('mobileOpen');

@@ -23,6 +23,7 @@
 					delay-load="[[delayLoad]]"
 					tile-sizes="[[tileSizes]]"
 					user-id="[[userId]]"
+					locale="[[locale]]"
 					tenant-id="[[tenantId]]"
 					telemetry-endpoint="[[telemetryEndpoint]]"
 					show-course-code="[[showCourseCode]]"
@@ -70,7 +71,8 @@
 				tileSizes: Object,
 				userId: String,
 				tenantId: String,
-				telemetryEndpoint: String
+				telemetryEndpoint: String,
+				locale: String
 			},
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
@@ -445,6 +447,19 @@
 
 					this._courseTileBoundingRects.push(offsetData);
 				}.bind(this));
+			},
+			checkForStartedInactive: function(type) {
+				var courseTiles = this.$$('.course-tile-container').querySelectorAll('d2l-course-tile');
+				// When this runs, the removed tile won't be gone yet, so we have to check for an additional tile
+				var searchAmount = type === 'remove' ? 2 : 1;
+
+				for (var i = 0; i < courseTiles.length; i++) {
+					if (courseTiles[i].isStartedInactive && --searchAmount === 0) {
+						return true;
+					}
+				}
+
+				return false;
 			}
 		});
 	</script>

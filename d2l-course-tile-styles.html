@@ -112,7 +112,7 @@
 			margin: auto;
 			transition: filter 0.25s, -webkit-filter 0.25s, transform 0.5s ease-in-out;
 		}
-		.course-image-container.hover > .course-image d2l-course-image {
+		.tile-container:not(.d2l-no-access) .course-image-container.hover > .course-image d2l-course-image {
 			/* Ensure only one filter per layer to avoid aliasing bug in Webkit during transforms */
 			-webkit-filter: contrast(1.15);
 			filter: contrast(1.15);
@@ -151,9 +151,12 @@
 			margin-top: 0.4rem;
    			text-align: center;
 		}
-		.tile-container > a:focus,
-		.tile-container > a:hover {
+		.tile-container:not(.d2l-no-access) > a:focus,
+		.tile-container:not(.d2l-no-access) > a:hover {
 			text-decoration: underline;
+		}
+		.tile-container.d2l-no-access .course-text {
+			pointer-events: none;
 		}
 		.hover-menu {
 			position: absolute;
@@ -290,6 +293,12 @@
 		}
 
 		.icon-container {
+			display: none;
+		}
+
+		.change-image-loading .icon-container,
+		.change-image-success .icon-container,
+		.change-image-failure .icon-container {
 			height: 64px;
 			width: 64px;
 			display: flex;
@@ -352,10 +361,26 @@
 			animation-fill-mode: forwards;
 		}
 
-		.image-overlay {
+		.image-overlay,
+		.notification-overlay {
 			display: none;
 			justify-content: center;
 			align-items: center;
+		}
+
+		.notification-overlay {
+			pointer-events: none;
+		}
+
+		.notification-overlay-active .notification-overlay {
+			transition: filter 1s 2s, opacity 1s 2s;
+			filter: opacity(1);
+			width: 100%;
+			height: 100%;
+			display: block;
+			z-index: 2;
+			background-color: rgba(0, 0, 0, 0.7);
+			position: relative;
 		}
 
 		.change-image-loading .image-overlay,
@@ -367,6 +392,68 @@
 			z-index: 2;
 			background-color: rgba(0, 0, 0, 0.4);
 			position: relative;
+		}
+
+		.change-image-loading .notification-overlay {
+			transition: none;
+		}
+
+		/* HACK: IE doesn't support filter (and chrome has a bug with opacity transitions for this element) */
+		@media all and (-ms-high-contrast:none) {
+			.change-image-loading .notification-overlay,
+			.change-image-success .notification-overlay,
+			.change-image-failure .notification-overlay {
+				opacity: 0;
+			}
+		}
+
+		.change-image-loading .notification-overlay,
+		.change-image-success .notification-overlay,
+		.change-image-failure .notification-overlay {
+			filter: opacity(0);
+		}
+
+		.overlay-date-container {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			color: white;
+			padding: 10px;
+			text-align: center;
+		}
+
+		.overlay-text {
+			font-size: 1rem;
+			font-weight: bold;
+		}
+
+		.overlay-date {
+			font-size: 0.8rem;
+		}
+
+		.alert-color-circle {
+			display: none;
+			height: 25px;
+			width: 25px;
+			border-radius: 20px;
+			border: 3px solid white;
+			z-index: 1;
+			position: absolute;
+			top: -2px;
+			right: -2px;
+		}
+
+		[dir="rtl"] .alert-color-circle {
+			right: auto;
+			left: -2px;
+		}
+
+		.alert-color-circle.warning-circle {
+			background-color: #ffce51;
+			display: inline;
 		}
 		</style>
 	</template>

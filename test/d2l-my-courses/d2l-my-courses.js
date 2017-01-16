@@ -552,9 +552,8 @@ describe('d2l-my-courses', function() {
 
 	describe('User interaction', function() {
 		it('should rescale the all courses view when it is opened', function() {
-			var allCoursesRescaleSpy = sinon.spy(widget.$$('d2l-all-courses'), '_rescaleCourseTileRegions');
-
 			widget.$$('button').click();
+			var allCoursesRescaleSpy = sinon.spy(widget.$$('d2l-all-courses'), '_rescaleCourseTileRegions');
 
 			clock.tick(100);
 			expect(allCoursesRescaleSpy.called);
@@ -563,6 +562,7 @@ describe('d2l-my-courses', function() {
 
 		it('should remove a setCourseImageFailure alert when the all-courses overlay is closed', function() {
 			widget._addAlert('warning', 'setCourseImageFailure', 'failed to do that thing it should do');
+			widget._openAllCoursesView(new Event('foo'));
 			clock.tick(1001);
 			expect(widget._alerts).to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
 			widget.$$('d2l-all-courses').children['all-courses']._handleClose();

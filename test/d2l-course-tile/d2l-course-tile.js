@@ -475,6 +475,14 @@ describe('<d2l-course-tile>', function() {
 
 		});
 
+		it('should show 99 when 99 updates', function() {
+			widget.setCourseUpdates(99);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
+			expect(widget._courseUpdates).to.equal(99);
+			expect(widget._hasCourseUpdates).to.be.true;
+			expect(widget.$$('.update-text-box').innerText).to.equal('99');
+		});
+
 		it('should show 99+ when more than 99 updates', function() {
 			widget.setCourseUpdates(100);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
@@ -488,6 +496,193 @@ describe('<d2l-course-tile>', function() {
 			widget.setCourseUpdates(0);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
 			expect(widget.$$('.update-text-box').innerText).to.equal('0');
+		});
+
+		it('should not display when given less than 0', function() {
+			widget.setCourseUpdates(-1);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
+		});
+
+		it('should not display when given null', function() {
+			widget.setCourseUpdates(null);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
+		});
+
+		it('should not display when given undefined', function() {
+			widget.setCourseUpdates(undefined);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
+		});
+	});
+	var curDate = 1484259377534;
+	function getFutureDate() {
+		return new Date(curDate + 8000).toISOString();
+	}
+
+	function getPastDate() {
+		return new Date(curDate - 8000).toISOString();
+	}
+
+	function getCurrentDate() {
+		return new Date(curDate).toISOString();
+	}
+
+	var formattedDate = 'FORMATTED_DATE';
+	var inactiveText = '(Inactive)';
+
+	function verifyOverlay(params) {
+		var title = params.title;
+		var inactive = params.showInactiveIndicator;
+		var date = params.showDate;
+
+		expect(widget.$$('.overlay-text').textContent.trim()).to.equal(title);
+		var overlayDate = widget.$$('.overlay-date');
+		var overlayInactive = widget.$$('.overlay-inactive');
+		if (date) {
+			expect(overlayDate.textContent).to.equal(formattedDate);
+		} else {
+			expect(overlayDate.textContent).to.not.equal(formattedDate);
+		}
+
+		if (inactive) {
+			expect(overlayInactive.textContent).to.equal(inactiveText);
+		} else {
+			expect(overlayInactive.textContent).to.not.equal(inactiveText);
+		}
+	}
+
+	describe('Notification Overlay', function() {
+		var org, response;
+
+		beforeEach(function() {
+			org = {
+				properties: {
+					endDate: getFutureDate(),
+					startDate: getPastDate(),
+					isActive: true
+				}
+			};
+			response = {
+				detail: {
+					xhr: {
+						getResponseHeader: sinon.stub().returns(getCurrentDate())
+					}
+				}
+			};
+			window.BSI = window.BSI || {};
+			window.BSI.Intl = window.BSI.Intl || {
+				DateTimeFormat: function() {
+					this.format = sinon.stub().returns(formattedDate);
+				}
+			};
+		});
+
+		describe('given the course not started', function() {
+			describe('when the course is active', function() {
+				it('Adds an overlay with the date', function() {
+					org.properties.startDate = getFutureDate();
+					widget._checkDateBounds(org, response);
+					verifyOverlay({
+						title:'Course Starts',
+						showDate: true,
+						showInactiveIndicator: false
+					});
+				});
+			});
+
+			describe('when the course is inactive', function() {
+				it('Adds an overlay with the date and "inactive"', function() {
+					org.properties.startDate = getFutureDate();
+					org.properties.isActive = false;
+					widget._checkDateBounds(org, response);
+					verifyOverlay({
+						title: 'Course Starts',
+						showDate: true,
+						showInactiveIndicator: true
+					});
+				});
+			});
+		});
+
+		describe('given the course has ended', function() {
+			describe('when the course is active', function() {
+				it('Adds an overlay with the date', function() {
+					org.properties.endDate = getPastDate();
+					widget._checkDateBounds(org, response);
+					verifyOverlay({
+						title: 'Course Ended',
+						showDate: true,
+						showInactiveIndicator: false
+					});
+				});
+			});
+
+			describe('when the course is inactive', function() {
+				it('Adds an overlay with the date', function() {
+					org.properties.endDate = getPastDate();
+					org.properties.isActive = false;
+					widget._checkDateBounds(org, response);
+					verifyOverlay({
+						title: 'Course Ended',
+						showDate: true,
+						showInactiveIndicator: false
+					});
+				});
+			});
+		});
+
+		describe('given the course is in progress', function() {
+			describe('when the course is active', function() {
+				it('does not add an overlay', function() {
+					widget._checkDateBounds(org, response);
+					verifyOverlay({
+						title: '',
+						showDate: false,
+						showInactiveIndicator: false
+					});
+				});
+			});
+
+			describe('when the course is inactive', function() {
+				it('adds an "inactive" overlay', function() {
+					org.properties.isActive = false;
+					widget._checkDateBounds(org, response);
+					verifyOverlay({
+						title: 'Course Started',
+						showDate: false,
+						showInactiveIndicator: true
+					});
+				});
+			});
+		});
+
+		describe('given there is no start date, and the course has not ended', function() {
+			describe('when the course is active', function() {
+				it('does not add an overlay', function() {
+					org.properties.startDate = null;
+					widget._checkDateBounds(org, response);
+					verifyOverlay({
+						title: '',
+						showDate: false,
+						showInactiveIndicator: false
+					});
+				});
+			});
+
+			describe('when the course is inactive', function() {
+				it('adds an overlay with the "inactive" tile', function() {
+					org.properties.startDate = null;
+					org.properties.isActive = false;
+					widget._checkDateBounds(org, response);
+					verifyOverlay({
+						title: 'Inactive',
+						showDate: false,
+						showInactiveIndicator: false
+					});
+				});
+			});
 		});
 	});
 });

@@ -13,11 +13,18 @@
 			<template>
 				<d2l-all-courses
 					pinned-enrollments='[]'
-					unpinned-enrollments='[]'>
+					unpinned-enrollments='[]'
+					advanced-search-url="/test/url/">
 				</d2l-all-courses>
 			</template>
 		</test-fixture>
 
+		<test-fixture id="d2l-all-courses-without-advanced-search-fixture">
+			<template>
+				<d2l-all-courses>
+				</d2l-all-courses>
+			</template>
+		</test-fixture>
 		<script src="d2l-all-courses.js"></script>
 	</body>
 </html>

@@ -178,7 +178,15 @@
 				_semesters: {
 					type: Array,
 					value: function() { return []; }
-				}
+				},
+				filterSemesterName: {
+					type: String,
+					observer: '_filterSemesterNameChanged'
+				},
+				filterDepartmentName: {
+					type: String,
+					observer: '_filterDepartmentNameChanged'
+				},
 			},
 			behaviors: [
 				window.D2L.MyCourses.LocalizeBehavior
@@ -329,6 +337,12 @@
 			},
 			_updateSemesterFilter: function(e) {
 				this.__updateFilter(e, '_numSemesterFilters');
+			},
+			_filterSemesterNameChanged: function() {
+				this.$.semesterListButton.textContent = this.filterSemesterName;
+			},
+			_filterDepartmentNameChanged: function() {
+				this.$.departmentListButton.textContent = this.filterDepartmentName;
 			}
 		});
 	</script>

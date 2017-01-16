@@ -89,7 +89,9 @@
 			<d2l-filter-menu-content-tabbed
 				id="tabbedContent"
 				hidden$="[[!_hasManyFilters]]"
-				my-enrollments-entity="[[myEnrollmentsEntity]]">
+				my-enrollments-entity="[[myEnrollmentsEntity]]",
+				filter-semester-name="[[filterSemesterName]]",
+				filter-department-name="[[filterDepartmentName]]">
 			</d2l-filter-menu-content-tabbed>
 		</div>
 	</template>
@@ -120,7 +122,9 @@
 				_showClearButton: {
 					type: Boolean,
 					value: false
-				}
+				},
+				filterSemesterName: String,
+				filterDepartmentName: String,
 			},
 			behaviors: [
 				window.D2L.MyCourses.LocalizeBehavior,

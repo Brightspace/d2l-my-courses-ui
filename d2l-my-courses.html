@@ -181,7 +181,11 @@
 				// Size the tile should render with respect to vw
 				_tileSizes: Object,
 				// URL that directs to the advanced search page
-				advancedSearchUrl: String
+				advancedSearchUrl: String,
+
+				standardDepartmentName: String,
+
+				standardSemesterName: String
 			},
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
@@ -331,6 +335,8 @@
 					allCourses.locale = this.locale;
 					allCourses.showCourseCode = this.showCourseCode;
 					allCourses.advancedSearchUrl = this.advancedSearchUrl;
+					allCourses.filterSemesterName = this.standardSemesterName;
+					allCourses.filterDepartmentName = this.standardDepartmentName;
 					this.$$('d2l-all-courses').load();
 				}.bind(this), 600);
 			},

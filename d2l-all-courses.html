@@ -180,7 +180,9 @@
 									<d2l-dropdown-content id="filterDropdownContent" no-padding min-width="350" render-content>
 										<d2l-filter-menu-content
 											id="filterMenuContent"
-											my-enrollments-entity="[[myEnrollmentsEntity]]">
+											my-enrollments-entity="[[myEnrollmentsEntity]]",
+											filter-semester-name="[[filterSemesterName]]",
+											filter-department-name="[[filterDepartmentName]]">
 										</d2l-filter-menu-content>
 										<iron-scroll-threshold
 											id="scrollThreshold"
@@ -380,7 +382,10 @@
 				advancedSearchUrl: {
 					type: String,
 					observer: '_advancedSearchUrlChanged'
-				}
+				},
+				//TODO: comments
+				filterSemesterName: String,
+				filterDepartmentName: String,
 			},
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,

@@ -29,6 +29,7 @@
 					value: function() {
 						var langs = {
 							'en': {
+								'advancedSearch' : 'Advanced Search',
 								'viewAllCourses' : 'View All Courses',
 								'allCourses' : 'All Courses',
 								'pinnedCourses' : 'Pinned',
@@ -51,6 +52,8 @@
 								'useThisImage': 'Use this image',
 								'courseSettings': '{course} course settings',
 								'courseOfferingInformation': 'Course Offering Information',
+								'startedInactiveAlert': 'You have pinned course(s) that have started but are not active. Students will be unable to access inactive courses.',
+								'brackets': '({content})',
 								'filtering.filter': 'Filter',
 								'filtering.filterBy': 'Filter By',
 								'filtering.filterSingle': 'Filter: 1 Filter',
@@ -63,10 +66,12 @@
 								'filtering.departmentMultiple': 'Department ({num})',
 								'filtering.searchDepartments': 'Search Departments',
 								'filtering.searchSemesters': 'Search Semesters',
-								'overlay.courseStarting': 'Course starting',
-								'overlay.courseStartingOn': 'Course starting on {date}',
-								'overlay.courseEnded': 'Course ended',
+								'overlay.courseStarting': 'Course Starts',
+								'overlay.courseStartingOn': 'Course starts on {date}',
+								'overlay.courseEnded': 'Course Ended',
 								'overlay.courseEndedOn': 'Course ended on {date}',
+								'overlay.inactive': 'Inactive',
+								'overlay.courseStarted': 'Course Started',
 								'search.clearSearch': 'Clear Search',
 								'search.searchCourses': 'Search Courses',
 								'sorting.sortCourseCode': 'Sort: Course Code',
@@ -86,6 +91,7 @@
 								'error.settingImage': 'Sorry, we\'re unable to change your image right now. Please try again later.'
 							},
 							'ar': {
+								'advancedSearch' : 'البحث المتقدم',
 								'viewAllCourses' : 'عرض كل المقررات التعليمية',
 								'allCourses' : 'كل المقررات التعليمية',
 								'pinnedCourses' : 'مُثبّت',
@@ -139,6 +145,7 @@
 
 							},
 							'es': {
+								'advancedSearch' : 'Búsqueda avanzada',
 								'viewAllCourses' : 'Ver todos los cursos',
 								'allCourses' : 'Todos los cursos',
 								'pinnedCourses' : 'Anclado',
@@ -191,6 +198,7 @@
 								'error.settingImage': 'Lo sentimos, no es posible cambiar su imagen en este momento. Vuelva a intentarlo más tarde.'
 							},
 							'fr': {
+								'advancedSearch' : 'Recherche avancée',
 								'viewAllCourses' : 'Afficher tous les cours',
 								'allCourses' : 'Tous les cours',
 								'pinnedCourses' : 'Épinglé',
@@ -243,6 +251,7 @@
 								'error.settingImage': 'Désolé, nous ne sommes pas en mesure de modifier votre image pour le moment. Veuillez essayer plus tard.'
 							},
 							'ja': {
+								'advancedSearch' : '詳細検索',
 								'viewAllCourses' : 'すべてのコースの表示',
 								'allCourses' : 'すべてのコース',
 								'pinnedCourses' : '固定',
@@ -295,6 +304,7 @@
 								'error.settingImage': '申し訳ありません。現在イメージを変更することはできません。後でもう一度試してください。'
 							},
 							'ko': {
+								'advancedSearch' : '고급 검색',
 								'viewAllCourses' : '모든 강의 보기',
 								'allCourses' : '모든 강의',
 								'pinnedCourses' : '고정됨',
@@ -347,6 +357,7 @@
 								'error.settingImage': '지금은 이미지를 변경할 수 없습니다. 나중에 다시 시도하십시오.'
 							},
 							'pt': {
+								'advancedSearch' : 'Pesquisa Avançada',
 								'viewAllCourses' : 'Exibir Todos os Cursos',
 								'allCourses' : 'Todos os Cursos',
 								'pinnedCourses' : 'Fixado',
@@ -399,6 +410,7 @@
 								'error.settingImage': 'Desculpe, não é possível alterar a sua imagem agora. Tente novamente mais tarde.'
 							},
 							'sv': {
+								'advancedSearch' : 'Avancerad sökning',
 								'viewAllCourses' : 'Visa alla kurser',
 								'allCourses' : 'Alla kurser',
 								'pinnedCourses' : 'Fäst',
@@ -451,6 +463,7 @@
 								'error.settingImage': 'Vi kan tyvärr inte ändra din bild just nu. Försök igen senare.'
 							},
 							'tr': {
+								'advancedSearch' : 'Gelişmiş Arama',
 								'viewAllCourses' : 'Tüm Dersleri Görüntüle',
 								'allCourses' : 'Tüm Dersler',
 								'pinnedCourses' : 'Sabitlenmiş',
@@ -503,6 +516,7 @@
 								'error.settingImage': 'Üzgünüz, şu anda görüntünüzü değiştiremiyoruz. Lütfen daha sonra tekrar deneyin.'
 							},
 							'zh': {
+								'advancedSearch' : '高级搜索',
 								'viewAllCourses' : '查看所有课程',
 								'allCourses' : '所有课程',
 								'pinnedCourses' : '已锁定',
@@ -555,6 +569,7 @@
 								'error.settingImage': '抱歉，目前我们无法更改您的图像。请稍候重试。'
 							},
 							'zh-tw': {
+								'advancedSearch' : '進階搜尋',
 								'viewAllCourses' : '檢視所有課程',
 								'allCourses' : '所有課程',
 								'pinnedCourses' : '置頂',

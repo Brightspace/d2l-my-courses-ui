@@ -48,27 +48,35 @@
 			.d2l-all-courses-hidden {
 				display: none !important;
 			}
-			.search-and-filter {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
+			#search-and-filter {
 				margin-bottom: 50px;
 			}
-			.search-and-filter > d2l-search-widget-custom {
-				flex: calc(5 / 12);
+			.search-and-filter-row {
+				display: flex;
+				justify-content: space-between;
 			}
-			@media screen and (max-width: 767px) {
-				.search-and-filter > d2l-search-widget-custom {
-					flex: 1;
-				}
-				#filterAndSort {
-					display: none;
-				}
+			.search-and-filter-row > .advanced-search-link {
+				font-size: 0.8rem;
+				margin-top: 3px;
+				flex: 1;
 			}
-			.search-and-filter > div {
-				flex: calc(7 / 12);
+			.search-and-filter-row > d2l-search-widget-custom {
+				flex: 1;
+			}
+			.search-and-filter-row > #filterAndSort {
+				flex: 1.4;
 				display: flex;
 				justify-content: flex-end;
+				align-items: center;
+			}
+			@media screen and (max-width: 767px) {
+				.search-and-filter-row > #filterAndSort {
+					display: none;
+				}
+				.search-and-filter-row > .advanced-search-link {
+					text-align: right;
+					margin-top: 5px;
+				}
 			}
 			.dropdown-opener-text {
 				@apply(--d2l-body-small-text);
@@ -146,60 +154,67 @@
 					on-lower-threshold="_loadNextEnrollmentsPage">
 				</iron-scroll-threshold>
 
-				<div class="search-and-filter">
-					<d2l-search-widget-custom
-						id="search-widget"
-						my-enrollments-entity="[[myEnrollmentsEntity]]"
-						parent-organizations="[[_parentOrganizations]]"
-						sort-field="[[_sortField]]">
-					</d2l-search-widget-custom>
+				<div id="search-and-filter">
+					<div class="search-and-filter-row">
+						<d2l-search-widget-custom
+							id="search-widget"
+							my-enrollments-entity="[[myEnrollmentsEntity]]"
+							parent-organizations="[[_parentOrganizations]]"
+							sort-field="[[_sortField]]">
+						</d2l-search-widget-custom>
 
-					<div id="filterAndSort" class="d2l-all-courses-hidden">
-						<div id="filterSection" class="d2l-all-courses-hidden">
-							<span id="filterText" class="dropdown-opener-text" on-tap="_toggleFilterDropdown">[[_filterText]]</span>
-							<d2l-dropdown id="filterDropdown">
+						<div id="filterAndSort" class="d2l-all-courses-hidden">
+							<div id="filterSection" class="d2l-all-courses-hidden">
+								<span id="filterText" class="dropdown-opener-text" on-tap="_toggleFilterDropdown">[[_filterText]]</span>
+								<d2l-dropdown id="filterDropdown">
+									<button
+										id="filterDropdownOpener"
+										class="d2l-dropdown-opener dropdown-button"
+										on-focus="_focusFilterText"
+										on-blur="_blurFilterText"
+										on-mouseenter="_focusFilterText"
+										on-mouseleave="_blurFilterText"
+										aria-labelledby="filterText">
+										<d2l-icon icon="d2l-tier1:chevron-down" aria-hidden="true"></d2l-icon>
+									</button>
+									<d2l-dropdown-content id="filterDropdownContent" no-padding min-width="350" render-content>
+										<d2l-filter-menu-content
+											id="filterMenuContent"
+											my-enrollments-entity="[[myEnrollmentsEntity]]">
+										</d2l-filter-menu-content>
+										<iron-scroll-threshold
+											id="scrollThreshold"
+											on-lower-threshold="_onLowerThreshold">
+										</iron-scroll-threshold>
+									</d2l-dropdown-content>
+								</d2l-dropdown>
+							</div>
+
+							<d2l-dropdown id="sortDropdown">
 								<button
-									id="filterDropdownOpener"
 									class="d2l-dropdown-opener dropdown-button"
-									on-focus="_focusFilterText"
-									on-blur="_blurFilterText"
-									on-mouseenter="_focusFilterText"
-									on-mouseleave="_blurFilterText"
-									aria-labelledby="filterText">
+									aria-labelledby="sortText">
+									<span id="sortText" class="dropdown-opener-text">{{localize('sorting.sortDatePinned')}}</span>
 									<d2l-icon icon="d2l-tier1:chevron-down" aria-hidden="true"></d2l-icon>
 								</button>
-								<d2l-dropdown-content id="filterDropdownContent" no-padding min-width="350" render-content>
-									<d2l-filter-menu-content
-										id="filterMenuContent"
-										my-enrollments-entity="[[myEnrollmentsEntity]]">
-									</d2l-filter-menu-content>
-									<iron-scroll-threshold
-										id="scrollThreshold"
-										on-lower-threshold="_onLowerThreshold">
-									</iron-scroll-threshold>
-								</d2l-dropdown-content>
+								<d2l-dropdown-menu no-padding min-width="350">
+									<d2l-menu label="{{localize('sorting.sortBy')}}">
+										<div class="dropdown-content-header">
+											<span class="dropdown-content-header-text">{{localize('sorting.sortBy')}}</span>
+										</div>
+										<d2l-menu-item-radio class="dropdown-content-gradient" value="courseCode" text="{{localize('sorting.courseCode')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="courseName" text="{{localize('sorting.courseName')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="pinDate" text="{{localize('sorting.datePinned')}}" selected></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="lastAccessed" text="{{localize('sorting.lastAccessed')}}"></d2l-menu-item-radio>
+									</d2l-menu>
+								</d2l-dropdown-menu>
 							</d2l-dropdown>
 						</div>
-
-						<d2l-dropdown id="sortDropdown">
-							<button
-								class="d2l-dropdown-opener dropdown-button"
-								aria-labelledby="sortText">
-								<span id="sortText" class="dropdown-opener-text">{{localize('sorting.sortDatePinned')}}</span>
-								<d2l-icon icon="d2l-tier1:chevron-down" aria-hidden="true"></d2l-icon>
-							</button>
-							<d2l-dropdown-menu no-padding min-width="350">
-								<d2l-menu label="{{localize('sorting.sortBy')}}">
-									<div class="dropdown-content-header">
-										<span class="dropdown-content-header-text">{{localize('sorting.sortBy')}}</span>
-									</div>
-									<d2l-menu-item-radio class="dropdown-content-gradient" value="courseCode" text="{{localize('sorting.courseCode')}}"></d2l-menu-item-radio>
-									<d2l-menu-item-radio value="courseName" text="{{localize('sorting.courseName')}}"></d2l-menu-item-radio>
-									<d2l-menu-item-radio value="pinDate" text="{{localize('sorting.datePinned')}}" selected></d2l-menu-item-radio>
-									<d2l-menu-item-radio value="lastAccessed" text="{{localize('sorting.lastAccessed')}}"></d2l-menu-item-radio>
-								</d2l-menu>
-							</d2l-dropdown-menu>
-						</d2l-dropdown>
+					</div>
+					<div id="advancedSearchLink" class="search-and-filter-row d2l-all-courses-hidden">
+						<div class="advanced-search-link">
+							<a is="d2l-link" href$="[[advancedSearchUrl]]">{{localize('advancedSearch')}}</a>
+						</div>
 					</div>
 				</div>
 
@@ -360,6 +375,11 @@
 					value: function() {
 						return [];
 					}
+				},
+				// URL that directs to the advanced search page
+				advancedSearchUrl: {
+					type: String,
+					observer: '_advancedSearchUrlChanged'
 				}
 			},
 			behaviors: [
@@ -548,6 +568,9 @@
 			},
 			_setFilteredUnpinnedEnrollments: function() {
 				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.slice();
+			},
+			_advancedSearchUrlChanged: function() {
+				this.toggleClass('d2l-all-courses-hidden', !this.advancedSearchUrl, this.$.advancedSearchLink);
 			},
 			load: function() {
 				// Load course tile and filter contents. Called from d2l-my-courses.

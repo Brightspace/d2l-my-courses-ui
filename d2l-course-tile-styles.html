@@ -433,6 +433,28 @@
 		.overlay-date {
 			font-size: 0.8rem;
 		}
+
+		.alert-color-circle {
+			display: none;
+			height: 25px;
+			width: 25px;
+			border-radius: 20px;
+			border: 3px solid white;
+			z-index: 1;
+			position: absolute;
+			top: -2px;
+			right: -2px;
+		}
+
+		[dir="rtl"] .alert-color-circle {
+			right: auto;
+			left: -2px;
+		}
+
+		.alert-color-circle.warning-circle {
+			background-color: #ffce51;
+			display: inline;
+		}
 		</style>
 	</template>
 </dom-module>

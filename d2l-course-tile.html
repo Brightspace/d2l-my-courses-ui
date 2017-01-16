@@ -53,6 +53,7 @@ the user has in that organization - student, teacher, TA, etc.
 		<div class="tile-container"
 			on-mouseover="_hoverCourseTile"
 			on-mouseout="_onTileMouseOut">
+			<div class="alert-color-circle"></div>
 			<a href$="[[_organizationHomepageUrl]]"
 				class="no-tap-interaction"
 				on-focus="_hoverCourseTile">
@@ -68,6 +69,7 @@ the user has in that organization - student, teacher, TA, etc.
 							<div class="overlay-date-container">
 								<div class="overlay-text">{{_notificationTitle}}</div>
 								<div class="overlay-date">{{_notificationDate}}</div>
+								<div class="overlay-inactive">{{_notificationInactive}}</div>
 							</div>
 						</div>
 						<d2l-course-image aria-hidden="true" image="[[_image]]" sizes="[[tileSizes]]" type="tile"></d2l-course-image>
@@ -169,8 +171,6 @@ the user has in that organization - student, teacher, TA, etc.
 				userId: String,
 				// Configuration value passed in to toggle course code
 				showCourseCode: Boolean,
-				_notificationTitle: String,
-				_notificationDate: String,
 				//used for domif for course updates
 				_hasCourseUpdates: Boolean,
 				//number of course updates to show
@@ -207,7 +207,14 @@ the user has in that organization - student, teacher, TA, etc.
 				// The JSON string of the telemetry event that will be sent on the opening of the change image UI */
 				_telemetryEvent: String,
 				_dateFormatter: Object,
-				_fullDateFormatter: Object
+				_fullDateFormatter: Object,
+				_notificationInactive: String,
+				_notificationTitle: String,
+				_notificationDate: String,
+				isStartedInactive: {
+					type: Boolean,
+					value: false
+				}
 			},
 			behaviors: [
 				window.D2L.MyCourses.LocalizeBehavior,
@@ -464,16 +471,20 @@ the user has in that organization - student, teacher, TA, etc.
 				var serverDate = Date.parse(response.detail.xhr.getResponseHeader('Date'));
 				var endDate = Date.parse(organization.properties.endDate);
 				var startDate = Date.parse(organization.properties.startDate);
+				var inactive = !organization.properties.isActive;
 
 				if (endDate < serverDate) {
 					this._setOverlayContent('courseEnded', endDate);
 				} else if (startDate > serverDate) {
-					this._setOverlayContent('courseStarting', startDate);
-				} else {
-					this._clearOverlayContent();
+					this._setOverlayContent('courseStarting', startDate, inactive);
+				} else if (startDate && inactive) {
+					this._setOverlayStartedInactive();
+				} else if (inactive) {
+					this._setOverlayInactive();
 				}
 			},
-			_setOverlayContent: function(type, date) {
+			_setOverlayContent: function(type, date, inactive) {
+				this._clearOverlayContent();
 				if (!this._dateFormatter && window.BSI && window.BSI.Intl) {
 					this._dateFormatter = new window.BSI.Intl.DateTimeFormat(this.locale, { format: 'MMM d, yyyy' });
 					this._fullDateFormatter = new window.BSI.Intl.DateTimeFormat(this.locale, { format: 'MMMM d, yyyy' });
@@ -491,13 +502,34 @@ the user has in that organization - student, teacher, TA, etc.
 					this._notificationTitle = this.localize(
 						(type === 'courseEnded') ? 'overlay.courseEnded' : 'overlay.courseStarting'
 					);
+
+					this._notificationInactive = (type === 'courseStarting' && inactive) ? this.localize('brackets', 'content', this.localize('overlay.inactive')) : null;
 				}
+			},
+			_setOverlayInactive: function() {
+				this._clearOverlayContent();
+				this._notificationTitle = this.localize('overlay.inactive');
+				this._courseNotificationLabel = this.localize('overlay.inactive');
+				this.toggleClass('notification-overlay-active', true, this.$$('.tile-container'));
+			},
+			_setOverlayStartedInactive: function() {
+				this._clearOverlayContent(true);
+				this._notificationTitle = this.localize('overlay.courseStarted');
+				this._notificationInactive = this.localize('brackets', 'content', this.localize('overlay.inactive'));
+				this._courseNotificationLabel = this._notificationTitle + ' ' + this._notificationInactive;
+				this.isStartedInactive = true;
+				this.fire('startedInactiveAlert', { type: 'add' });
+				this.toggleClass('notification-overlay-active', true, this.$$('.tile-container'));
+				this.toggleClass('warning-circle', true, this.$$('.alert-color-circle'));
 			},
 			_clearOverlayContent: function() {
 				this._notificationDate = null;
 				this._courseNotificationLabel = null;
 				this._notificationTitle = null;
+				this._notificationInactive = null;
+				this.isStartedInactive = false;
 				this.toggleClass('notification-overlay-active', false, this.$$('.tile-container'));
+				this.toggleClass('warning-circle', false, this.$$('.alert-color-circle'));
 			},
 			_onTileMouseOut: function() {
 				this._unhoverCourseTile(true);
@@ -508,6 +540,10 @@ the user has in that organization - student, teacher, TA, etc.
 			_pinnedChanged: function(pinned) {
 				this._pinned = pinned === undefined ? this._pinned : pinned;
 				this._pinLabel = this.localize(this._pinned ? 'unpin' : 'pin');
+
+				if (pinned === false && this.isStartedInactive) {
+					this.fire('startedInactiveAlert', { type: 'remove' });
+				}
 			},
 			_setCourseTileHovered: function(isHovered) {
 				this.toggleClass('hover', isHovered, this.$$('.tile-container'));

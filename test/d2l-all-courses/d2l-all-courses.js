@@ -4,6 +4,7 @@
 
 describe('d2l-all-courses', function() {
 	var widget,
+		widgetNoAdvancedSearch,
 		pinnedEnrollmentEntity,
 		unpinnedEnrollmentEntity,
 		clock;
@@ -37,10 +38,28 @@ describe('d2l-all-courses', function() {
 
 		widget = fixture('d2l-all-courses-fixture');
 		sinon.stub(widget.$['search-widget'], '_search');
+
+		widgetNoAdvancedSearch = fixture('d2l-all-courses-without-advanced-search-fixture');
 	});
 
 	afterEach(function() {
 		clock.restore();
+	});
+
+	describe('when the advancedSearchUrl property has not been set then', function() {
+		it('should not render the advanced search link', function() {
+			var link = widgetNoAdvancedSearch.querySelector('.advanced-search-link > a');
+			expect(link.getAttribute('href')).to.equal(null);
+			expect(widgetNoAdvancedSearch.$.advancedSearchLink.getAttribute('class')).to.contain('d2l-all-courses-hidden');
+		});
+	});
+
+	describe('when the advancedSearchUrl property has been set then', function() {
+		it('should render the advanced search link', function() {
+			var link = widget.querySelector('.advanced-search-link > a');
+			expect(link.getAttribute('href')).length.to.be.above(0);
+			expect(widget.$.advancedSearchLink.getAttribute('class')).to.not.contain('d2l-all-courses-hidden');
+		});
 	});
 
 	it('should return the correct value from getCourseTileItemCount (should be maximum of pinned or unpinned course count)', function() {

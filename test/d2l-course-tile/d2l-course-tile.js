@@ -501,19 +501,19 @@ describe('<d2l-course-tile>', function() {
 		it('should not display when given less than 0', function() {
 			widget.setCourseUpdates(-1);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
-			expect(widget.$$('.update-text-box').innerText).to.equal('-1');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
 		});
 
 		it('should not display when given null', function() {
 			widget.setCourseUpdates(null);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
-			expect(widget.$$('.update-text-box').innerText).to.equal('');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
 		});
 
 		it('should not display when given undefined', function() {
 			widget.setCourseUpdates(undefined);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
-			expect(widget.$$('.update-text-box').innerText).to.equal('');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
 		});
 	});
 });

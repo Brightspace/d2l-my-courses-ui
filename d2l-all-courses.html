@@ -537,7 +537,6 @@
 				for (var i = 0; i < courseTileGrids.length; i++) {
 					courseTileGrids[i].getCourseTileItemCount = this.getCourseTileItemCount.bind(this);
 				}
-				this._updateTileSizes();
 
 				this._filterText = this.localize('filtering.filter');
 			},
@@ -660,6 +659,7 @@
 				this._updateTileSizes();
 			},
 			_onSimpleOverlayOpening: function() {
+				this._updateTileSizes();
 				this._removeAlert('setCourseImageFailure');
 			},
 			_toggleFilterDropdown: function() {

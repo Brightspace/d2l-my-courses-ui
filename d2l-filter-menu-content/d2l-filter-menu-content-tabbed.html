@@ -179,14 +179,16 @@
 					type: Array,
 					value: function() { return []; }
 				},
-				filterSemesterName: {
+				// Standard Semester OU Type name to be displayed
+				filterStandardSemesterName: {
 					type: String,
-					observer: '_filterSemesterNameChanged'
+					observer: '_filterStandardSemesterNameChanged'
 				},
-				filterDepartmentName: {
+				// Standard Department OU Type name to be displayed
+				filterStandardDepartmentName: {
 					type: String,
-					observer: '_filterDepartmentNameChanged'
-				},
+					observer: '_filterStandardDepartmentNameChanged'
+				}
 			},
 			behaviors: [
 				window.D2L.MyCourses.LocalizeBehavior
@@ -338,11 +340,11 @@
 			_updateSemesterFilter: function(e) {
 				this.__updateFilter(e, '_numSemesterFilters');
 			},
-			_filterSemesterNameChanged: function() {
-				this.$.semesterListButton.textContent = this.filterSemesterName;
+			_filterStandardSemesterNameChanged: function() {
+				this.$.semesterListButton.textContent = this.filterStandardSemesterName;
 			},
-			_filterDepartmentNameChanged: function() {
-				this.$.departmentListButton.textContent = this.filterDepartmentName;
+			_filterStandardDepartmentNameChanged: function() {
+				this.$.departmentListButton.textContent = this.filterStandardDepartmentName;
 			}
 		});
 	</script>

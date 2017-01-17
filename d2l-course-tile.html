@@ -81,9 +81,10 @@ the user has in that organization - student, teacher, TA, etc.
 						<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
 							<span class="course-code-text">{{_organization.properties.code}}</span>
 						</template>
-            <span aria-label$="[[_courseNotificationLabel]]"></span>
+            			<span aria-label$="[[_courseNotificationLabel]]"></span>
 					</div>
 					<div id="courseUpdates" class="d2l-updates-hidden">
+						<span aria-label$="{{localize('courseTile.updates')}}"></span>
 						<div class="update-text-box">{{_courseUpdates}}</div>
 					</div>
 				</div>

@@ -594,7 +594,7 @@
 				if (this.pinnedEnrollments.length + this.unpinnedEnrollments.length >= 20) {
 					this.$.filterMenuContent.load();
 				}
-
+				this.set('updateCountMap', this.updateCountMap);
 				setTimeout(function() {
 					// Slight delay to allow for overlay to get a DOM width before triggering the recalculation
 					this.fire('recalculate-columns');

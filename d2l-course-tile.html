@@ -252,7 +252,14 @@ the user has in that organization - student, teacher, TA, etc.
 
 				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
 				this._organizationUrl = organizationLink.href + '?embedDepth=1';
-
+				//because the tile might not be init before the first search we need to check the map on ready
+				if (this.updateCountMap) {
+					var orgUnitId = this.getOrgUnitId(organizationLink.href);
+					var update = this.updateCountMap[orgUnitId];
+					if (update) {
+						this.setCourseUpdates(update);
+					}
+				}
 				this._onFocus = this._onFocus.bind(this);
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);

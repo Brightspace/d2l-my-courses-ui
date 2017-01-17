@@ -181,8 +181,8 @@
 										<d2l-filter-menu-content
 											id="filterMenuContent"
 											my-enrollments-entity="[[myEnrollmentsEntity]]",
-											filter-semester-name="[[filterSemesterName]]",
-											filter-department-name="[[filterDepartmentName]]">
+											filter-standard-semester-name="[[filterStandardSemesterName]]",
+											filter-standard-department-name="[[filterStandardDepartmentName]]">
 										</d2l-filter-menu-content>
 										<iron-scroll-threshold
 											id="scrollThreshold"
@@ -383,9 +383,10 @@
 					type: String,
 					observer: '_advancedSearchUrlChanged'
 				},
-				//TODO: comments
-				filterSemesterName: String,
-				filterDepartmentName: String,
+				// Standard Semester OU Type name to be displayed in the filter dropdown
+				filterStandardSemesterName: String,
+				// Standard Department OU Type name to be displayed in the filter dropdown
+				filterStandardDepartmentName: String
 			},
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,

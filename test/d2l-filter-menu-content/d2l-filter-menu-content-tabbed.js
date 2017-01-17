@@ -170,4 +170,40 @@ describe('d2l-filter-menu-content-tabbed', function() {
 			expect(semesterStub.called).to.be.true;
 		});
 	});
+
+	describe('OrgUnitType names in filter dropdown', function() {
+		it('should render default "Standard Semester OrgUnitType" name', function() {
+			var spy = sandbox.spy(component, '_filterStandardSemesterNameChanged');
+
+			expect(spy.called).to.be.false;
+			expect(component.$.semesterListButton.textContent).to.equal('Semester');
+		});
+
+		it('should render custom "Standard Semester OrgUnitType" name', function() {
+			var spy = sandbox.spy(component, '_filterStandardSemesterNameChanged');
+			var testSemesterName = 'testSemesterName';
+
+			component.filterStandardSemesterName = testSemesterName;
+
+			expect(spy.called).to.be.true;
+			expect(component.$.semesterListButton.textContent).to.equal(testSemesterName);
+		});
+
+		it('should render default "Standard Department OrgUnitType" name', function() {
+			var spy = sandbox.spy(component, '_filterStandardDepartmentNameChanged');
+
+			expect(spy.called).to.be.false;
+			expect(component.$.departmentListButton.textContent).to.equal('Department');
+		});
+
+		it('should render custom "Standard Department OrgUnitType" name', function() {
+			var spy = sandbox.spy(component, '_filterStandardDepartmentNameChanged');
+			var testDepartmentName = 'testDepartmentName';
+
+			component.filterStandardDepartmentName = testDepartmentName;
+
+			expect(spy.called).to.be.true;
+			expect(component.$.departmentListButton.textContent).to.equal(testDepartmentName);
+		});
+	});
 });

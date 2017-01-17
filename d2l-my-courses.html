@@ -154,6 +154,12 @@
 				tenantId: String,
 				// URL to send telemetry to
 				telemetryEndpoint: String,
+				// URL that directs to the advanced search page
+				advancedSearchUrl: String,
+				// Standard Semester OU Type name to be displayed in the all-courses filter dropdown
+				standardDepartmentName: String,
+				// Standard Department OU Type name to be displayed in the all-courses filter dropdown
+				standardSemesterName: String,
 				// URL constructed to fetch a user's enrollments with the enrollments search Action
 				_enrollmentsSearchUrl: String,
 				// Object containing the last response from an enrollments search request
@@ -179,14 +185,8 @@
 				// URL used by the search widget to fetch department-type organizations
 				_departmentsUrl: String,
 				// Size the tile should render with respect to vw
-				_tileSizes: Object,
+				_tileSizes: Object
 				_startedInactive: Boolean,
-				// URL that directs to the advanced search page
-				advancedSearchUrl: String,
-
-				standardDepartmentName: String,
-
-				standardSemesterName: String
 			},
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
@@ -337,8 +337,15 @@
 					allCourses.locale = this.locale;
 					allCourses.showCourseCode = this.showCourseCode;
 					allCourses.advancedSearchUrl = this.advancedSearchUrl;
-					allCourses.filterSemesterName = this.standardSemesterName;
-					allCourses.filterDepartmentName = this.standardDepartmentName;
+
+					if (this.standardSemesterName) {
+						allCourses.filterStandardSemesterName = this.standardSemesterName;
+					}
+
+					if (this.standardDepartmentName) {
+						allCourses.filterStandardDepartmentName = this.standardDepartmentName;
+					}
+
 					this.$$('d2l-all-courses').load();
 				}.bind(this), 600);
 			},

@@ -349,8 +349,7 @@ the user has in that organization - student, teacher, TA, etc.
 			},
 			_onUpdatesChange: function(updateChange) {
 				if (this.enrollmentId) {
-					var orgUnitId = /organizations\/([0-9]+)/
-							.exec(this.enrollmentId)[1];
+					var orgUnitId = this.getOrgUnitId(this.enrollmentId);
 					var update = updateChange.base[orgUnitId];
 					if (update) {
 						this.setCourseUpdates(update);
@@ -367,6 +366,7 @@ the user has in that organization - student, teacher, TA, etc.
 						this._organizationUrl = organizationLink.href + '?embedDepth=1';
 						this.$.organizationRequest.generateRequest();
 					}
+
 				}
 			},
 			_displaySetImageResult: function(success) {

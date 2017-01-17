@@ -470,7 +470,6 @@ describe('<d2l-course-tile>', function() {
 			widget.setCourseUpdates(85);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
 			expect(widget._courseUpdates).to.equal(85);
-			expect(widget._hasCourseUpdates).to.be.true;
 			expect(widget.$$('.update-text-box').innerText).to.equal('85');
 
 		});
@@ -479,7 +478,6 @@ describe('<d2l-course-tile>', function() {
 			widget.setCourseUpdates(99);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
 			expect(widget._courseUpdates).to.equal(99);
-			expect(widget._hasCourseUpdates).to.be.true;
 			expect(widget.$$('.update-text-box').innerText).to.equal('99');
 		});
 
@@ -487,7 +485,6 @@ describe('<d2l-course-tile>', function() {
 			widget.setCourseUpdates(100);
 			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
 			expect(widget._courseUpdates).to.equal('99+');
-			expect(widget._hasCourseUpdates).to.be.true;
 			expect(widget.$$('.update-text-box').innerText).to.equal('99+');
 
 		});

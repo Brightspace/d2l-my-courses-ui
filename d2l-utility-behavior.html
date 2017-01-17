@@ -67,7 +67,7 @@
 			return selfLink.href;
 		},
 		getOrgUnitId: function(enrollmentId) {
-			if (enrollmentId && typeof String) {
+			if (enrollmentId && typeof enrollmentId === 'string') {
 				return /organizations\/([0-9]+)/
 							.exec(enrollmentId)[1];
 			}

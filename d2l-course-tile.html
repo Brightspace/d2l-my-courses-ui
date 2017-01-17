@@ -176,8 +176,6 @@ the user has in that organization - student, teacher, TA, etc.
 					type: Object,
 					notify: true
 				},
-				//used for domif for course updates
-				_hasCourseUpdates: Boolean,
 				//number of course updates to show
 				_courseUpdates: String,
 				_courseInfoUrl: String,
@@ -343,15 +341,12 @@ the user has in that organization - student, teacher, TA, etc.
 			setCourseUpdates: function(updates) {
 				if (updates > 99) {
 					this._courseUpdates = '99+';
-					this._hasCourseUpdates = true;
 					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
 				} else if (updates > 0 && updates <= 99) {
 					this._courseUpdates = updates;
-					this._hasCourseUpdates = true;
 					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
 				} else {
 					this._courseUpdates = 0;
-					this._hasCourseUpdates = false;
 					this.toggleClass('d2l-updates-hidden', true, this.$.courseUpdates);
 				}
 			},
@@ -364,9 +359,7 @@ the user has in that organization - student, teacher, TA, etc.
 					}
 				}
 			},
-			_shortCourseText: function() {
-				return this._hasCourseUpdates ? 'course-text-updates' : '';
-			},
+
 			_enrollmentChanged: function() {
 				if (!this.delayLoad && this.enrollment) {
 					var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);

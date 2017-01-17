@@ -26,10 +26,7 @@
 				}
 			},
 			_ajaxElement: {
-				type: Object,
-				value: function() {
-					return document.createElement('d2l-ajax');
-				}
+				type: Object
 			}
 		},
 		/**
@@ -37,6 +34,7 @@
 		 *
 		 */
 		getUpdates: function(csvOrgId) {
+			this._ajaxElement = this._ajaxElement || document.createElement('d2l-ajax');
 			var updates = this._updatesURI + csvOrgId;
 			this._ajaxElement.url = updates;
 			this._ajaxElement.onResponse = this._onUpdatesResponse.bind(this);
@@ -46,8 +44,12 @@
 		_onUpdatesResponse: function(response) {
 			if (response.detail.status === 200) {
 				response.detail.xhr.response['Objects'].forEach(function(object) {
-					this.set('updateCountMap.' + object['OrgUnitId'], object['UnreadDiscussions'] + object['UnapprovedDiscussions'] +
-						object['UnreadAssignmentFeedback'] + object['UnattemptedQuizzes'] + object['UnreadAssignmentSubmissions'] +
+					this.set('updateCountMap.' + object['OrgUnitId'],
+						object['UnreadDiscussions'] +
+						object['UnapprovedDiscussions'] +
+						object['UnreadAssignmentFeedback'] +
+						object['UnattemptedQuizzes'] +
+						object['UnreadAssignmentSubmissions'] +
 						object['UngradedQuizzes']);
 				}, this);
 			}

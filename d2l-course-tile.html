@@ -7,6 +7,7 @@
 <link rel="import" href="../d2l-menu/d2l-menu-item-link.html">
 <link rel="import" href="../d2l-polymer-behaviors/d2l-dom.html">
 <link rel="import" href="../d2l-siren-parser/d2l-siren-parser.html">
+<link rel="import" href="../d2l-offscreen/d2l-offscreen.html">
 <link rel="import" href="../iron-a11y-announcer/iron-a11y-announcer.html">
 <link rel="import" href="d2l-course-tile-styles.html">
 <link rel="import" href="localize-behavior.html">
@@ -81,10 +82,10 @@ the user has in that organization - student, teacher, TA, etc.
 						<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
 							<span class="course-code-text">{{_organization.properties.code}}</span>
 						</template>
-            			<span aria-label$="[[_courseNotificationLabel]]"></span>
+            			<d2l-offscreen>[[_courseNotificationLabel]]</d2l-offscreen>
 					</div>
 					<div id="courseUpdates" class="d2l-updates-hidden">
-						<span aria-label$="{{localize('courseTile.updates')}}"></span>
+						<d2l-offscreen>{{localize('courseTile.updates')}}</d2l-offscreen>
 						<div class="update-text-box">{{_courseUpdates}}</div>
 					</div>
 				</div>

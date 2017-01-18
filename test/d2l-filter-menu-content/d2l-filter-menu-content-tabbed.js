@@ -172,38 +172,81 @@ describe('d2l-filter-menu-content-tabbed', function() {
 	});
 
 	describe('OrgUnitType names in filter dropdown', function() {
-		it('should render default "Standard Semester OrgUnitType" name', function() {
-			var spy = sandbox.spy(component, '_filterStandardSemesterNameChanged');
+		describe('default labels', function() {
+			it('should render default "Standard Semester OrgUnitType" name', function() {
+				var spy = sandbox.spy(component, '_updateSemesterFilterLabel');
 
-			expect(spy.called).to.be.false;
-			expect(component.$.semesterListButton.textContent).to.equal('Semester');
+				expect(spy.called).to.be.false;
+				expect(component.$.semesterListButton.textContent).to.equal('Semester');
+			});
+
+			it('should render default "Standard Semester OrgUnitType" name with 1 filter', function() {
+				var spy = sandbox.spy(component, '_updateSemesterFilterLabel');
+
+				component._numSemesterFilters = 1;
+
+				expect(spy.called).to.be.true;
+				expect(component.$.semesterListButton.textContent).to.equal('Semester (1)');
+			});
+
+			it('should render default "Standard Department OrgUnitType" name', function() {
+				var spy = sandbox.spy(component, '_updateDepartmentFilterLabel');
+
+				expect(spy.called).to.be.false;
+				expect(component.$.departmentListButton.textContent).to.equal('Department');
+			});
+
+			it('should render default "Standard Department OrgUnitType" name with 1 filter', function() {
+				var spy = sandbox.spy(component, '_updateDepartmentFilterLabel');
+
+				component._numDepartmentFilters = 1;
+
+				expect(spy.called).to.be.true;
+				expect(component.$.departmentListButton.textContent).to.equal('Department (1)');
+			});
 		});
+		describe('custom labels', function() {
+			it('should render custom "Standard Semester OrgUnitType" name', function() {
+				var spy = sandbox.spy(component, '_updateSemesterFilterLabel');
+				var testSemesterName = 'testSemesterName';
 
-		it('should render custom "Standard Semester OrgUnitType" name', function() {
-			var spy = sandbox.spy(component, '_filterStandardSemesterNameChanged');
-			var testSemesterName = 'testSemesterName';
+				component.filterStandardSemesterName = testSemesterName;
 
-			component.filterStandardSemesterName = testSemesterName;
+				expect(spy.called).to.be.true;
+				expect(component.$.semesterListButton.textContent).to.equal(testSemesterName);
+			});
 
-			expect(spy.called).to.be.true;
-			expect(component.$.semesterListButton.textContent).to.equal(testSemesterName);
-		});
+			it('should render default "Standard Semester OrgUnitType" name with 1 filter', function() {
+				var spy = sandbox.spy(component, '_updateSemesterFilterLabel');
+				var testSemesterName = 'testSemesterName';
 
-		it('should render default "Standard Department OrgUnitType" name', function() {
-			var spy = sandbox.spy(component, '_filterStandardDepartmentNameChanged');
+				component.filterStandardSemesterName = testSemesterName;
+				component._numSemesterFilters = 1;
 
-			expect(spy.called).to.be.false;
-			expect(component.$.departmentListButton.textContent).to.equal('Department');
-		});
+				expect(spy.called).to.be.true;
+				expect(component.$.semesterListButton.textContent).to.equal(testSemesterName + ' (1)');
+			});
 
-		it('should render custom "Standard Department OrgUnitType" name', function() {
-			var spy = sandbox.spy(component, '_filterStandardDepartmentNameChanged');
-			var testDepartmentName = 'testDepartmentName';
+			it('should render custom "Standard Department OrgUnitType" name', function() {
+				var spy = sandbox.spy(component, '_updateDepartmentFilterLabel');
+				var testDepartmentName = 'testDepartmentName';
 
-			component.filterStandardDepartmentName = testDepartmentName;
+				component.filterStandardDepartmentName = testDepartmentName;
 
-			expect(spy.called).to.be.true;
-			expect(component.$.departmentListButton.textContent).to.equal(testDepartmentName);
+				expect(spy.called).to.be.true;
+				expect(component.$.departmentListButton.textContent).to.equal(testDepartmentName);
+			});
+
+			it('should render default "Standard Department OrgUnitType" name with 1 filter', function() {
+				var spy = sandbox.spy(component, '_updateDepartmentFilterLabel');
+				var testDepartmentName = 'testDepartmentName';
+
+				component.filterStandardDepartmentName = testDepartmentName;
+				component._numDepartmentFilters = 1;
+
+				expect(spy.called).to.be.true;
+				expect(component.$.departmentListButton.textContent).to.equal(testDepartmentName + ' (1)');
+			});
 		});
 	});
 });

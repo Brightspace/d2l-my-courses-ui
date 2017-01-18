@@ -165,13 +165,11 @@
 				},
 				_numSemesterFilters: {
 					type: Number,
-					value: 0,
-					observer: '_numFiltersChanged'
+					value: 0
 				},
 				_numDepartmentFilters: {
 					type: Number,
-					value: 0,
-					observer: '_numFiltersChanged'
+					value: 0
 				},
 				_searchSemestersAction: Object,
 				_searchDepartmentsAction: Object,
@@ -180,18 +178,16 @@
 					value: function() { return []; }
 				},
 				// Standard Semester OU Type name to be displayed
-				filterStandardSemesterName: {
-					type: String,
-					observer: '_filterStandardSemesterNameChanged'
-				},
+				filterStandardSemesterName: String,
 				// Standard Department OU Type name to be displayed
-				filterStandardDepartmentName: {
-					type: String,
-					observer: '_filterStandardDepartmentNameChanged'
-				}
+				filterStandardDepartmentName: String
 			},
 			behaviors: [
 				window.D2L.MyCourses.LocalizeBehavior
+			],
+			observers: [
+				'_updateSemesterFilterLabel(_numSemesterFilters, filterStandardSemesterName)',
+				'_updateDepartmentFilterLabel(_numDepartmentFilters, filterStandardDepartmentName)'
 			],
 			attached: function() {
 				this.listen(this.$.departmentSearchWidget, 'd2l-search-widget-results-changed', '_onDepartmentSearchResults');
@@ -204,6 +200,10 @@
 				this.unlisten(this.$.semesterSearchWidget, 'd2l-search-widget-results-changed', '_onSemesterSearchResults');
 				this.unlisten(this.$.departmentList, 'd2l-menu-item-change', '_updateDepartmentFilter');
 				this.unlisten(this.$.semesterList, 'd2l-menu-item-change', '_updateSemesterFilter');
+			},
+			ready: function() {
+				this.filterStandardSemesterName = this.localize('filtering.semester');
+				this.filterStandardDepartmentName = this.localize('filtering.department');
 			},
 			load: function() {
 				this.$.departmentSearchWidget.search();
@@ -260,13 +260,19 @@
 					this.set('_searchSemestersAction', myEnrollmentsEntity.getActionByName('add-semester-filter'));
 				}
 			},
-			_numFiltersChanged: function() {
-				this.$.semesterListButton.textContent = this._numSemesterFilters > 0
-					? this.localize('filtering.semesterMultiple', 'num', this._numSemesterFilters)
-					: this.localize('filtering.semester');
-				this.$.departmentListButton.textContent = this._numDepartmentFilters > 0
-					? this.localize('filtering.departmentMultiple', 'num', this._numDepartmentFilters)
-					: this.localize('filtering.department');
+			_updateDepartmentFilterLabel: function(numDepartmentFilters, departmentFilterName) {
+				this.$.departmentListButton.textContent = numDepartmentFilters > 0
+					? this.localize('filtering.departmentMultiple', 'departmentName', departmentFilterName, 'num', numDepartmentFilters)
+					: departmentFilterName;
+
+				this.fire('d2l-filter-menu-content-filters-changed', {
+					filters: this._currentFilters
+				});
+			},
+			_updateSemesterFilterLabel: function(numSemesterFilters, semesterFilterName) {
+				this.$.semesterListButton.textContent = numSemesterFilters > 0
+					? this.localize('filtering.semesterMultiple', 'semesterName', semesterFilterName, 'num', numSemesterFilters)
+					: semesterFilterName;
 
 				this.fire('d2l-filter-menu-content-filters-changed', {
 					filters: this._currentFilters

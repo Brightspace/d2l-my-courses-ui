@@ -337,14 +337,8 @@
 					allCourses.locale = this.locale;
 					allCourses.showCourseCode = this.showCourseCode;
 					allCourses.advancedSearchUrl = this.advancedSearchUrl;
-
-					if (this.standardSemesterName) {
-						allCourses.filterStandardSemesterName = this.standardSemesterName;
-					}
-
-					if (this.standardDepartmentName) {
-						allCourses.filterStandardDepartmentName = this.standardDepartmentName;
-					}
+					allCourses.filterStandardSemesterName = this.standardSemesterName;
+					allCourses.filterStandardDepartmentName = this.standardDepartmentName;
 
 					this.$$('d2l-all-courses').load();
 				}.bind(this), 600);

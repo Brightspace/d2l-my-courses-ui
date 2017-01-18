@@ -19,6 +19,10 @@
 					return {};
 				}
 			},
+			//config from outside the widget
+			courseUpdatesConfig: {
+				type: Object
+			},
 			_ajaxElement: {
 				type: Object
 			}
@@ -28,13 +32,18 @@
 		 *
 		 */
 		getUpdates: function(csvOrgId) {
-			this._ajaxElement = this._ajaxElement || document.createElement('d2l-ajax');
-			var updates = this._generateUpdatesUri(csvOrgId);
-			if (updates) {
-				this._ajaxElement.url = updates;
-				this._ajaxElement.onResponse = this._onUpdatesResponse.bind(this);
-				this._ajaxElement.method = 'GET';
-				this._ajaxElement.generateRequest();
+			if (this.courseUpdatesConfig) {
+				if (typeof this.courseUpdatesConfig === 'string') {
+					this.courseUpdatesConfig = JSON.parse(this.courseUpdatesConfig);
+				}
+				this._ajaxElement = this._ajaxElement || document.createElement('d2l-ajax');
+				var updates = this._generateUpdatesUri(csvOrgId);
+				if (updates) {
+					this._ajaxElement.url = updates;
+					this._ajaxElement.onResponse = this._onUpdatesResponse.bind(this);
+					this._ajaxElement.method = 'GET';
+					this._ajaxElement.generateRequest();
+				}
 			}
 		},
 		_generateUpdatesUri: function(csvOrgId) {
@@ -45,13 +54,23 @@
 		_onUpdatesResponse: function(response) {
 			if (response.detail.status === 200) {
 				response.detail.xhr.response['Objects'].forEach(function(object) {
-					this.set('updateCountMap.' + object['OrgUnitId'],
-						object['UnreadDiscussions'] +
-						object['UnapprovedDiscussions'] +
-						object['UnreadAssignmentFeedback'] +
-						object['UnattemptedQuizzes'] +
-						object['UnreadAssignmentSubmissions'] +
-						object['UngradedQuizzes']);
+					var updates = 0;
+					if (this.courseUpdatesConfig['showUnattemptedQuizzes']) {
+						updates += object['UnattemptedQuizzes'];
+					}
+					if (this.courseUpdatesConfig['showDropboxUnreadFeedback']) {
+						updates += object['UnreadAssignmentFeedback'];
+					}
+					if (this.courseUpdatesConfig['showUngradedQuizAttempts']) {
+						updates += 	object['UngradedQuizzes'];
+					}
+					if (this.courseUpdatesConfig['showUnreadDiscussionMessages']) {
+						updates += object['UnreadDiscussions'] + object['UnapprovedDiscussions'];
+					}
+					if (this.courseUpdatesConfig['showUnreadDropboxSubmissions']) {
+						updates += object['UnreadAssignmentSubmissions'];
+					}
+					this.set('updateCountMap.' + object['OrgUnitId'], updates);
 				}, this);
 			}
 		}

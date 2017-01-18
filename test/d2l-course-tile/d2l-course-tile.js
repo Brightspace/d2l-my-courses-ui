@@ -122,7 +122,7 @@ describe('<d2l-course-tile>', function() {
 
 		it('should update the course name', function() {
 			var courseText = widget.$$('.course-text');
-			expect(courseText.innerText).to.equal(organizationEntity.properties.name);
+			expect(courseText.innerText).to.contain(organizationEntity.properties.name);
 		});
 
 		it('should show the course code if configured true', function() {

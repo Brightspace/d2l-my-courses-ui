@@ -59,4 +59,11 @@ describe('d2l-updates-behavior', function() {
 
 		});
 	});
+
+	describe('updatesURI', function() {
+		it('should generate a good uri if given a string', function() {
+			expect(component._generateUpdatesUri('6609,6613')).to.equal('/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=6609,6613');
+			expect(component._generateUpdatesUri('6609')).to.equal('/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=6609');
+		});
+	});
 });

@@ -19,12 +19,6 @@
 					return {};
 				}
 			},
-			_updatesURI: {
-				type: String,
-				value: function() {
-					return '/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=';
-				}
-			},
 			_ajaxElement: {
 				type: Object
 			}
@@ -35,11 +29,18 @@
 		 */
 		getUpdates: function(csvOrgId) {
 			this._ajaxElement = this._ajaxElement || document.createElement('d2l-ajax');
-			var updates = this._updatesURI + csvOrgId;
-			this._ajaxElement.url = updates;
-			this._ajaxElement.onResponse = this._onUpdatesResponse.bind(this);
-			this._ajaxElement.method = 'GET';
-			this._ajaxElement.generateRequest();
+			var updates = this._generateUpdatesUri(csvOrgId);
+			if (updates) {
+				this._ajaxElement.url = updates;
+				this._ajaxElement.onResponse = this._onUpdatesResponse.bind(this);
+				this._ajaxElement.method = 'GET';
+				this._ajaxElement.generateRequest();
+			}
+		},
+		_generateUpdatesUri: function(csvOrgId) {
+			if (csvOrgId && typeof csvOrgId  === 'string') {
+				return '/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=' + csvOrgId;
+			}
 		},
 		_onUpdatesResponse: function(response) {
 			if (response.detail.status === 200) {

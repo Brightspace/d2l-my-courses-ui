@@ -7,6 +7,7 @@
 <link rel="import" href="../d2l-menu/d2l-menu-item-link.html">
 <link rel="import" href="../d2l-polymer-behaviors/d2l-dom.html">
 <link rel="import" href="../d2l-siren-parser/d2l-siren-parser.html">
+<link rel="import" href="../d2l-offscreen/d2l-offscreen.html">
 <link rel="import" href="../iron-a11y-announcer/iron-a11y-announcer.html">
 <link rel="import" href="d2l-course-tile-styles.html">
 <link rel="import" href="localize-behavior.html">
@@ -75,11 +76,18 @@ the user has in that organization - student, teacher, TA, etc.
 						<d2l-course-image aria-hidden="true" image="[[_image]]" sizes="[[tileSizes]]" type="tile"></d2l-course-image>
 					</div>
 				</div>
-				<div class="course-text d2l-heading-4">{{_organization.properties.name}}
-					<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
-						<span class="course-code-text">{{_organization.properties.code}}</span>
-					</template>
-					<span aria-label$="[[_courseNotificationLabel]]"></span>
+
+				<div class="course-info">
+					<div class="course-text d2l-heading-4">{{_organization.properties.name}}
+						<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
+							<span class="course-code-text">{{_organization.properties.code}}</span>
+						</template>
+            			<d2l-offscreen>[[_courseNotificationLabel]]</d2l-offscreen>
+					</div>
+					<div id="courseUpdates" class="d2l-updates-hidden">
+						<d2l-offscreen>{{localize('courseTile.updates')}}</d2l-offscreen>
+						<div class="update-text-box">{{_courseUpdates}}</div>
+					</div>
 				</div>
 			</a>
 
@@ -165,6 +173,10 @@ the user has in that organization - student, teacher, TA, etc.
 				userId: String,
 				// Configuration value passed in to toggle course code
 				showCourseCode: Boolean,
+				//used for domif for course updates
+				_hasCourseUpdates: Boolean,
+				//number of course updates to show
+				_courseUpdates: String,
 				_courseInfoUrl: String,
 				// Body sent for pin/unpin action
 				_enrollmentPinBody: String,
@@ -230,7 +242,6 @@ the user has in that organization - student, teacher, TA, etc.
 				if (!this.enrollment) {
 					return;
 				}
-
 				this.pinned = this.enrollment.hasClass('pinned');
 
 				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
@@ -239,7 +250,6 @@ the user has in that organization - student, teacher, TA, etc.
 				this._onFocus = this._onFocus.bind(this);
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);
-
 				Polymer.IronA11yAnnouncer.requestAvailability();
 			},
 			// Handler that triggers the API call to change an enrollment's pin state when the user says DO IT
@@ -315,6 +325,21 @@ the user has in that organization - student, teacher, TA, etc.
 					case 'failure':
 						this._displaySetImageResult(false);
 						break;
+				}
+			},
+			setCourseUpdates: function(updates) {
+				if (updates > 99) {
+					this._courseUpdates = '99+';
+					this._hasCourseUpdates = true;
+					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
+				} else if (updates > 0 && updates <= 99) {
+					this._courseUpdates = updates;
+					this._hasCourseUpdates = true;
+					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
+				} else {
+					this._courseUpdates = 0;
+					this._hasCourseUpdates = false;
+					this.toggleClass('d2l-updates-hidden', true, this.$.courseUpdates);
 				}
 			},
 			_enrollmentChanged: function() {

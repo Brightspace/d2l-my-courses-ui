@@ -17,6 +17,9 @@
 		.d2l-course-tile-hidden {
 			display: none;
 		}
+		.d2l-updates-hidden {
+			display: none;
+		}
 		.tile-container {
 			position: relative;
 			background-color: transparent;
@@ -128,9 +131,27 @@
 			text-transform: uppercase;
 		}
 		.course-text {
-			width: 100%;
 			position: relative;
 			margin-top: 0.4rem;
+			float: left;
+			flex: 1;
+			word-break: break-word;
+		}
+		.course-info {
+			display: flex;
+		}
+		.update-text-box {
+			border: 2px solid var(--d2l-color-carnelian);
+			color: var(--d2l-color-carnelian);
+			border-radius: 0.4rem;
+			font-size: 0.8rem;
+			width: 2.1rem;
+			height: 2.1rem;
+			line-height: 2.1rem;
+			display: inline-flex;
+			margin-top: 0.4rem;
+			align-items: center;
+  			justify-content: center;
 		}
 		.tile-container:not(.d2l-no-access) > a:focus,
 		.tile-container:not(.d2l-no-access) > a:hover {

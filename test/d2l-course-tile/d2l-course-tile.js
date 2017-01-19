@@ -122,7 +122,7 @@ describe('<d2l-course-tile>', function() {
 
 		it('should update the course name', function() {
 			var courseText = widget.$$('.course-text');
-			expect(courseText.innerText).to.equal(organizationEntity.properties.name);
+			expect(courseText.innerText).to.contain(organizationEntity.properties.name);
 		});
 
 		it('should show the course code if configured true', function() {
@@ -465,6 +465,57 @@ describe('<d2l-course-tile>', function() {
 		});
 	});
 
+	describe('setting course updates attribute', function() {
+		it('should show update number when less than 99', function() {
+			widget.setCourseUpdates(85);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
+			expect(widget._courseUpdates).to.equal(85);
+			expect(widget._hasCourseUpdates).to.be.true;
+			expect(widget.$$('.update-text-box').innerText).to.equal('85');
+
+		});
+
+		it('should show 99 when 99 updates', function() {
+			widget.setCourseUpdates(99);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
+			expect(widget._courseUpdates).to.equal(99);
+			expect(widget._hasCourseUpdates).to.be.true;
+			expect(widget.$$('.update-text-box').innerText).to.equal('99');
+		});
+
+		it('should show 99+ when more than 99 updates', function() {
+			widget.setCourseUpdates(100);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.not.contain('d2l-updates-hidden');
+			expect(widget._courseUpdates).to.equal('99+');
+			expect(widget._hasCourseUpdates).to.be.true;
+			expect(widget.$$('.update-text-box').innerText).to.equal('99+');
+
+		});
+
+		it('should not show updates number when 0', function() {
+			widget.setCourseUpdates(0);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
+		});
+
+		it('should not display when given less than 0', function() {
+			widget.setCourseUpdates(-1);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
+		});
+
+		it('should not display when given null', function() {
+			widget.setCourseUpdates(null);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
+		});
+
+		it('should not display when given undefined', function() {
+			widget.setCourseUpdates(undefined);
+			expect(widget.$.courseUpdates.getAttribute('class')).to.contain('d2l-updates-hidden');
+			expect(widget.$$('.update-text-box').innerText).to.equal('0');
+		});
+	});
 	var curDate = 1484259377534;
 	function getFutureDate() {
 		return new Date(curDate + 8000).toISOString();

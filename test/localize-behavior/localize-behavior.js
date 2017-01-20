@@ -37,6 +37,18 @@ describe('localize behavior', function() {
 				}
 			}
 		});
+/* will fail till we get mappings in
+		it('should have no empty mappings for supported langs', function() {
+			var locales = Object.keys(component.resources);
+			for (var i = 0; i < locales.length; i++) {
+				var currentLocale = locales[i];
+				var mappings = Object.values(component.resources[currentLocale]);
+				for (var j = 0; j < mappings.length; j++) {
+					expect(mappings[j].replace( /^\s+|\s+$/g, '' )).to.not.equal('');
+				}
+
+			}
+		});*/
 	});
 
 });

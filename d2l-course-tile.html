@@ -251,14 +251,6 @@ the user has in that organization - student, teacher, TA, etc.
 
 				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
 				this._organizationUrl = organizationLink.href + '?embedDepth=1';
-				//because the tile might not be init before the first search we need to check the map on ready
-				if (this.updateCountMap) {
-					var orgUnitId = this.getOrgUnitId(organizationLink.href);
-					var update = this.updateCountMap[orgUnitId];
-					if (update) {
-						this.setCourseUpdates(update);
-					}
-				}
 				this._onFocus = this._onFocus.bind(this);
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);
@@ -352,15 +344,12 @@ the user has in that organization - student, teacher, TA, etc.
 				}
 			},
 			_onUpdatesChange: function(updateChange) {
-				if (this.enrollmentId) {
-					var orgUnitId = this.getOrgUnitId(this.enrollmentId);
-					var update = updateChange.base[orgUnitId];
-					if (update) {
-						this.setCourseUpdates(update);
-					}
+				var orgUnitId = this.getOrgUnitId(this.enrollmentId);
+				var update = updateChange.base[orgUnitId];
+				if (update) {
+					this.setCourseUpdates(update);
 				}
 			},
-
 			_enrollmentChanged: function() {
 				if (!this.delayLoad && this.enrollment) {
 					var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
@@ -368,7 +357,6 @@ the user has in that organization - student, teacher, TA, etc.
 						this._organizationUrl = organizationLink.href + '?embedDepth=1';
 						this.$.organizationRequest.generateRequest();
 					}
-
 				}
 			},
 			_displaySetImageResult: function(success) {
@@ -487,6 +475,14 @@ the user has in that organization - student, teacher, TA, etc.
 					this._canChangeCourseImage = this._getCanChangeCourseImage(organization);
 					this._pinnedChanged();
 					this._courseSettingsLabel = this.localize('courseSettings', 'course', this._organization.properties.name);
+					var organizationLink = organization.getLinkByRel('self');
+					if (this.updateCountMap) {
+						var orgUnitId = this.getOrgUnitId(organizationLink.href);
+						var update = this.updateCountMap[orgUnitId];
+						if (update) {
+							this.setCourseUpdates(update);
+						}
+					}
 				}
 			},
 			_checkDateBounds: function(organization, response) {

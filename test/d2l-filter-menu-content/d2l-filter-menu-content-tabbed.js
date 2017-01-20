@@ -216,7 +216,7 @@ describe('d2l-filter-menu-content-tabbed', function() {
 				expect(component.$.semesterListButton.textContent).to.equal(testSemesterName);
 			});
 
-			it('should render default "Standard Semester OrgUnitType" name with 1 filter', function() {
+			it('should render custom "Standard Semester OrgUnitType" name with 1 filter', function() {
 				var spy = sandbox.spy(component, '_updateSemesterFilterLabel');
 				var testSemesterName = 'testSemesterName';
 
@@ -237,7 +237,7 @@ describe('d2l-filter-menu-content-tabbed', function() {
 				expect(component.$.departmentListButton.textContent).to.equal(testDepartmentName);
 			});
 
-			it('should render default "Standard Department OrgUnitType" name with 1 filter', function() {
+			it('should render custom "Standard Department OrgUnitType" name with 1 filter', function() {
 				var spy = sandbox.spy(component, '_updateDepartmentFilterLabel');
 				var testDepartmentName = 'testDepartmentName';
 

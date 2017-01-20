@@ -261,18 +261,30 @@
 				}
 			},
 			_updateDepartmentFilterLabel: function(numDepartmentFilters, departmentFilterName) {
-				this.$.departmentListButton.textContent = numDepartmentFilters > 0
-					? this.localize('filtering.departmentMultiple', 'departmentName', departmentFilterName, 'num', numDepartmentFilters)
-					: departmentFilterName;
+				if (this.filterStandardDepartmentName !== this.localize('filtering.department')) {
+					this.$.departmentListButton.textContent = numDepartmentFilters > 0
+						? this.localize('filtering.departmentMultipleCustom', 'departmentName', departmentFilterName, 'num', numDepartmentFilters)
+						: departmentFilterName;
+				} else {
+					this.$.departmentListButton.textContent = numDepartmentFilters > 0
+						? this.localize('filtering.departmentMultiple', 'num', numDepartmentFilters)
+						: this.filterStandardDepartmentName;
+				}
 
 				this.fire('d2l-filter-menu-content-filters-changed', {
 					filters: this._currentFilters
 				});
 			},
 			_updateSemesterFilterLabel: function(numSemesterFilters, semesterFilterName) {
-				this.$.semesterListButton.textContent = numSemesterFilters > 0
-					? this.localize('filtering.semesterMultiple', 'semesterName', semesterFilterName, 'num', numSemesterFilters)
-					: semesterFilterName;
+				if (this.filterStandardSemesterName !== this.localize('filtering.semester')) {
+					this.$.semesterListButton.textContent = numSemesterFilters > 0
+						? this.localize('filtering.semesterMultipleCustom', 'semesterName', semesterFilterName, 'num', numSemesterFilters)
+						: semesterFilterName;
+				} else {
+					this.$.semesterListButton.textContent = numSemesterFilters > 0
+						? this.localize('filtering.semesterMultiple', 'num', numSemesterFilters)
+						: this.filterStandardSemesterName;
+				}
 
 				this.fire('d2l-filter-menu-content-filters-changed', {
 					filters: this._currentFilters

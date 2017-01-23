@@ -45,7 +45,7 @@
 				transition-timing-function: ease;
 				-webkit-transition-property: background-color,border-color;
 				transition-property: background-color,border-color;
-				padding-left: 65px;
+				padding-left: 10px;
 				padding-right: 65px;
 			}
 
@@ -56,8 +56,12 @@
 				outline-width: 0;
 				padding: -webkit-calc(.4rem - 1px) -webkit-calc(1rem - 1px);
 				padding: calc(.4rem - 1px) calc(1rem - 1px);
-				padding-left: 64px;
+				padding-left: 9px;
 				padding-right: 64px;
+			}
+
+			input::-ms-clear {
+				display: none;
 			}
 
 			.dropdown-content {
@@ -72,9 +76,10 @@
 				border-radius: 6px;
 			}
 
-			.search-icon {
+			:host button {
 				position: absolute;
 				top: 0px;
+				right: 0px;
 				background: none;
 				border: 1px solid transparent;
 				border-radius: 0.3rem;
@@ -82,70 +87,49 @@
 				cursor: pointer;
 				height: calc(100% - 20px);
 			}
-			.search-icon:hover,
-			.search-icon:focus {
+			:host button:hover,
+			:host button:focus {
 				border-color: var(--d2l-color-pressicus);
+				border-radius: 0.3rem;
 			}
-			.search-icon d2l-icon {
+			d2l-icon {
 				--d2l-icon-height: 22px;
 				--d2l-icon-width: 22px;
 				color: var(--d2l-color-tungsten);
 			}
-
-			.search-button {
-				left: 5px;
-			}
-
-			.clear-search-button {
-				right: 5px;
-				border: 1px solid transparent;
-			}
-			.clear-search-button:hover,
-			.clear-search-button:focus {
-				border-color: var(--d2l-color-pressicus);
-				border-radius: 0.3rem;
-			}
 		</style>
 
 		<d2l-ajax
-			id="searchRequest"
-			url="[[_searchUrl]]"
+			id="liveSearchRequest"
+			url="[[_liveSearchUrl]]"
 			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onSearchResponse">
+			on-iron-ajax-response="_onLiveSearchResponse">
 		</d2l-ajax>
 
 		<d2l-ajax
-			id="searchRequestTiles"
-			url="[[_searchUrlTiles]]"
+			id="fullSearchRequest"
+			url="[[_fullSearchUrl]]"
 			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onSearchResponseTiles">
+			on-iron-ajax-response="_onFullSearchResponse">
 		</d2l-ajax>
 
 		<d2l-dropdown no-auto-open>
 			<div class="search-bar d2l-dropdown-opener" id="opener">
-				<button
-					type="button"
-					aria-label$="{{localize('search.searchCourses')}}"
-					on-tap="_performSearch"
-					class="search-icon search-button">
-					<d2l-icon icon="d2l-tier1:search"></d2l-icon>
-				</button>
-
 				<input
 					is="iron-input"
-					bind-value="{{_searchString}}"
+					bind-value="{{_searchInput}}"
 					role="combobox"
 					aria-autocomplete="list"
 					placeholder="{{localize('courseSearchInputPlaceholder')}}"
-					on-keydown="_onSearchInputKeyPressed">
+					on-keydown="_onSearchInputKeyPressed"
+					on-focus="_onSearchInputFocused">
 				</input>
 
 				<button
 					type="button"
-					aria-label$="{{localize('search.clearSearch')}}"
-					on-tap="_clearSearchResults"
-					class="search-icon clear-search-button">
-					<d2l-icon icon="d2l-tier1:close-default"></d2l-icon>
+					aria-label$="{{localize('search.searchCourses')}}"
+					on-tap="_clearOrSearch">
+					<d2l-icon icon="d2l-tier1:search"></d2l-icon>
 				</button>
 			</div>
 			<d2l-search-dropdown-content
@@ -221,12 +205,9 @@
 				},
 
 				// The search string updated by the course search input
-				_searchString: {
+				_searchInput: {
 					type: String,
-					value: function() {
-						return '';
-					},
-					observer: '_onSearchStringChanged'
+					observer: '_onSearchInputChanged'
 				},
 
 				// An array of objects containing the results of the search-my-enrollments action
@@ -237,8 +218,14 @@
 					}
 				},
 
-				_searchUrl: String,
-				_searchUrlTiles: String,
+				_liveSearchUrl: {
+					type: String,
+					observer: '_onLiveSearchUrlChanged'
+				},
+				_fullSearchUrl: {
+					type: String,
+					observer: '_onFullSearchUrlChanged'
+				},
 
 				// List of strings containing previously searched terms/selected courses
 				_previousSearches: {
@@ -269,35 +256,26 @@
 			},
 
 			attached: function() {
-				var i = 0;
-				var searchBarElements = this.$$('.search-bar').children;
-
-				for (i = 0; i < searchBarElements.length; i++) {
-					this.listen(searchBarElements[i], 'focus', '_onElementFocus');
-				}
-
 				document.body.addEventListener('focus', this._handleFocusBound, true);
 				document.body.addEventListener('click', this._handleClickBound, true);
 
 				this._listboxes = Polymer.dom(this.root).querySelectorAll('d2l-search-listbox').slice();
 
-				for (i = 0; i < this._listboxes.length; i++) {
+				for (var i = 0; i < this._listboxes.length; i++) {
 					this._listboxes[i].owner = this.$$('input');
 				}
 				this._initializePreviousSearches();
 			},
 
 			detached: function() {
-				var searchBarElements = this.$$('.search-bar').children;
-				for (var i = 0; i < searchBarElements.length; i++) {
-					this.unlisten(searchBarElements[i], 'focus', '_onElementFocus');
-				}
-
 				document.body.removeEventListener('focus', this._handleFocusBound, true);
 				document.body.removeEventListener('click', this._handleClickBound, true);
 			},
 
-			_pageSize: 5,
+			_isSearched: false,
+			_fullSearchPageSize: 20,
+			_liveSearchPageSize: 5,
+			_searchResultsCache: {},
 
 			// Retrieves previous searches from local storage to populate listbox
 			_initializePreviousSearches: function() {
@@ -315,84 +293,111 @@
 				}
 			},
 
-			// Calls the search-my-enrollments action, used to populate live search results in the listbox
-			_liveSearch: function() {
-				if (this._searchString) {
-
-					var queryParams = {
-						search: this._searchString,
-						page: 1,
-						pageSize: this._pageSize,
-						parentOrganizations: this.parentOrganizations.join(','),
-						sortField: this.sortField,
-						sortDescending: this.sortField !== 'courseName' && this.sortField !== 'courseCode'
-					};
-
-					this._searchUrl = this.createActionUrl(
-						this._searchAction,
-						queryParams
-					);
-
-					this._organizationRequests.forEach(function(req) {
-						if (req.abort) {
-							req.abort();
-						}
-					});
-					this.set('_organizationRequests', []);
-
-					this.$.searchRequest.generateRequest();
-				}
-			},
-
-			_search: function() {
+			__search: function(pageSize, path) {
 				var queryParams = {
-					search: this._searchString,
+					search: encodeURIComponent(this._searchInput),
 					page: 1,
-					pageSize: 20,
+					pageSize: pageSize,
 					parentOrganizations: this.parentOrganizations.join(','),
 					sortField: this.sortField,
 					sortDescending: this.sortField !== 'courseName' && this.sortField !== 'courseCode'
 				};
 
-				this._searchUrlTiles = this.createActionUrl(
-					this._searchAction,
-					queryParams
-				);
-
-				this.$.searchRequestTiles.generateRequest();
+				this.set(path, this.createActionUrl(this._searchAction, queryParams));
 			},
 
-			_performSearch: function() {
-				this._search();
+			// Called by various key/mouse interactions
+			_fullSearch: function() {
+				this._isSearched = true;
+				this.__search(this._fullSearchPageSize, '_fullSearchUrl');
+			},
+			_liveSearch: function() {
+				this.__search(this._liveSearchPageSize, '_liveSearchUrl');
+			},
+
+			// Handlers called when full/live search URLs are changed by __search
+			_onFullSearchUrlChanged: function(newUrl) {
+				if (this._searchResultsCache[newUrl]) {
+					// If we've cached this response already, return it immediately
+					this.fire('d2l-search-enrollment-response', this._searchResultsCache[newUrl]);
+					return;
+				}
+				this.$.fullSearchRequest.generateRequest();
 				this.$.dropdown.close();
 			},
+			_onLiveSearchUrlChanged: function() {
+				this._organizationRequests.forEach(function(req) {
+					if (req.abort) {
+						req.abort();
+					}
+				});
+				this.set('_organizationRequests', []);
 
-			_clearSearchResults: function() {
+				this.$.liveSearchRequest.generateRequest();
+			},
+
+			_clearSearch: function() {
 				this.cancelDebouncer('liveSearchJob');
-				this._searchString = '';
+				this._searchInput = '';
 				this.set('_searchResults', []);
 
 				if (this._previousSearches.length > 0) {
 					this.$$('iron-pages').select('recent-searches-page');
 				} else {
 					this.$.dropdown.close();
-
 				}
-				this._search();
+
+				this._isSearched = false;
+				this.__search(this._fullSearchPageSize, '_fullSearchUrl');
 			},
 
-			_onSearchStringChanged: function(newString) {
+			_clearOrSearch: function() {
+				if (this._isSearched) {
+					this._clearSearch();
+				} else {
+					this._fullSearch();
+				}
+				this._updateIcon();
+			},
+
+			_updateIcon: function() {
+				this._isSearched ? this._setClearIcon() : this._setSearchIcon();
+			},
+			_setClearIcon: function() {
+				this.$$('.search-bar > button > d2l-icon').setAttribute('icon', 'd2l-tier1:close-default');
+				this.$$('.search-bar > button').setAttribute('aria-label', this.localize('search.clearSearch'));
+			},
+			_setSearchIcon: function() {
+				this.$$('.search-bar > button > d2l-icon').setAttribute('icon', 'd2l-tier1:search');
+				this.$$('.search-bar > button').setAttribute('aria-label', this.localize('search.searchCourses'));
+			},
+
+			// Observer for search input field text, calls debounced live search
+			_onSearchInputChanged: function(newSearchString) {
+				if (newSearchString.length === 0) {
+					// Don't live search for empty inputs
+					return;
+				}
+
+				// Search term no longer matches results, so consider it "not searched"
+				this._isSearched = false;
+				this._updateIcon();
+
+				// Checking for _searchAction required here to avoid problems on init
+				if (this._searchAction && !this.$.dropdown.opened) {
+					// If a user enters a new key after having searched, re-open dropdown
+					this.$.dropdown.open();
+				}
 				if (this._listboxes) {
-					if (newString.length > 0) {
-						this.debounce('liveSearchJob', this._liveSearch, 750);
-					}
+					this.debounce('liveSearchJob', this._liveSearch, 750);
 				}
 			},
 
 			_onSearchInputKeyPressed: function(e) {
 				switch (e.keyCode) {
 					case this._keyCodes.ENTER:
-						this._performSearch();
+						this._fullSearch();
+						this._updateIcon();
 						e.preventDefault();
 						break;
 					case this._keyCodes.DOWN:
@@ -401,7 +406,6 @@
 						}
 						e.preventDefault();
 						break;
-
 					case this._keyCodes.UP:
 						if (this._currentListbox.hasItems()) {
 							this._currentListbox.focusLast();
@@ -454,19 +458,16 @@
 
 			_onSearchDependencyChanged: function() {
 				if (this.isAttached) {
-					this.debounce('_onSearchDependencyChanged', this._search, 500);
+					this.debounce('_onSearchDependencyChanged', this._fullSearch, 500);
 				}
 			},
 
-			_onSearchResponse: function(response) {
-				if (response.detail.status === 200 && this._searchString) {
+			_onLiveSearchResponse: function(response) {
+				if (response.detail.status === 200 && this._searchInput) {
 					var parser = document.createElement('d2l-siren-parser');
 					var searchResponse = parser.parse(response.detail.xhr.response);
 					var enrollmentEntities = searchResponse.entities;
 					this.$$('iron-pages').select(enrollmentEntities.length > 0 ? 'search-results-page' : 'no-results-page');
-					if (!this.$.dropdown.opened) {
-						this.$.dropdown.open();
-					}
 
 					this._searchResults = [];
 					for (var i = 0; i < enrollmentEntities.length; i++) {
@@ -503,8 +504,9 @@
 					}
 				}
 			},
-			_onSearchResponseTiles: function(response) {
+			_onFullSearchResponse: function(response) {
 				if (response.detail.status === 200) {
+					this._searchResultsCache[response.detail.url] = response;
 					this.fire('d2l-search-enrollment-response', response);
 				}
 			},
@@ -518,8 +520,8 @@
 				var text = e.detail.item.dataset.text;
 				if (text) {
 					this._addSearchToHistory(text);
-					this._searchString = text;
-					this._search();
+					this._searchInput = text;
+					this._fullSearch();
 				}
 				e.stopPropagation();
 			},
@@ -531,13 +533,13 @@
 			},
 
 			// Called when an element within the search bar gains focus, to open the dropdown if required
-			_onElementFocus: function() {
+			_onSearchInputFocused: function() {
 				if (this.$.dropdown.opened) {
 					return;
 				}
 
 				// If the search field is blank, we want to open the previous searches, but only if there are some
-				if (!this._searchString) {
+				if (!this._searchInput) {
 					if (this._previousSearches.length > 0) {
 						this.$$('iron-pages').select('recent-searches-page');
 						this.$.dropdown.open();

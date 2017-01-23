@@ -37,7 +37,7 @@ describe('localize behavior', function() {
 				}
 			}
 		});
-/* will fail till we get mappings in
+
 		it('should have no empty mappings for supported langs', function() {
 			var locales = Object.keys(component.resources);
 			for (var i = 0; i < locales.length; i++) {
@@ -48,7 +48,7 @@ describe('localize behavior', function() {
 				}
 
 			}
-		});*/
+		});
 	});
 
 });

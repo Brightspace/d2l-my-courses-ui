@@ -271,6 +271,8 @@
 						: this.filterStandardDepartmentName;
 				}
 
+				this.$.departmentSearchWidget.placeholderText = this.localize('filtering.searchDepartmentsCustom', 'departmentName', departmentFilterName);
+
 				this.fire('d2l-filter-menu-content-filters-changed', {
 					filters: this._currentFilters
 				});
@@ -285,6 +287,8 @@
 						? this.localize('filtering.semesterMultiple', 'num', numSemesterFilters)
 						: this.filterStandardSemesterName;
 				}
+
+				this.$.semesterSearchWidget.placeholderText = this.localize('filtering.searchSemestersCustom', 'semesterName', semesterFilterName);
 
 				this.fire('d2l-filter-menu-content-filters-changed', {
 					filters: this._currentFilters

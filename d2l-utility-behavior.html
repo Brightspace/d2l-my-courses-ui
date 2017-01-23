@@ -68,7 +68,7 @@
 		},
 		getOrgUnitId: function(enrollmentId) {
 			if (enrollmentId && typeof enrollmentId === 'string') {
-				return /organizations[\.api\.proddev\.d2l]*\/([0-9]+)/
+				return /organizations.*?\/([0-9]+)/
 							.exec(enrollmentId)[1];
 			}
 		},

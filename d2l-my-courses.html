@@ -11,6 +11,7 @@
 <link rel="import" href="d2l-course-tile-grid.html">
 <link rel="import" href="localize-behavior.html">
 <link rel="import" href="d2l-course-management-behavior.html">
+<link rel="import" href="d2l-updates-behavior.html">
 <link rel="import" href="./image-selector/d2l-basic-image-selector.html">
 
 <dom-module id="d2l-my-courses">
@@ -100,7 +101,8 @@
 				tenant-id="[[tenantId]]"
 				locale="[[locale]]"
 				telemetry-endpoint="[[telemetryEndpoint]]"
-				show-course-code="[[showCourseCode]]">
+				show-course-code="[[showCourseCode]]"
+				update-count-map="[[updateCountMap]]">
 			</d2l-course-tile-grid>
 			<button
 				class="all-courses-button"
@@ -189,7 +191,8 @@
 				window.D2L.MyCourses.LocalizeBehavior,
 				window.D2L.MyCourses.InteractionDetectionBehavior,
 				window.D2L.MyCourses.CourseManagementBehavior,
-				window.D2L.MyCourses.AlertBehavior
+				window.D2L.MyCourses.AlertBehavior,
+				window.D2L.MyCourses.UpdatesBehavior
 			],
 			listeners: {
 				'open-change-image-view': '_openChangeImageView',
@@ -276,8 +279,7 @@
 					enrollmentEntities.forEach(function(enrollment) {
 						var enrollmentId = this.getEntityIdentifier(enrollment);
 
-						var orgUnitId = /organizations\/([0-9]+)/
-							.exec(enrollmentId)[1];
+						var orgUnitId = this.getOrgUnitId(enrollmentId);
 						if (enrollment.hasClass('pinned')) {
 							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
 								newPinnedEnrollments.push(enrollment);
@@ -292,7 +294,7 @@
 
 						this._enrollmentIdMap[orgUnitId] = enrollmentId;
 					}, this);
-
+					this.getUpdates(Object.keys(this._enrollmentIdMap).join(','));
 					this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
 					this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
 
@@ -333,6 +335,8 @@
 					allCourses.locale = this.locale;
 					allCourses.showCourseCode = this.showCourseCode;
 					allCourses.advancedSearchUrl = this.advancedSearchUrl;
+					allCourses.updateCountMap = this.updateCountMap;
+					allCourses.courseUpdatesConfig = this.courseUpdatesConfig;
 					this.$$('d2l-all-courses').load();
 				}.bind(this), 600);
 			},

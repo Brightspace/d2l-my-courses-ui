@@ -16,6 +16,7 @@
 <link rel="import" href="d2l-search-widget-custom.html">
 <link rel="import" href="localize-behavior.html">
 <link rel="import" href="d2l-simple-overlay.html">
+<link rel="import" href="d2l-updates-behavior.html">
 
 
 <dom-module id="d2l-all-courses">
@@ -233,7 +234,8 @@
 					delay-load="[[delayLoad]]"
 					tile-sizes="[[_tileSizes]]"
 					locale="[[locale]]"
-					show-course-code="[[showCourseCode]]">
+					show-course-code="[[showCourseCode]]"
+					update-count-map="[[updateCountMap]]">
 				</d2l-course-tile-grid>
 
 				<h2 class="d2l-heading-3">{{localize('unpinnedCourses')}}</h2>
@@ -245,7 +247,8 @@
 					delay-load="[[delayLoad]]"
 					tile-sizes="[[_tileSizes]]"
 					locale="[[locale]]"
-					show-course-code="[[showCourseCode]]">
+					show-course-code="[[showCourseCode]]"
+					update-count-map="[[updateCountMap]]">
 				</d2l-course-tile-grid>
 
 				<d2l-loading-spinner
@@ -254,7 +257,6 @@
 					size="100">
 				</d2l-loading-spinner>
 			</div>
-
 			<d2l-loading-spinner
 				id="overlayLoadingSpinner"
 				size="100">
@@ -386,7 +388,8 @@
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
 				window.D2L.MyCourses.LocalizeBehavior,
 				window.D2L.MyCourses.UtilityBehavior,
-				window.D2L.MyCourses.AlertBehavior
+				window.D2L.MyCourses.AlertBehavior,
+				window.D2L.MyCourses.UpdatesBehavior
 			],
 			listeners: {
 				'd2l-simple-overlay-opening': '_onSimpleOverlayOpening',
@@ -496,8 +499,10 @@
 					var enrollmentEntities = enrollments.getSubEntitiesByClass('enrollment');
 					var newPinnedEnrollments = [];
 					var newUnpinnedEnrollments = [];
+					var orgUnitIds = [];
 					enrollmentEntities.forEach(function(enrollment) {
 						var enrollmentId = this.getEntityIdentifier(enrollment);
+						orgUnitIds.push(this.getOrgUnitId(enrollmentId));
 						if (enrollment.hasClass('pinned')) {
 							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
 								newPinnedEnrollments.push(enrollment);
@@ -510,7 +515,7 @@
 							}
 						}
 					}, this);
-
+					this.getUpdates(orgUnitIds.join(','));
 					if (append) {
 						this.filteredPinnedEnrollments = this.filteredPinnedEnrollments.concat(newPinnedEnrollments);
 						this.filteredUnpinnedEnrollments = this.filteredUnpinnedEnrollments.concat(newUnpinnedEnrollments);
@@ -593,7 +598,7 @@
 				if (this.pinnedEnrollments.length + this.unpinnedEnrollments.length >= 20) {
 					this.$.filterMenuContent.load();
 				}
-
+				this.set('updateCountMap', this.updateCountMap);
 				setTimeout(function() {
 					// Slight delay to allow for overlay to get a DOM width before triggering the recalculation
 					this.fire('recalculate-columns');

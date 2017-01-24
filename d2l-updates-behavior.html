@@ -1,0 +1,79 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../d2l-siren-parser/d2l-siren-parser.html">
+<link rel="import" href="../d2l-ajax/d2l-ajax.html">
+<script>
+	'use strict';
+
+	window.D2L = window.D2L || {};
+	window.D2L.MyCourses = window.D2L.MyCourses || {};
+
+	/*
+	 * General utility functions that can be used in many places.
+	 * @polymerBehavior window.D2L.MyCourses.UpdatesBehavior
+	 */
+	window.D2L.MyCourses.UpdatesBehavior = {
+		properties: {
+			updateCountMap: {
+				type: Object,
+				value: function() {
+					return {};
+				}
+			},
+			//config from outside the widget
+			courseUpdatesConfig: {
+				type: Object
+			},
+			_ajaxElement: {
+				type: Object
+			}
+		},
+		/**
+		 *When given a comma seperated list of organization IDs retrieves a list of updates and stores them in updateCountMap
+		 *
+		 */
+		getUpdates: function(csvOrgId) {
+			if (this.courseUpdatesConfig) {
+				if (typeof this.courseUpdatesConfig === 'string') {
+					this.courseUpdatesConfig = JSON.parse(this.courseUpdatesConfig);
+				}
+				this._ajaxElement = this._ajaxElement || document.createElement('d2l-ajax');
+				var updates = this._generateUpdatesUri(csvOrgId);
+				if (updates) {
+					this._ajaxElement.url = updates;
+					this._ajaxElement.onResponse = this._onUpdatesResponse.bind(this);
+					this._ajaxElement.method = 'GET';
+					this._ajaxElement.generateRequest();
+				}
+			}
+		},
+		_generateUpdatesUri: function(csvOrgId) {
+			if (csvOrgId && typeof csvOrgId  === 'string') {
+				return '/d2l/api/le/1.18/updates/myUpdates/?orgUnitIdsCSV=' + csvOrgId;
+			}
+		},
+		_onUpdatesResponse: function(response) {
+			if (response.detail.status === 200) {
+				response.detail.xhr.response['Objects'].forEach(function(object) {
+					var updates = 0;
+					if (this.courseUpdatesConfig['showUnattemptedQuizzes']) {
+						updates += object['UnattemptedQuizzes'];
+					}
+					if (this.courseUpdatesConfig['showDropboxUnreadFeedback']) {
+						updates += object['UnreadAssignmentFeedback'];
+					}
+					if (this.courseUpdatesConfig['showUngradedQuizAttempts']) {
+						updates += 	object['UngradedQuizzes'];
+					}
+					if (this.courseUpdatesConfig['showUnreadDiscussionMessages']) {
+						updates += object['UnreadDiscussions'] + object['UnapprovedDiscussions'];
+					}
+					if (this.courseUpdatesConfig['showUnreadDropboxSubmissions']) {
+						updates += object['UnreadAssignmentSubmissions'];
+					}
+					this.set('updateCountMap.' + object['OrgUnitId'], updates);
+				}, this);
+			}
+		}
+	};
+
+</script>

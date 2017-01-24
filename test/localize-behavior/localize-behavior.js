@@ -44,7 +44,7 @@ describe('localize behavior', function() {
 				var currentLocale = locales[i];
 				var mappings = Object.values(component.resources[currentLocale]);
 				for (var j = 0; j < mappings.length; j++) {
-					expect(mappings[j].replace( /^\s+|\s+$/g, '' )).to.not.equal('');
+					expect(mappings[j].trim()).to.not.equal('');
 				}
 
 			}

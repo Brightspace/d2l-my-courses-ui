@@ -149,7 +149,7 @@ the user has in that organization - student, teacher, TA, etc.
 					type: Object,
 					observer: '_enrollmentChanged'
 				},
-				enrollmentId: Number,
+				enrollmentId: String,
 				// Specifies whether the (desktop) hover menu is enabled on the course tile
 				hoverEnabled: {
 					type: Boolean,
@@ -173,8 +173,10 @@ the user has in that organization - student, teacher, TA, etc.
 				userId: String,
 				// Configuration value passed in to toggle course code
 				showCourseCode: Boolean,
-				//used for domif for course updates
-				_hasCourseUpdates: Boolean,
+				updateCountMap: {
+					type: Object,
+					notify: true
+				},
 				//number of course updates to show
 				_courseUpdates: String,
 				_courseInfoUrl: String,
@@ -225,6 +227,9 @@ the user has in that organization - student, teacher, TA, etc.
 			listeners: {
 				'animationend': '_onAnimationComplete'
 			},
+			observers: [
+				'_onUpdatesChange(updateCountMap.*)'
+			],
 			created: function() {
 				this.setAttribute('role', 'link');
 			},
@@ -246,7 +251,6 @@ the user has in that organization - student, teacher, TA, etc.
 
 				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
 				this._organizationUrl = organizationLink.href + '?embedDepth=1';
-
 				this._onFocus = this._onFocus.bind(this);
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);
@@ -330,16 +334,20 @@ the user has in that organization - student, teacher, TA, etc.
 			setCourseUpdates: function(updates) {
 				if (updates > 99) {
 					this._courseUpdates = '99+';
-					this._hasCourseUpdates = true;
 					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
 				} else if (updates > 0 && updates <= 99) {
 					this._courseUpdates = updates;
-					this._hasCourseUpdates = true;
 					this.toggleClass('d2l-updates-hidden', false, this.$.courseUpdates);
 				} else {
 					this._courseUpdates = 0;
-					this._hasCourseUpdates = false;
 					this.toggleClass('d2l-updates-hidden', true, this.$.courseUpdates);
+				}
+			},
+			_onUpdatesChange: function(updateChange) {
+				var orgUnitId = this.getOrgUnitId(this.enrollmentId);
+				var update = updateChange.base[orgUnitId];
+				if (update) {
+					this.setCourseUpdates(update);
 				}
 			},
 			_enrollmentChanged: function() {
@@ -467,6 +475,14 @@ the user has in that organization - student, teacher, TA, etc.
 					this._canChangeCourseImage = this._getCanChangeCourseImage(organization);
 					this._pinnedChanged();
 					this._courseSettingsLabel = this.localize('courseSettings', 'course', this._organization.properties.name);
+					var organizationLink = organization.getLinkByRel('self');
+					if (this.updateCountMap) {
+						var orgUnitId = this.getOrgUnitId(organizationLink.href);
+						var update = this.updateCountMap[orgUnitId];
+						if (update) {
+							this.setCourseUpdates(update);
+						}
+					}
 				}
 			},
 			_checkDateBounds: function(organization, response) {

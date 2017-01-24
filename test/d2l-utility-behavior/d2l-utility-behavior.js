@@ -129,6 +129,28 @@ describe('d2l-utility-behavior', function() {
 		});
 	});
 
+	describe('getOrgunitId', function() {
+
+		it('should parse orgunitid from enrollment id', function() {
+			var enrollmentid = '/enrollments/users/169/organizations/1';
+			expect(component.getOrgUnitId(enrollmentid)).to.equal('1');
+		});
+
+		it('should parse orgunitid from non-canonical namespaced url', function() {
+			var enrollmentid = 'https://blah.whatever.d2l/d2l/api/hm/organizations/121535';
+			expect(component.getOrgUnitId(enrollmentid)).to.equal('121535');
+		});
+
+		it('should parse orgunit from canonical namespaced urls', function() {
+			var enrollmentid = 'https://f41cc6fe-7210-423b-8436-7ad7b0444453.organizations.api.proddev.d2l/121535';
+			expect(component.getOrgUnitId(enrollmentid)).to.equal('121535');
+		});
+
+		it('should return nothing if nothing is passed in', function() {
+			expect(component.getOrgUnitId(undefined)).to.equal(undefined);
+		});
+	});
+
 	describe('getDefaultImageLink', function() {
 		it('should return high-density max image as a default image', function() {
 			var link = component.getDefaultImageLink(imageEntity, 'tile');

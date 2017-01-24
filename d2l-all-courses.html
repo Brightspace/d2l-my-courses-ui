@@ -393,6 +393,7 @@
 			],
 			listeners: {
 				'd2l-simple-overlay-opening': '_onSimpleOverlayOpening',
+				'd2l-simple-overlay-closed': '_onSimpleOverlayClosed',
 				'tile-remove-complete': '_onTileRemoveComplete',
 				'enrollment-pin-complete': '_onEnrollmentPinComplete',
 				'enrollment-unpin-complete': '_onEnrollmentUnpinComplete',
@@ -581,7 +582,7 @@
 				// Load course tile and filter contents. Called from d2l-my-courses.
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
-				this.$['search-widget']._searchString = '';
+				this.$['search-widget']._searchInput = '';
 				this._pinnedCoursesMap = {};
 				this._unpinnedCoursesMap = {};
 				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
@@ -689,6 +690,10 @@
 			_updateTileSizes: function() {
 				this._rescaleCourseTileRegions();
 				this._tileSizes = Math.floor(100 / this._numColsOverlay) + 'vw';
+			},
+			_onSimpleOverlayClosed: function() {
+				this.$.filterMenuContent._clearFilters();
+				this.$.sortText.textContent = this.localize(this._sortTextOptions[this._sortField] || '');
 			}
 		});
 	</script>

@@ -1,6 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../d2l-ajax/d2l-ajax.html">
 <link rel="import" href="../localize-behavior.html">
+<link rel="import" href="../d2l-sval-behavior.html">
 <link rel="import" href="../../d2l-search-widget/d2l-search-widget.html">
 <link rel="import" href="../../d2l-loading-spinner/d2l-loading-spinner.html">
 <link rel="import" href="../../d2l-icons/d2l-icons.html">
@@ -162,7 +163,10 @@
 				},
 				_telemetryEvent: String
 			},
-			behaviors: [ window.D2L.MyCourses.LocalizeBehavior ],
+			behaviors: [
+				window.D2L.MyCourses.LocalizeBehavior,
+				window.D2L.MyCourses.sVal
+			],
 			listeners: {
 				'd2l-simple-overlay-opening': '_initialize',
 				'd2l-simple-overlay-closed': '_clear'
@@ -266,7 +270,7 @@
 				this._organizationChangeImageHref = this._getChangeCourseImageLink(this.organization);
 
 				// TODO: Add 'department' to the organization HM entity and use that information here
-				if (this.organization && (this.organization.properties || {}).name) {
+				if (this.sVal(this.organization, 'properties.name').value) {
 					this._searchString = this._getSearchStringValue(this.organization.properties.name, true);
 				} else {
 					// This is better than 'default' because we get random defaults rather than starting at 0
@@ -385,12 +389,8 @@
 			},
 			_doTelemetrySearchRequest: function() {
 				var searchWidget = this.$$('d2l-search-widget'),
-					total = searchWidget.searchResults
-							&& searchWidget.searchResults.properties
-							&& searchWidget.searchResults.properties.pagingInfo
-							&& searchWidget.searchResults.properties.pagingInfo.total
-							? searchWidget.searchResults.properties.pagingInfo.total
-							: 0;
+					total = this.sVal(searchWidget, 'searchResults.properties.pagingInfo.total').value || 0;
+
 				this._telemetryEvent = JSON.stringify({
 					ts: Math.round(Date.now() / 1000),
 					name: 'SearchImageCatalog',

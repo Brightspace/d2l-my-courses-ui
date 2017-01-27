@@ -1,0 +1,48 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+	'use strict';
+
+	window.D2L = window.D2L || {};
+	window.D2L.MyCourses = window.D2L.MyCourses || {};
+
+	/*
+	* A utility for accessing the inner properties of an object without worrying about whether something is undefined or not
+	* @polymerBehavior window.D2L.MyCourses.sVal
+	*/
+	window.D2L.MyCourses.sVal = {
+		sVal: function(obj, path) {
+			function _retrieveArray(objects, start) {
+				var cur = start;
+				objects.forEach(function(i) {
+					cur = cur.sVal(i);
+				});
+				return cur;
+			}
+
+			var newSVal = {
+				sVal: function(pName) {
+					var nextVal = (this.value || {})[pName];
+					return window.D2L.MyCourses.sVal.sVal(nextVal)
+				},
+				sGet: function(toRetrieve) {
+					if (Array.isArray(toRetrieve)) {
+						return _retrieveArray(toRetrieve, this);
+					} else if (typeof toRetrieve === 'string') {
+						var objects = toRetrieve.split('.');
+						return _retrieveArray(objects, this);
+					} else {
+						return window.D2L.MyCourses.sVal.sVal(undefined);
+					}
+				},
+				value: obj
+			}
+
+			if (path) {
+				newSVal = newSVal.sGet(path);
+			}
+
+			return newSVal;
+		}
+	};
+</script>

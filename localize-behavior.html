@@ -60,16 +60,25 @@
 								'filtering.filterMultiple': 'Filter: {num} Filters',
 								'filtering.loadMore': 'Load More',
 								'filtering.clear': 'Clear',
-								'filtering.semester': 'Semester',
-								'filtering.department': 'Department',
-								'filtering.semesterMultiple': 'Semester ({num})',
-								'filtering.departmentMultiple': 'Department ({num})',
-								'filtering.semesterMultipleCustom': '{semesterName} ({num})',
-								'filtering.departmentMultipleCustom': '{departmentName} ({num})',
+								'filtering.semesterDefault': 'Semester',
+								'filtering.departmentDefault': 'Department',
 								'filtering.searchDepartments': 'Search Departments',
 								'filtering.searchSemesters': 'Search Semesters',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {Semester}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {Department}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -127,16 +136,25 @@
 								'filtering.filterMultiple': 'التصفية: {num} من عوامل التصفية',
 								'filtering.loadMore': 'تحميل المزيد',
 								'filtering.clear': 'مسح',
-								'filtering.semester': 'الفصل الدراسي',
-								'filtering.department': 'القسم',
-								'filtering.semesterMultiple': 'الفصل الدراسي ({num})',
-								'filtering.departmentMultiple': 'القسم ({num})',
-								'filtering.semesterMultipleCustom': '{semesterName} ({num})',
-								'filtering.departmentMultipleCustom': '{departmentName} ({num})',
+								'filtering.semesterDefault': 'الفصل الدراسي',
+								'filtering.departmentDefault': 'القسم',
 								'filtering.searchDepartments': 'البحث في الأقسام',
 								'filtering.searchSemesters': 'البحث في الفصول الدراسية',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {الفصل الدراسي}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})\\u200E}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {القسم}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})\\u200E}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -194,16 +212,25 @@
 								'filtering.filterMultiple': 'Filtro: {num} filtros',
 								'filtering.loadMore': 'Cargar más',
 								'filtering.clear': 'Borrar',
-								'filtering.semester': 'Semestre',
-								'filtering.department': 'Departamento',
-								'filtering.semesterMultiple': 'Semestre ({num})',
-								'filtering.departmentMultiple': 'Departamento ({num})',
-								'filtering.semesterMultipleCustom': '{semesterName} ({num})',
-								'filtering.departmentMultipleCustom': '{departmentName} ({num})',
+								'filtering.semesterDefault': 'Semestre',
+								'filtering.departmentDefault': 'Departamento',
 								'filtering.searchDepartments': 'Buscar departamentos',
 								'filtering.searchSemesters': 'Buscar semestres',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {Semestre}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {Departamento}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -261,16 +288,31 @@
 								'filtering.filterMultiple': 'Filtrer : {num} filtres',
 								'filtering.loadMore': 'Télécharger plus',
 								'filtering.clear': 'Effacer',
-								'filtering.semester': 'Semestre',
-								'filtering.department': 'Département',
-								'filtering.semesterMultiple': '({num}) semestre',
-								'filtering.departmentMultiple': '({num}) département',
-								'filtering.semesterMultipleCustom': '({num}) {semesterName}',
-								'filtering.departmentMultipleCustom': '({num}) {departmentName}',
+								'filtering.semesterDefault': 'Semestre',
+								'filtering.departmentDefault': 'Département',
 								'filtering.searchDepartments': 'Rechercher les départements',
 								'filtering.searchSemesters': 'Rechercher les semestres',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{num, plural,' +
+															'=0{{semesterName, select,' +
+																'default{Semestre}' +
+																'other{{semesterName}}' +
+															'}}' +
+															'other{({num})\\u0020{semesterName, select,' +
+																'default{semestre}' +
+																'other{{semesterName}}' +
+															'}}' +
+														'}',
+								'filtering.departmentCustom': '{num, plural,' +
+															'=0{{departmentName, select,' +
+																'default{Département}' +
+																'other{{departmentName}}' +
+															'}}' +
+															'other{({num})\\u0020{departmentName, select,' +
+																'default{département}' +
+																'other{{departmentName}}' +
+															'}}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -328,16 +370,25 @@
 								'filtering.filterMultiple': 'フィルタ: {num} 個のフィルタ',
 								'filtering.loadMore': 'さらに読み込む',
 								'filtering.clear': 'クリア',
-								'filtering.semester': '学期',
-								'filtering.department': '学部',
-								'filtering.semesterMultiple': '学期（{num}）',
-								'filtering.departmentMultiple': '学部（{num}）',
-								'filtering.semesterMultipleCustom': '{semesterName}（{num}）',
-								'filtering.departmentMultipleCustom': '{departmentName}（{num}）',
+								'filtering.semesterDefault': '学期',
+								'filtering.departmentDefault': '学部',
 								'filtering.searchDepartments': '学部の検索',
 								'filtering.searchSemesters': '学期の検索',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {学期}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {学部}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -395,16 +446,25 @@
 								'filtering.filterMultiple': '필터: {num}개 필터',
 								'filtering.loadMore': '더 많이 로드',
 								'filtering.clear': '지우기',
-								'filtering.semester': '학기',
-								'filtering.department': '학과',
-								'filtering.semesterMultiple': '학기({num})',
-								'filtering.departmentMultiple': '학과({num})',
-								'filtering.semesterMultipleCustom': '{semesterName}({num})',
-								'filtering.departmentMultipleCustom': '{departmentName}({num})',
+								'filtering.semesterDefault': '학기',
+								'filtering.departmentDefault': '학과',
 								'filtering.searchDepartments': '학과 검색',
 								'filtering.searchSemesters': '학기 검색',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {학기}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {학과}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -462,16 +522,25 @@
 								'filtering.filterMultiple': 'Filtro: {num} filtros',
 								'filtering.loadMore': 'Carregar Mais',
 								'filtering.clear': 'Limpar',
-								'filtering.semester': 'Semestre',
-								'filtering.department': 'Departamento',
-								'filtering.semesterMultiple': 'Semestre ({num})',
-								'filtering.departmentMultiple': 'Departamento ({num})',
-								'filtering.semesterMultipleCustom': '{semesterName} ({num})',
-								'filtering.departmentMultipleCustom': '{departmentName} ({num})',
+								'filtering.semesterDefault': 'Semestre',
+								'filtering.departmentDefault': 'Departamento',
 								'filtering.searchDepartments': 'Pesquisar Departamentos',
 								'filtering.searchSemesters': 'Pesquisar Semestres',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {Semestre}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {Departamento}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -529,16 +598,25 @@
 								'filtering.filterMultiple': 'Filter: {num} filter',
 								'filtering.loadMore': 'Läs in mer',
 								'filtering.clear': 'Rensa',
-								'filtering.semester': 'Termin',
-								'filtering.department': 'Institution',
-								'filtering.semesterMultiple': 'Termin ({num})',
-								'filtering.departmentMultiple': 'Institution ({num})',
-								'filtering.semesterMultipleCustom': '{semesterName} ({num})',
-								'filtering.departmentMultipleCustom': '{departmentName} ({num})',
+								'filtering.semesterDefault': 'Termin',
+								'filtering.departmentDefault': 'Institution',
 								'filtering.searchDepartments': 'Sök institutioner',
 								'filtering.searchSemesters': 'Sök terminer',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {Termin}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {Institution}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -596,16 +674,25 @@
 								'filtering.filterMultiple': 'Filtre: {num} Filtre',
 								'filtering.loadMore': 'Daha Fazla Yükle',
 								'filtering.clear': 'Temizle',
-								'filtering.semester': 'Dönem',
-								'filtering.department': 'Departman',
-								'filtering.semesterMultiple': 'Dönem ({num})',
-								'filtering.departmentMultiple': 'Departman ({num})',
-								'filtering.semesterMultipleCustom': '{semesterName} ({num})',
-								'filtering.departmentMultipleCustom': '{departmentName} ({num})',
+								'filtering.semesterDefault': 'Dönem',
+								'filtering.departmentDefault': 'Departman',
 								'filtering.searchDepartments': 'Departmanları Ara',
 								'filtering.searchSemesters': 'Dönemleri Ara',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {Dönem}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {Departman}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -663,16 +750,25 @@
 								'filtering.filterMultiple': '筛选：{num} 项筛选',
 								'filtering.loadMore': '加载更多',
 								'filtering.clear': '清除',
-								'filtering.semester': '学期',
-								'filtering.department': '学科',
-								'filtering.semesterMultiple': '学期 ({num})',
-								'filtering.departmentMultiple': '学科 ({num})',
-								'filtering.semesterMultipleCustom': '{semesterName} ({num})',
-								'filtering.departmentMultipleCustom': '{departmentName} ({num})',
+								'filtering.semesterDefault': '学期',
+								'filtering.departmentDefault': '学科',
 								'filtering.searchDepartments': '搜索学科',
 								'filtering.searchSemesters': '搜索学期',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {学期}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {学科}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',
@@ -730,16 +826,25 @@
 								'filtering.filterMultiple': '篩選：{num} 個篩選器',
 								'filtering.loadMore': '載入其他',
 								'filtering.clear': '清除',
-								'filtering.semester': '學期',
-								'filtering.department': '系所',
-								'filtering.semesterMultiple': '學期 ({num})',
-								'filtering.departmentMultiple': '系所 ({num})',
-								'filtering.semesterMultipleCustom': '{semesterName} ({num})',
-								'filtering.departmentMultipleCustom': '{departmentName} ({num})',
+								'filtering.semesterDefault': '學期',
+								'filtering.departmentDefault': '系所',
 								'filtering.searchDepartments': '搜尋系所',
 								'filtering.searchSemesters': '搜尋學期',
-								'filtering.searchDepartmentsCustom': 'Search by {departmentName}',
-								'filtering.searchSemestersCustom': 'Search by {semesterName}',
+								'filtering.searchBy': 'Search by {filter}',
+								'filtering.semesterCustom':'{semesterName, select,' +
+															'default {學期}' +
+															'other{{semesterName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
+								'filtering.departmentCustom': '{departmentName, select,' +
+																'default {系所}' +
+																'other {{departmentName}}' +
+														'}{num, plural,' +
+															'=0{}' +
+															'other{\\u0020({num})}' +
+														'}',
 								'overlay.courseStarting': 'Course Starts',
 								'overlay.courseStartingOn': 'Course starts on {date}',
 								'overlay.courseEnded': 'Course Ended',

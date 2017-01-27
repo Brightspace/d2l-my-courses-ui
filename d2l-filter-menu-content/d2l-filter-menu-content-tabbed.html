@@ -80,7 +80,7 @@
 					class="dropdown-content-tab-button"
 					on-tap="_selectSemesterList"
 					aria-pressed="true">
-					{{localize('filtering.semester')}}
+					{{localize('filtering.semesterDefault')}}
 				</button>
 			</div>
 			<div class="dropdown-content-tab" role="tab" aria-controls="departmentList">
@@ -90,7 +90,7 @@
 					class="dropdown-content-tab-button"
 					on-tap="_selectDepartmentList"
 					aria-pressed="false">
-					{{localize('filtering.department')}}
+					{{localize('filtering.departmentDefault')}}
 				</button>
 			</div>
 		</div>
@@ -101,7 +101,7 @@
 				search-action="[[_searchSemestersAction]]"
 				search-field-name="search"
 				cache-responses></d2l-search-widget>
-			<d2l-menu label="{{localize('filtering.semester')}}">
+			<d2l-menu label="{{localize('filtering.semesterDefault')}}">
 				<template is="dom-repeat" items="[[_semesters]]">
 					<d2l-list-item-filter
 						enrollment-entity="[[item]]"
@@ -117,7 +117,7 @@
 				search-action="[[_searchDepartmentsAction]]"
 				search-field-name="search"
 				cache-responses></d2l-search-widget>
-			<d2l-menu label="{{localize('filtering.department')}}">
+			<d2l-menu label="{{localize('filtering.departmentDefault')}}">
 				<template is="dom-repeat" items="[[_departments]]">
 					<d2l-list-item-filter
 						enrollment-entity="[[item]]"
@@ -202,8 +202,8 @@
 				this.unlisten(this.$.semesterList, 'd2l-menu-item-change', '_updateSemesterFilter');
 			},
 			ready: function() {
-				this.filterStandardSemesterName = this.localize('filtering.semester');
-				this.filterStandardDepartmentName = this.localize('filtering.department');
+				this.filterStandardSemesterName = this.localize('filtering.semesterDefault');
+				this.filterStandardDepartmentName = this.localize('filtering.departmentDefault');
 			},
 			load: function() {
 				this.$.departmentSearchWidget.search();
@@ -261,34 +261,20 @@
 				}
 			},
 			_updateDepartmentFilterLabel: function(numDepartmentFilters, departmentFilterName) {
-				if (this.filterStandardDepartmentName !== this.localize('filtering.department')) {
-					this.$.departmentListButton.textContent = numDepartmentFilters > 0
-						? this.localize('filtering.departmentMultipleCustom', 'departmentName', departmentFilterName, 'num', numDepartmentFilters)
-						: departmentFilterName;
-				} else {
-					this.$.departmentListButton.textContent = numDepartmentFilters > 0
-						? this.localize('filtering.departmentMultiple', 'num', numDepartmentFilters)
-						: this.filterStandardDepartmentName;
-				}
+				var selectArg = this.filterStandardDepartmentName === this.localize('filtering.departmentDefault') ? 'default' : departmentFilterName;
+				this.$.departmentListButton.textContent = this.localize('filtering.departmentCustom', 'departmentName', selectArg, 'num', numDepartmentFilters);
 
-				this.$.departmentSearchWidget.placeholderText = this.localize('filtering.searchDepartmentsCustom', 'departmentName', departmentFilterName);
+				this.$.departmentSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', departmentFilterName);
 
 				this.fire('d2l-filter-menu-content-filters-changed', {
 					filters: this._currentFilters
 				});
 			},
 			_updateSemesterFilterLabel: function(numSemesterFilters, semesterFilterName) {
-				if (this.filterStandardSemesterName !== this.localize('filtering.semester')) {
-					this.$.semesterListButton.textContent = numSemesterFilters > 0
-						? this.localize('filtering.semesterMultipleCustom', 'semesterName', semesterFilterName, 'num', numSemesterFilters)
-						: semesterFilterName;
-				} else {
-					this.$.semesterListButton.textContent = numSemesterFilters > 0
-						? this.localize('filtering.semesterMultiple', 'num', numSemesterFilters)
-						: this.filterStandardSemesterName;
-				}
+				var selectArg = this.filterStandardSemesterName === this.localize('filtering.semesterDefault') ? 'default' : semesterFilterName;
+				this.$.semesterListButton.textContent = this.localize('filtering.semesterCustom', 'semesterName', selectArg, 'num', numSemesterFilters);
 
-				this.$.semesterSearchWidget.placeholderText = this.localize('filtering.searchSemestersCustom', 'semesterName', semesterFilterName);
+				this.$.semesterSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', semesterFilterName);
 
 				this.fire('d2l-filter-menu-content-filters-changed', {
 					filters: this._currentFilters

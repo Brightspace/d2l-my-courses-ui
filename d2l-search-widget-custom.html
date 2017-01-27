@@ -300,7 +300,7 @@
 					pageSize: pageSize,
 					parentOrganizations: this.parentOrganizations.join(','),
 					sortField: this.sortField,
-					sortDescending: this.sortField !== 'courseName' && this.sortField !== 'courseCode'
+					sortDescending: this.sortField !== 'OrgUnitName' && this.sortField !== 'OrgUnitCode'
 				};
 
 				this.set(path, this.createActionUrl(this._searchAction, queryParams));

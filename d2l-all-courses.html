@@ -203,10 +203,10 @@
 										<div class="dropdown-content-header">
 											<span class="dropdown-content-header-text">{{localize('sorting.sortBy')}}</span>
 										</div>
-										<d2l-menu-item-radio class="dropdown-content-gradient" value="courseCode" text="{{localize('sorting.courseCode')}}"></d2l-menu-item-radio>
-										<d2l-menu-item-radio value="courseName" text="{{localize('sorting.courseName')}}"></d2l-menu-item-radio>
-										<d2l-menu-item-radio value="pinDate" text="{{localize('sorting.datePinned')}}" selected></d2l-menu-item-radio>
-										<d2l-menu-item-radio value="lastAccessed" text="{{localize('sorting.lastAccessed')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio class="dropdown-content-gradient" value="OrgUnitCode" text="{{localize('sorting.courseCode')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="OrgUnitName" text="{{localize('sorting.courseName')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="PinDate" text="{{localize('sorting.datePinned')}}" selected></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="LastAccessed" text="{{localize('sorting.lastAccessed')}}"></d2l-menu-item-radio>
 									</d2l-menu>
 								</d2l-dropdown-menu>
 							</d2l-dropdown>
@@ -369,7 +369,7 @@
 				_filterText: String,
 				_sortField: {
 					type: String,
-					value: 'pinDate'
+					value: 'PinDate'
 				},
 				_tileSizes: Object,
 				_parentOrganizations: {

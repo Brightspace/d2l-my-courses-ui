@@ -25,32 +25,6 @@ the user has in that organization - student, teacher, TA, etc.
 	<template>
 		<style include="d2l-course-tile-styles"></style>
 
-		<!-- needs no-cache so that images refresh if the user gets here using the back button-->
-		<d2l-ajax
-			id="organizationRequest"
-			url="[[_organizationUrl]]"
-			headers='{ "Accept": "application/vnd.siren+json", "Cache-control": "no-cache", "Pragma": "no-cache" }'
-			on-iron-ajax-response="_onOrganizationResponse">
-		</d2l-ajax>
-
-		<d2l-ajax
-			id="enrollmentPinRequest"
-			url="[[_enrollmentPinUrl]]"
-			method="[[_enrollmentPinMethod]]"
-			body="[[_enrollmentPinBody]]"
-			headers='{ "Accept": "application/vnd.siren+json", "Content-Type": "application/x-www-form-urlencoded" }'
-			on-iron-ajax-response="_onEnrollmentPinResponse"
-			on-iron-ajax-error="_onEnrollmentPinError">
-		</d2l-ajax>
-
-		<d2l-ajax
-			id="telemetryRequest"
-			url="[[telemetryEndpoint]]"
-			body="[[_telemetryEvent]]"
-			headers='{ "Content-Type": "application/json" }'
-			method="POST">
-		</d2l-ajax>
-
 		<div class="tile-container"
 			on-mouseover="_hoverCourseTile"
 			on-mouseout="_onTileMouseOut">
@@ -82,7 +56,7 @@ the user has in that organization - student, teacher, TA, etc.
 						<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
 							<span class="course-code-text">{{_organization.properties.code}}</span>
 						</template>
-            			<d2l-offscreen>[[_courseNotificationLabel]]</d2l-offscreen>
+						<d2l-offscreen>[[_courseNotificationLabel]]</d2l-offscreen>
 					</div>
 					<div id="courseUpdates" class="d2l-updates-hidden">
 						<d2l-offscreen>{{localize('courseTile.updates')}}</d2l-offscreen>
@@ -91,37 +65,39 @@ the user has in that organization - student, teacher, TA, etc.
 				</div>
 			</a>
 
-			<div class="hover-menu no-tap-interaction">
-				<d2l-dropdown>
-					<button	class="menu-item no-tap-interaction d2l-dropdown-opener" aria-label$="[[_courseSettingsLabel]]">
-						<d2l-icon icon="d2l-tier1:more"></d2l-icon>
-					</button>
-					<d2l-dropdown-menu id="overflow-dropdown">
-						<d2l-menu label$="[[_courseSettingsLabel]]">
-							<template is="dom-if" if="{{_courseInfoUrl}}" restamp="true">
-								<d2l-menu-item-link id="see-course-info-link"
-									text="{{localize('courseOfferingInformation')}}"
-									href="{{_courseInfoUrl}}">
-								</d2l-menu-item-link>
-							</template>
-							<template is="dom-if" if="{{_canChangeCourseImage}}" restamp="true">
-								<d2l-menu-item id="change-image-button"
-									text="{{localize('changeImage')}}"
-									on-d2l-menu-item-select="_launchCourseTileImageSelector">
+			<template is="dom-if" if="[[_showHoverMenu]]">
+				<div class="hover-menu no-tap-interaction">
+					<d2l-dropdown>
+						<button	class="menu-item no-tap-interaction d2l-dropdown-opener" aria-label$="[[_courseSettingsLabel]]">
+							<d2l-icon icon="d2l-tier1:more"></d2l-icon>
+						</button>
+						<d2l-dropdown-menu id="overflow-dropdown">
+							<d2l-menu label$="[[_courseSettingsLabel]]">
+								<template is="dom-if" if="{{_courseInfoUrl}}" restamp="true">
+									<d2l-menu-item-link id="see-course-info-link"
+										text="{{localize('courseOfferingInformation')}}"
+										href="{{_courseInfoUrl}}">
+									</d2l-menu-item-link>
+								</template>
+								<template is="dom-if" if="{{_canChangeCourseImage}}" restamp="true">
+									<d2l-menu-item id="change-image-button"
+										text="{{localize('changeImage')}}"
+										on-d2l-menu-item-select="_launchCourseTileImageSelector">
+									</d2l-menu-item>
+								</template>
+								<d2l-menu-item id="pin-button"
+									text$="[[_pinLabel]]"
+									on-d2l-menu-item-select="_hoverPinClickHandler"
+									on-focus="_hoverPinMenuItem"
+									on-blur="_unhoverPinMenuItem"
+									on-mouseover="_hoverPinMenuItem"
+									on-mouseout="_unhoverPinMenuItem">
 								</d2l-menu-item>
-							</template>
-							<d2l-menu-item id="pin-button"
-								text$="[[_pinLabel]]"
-								on-d2l-menu-item-select="_hoverPinClickHandler"
-								on-focus="_hoverPinMenuItem"
-								on-blur="_unhoverPinMenuItem"
-								on-mouseover="_hoverPinMenuItem"
-								on-mouseout="_unhoverPinMenuItem">
-							</d2l-menu-item>
-						</d2l-menu>
-					</d2l-dropdown-menu>
-				</d2l-dropdown>
-			</div>
+							</d2l-menu>
+						</d2l-dropdown-menu>
+					</d2l-dropdown>
+				</div>
+			</template>
 		</div>
 	</template>
 
@@ -180,18 +156,10 @@ the user has in that organization - student, teacher, TA, etc.
 				//number of course updates to show
 				_courseUpdates: String,
 				_courseInfoUrl: String,
-				// Body sent for pin/unpin action
-				_enrollmentPinBody: String,
-				// HTTP method used by the pin/unpin action
-				_enrollmentPinMethod: String,
-				// URL used by the pin/unpin action
-				_enrollmentPinUrl: String,
 				// The organization Entity, fetched by the course tile when the `enrollment` Entity is changed
 				_organization: Object,
 				// The URL to of the `_organization`'s homepage - when the course tile is clicked, this is the URL we go to
 				_organizationHomepageUrl: String,
-				// The URL to fetch the `_organization` Entity from (determined from the `enrollment`'s Links)
-				_organizationUrl: String,
 				// The term used for the text of the pin/unpin menu item
 				_pinLabel: String,
 				// The langterm of the course settings label
@@ -208,14 +176,16 @@ the user has in that organization - student, teacher, TA, etc.
 						iconName: ''
 					}
 				},
-				// The JSON string of the telemetry event that will be sent on the opening of the change image UI */
-				_telemetryEvent: String,
 				_dateFormatter: Object,
 				_fullDateFormatter: Object,
 				_notificationInactive: String,
 				_notificationTitle: String,
 				_notificationDate: String,
 				isStartedInactive: {
+					type: Boolean,
+					value: false
+				},
+				_showHoverMenu: {
 					type: Boolean,
 					value: false
 				}
@@ -234,23 +204,16 @@ the user has in that organization - student, teacher, TA, etc.
 				this.setAttribute('role', 'link');
 			},
 			attached: function() {
-				if (this.animateInsertion) {
-					this.toggleClass('animate-insertion-pre', true, this);
-				}
-				var tileContainerEl = this.$$('.tile-container');
-				document.body.addEventListener('focus', this._onFocus, true);
-				tileContainerEl.addEventListener('focus', this._hoverCourseTile, true);
+				Polymer.RenderStatus.afterNextRender(this, function() {
+					if (this.animateInsertion) {
+						this.toggleClass('animate-insertion-pre', true, this);
+					}
+					var tileContainerEl = this.$$('.tile-container');
+					document.body.addEventListener('focus', this._onFocus, true);
+					tileContainerEl.addEventListener('focus', this._hoverCourseTile, true);
+				}.bind(this));
 			},
 			ready: function() {
-				// Currently only needed in tests, but it is entirely possible
-				// to render the element without an enrollment initially
-				if (!this.enrollment) {
-					return;
-				}
-				this.pinned = this.enrollment.hasClass('pinned');
-
-				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
-				this._organizationUrl = organizationLink.href + '?embedDepth=1';
 				this._onFocus = this._onFocus.bind(this);
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);
@@ -259,9 +222,6 @@ the user has in that organization - student, teacher, TA, etc.
 			// Handler that triggers the API call to change an enrollment's pin state when the user says DO IT
 			pinClickHandler: function(isTouch) {
 				var pinAction = this.pinned ? this.enrollment.getActionByName('unpin-course') : this.enrollment.getActionByName('pin-course');
-
-				this._enrollmentPinMethod = pinAction.method;
-				this._enrollmentPinUrl = pinAction.href;
 
 				// This value is purely for UI responsiveness - if the request fails, this value will be set back to
 				// the previous value in the error handler; if the request succeeds, we also set it in the response
@@ -273,9 +233,19 @@ the user has in that organization - student, teacher, TA, etc.
 				fields.forEach(function(field) {
 					body[field.name] = field.value;
 				});
-				this._enrollmentPinBody = body;
 
-				this.$.enrollmentPinRequest.generateRequest();
+				this._enrollmentPinRequest = this._enrollmentPinRequest || document.createElement('d2l-ajax');
+				this._enrollmentPinRequest.url = pinAction.href;
+				this._enrollmentPinRequest.method = pinAction.method;
+				this._enrollmentPinRequest.body = body;
+				this._enrollmentPinRequest.headers = {
+					'accept':'application/vnd.siren+json',
+					'content-type':'application/x-www-form-urlencoded'
+				};
+				this.listen(this._enrollmentPinRequest, 'iron-ajax-response', '_onEnrollmentPinResponse');
+				this.listen(this._enrollmentPinRequest, 'iron-ajax-error', '_onEnrollmentPinError');
+
+				this._enrollmentPinRequest.generateRequest();
 
 				var eventName = this.pinned ? 'enrollment-pinned' : 'enrollment-unpinned';
 				this.fire(eventName, {
@@ -343,20 +313,41 @@ the user has in that organization - student, teacher, TA, etc.
 					this.toggleClass('d2l-updates-hidden', true, this.$.courseUpdates);
 				}
 			},
-			_onUpdatesChange: function(updateChange) {
-				var orgUnitId = this.getOrgUnitId(this.enrollmentId);
-				var update = updateChange.base[orgUnitId];
-				if (update) {
-					this.setCourseUpdates(update);
-				}
+			_enrollmentPinRequest: null,
+			_organizationRequest: null,
+			_organizationUrl: null,
+			_parser: null,
+			_pendingPinAction: false,
+			_pinAnimationInProgress: false,
+			_telemetryRequest: null,
+			_generateOrganizationRequest: function() {
+				this._organizationRequest = this._organizationRequest || document.createElement('d2l-ajax');
+				this._organizationRequest.url = this._organizationUrl;
+				this._organizationRequest.headers = {
+					'accept': 'application/vnd.siren+json',
+					// Needs no-cache so that images refresh if the users here using the back button
+					'cache-control': 'no-cache',
+					'pragma': 'no-cache'
+				};
+				this.listen(this._organizationRequest, 'iron-ajax-response', '_onOrganizationResponse');
+				this._organizationRequest.generateRequest();
 			},
 			_enrollmentChanged: function() {
-				if (!this.delayLoad && this.enrollment) {
-					var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
-					if (!this._organizationUrl || this._organizationUrl.indexOf(organizationLink.href) !== 0) {
-						this._organizationUrl = organizationLink.href + '?embedDepth=1';
-						this.$.organizationRequest.generateRequest();
+				this.pinned = this.enrollment.hasClass('pinned');
+
+				var organizationLink = this.enrollment.getLinkByRel(/\/organization$/);
+
+				if (!this._organizationUrl || this._organizationUrl.indexOf(organizationLink.href) !== 0) {
+					this._organizationUrl = organizationLink.href + '?embedDepth=1';
+
+					if (!this.delayLoad) {
+						this._generateOrganizationRequest();
 					}
+				}
+			},
+			_delayLoadChanged: function(delayLoad) {
+				if (this.isAttached && !delayLoad && !this._organization) {
+					this._generateOrganizationRequest();
 				}
 			},
 			_displaySetImageResult: function(success) {
@@ -386,22 +377,21 @@ the user has in that organization - student, teacher, TA, etc.
 					}.bind(this), 1000);
 				}.bind(this), 1000);
 			},
-			_pendingPinAction: false,
-			_pinAnimationInProgress: false,
-			_delayLoadChanged: function(delayLoad) {
-				if (this.isAttached && !delayLoad && !this._organization) {
-					this.$.organizationRequest.generateRequest();
-				}
-			},
 			_launchCourseTileImageSelector: function(e) {
-				this._telemetryEvent = JSON.stringify({
+				this._telemetryRequest = this._telemetryRequest || document.createElement('d2l-ajax');
+				this._telemetryRequest.url = this.telemetryEndpoint;
+				this._telemetryRequest.method = 'POST';
+				this._telemetryRequest.headers = {
+					'content-type': 'application/json'
+				};
+				this._telemetryRequest.body = JSON.stringify({
 					name: 'LaunchChangeImage',
 					ts: Math.round(Date.now() / 1000),
 					userId: this.userId,
 					tenantId: this.tenantId
 				});
 
-				this.$.telemetryRequest.generateRequest();
+				this._telemetryRequest.generateRequest();
 
 				e.preventDefault();
 				e.stopPropagation();
@@ -411,6 +401,7 @@ the user has in that organization - student, teacher, TA, etc.
 				});
 			},
 			_hoverCourseTile: function() {
+				this._showHoverMenu = true;
 				if (this.hoverEnabled) {
 					this._setCourseTileHovered(true);
 				}
@@ -449,15 +440,15 @@ the user has in that organization - student, teacher, TA, etc.
 				if (response.detail.status === 200) {
 					// The pin action returns the updated enrollment, so update
 					// this.enrollment with the modified one
-					var parser = document.createElement('d2l-siren-parser');
-					this.enrollment = parser.parse(response.detail.xhr.response);
+					this._parser = this._parser ||  document.createElement('d2l-siren-parser');
+					this.enrollment = this._parser.parse(response.detail.xhr.response);
 					this.pinned = this.enrollment.hasClass('pinned');
 				}
 			},
 			_onOrganizationResponse: function(response) {
 				if (response.detail.status === 200) {
-					var parser = document.createElement('d2l-siren-parser');
-					var organization = parser.parse(response.detail.xhr.response);
+					this._parser = this._parser || document.createElement('d2l-siren-parser');
+					var organization = this._parser.parse(response.detail.xhr.response);
 
 					this._organization = organization;
 					this._checkDateBounds(organization, response);
@@ -483,6 +474,13 @@ the user has in that organization - student, teacher, TA, etc.
 							this.setCourseUpdates(update);
 						}
 					}
+				}
+			},
+			_onUpdatesChange: function(updateChange) {
+				var orgUnitId = this.getOrgUnitId(this.enrollmentId);
+				var update = updateChange.base[orgUnitId];
+				if (update) {
+					this.setCourseUpdates(update);
 				}
 			},
 			_checkDateBounds: function(organization, response) {
@@ -596,7 +594,7 @@ the user has in that organization - student, teacher, TA, etc.
 				}.bind(this), 0);
 			},
 			_closeDropdown: function() {
-				if (Polymer.dom(this.root).querySelectorAll(':hover').length === 0) {
+				if (Polymer.dom(this.root).querySelectorAll(':hover').length === 0 && this._showHoverMenu) {
 					var dropdown = this.$$('#overflow-dropdown');
 					dropdown.close();
 					this._setCourseTileHovered(false);

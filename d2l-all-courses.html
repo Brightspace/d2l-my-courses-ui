@@ -383,7 +383,15 @@
 				advancedSearchUrl: {
 					type: String,
 					observer: '_advancedSearchUrlChanged'
-				}
+				},
+				// The number of Enrollments required to show the filter menu
+				_numEnrollmentsRequiredToShowFilters: {
+					type: Number,
+					readonly: true,
+					value: 20
+				},
+				// Determines if the filter menu can be shown (The number of enrollments >= enrollments required)
+				_hasManyEnrollments: false
 			},
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
@@ -584,7 +592,6 @@
 				// Load course tile and filter contents. Called from d2l-my-courses.
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
-				this._clearSearchWidget();
 				this._pinnedCoursesMap = {};
 				this._unpinnedCoursesMap = {};
 				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
@@ -596,9 +603,9 @@
 					this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);
 				this.set('delayLoad', false);
-
 				// Only make the call to load the filter menu contents if user has many enrollments
-				if (this.pinnedEnrollments.length + this.unpinnedEnrollments.length >= 20) {
+				this._hasManyEnrollments = this.pinnedEnrollments.length + this.unpinnedEnrollments.length >= this._numEnrollmentsRequiredToShowFilters;
+				if (this._hasManyEnrollments) {
 					this.$.filterMenuContent.load();
 				}
 				this.set('updateCountMap', this.updateCountMap);
@@ -610,7 +617,7 @@
 					this.toggleClass('d2l-all-courses-hidden', true, this.$.overlayLoadingSpinner);
 
 					// Show filter menu after content is shown if user has many enrollments
-					if (this.pinnedEnrollments.length + this.unpinnedEnrollments.length >= 20) {
+					if (this._hasManyEnrollments) {
 						this.toggleClass('d2l-all-courses-hidden', false, this.$.filterAndSort);
 					}
 				}.bind(this), 50);
@@ -670,7 +677,9 @@
 			_onSimpleOverlayOpening: function() {
 				this._removeAlert('setCourseImageFailure');
 				this._clearSearchWidget();
-				this.$.filterMenuContent._clearFilters();
+				if (this._hasManyEnrollments) {
+					this.$.filterMenuContent._clearFilters();
+				}
 				this._resetSortDropdown();
 			},
 			_toggleFilterDropdown: function() {

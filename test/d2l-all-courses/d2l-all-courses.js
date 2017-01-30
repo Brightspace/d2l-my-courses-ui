@@ -238,6 +238,8 @@ describe('d2l-all-courses', function() {
 				text: 'foo'
 			};
 
+			widget._hasManyEnrollments = true;
+
 			expect(widget._filterText).to.equal('Filter');
 			widget.$$('d2l-filter-menu-content').fire('d2l-filter-menu-content-change', event);
 			expect(widget._filterText).to.equal('foo');

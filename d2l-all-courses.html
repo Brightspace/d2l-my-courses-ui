@@ -367,7 +367,7 @@
 				// Object containing the last response from an enrollments search request
 				lastEnrollmentsSearchResponse: Object,
 				_filterText: String,
-				sortDefaultValue: {
+				defaultSortValue: {
 					type: String,
 					value: 'pinDate'
 				},
@@ -394,7 +394,6 @@
 			],
 			listeners: {
 				'd2l-simple-overlay-opening': '_onSimpleOverlayOpening',
-				'd2l-simple-overlay-closed': '_onSimpleOverlayClosed',
 				'tile-remove-complete': '_onTileRemoveComplete',
 				'enrollment-pin-complete': '_onEnrollmentPinComplete',
 				'enrollment-unpin-complete': '_onEnrollmentUnpinComplete',
@@ -547,7 +546,8 @@
 				this._updateTileSizes();
 
 				this._filterText = this.localize('filtering.filter');
-				this._resetSortDropdown();
+				this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + this.defaultSortValue + ']').selected = true;
+				this._sortField = this.defaultSortValue;
 			},
 			attached: function() {
 				this.listen(this.$.sortDropdown, 'd2l-menu-item-change', '_updateSortBy');
@@ -582,7 +582,6 @@
 			},
 			load: function() {
 				// Load course tile and filter contents. Called from d2l-my-courses.
-				this._sortField = this.sortDefaultValue;
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 				this._clearSearchWidget();
@@ -670,6 +669,9 @@
 			},
 			_onSimpleOverlayOpening: function() {
 				this._removeAlert('setCourseImageFailure');
+				this._clearSearchWidget();
+				this.$.filterMenuContent._clearFilters();
+				this._resetSortDropdown();
 			},
 			_toggleFilterDropdown: function() {
 				if (this.$.filterDropdownContent.opened) {
@@ -694,29 +696,21 @@
 				this._rescaleCourseTileRegions();
 				this._tileSizes = Math.floor(100 / this._numColsOverlay) + 'vw';
 			},
-			_onSimpleOverlayClosed: function() {
-				this._clearSearchWidget();
-				this.$.filterMenuContent._clearFilters();
-				this._resetSortDropdown();
-			},
 			_clearSearchWidget: function() {
 				this.$['search-widget']._searchInput = '';
 			},
 			_resetSortDropdown: function() {
-				var sortOptions = this.$.sortDropdownMenu.querySelectorAll('d2l-menu-item-radio');
+				this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + this.defaultSortValue + ']').click();
 
-				for (var index = 0; index < sortOptions.length; index ++) {
-					var option = sortOptions[index];
-					option.selected = false;
-
-					if (option.value === this.sortDefaultValue) {
-						option.selected = true;
-					}
+				//the click will not fire an event if the the value is already selected, so need to update the sortField manually incase
+				if (this._sortField !== this.defaultSortValue) {
+					this._sortField = this.defaultSortValue;
 				}
 
-				this.$.sortDropdown.fire('d2l-menu-item-change', {
-					value: this.sortDefaultValue
-				});
+				var content = this.$.sortDropdown.queryEffectiveChildren('[d2l-dropdown-content]');
+				if (content) {
+					content.close();
+				}
 			}
 		});
 	</script>

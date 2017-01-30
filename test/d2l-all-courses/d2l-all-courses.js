@@ -221,17 +221,17 @@ describe('d2l-all-courses', function() {
 		var sandbox = sinon.sandbox.create();
 
 		it('should clear search text', function() {
-			var spy = sandbox.spy(widget, '_onSimpleOverlayClosed');
+			var spy = sandbox.spy(widget, '_clearSearchWidget');
 			var searchField = widget.$['search-widget'];
 
 			searchField._searchInput = 'foo';
-			widget.$$('d2l-simple-overlay')._handleClose();
+			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(spy.called).to.be.true;
 			expect(searchField._searchInput).to.equal('');
 		});
 
 		it('should clear filters', function() {
-			var spy = sandbox.spy(widget, '_onSimpleOverlayClosed');
+			var spy = sandbox.spy(widget.$.filterMenuContent, '_clearFilters');
 
 			var event = {
 				filters: [1],
@@ -242,27 +242,27 @@ describe('d2l-all-courses', function() {
 			widget.$$('d2l-filter-menu-content').fire('d2l-filter-menu-content-change', event);
 			expect(widget._filterText).to.equal('foo');
 
-			widget.$$('d2l-simple-overlay')._handleClose();
+			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(spy.called).to.be.true;
 			expect(widget._filterText).to.equal('Filter');
 		});
 
 		it('should clear sort', function() {
-			var spy = sandbox.spy(widget, '_onSimpleOverlayClosed');
+			var spy = sandbox.spy(widget, '_resetSortDropdown');
 
 			var event = {
 				selected: true,
 				value: 'courseCode'
 			};
 
-			var defaultValue = widget.sortDefaultValue;
+			var defaultValue = widget.defaultSortValue;
 
 			widget.load();
 			expect(widget._sortField).to.equal(defaultValue);
 			widget.$$('d2l-dropdown-menu').fire('d2l-menu-item-change', event);
-			expect(widget._sortField).to.equal('courseCode');
+			expect(widget._sortField).to.equal(event.value);
 
-			widget.$$('d2l-simple-overlay')._handleClose();
+			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(spy.called).to.be.true;
 			expect(widget._sortField).to.equal(defaultValue);
 		});

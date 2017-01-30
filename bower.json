@@ -29,6 +29,7 @@
   "dependencies": {
     "app-localize-behavior": "PolymerElements/app-localize-behavior#~0.10.0",
     "d2l-ajax": "^3.2.3",
+	"d2l-alert": "git://github.com/Brightspace/alert.git#^0.0.1",
     "d2l-colors": "^2.2.3",
     "d2l-dropdown": "^4.0.0",
     "d2l-icons": "^2.16.1",

@@ -80,21 +80,18 @@ describe('<d2l-course-tile>', function() {
 		expect(widget).to.exist;
 	});
 
-	it('should fetch the organization on ready', function(done) {
+	it('should fetch the organization when the enrollment changes', function(done) {
 		server.respondWith(
 			'GET',
 			'/organizations/1?embedDepth=1',
 			[200, {}, JSON.stringify(organization)]);
 
-		widget.$.organizationRequest.addEventListener('iron-ajax-response', function() {
+		widget.enrollment = enrollmentEntity;
+
+		widget._organizationRequest.addEventListener('iron-ajax-response', function() {
 			expect(widget._organization.properties).to.be.an('object');
 			done();
 		});
-
-		widget.enrollment = enrollmentEntity;
-		// The widget will generate a ready signal before we've set the
-		// enrollment, so manually call it again after we have
-		widget.ready();
 	});
 
 	describe('setting the enrollment attribute', function() {
@@ -104,14 +101,12 @@ describe('<d2l-course-tile>', function() {
 				'/organizations/1?embedDepth=1',
 				[200, {}, JSON.stringify(organization)]);
 
-			widget.$.organizationRequest.addEventListener('iron-ajax-response', function() {
+			widget.enrollment = enrollmentEntity;
+
+			widget._organizationRequest.addEventListener('iron-ajax-response', function() {
 				// Ensure organization has been received before doing tests
 				done();
 			});
-
-			widget.enrollment = enrollmentEntity;
-			// Setting the enrollment post-ready, so call it again once it's set
-			widget.ready();
 		});
 
 		it('should have the correct href', function() {
@@ -154,9 +149,15 @@ describe('<d2l-course-tile>', function() {
 			expect(courseImage.getAttribute('aria-hidden')).to.equal('true');
 		});
 
-		it('should have an unpin button if the course is pinned', function() {
-			var pinButton = widget.$$('#pin-button');
-			expect(pinButton.text).to.equal('Unpin');
+		it('should have an unpin button if the course is pinned', function(done) {
+			// Menu isn't initially rendered - trigger it and wait until it's rendered
+			widget._showHoverMenu = true;
+
+			setTimeout(function() {
+				var pinButton = widget.$$('#pin-button');
+				expect(pinButton.text).to.equal('Unpin');
+				done();
+			});
 		});
 	});
 
@@ -169,15 +170,13 @@ describe('<d2l-course-tile>', function() {
 				'/organizations/1?embedDepth=1',
 				[200, {}, JSON.stringify(organization)]);
 
-			var organizationSpy = sinon.spy(delayedWidget.$.organizationRequest, 'generateRequest');
-
 			delayedWidget.enrollment = enrollmentEntity;
-			delayedWidget.ready();
 
-			expect(organizationSpy.called).to.be.false;
+			// Request object won't be constructed on enrollment change if delayLoad = true
+			expect(delayedWidget._organizationRequest).to.not.exist;
 		});
 
-		it('should fetch the organization if delay-load is set to false', function(done) {
+		it('should fetch the organization when delay-load is set to false', function(done) {
 			var delayedWidget = fixture('d2l-course-tile-fixture-delayed');
 
 			server.respondWith(
@@ -185,18 +184,16 @@ describe('<d2l-course-tile>', function() {
 				'/organizations/1?embedDepth=1',
 				[200, {}, JSON.stringify(organization)]);
 
-			var organizationSpy = sinon.spy(delayedWidget.$.organizationRequest, 'generateRequest');
+			delayedWidget.enrollment = enrollmentEntity;
 
-			delayedWidget.$.organizationRequest.addEventListener('iron-ajax-response', function() {
-				expect(delayedWidget._organization.properties).to.be.an('object');
+			// Need to create the empty object in this test, so that we can add the event listener
+			delayedWidget._organizationRequest = document.createElement('d2l-ajax');
+
+			delayedWidget._organizationRequest.addEventListener('iron-ajax-response', function() {
 				done();
 			});
 
-			delayedWidget.enrollment = enrollmentEntity;
-			delayedWidget.ready();
-
-			expect(organizationSpy.called).to.be.false;
-
+			// Changing delayLoad to false will create the d2l-ajax component
 			delayedWidget.delayLoad = false;
 		});
 	});
@@ -217,13 +214,12 @@ describe('<d2l-course-tile>', function() {
 					referrerToken: 'foo'
 				})]);
 
-			widget.$.organizationRequest.addEventListener('iron-ajax-response', function() {
+			widget.enrollment = enrollmentEntity;
+
+			widget._organizationRequest.addEventListener('iron-ajax-response', function() {
 				// Ensure organization has been received before doing tests
 				done();
 			});
-
-			widget.enrollment = enrollmentEntity;
-			widget.ready();
 		});
 
 		afterEach(function() {
@@ -233,8 +229,8 @@ describe('<d2l-course-tile>', function() {
 		it('should set the update action parameters correctly', function() {
 			widget._hoverPinClickHandler(event);
 
-			expect(widget._enrollmentPinUrl).to.equal('/enrollments/users/169/organizations/1');
-			expect(widget._enrollmentPinMethod).to.equal('PUT');
+			expect(widget._enrollmentPinRequest.url).to.equal('/enrollments/users/169/organizations/1');
+			expect(widget._enrollmentPinRequest.method).to.equal('PUT');
 		});
 
 		it('should call the pinning API', function(done) {
@@ -266,17 +262,22 @@ describe('<d2l-course-tile>', function() {
 			}, 10);
 		});
 
-		it('should update the overflow menu button with the new pinned state', function() {
+		it('should update the overflow menu button with the new pinned state', function(done) {
 			server.respondWith(
 				'PUT',
 				'/enrollments/users/169/organizations/1',
 				[200, {}, JSON.stringify(enrollment)]);
 
-			widget._hoverPinClickHandler(event);
-			expect(widget.pinned).to.be.false;
+			widget._showHoverMenu = true;
 
-			var pinButton = widget.$$('#pin-button');
-			expect(pinButton.text).to.equal('Pin');
+			setTimeout(function() {
+				widget._hoverPinClickHandler(event);
+				expect(widget.pinned).to.be.false;
+
+				var pinButton = widget.$$('#pin-button');
+				expect(pinButton.text).to.equal('Pin');
+				done();
+			});
 		});
 
 		it('should aria-announce the change in pin state', function(done) {
@@ -456,12 +457,19 @@ describe('<d2l-course-tile>', function() {
 				preventDefault: function() {},
 				stopPropagation: function() {}
 			};
-			widget.$.telemetryRequest.generateRequest = sinon.stub();
 		});
 
-		it('should send a telemetry event', function() {
+		it('should send a telemetry event', function(done) {
+			widget.telemetryEndpoint = '/foo/bar';
+			server.respondWith(
+				'POST',
+				widget.telemetryEndpoint,
+				function(req) {
+					req.respond(200, {}, '');
+					done();
+				});
+
 			widget._launchCourseTileImageSelector(e);
-			expect(widget.$.telemetryRequest.generateRequest.called).to.equal(true);
 		});
 	});
 

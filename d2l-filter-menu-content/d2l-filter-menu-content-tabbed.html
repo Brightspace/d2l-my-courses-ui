@@ -261,8 +261,9 @@
 				}
 			},
 			_updateDepartmentFilterLabel: function(numDepartmentFilters, departmentFilterName) {
-				var selectArg = this.filterStandardDepartmentName === this.localize('filtering.departmentDefault') ? 'default' : departmentFilterName;
-				this.$.departmentListButton.textContent = this.localize('filtering.departmentCustom', 'departmentName', selectArg, 'num', numDepartmentFilters);
+				var defaultName = this.localize('filtering.departmentDefault');
+				var useDefaultName = this.filterStandardDepartmentName === defaultName ? 'default' : departmentFilterName;
+				this.$.departmentListButton.textContent = this.localize('filtering.departmentCustom', 'departmentName', useDefaultName, 'defaultDepartmentName', defaultName, 'num', numDepartmentFilters);
 
 				this.$.departmentSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', departmentFilterName);
 
@@ -271,8 +272,9 @@
 				});
 			},
 			_updateSemesterFilterLabel: function(numSemesterFilters, semesterFilterName) {
-				var selectArg = this.filterStandardSemesterName === this.localize('filtering.semesterDefault') ? 'default' : semesterFilterName;
-				this.$.semesterListButton.textContent = this.localize('filtering.semesterCustom', 'semesterName', selectArg, 'num', numSemesterFilters);
+				var defaultName = this.localize('filtering.semesterDefault');
+				var useDefaultName = this.filterStandardSemesterName === defaultName ? 'default' : semesterFilterName;
+				this.$.semesterListButton.textContent = this.localize('filtering.semesterCustom', 'semesterName', useDefaultName, 'defaultSemesterName', defaultName, 'num', numSemesterFilters);
 
 				this.$.semesterSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', semesterFilterName);
 

@@ -262,8 +262,8 @@
 			},
 			_updateDepartmentFilterLabel: function(numDepartmentFilters, departmentFilterName) {
 				var defaultName = this.localize('filtering.departmentDefault');
-				var useDefaultName = this.filterStandardDepartmentName === defaultName ? 'default' : departmentFilterName;
-				this.$.departmentListButton.textContent = this.localize('filtering.departmentCustom', 'departmentName', useDefaultName, 'defaultDepartmentName', defaultName, 'num', numDepartmentFilters);
+				var label = this.filterStandardDepartmentName === defaultName ? defaultName : departmentFilterName;
+				this.$.departmentListButton.textContent = this.localize('filtering.filterLabel', 'filterLabel', label, 'num', numDepartmentFilters);
 
 				this.$.departmentSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', departmentFilterName);
 
@@ -273,8 +273,8 @@
 			},
 			_updateSemesterFilterLabel: function(numSemesterFilters, semesterFilterName) {
 				var defaultName = this.localize('filtering.semesterDefault');
-				var useDefaultName = this.filterStandardSemesterName === defaultName ? 'default' : semesterFilterName;
-				this.$.semesterListButton.textContent = this.localize('filtering.semesterCustom', 'semesterName', useDefaultName, 'defaultSemesterName', defaultName, 'num', numSemesterFilters);
+				var label = this.filterStandardSemesterName === defaultName ? defaultName : semesterFilterName;
+				this.$.semesterListButton.textContent = this.localize('filtering.filterLabel', 'filterLabel', label, 'num', numSemesterFilters);
 
 				this.$.semesterSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', semesterFilterName);
 

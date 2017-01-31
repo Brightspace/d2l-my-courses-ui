@@ -131,8 +131,8 @@
 				organization="[[_setImageOrg]]"
 				user-id="[[userId]]"
 				tenant-id="[[tenantId]]"
-				telemetry-endpoint="[[telemetryEndpoint]]"
-			></d2l-basic-image-selector>
+				telemetry-endpoint="[[telemetryEndpoint]]">
+			</d2l-basic-image-selector>
 		</d2l-simple-overlay>
 
 	</template>
@@ -156,6 +156,12 @@
 				tenantId: String,
 				// URL to send telemetry to
 				telemetryEndpoint: String,
+				// URL that directs to the advanced search page
+				advancedSearchUrl: String,
+				// Standard Semester OU Type name to be displayed in the all-courses filter dropdown
+				standardDepartmentName: String,
+				// Standard Department OU Type name to be displayed in the all-courses filter dropdown
+				standardSemesterName: String,
 				// URL constructed to fetch a user's enrollments with the enrollments search Action
 				_enrollmentsSearchUrl: String,
 				// Object containing the last response from an enrollments search request
@@ -182,9 +188,7 @@
 				_departmentsUrl: String,
 				// Size the tile should render with respect to vw
 				_tileSizes: Object,
-				_startedInactive: Boolean,
-				// URL that directs to the advanced search page
-				advancedSearchUrl: String
+				_startedInactive: Boolean
 			},
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
@@ -335,8 +339,11 @@
 					allCourses.locale = this.locale;
 					allCourses.showCourseCode = this.showCourseCode;
 					allCourses.advancedSearchUrl = this.advancedSearchUrl;
+					allCourses.filterStandardSemesterName = this.standardSemesterName;
+					allCourses.filterStandardDepartmentName = this.standardDepartmentName;
 					allCourses.updateCountMap = this.updateCountMap;
 					allCourses.courseUpdatesConfig = this.courseUpdatesConfig;
+
 					this.$$('d2l-all-courses').load();
 				}.bind(this), 600);
 			},

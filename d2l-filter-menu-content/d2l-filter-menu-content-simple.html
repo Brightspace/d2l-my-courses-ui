@@ -61,7 +61,10 @@
 				});
 
 				// Clear button is removed via dom-if, so need to manually set focus to next element
-				this.$$('d2l-menu d2l-list-item-filter').focus();
+				var focusItem = this.$$('d2l-menu d2l-list-item-filter');
+				if (focusItem) {
+					focusItem.focus();
+				}
 			},
 			_updateFilter: function(e) {
 				if (e.detail.selected) {

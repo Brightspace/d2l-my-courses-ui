@@ -89,7 +89,9 @@
 			<d2l-filter-menu-content-tabbed
 				id="tabbedContent"
 				hidden$="[[!_hasManyFilters]]"
-				my-enrollments-entity="[[myEnrollmentsEntity]]">
+				my-enrollments-entity="[[myEnrollmentsEntity]]",
+				filter-standard-semester-name="[[filterStandardSemesterName]]",
+				filter-standard-department-name="[[filterStandardDepartmentName]]">
 			</d2l-filter-menu-content-tabbed>
 		</div>
 	</template>
@@ -105,6 +107,10 @@
 					type: Object,
 					observer: '_myEnrollmentsEntityChanged'
 				},
+				// Standard Semester OU Type name to be displayed in the dropdown
+				filterStandardSemesterName: String,
+				// Standard Department OU Type name to be displayed in the dropdown
+				filterStandardDepartmentName: String,
 				_currentFilters: {
 					type: Array,
 					value: function() { return []; }

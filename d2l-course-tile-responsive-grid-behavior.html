@@ -62,24 +62,27 @@ s		*/
 				return numCols;
 			},
 			/*
-			* This method will first try to get the available width from the passed in DOM node, but if the
-			* reported width is zero, it will walk the ancestor tree to find a node that has a width.
-			* The width will be zero if the element is hidden with display: none.
+			* This method will try to get the width of the passed in DOM node, or the first visible ancestor.
 			* If an ancestor node is used for the width, it may not be entirely accurate, but it should be
 			* fine for the purpose of creating a decent layout for a hidden widget.
 			*/
 			_getAvailableWidth: function(node) {
-				var width = node.getBoundingClientRect().width;
-
-				if (width > 0) {
-					return width;
-				}
-
-				if (!node.parentElement) {
+				if (node === null) {
 					return 0;
 				}
 
-				return this._getAvailableWidth(node.parentElement);
+				// document fragment
+				if (node.nodeType === 11) {
+					return this._getAvailableWidth(node.host);
+				}
+				// not an "element" type or it's hidden
+				if (node.nodeType !== 1 || node.offsetParent === null) {
+					return this._getAvailableWidth(node.parentNode);
+				}
+
+				var width = node.getBoundingClientRect().width;
+				return width;
+
 			},
 			_rescaleCourseTileRegions: function() {
 				var itemCount = this.getCourseTileItemCount();

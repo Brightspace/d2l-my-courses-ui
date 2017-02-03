@@ -11,6 +11,9 @@
 			:host {
 				display: block;
 			}
+			:host([hidden]) {
+				display: none !important;
+			}
 			.dropdown-content-gradient {
 				background: linear-gradient(to top, white, var(--d2l-color-regolith));
 			}

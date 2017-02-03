@@ -593,10 +593,6 @@
 				// Load course tile and filter contents. Called from d2l-my-courses.
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
-				this._pinnedCoursesMap = {};
-				this._unpinnedCoursesMap = {};
-				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
-				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.slice();
 				this.filteredPinnedEnrollments.forEach(function(enrollment) {
 					this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);
@@ -708,6 +704,13 @@
 			},
 			_clearSearchWidget: function() {
 				this.$['search-widget']._searchInput = '';
+				this._clearFilteredCourses();
+			},
+			_clearFilteredCourses: function() {
+				this._pinnedCoursesMap = {};
+				this._unpinnedCoursesMap = {};
+				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
+				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.slice();
 			},
 			_resetSortDropdown: function() {
 				this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + this.defaultSortValue + ']').click();

@@ -202,13 +202,13 @@
 									<d2l-icon icon="d2l-tier1:chevron-down" aria-hidden="true"></d2l-icon>
 								</button>
 								<d2l-dropdown-menu no-padding min-width="350">
-									<d2l-menu label="{{localize('sorting.sortBy')}}">
+									<d2l-menu id="sortDropdownMenu" label="{{localize('sorting.sortBy')}}">
 										<div class="dropdown-content-header">
 											<span class="dropdown-content-header-text">{{localize('sorting.sortBy')}}</span>
 										</div>
 										<d2l-menu-item-radio class="dropdown-content-gradient" value="courseCode" text="{{localize('sorting.courseCode')}}"></d2l-menu-item-radio>
 										<d2l-menu-item-radio value="courseName" text="{{localize('sorting.courseName')}}"></d2l-menu-item-radio>
-										<d2l-menu-item-radio value="pinDate" text="{{localize('sorting.datePinned')}}" selected></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="pinDate" text="{{localize('sorting.datePinned')}}"></d2l-menu-item-radio>
 										<d2l-menu-item-radio value="lastAccessed" text="{{localize('sorting.lastAccessed')}}"></d2l-menu-item-radio>
 									</d2l-menu>
 								</d2l-dropdown-menu>
@@ -370,10 +370,11 @@
 				// Object containing the last response from an enrollments search request
 				lastEnrollmentsSearchResponse: Object,
 				_filterText: String,
-				_sortField: {
+				defaultSortValue: {
 					type: String,
 					value: 'pinDate'
 				},
+				_sortField: String,
 				_tileSizes: Object,
 				_parentOrganizations: {
 					type: Array,
@@ -390,6 +391,14 @@
 				filterStandardSemesterName: String,
 				// Standard Department OU Type name to be displayed in the filter dropdown
 				filterStandardDepartmentName: String
+				// The number of Enrollments required to show the filter menu
+				_numEnrollmentsRequiredToShowFilters: {
+					type: Number,
+					readonly: true,
+					value: 20
+				},
+				// Determines if the filter menu can be shown (The number of enrollments >= enrollments required)
+				_hasManyEnrollments: false
 			},
 			behaviors: [
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
@@ -552,6 +561,8 @@
 				this._updateTileSizes();
 
 				this._filterText = this.localize('filtering.filter');
+				this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + this.defaultSortValue + ']').selected = true;
+				this._sortField = this.defaultSortValue;
 			},
 			attached: function() {
 				this.listen(this.$.sortDropdown, 'd2l-menu-item-change', '_updateSortBy');
@@ -588,11 +599,6 @@
 				// Load course tile and filter contents. Called from d2l-my-courses.
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
-				this.$['search-widget']._searchString = '';
-				this._pinnedCoursesMap = {};
-				this._unpinnedCoursesMap = {};
-				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
-				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.slice();
 				this.filteredPinnedEnrollments.forEach(function(enrollment) {
 					this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);
@@ -600,9 +606,9 @@
 					this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);
 				this.set('delayLoad', false);
-
 				// Only make the call to load the filter menu contents if user has many enrollments
-				if (this.pinnedEnrollments.length + this.unpinnedEnrollments.length >= 20) {
+				this._hasManyEnrollments = this.pinnedEnrollments.length + this.unpinnedEnrollments.length >= this._numEnrollmentsRequiredToShowFilters;
+				if (this._hasManyEnrollments) {
 					this.$.filterMenuContent.load();
 				}
 				this.set('updateCountMap', this.updateCountMap);
@@ -614,7 +620,7 @@
 					this.toggleClass('d2l-all-courses-hidden', true, this.$.overlayLoadingSpinner);
 
 					// Show filter menu after content is shown if user has many enrollments
-					if (this.pinnedEnrollments.length + this.unpinnedEnrollments.length >= 20) {
+					if (this._hasManyEnrollments) {
 						this.toggleClass('d2l-all-courses-hidden', false, this.$.filterAndSort);
 					}
 				}.bind(this), 50);
@@ -673,6 +679,11 @@
 			},
 			_onSimpleOverlayOpening: function() {
 				this._removeAlert('setCourseImageFailure');
+				this._clearSearchWidget();
+				if (this._hasManyEnrollments) {
+					this.$.filterMenuContent._clearFilters();
+				}
+				this._resetSortDropdown();
 			},
 			_toggleFilterDropdown: function() {
 				if (this.$.filterDropdownContent.opened) {
@@ -696,6 +707,29 @@
 			_updateTileSizes: function() {
 				this._rescaleCourseTileRegions();
 				this._tileSizes = Math.floor(100 / this._numColsOverlay) + 'vw';
+			},
+			_clearSearchWidget: function() {
+				this.$['search-widget']._searchInput = '';
+				this._clearFilteredCourses();
+			},
+			_clearFilteredCourses: function() {
+				this._pinnedCoursesMap = {};
+				this._unpinnedCoursesMap = {};
+				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
+				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.slice();
+			},
+			_resetSortDropdown: function() {
+				this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + this.defaultSortValue + ']').click();
+
+				//the click will not fire an event if the the value is already selected, so need to update the sortField manually incase
+				if (this._sortField !== this.defaultSortValue) {
+					this._sortField = this.defaultSortValue;
+				}
+
+				var content = this.$.sortDropdown.queryEffectiveChildren('[d2l-dropdown-content]');
+				if (content) {
+					content.close();
+				}
 			}
 		});
 	</script>

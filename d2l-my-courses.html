@@ -265,7 +265,8 @@
 						pageSize: 25,
 						embedDepth: 1,
 						sortField: 'pinDate',
-						sortDescending: true
+						sortDescending: true,
+						autoPinCourses: true
 					};
 					this._enrollmentsSearchUrl = this.createActionUrl(searchAction, pinDateQuery);
 					this.$.enrollmentsSearchRequest.generateRequest();

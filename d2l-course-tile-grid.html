@@ -359,9 +359,9 @@
 					enrollmentId = this.getEntityIdentifier(courseTiles[i].enrollment);
 					if (enrollmentId === modifiedEnrollmentId) {
 						if (i < courseTiles.length - 1) {
-							courseTiles[i + 1].querySelector('a').focus();
+							courseTiles[i + 1].focus();
 						} else if (i > 0) {
-							courseTiles[i - 1].querySelector('a').focus();
+							courseTiles[i - 1].focus();
 						}
 						break;
 					}

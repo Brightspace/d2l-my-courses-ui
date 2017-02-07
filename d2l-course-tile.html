@@ -30,6 +30,7 @@ the user has in that organization - student, teacher, TA, etc.
 			on-mouseout="_onTileMouseOut">
 			<div class="alert-color-circle"></div>
 			<a href$="[[_organizationHomepageUrl]]"
+				id="d2l-course-tile-anchor"
 				class="no-tap-interaction"
 				on-focus="_hoverCourseTile">
 				<div class="course-image-container">
@@ -218,6 +219,9 @@ the user has in that organization - student, teacher, TA, etc.
 				this._closeDropdown = this._closeDropdown.bind(this);
 				this._hoverCourseTile = this._hoverCourseTile.bind(this);
 				Polymer.IronA11yAnnouncer.requestAvailability();
+			},
+			focus: function() {
+				this.$['d2l-course-tile-anchor'].focus();
 			},
 			// Handler that triggers the API call to change an enrollment's pin state when the user says DO IT
 			pinClickHandler: function(isTouch) {

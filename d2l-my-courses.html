@@ -5,8 +5,8 @@
 <link rel="import" href="../d2l-link/d2l-link.html">
 <link rel="import" href="../d2l-loading-spinner/d2l-loading-spinner.html">
 <link rel="import" href="../d2l-alert/d2l-alert.html">
+<link rel="import" href="../d2l-simple-overlay/d2l-simple-overlay.html">
 <link rel="import" href="d2l-alert-behavior.html">
-<link rel="import" href="d2l-simple-overlay.html">
 <link rel="import" href="d2l-all-courses.html">
 <link rel="import" href="d2l-course-tile-grid.html">
 <link rel="import" href="localize-behavior.html">
@@ -126,6 +126,7 @@
 			id="basic-image-selector-overlay"
 			title-name="{{localize('changeImage')}}"
 			locale="[[locale]]"
+			close-simple-overlay-alt-text="{{localize('closeSimpleOverlayAltText')}}"
 			with-backdrop>
 			<iron-scroll-threshold
 				id="image-selector-threshold"

@@ -20,12 +20,10 @@ independently. If there is a need, these components could be broken out into
 their own repositories/release schedule, but for now they are all contained
 within this repo.
 
-- `<d2l-alert>` is intended to display highlighted informational text
 - `<d2l-all-courses>` displays both pinned and unpinned courses
 - `<d2l-course-tile-grid>` is the wrapper that contains several `<d2l-course-tile>` elements
 - `<d2l-course-tile>` is a clickable, interactable tile that represents a course
 - `<d2l-my-courses>` is the main component for My Courses widget
-- `<d2l-simple-overlay>` extends `iron-overlay` and adds some styling using various `neon` Polymer elements.
 - `<d2l-touch-menu>` is a menu intended for use with mobile interfaces
 - `<d2l-touch-menu-item>` is the element that populates a `d2l-touch-menu`
 

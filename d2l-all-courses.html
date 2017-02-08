@@ -710,7 +710,8 @@
 				this._tileSizes = Math.floor(100 / this._numColsOverlay) + 'vw';
 			},
 			_clearSearchWidget: function() {
-				this.$['search-widget']._searchInput = '';
+				this.$['search-widget']._clearSearch();
+				this.$['search-widget']._setSearchIcon();
 				this._clearFilteredCourses();
 			},
 			_clearFilteredCourses: function() {

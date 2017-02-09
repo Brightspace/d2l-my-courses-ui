@@ -38,7 +38,7 @@
     "d2l-menu": "~0.3.0",
     "d2l-offscreen": "^2.2.2",
     "d2l-polymer-behaviors": "<1.0.0",
-    "d2l-search-widget": "git://github.com/Brightspace/d2l-search-widget-ui.git#^0.4.0",
+    "d2l-search-widget": "git://github.com/Brightspace/d2l-search-widget-ui.git#^0.4.1",
     "d2l-simple-overlay": "git://github.com/Brightspace/simple-overlay#^0.0.1",
     "d2l-siren-parser": "git://github.com/Brightspace/d2l-siren-parser-ui.git#^1.1.2",
     "d2l-typography": "^5.2.2",

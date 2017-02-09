@@ -294,18 +294,16 @@
 			},
 
 			__search: function(pageSize, path) {
-				if (this._searchAction) {
-					var queryParams = {
-						search: encodeURIComponent(this._searchInput),
-						page: 1,
-						pageSize: pageSize,
-						parentOrganizations: this.parentOrganizations.join(','),
-						sortField: this.sortField,
-						sortDescending: this.sortField !== 'courseName' && this.sortField !== 'courseCode'
-					};
+				var queryParams = {
+					search: encodeURIComponent(this._searchInput),
+					page: 1,
+					pageSize: pageSize,
+					parentOrganizations: this.parentOrganizations.join(','),
+					sortField: this.sortField,
+					sortDescending: this.sortField !== 'courseName' && this.sortField !== 'courseCode'
+				};
 
-					this.set(path, this.createActionUrl(this._searchAction, queryParams));
-				}
+				this.set(path, this.createActionUrl(this._searchAction, queryParams));
 			},
 
 			// Called by various key/mouse interactions

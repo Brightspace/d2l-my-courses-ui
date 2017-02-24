@@ -365,14 +365,6 @@ describe('d2l-my-courses', function() {
 				done();
 			});
 		});
-
-		it('should remove all existing alerts when enrollment alerts are updated', function() {
-			widget._addAlert('error', 'testError', 'this is a test');
-			widget._addAlert('warning', 'testWarning', 'this is another test');
-			expect(widget._alerts).to.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
-			widget._updateEnrollmentAlerts(true, true);
-			expect(widget._alerts).to.not.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
-		});
 	});
 
 	describe('With enrollments', function() {

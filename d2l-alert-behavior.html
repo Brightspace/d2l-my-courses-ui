@@ -24,6 +24,7 @@
 			},
 			_addAlert: function(type, name, message) {
 				if (this._alerts) {
+					this._removeAlert(name);
 					this.push('_alerts', {
 						alertType: type,
 						alertName: name,
@@ -40,12 +41,9 @@
 				});
 			},
 			_removeAlert: function(name) {
-				if (this._alerts && this._alerts.length > 0 && this._hasAlert(name)) {
-					this.splice('_alerts', this._alerts.map(function(alert) { return alert.name; }).indexOf(name), 1);
+				if (this._alerts && this._alerts.length > 0) {
+					this.set('_alerts', this._alerts.filter(function(alert) { return alert.alertName !== name; }));
 				}
-			},
-			_clearAlerts: function() {
-				this._alerts = [];
 			}
 		};
 	})();

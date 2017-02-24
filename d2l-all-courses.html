@@ -359,9 +359,17 @@
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 				this._filteredPinnedEnrollments.forEach(function(enrollment) {
 					this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
+
+					if (!enrollment.hasLinkByRel(/organization-image/)) {
+						this._addAlert('warning', 'displayCourseImageFailure', this.localize('error.displayingImages'));
+					}
 				}, this);
-				this._filteredPinnedEnrollments.forEach(function(enrollment) {
+				this._filteredUnpinnedEnrollments.forEach(function(enrollment) {
 					this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
+
+					if (!enrollment.hasLinkByRel(/organization-image/)) {
+						this._addAlert('warning', 'displayCourseImageFailure', this.localize('error.displayingImages'));
+					}
 				}, this);
 				this.set('delayLoad', false);
 				// Only make the call to load the filter menu contents if user has many enrollments
@@ -545,7 +553,8 @@
 				this._noUnpinnedCoursesInSearch = false;
 				var isSearched = this.$['search-widget']._showClearIcon,
 					hasAlert = this._hasAlert('noPinnedCourses');
-				this._clearAlerts();
+
+				this._removeAlert('noPinnedCourses');
 				if (!hasPinnedEnrollments) {
 					if (isSearched && !hasAlert) {
 						this._noPinnedCoursesInSearch = true;
@@ -658,6 +667,10 @@
 							newUnpinnedEnrollments.push(enrollment);
 							this._unpinnedCoursesMap[enrollmentId] = true;
 						}
+					}
+
+					if (!enrollment.hasLinkByRel(/organization-image/)) {
+						this._addAlert('warning', 'displayCourseImageFailure', this.localize('error.displayingImages'));
 					}
 				}, this);
 				this.getUpdates(orgUnitIds.join(','));

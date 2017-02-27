@@ -189,14 +189,6 @@ describe('d2l-all-courses', function() {
 			sandbox.restore();
 		});
 
-		it('should remove all existing alerts when enrollment alerts are updated', function() {
-			widget._addAlert('error', 'testError', 'this is a test');
-			widget._addAlert('warning', 'testWarning', 'this is another test');
-			expect(widget._alerts).to.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
-			widget._updateEnrollmentAlerts(true);
-			expect(widget._alerts).to.not.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
-		});
-
 		it('should add a setCourseImageFailure warning alert when a request to set the image fails', function() {
 			var setCourseImageEvent = { detail: { status: 'failure'} };
 			widget.setCourseImage(setCourseImageEvent);
@@ -229,39 +221,34 @@ describe('d2l-all-courses', function() {
 	});
 
 	describe('searching messages', function() {
-		it('should show no pinned courses in search message when no pinned courses in search', function() {
-			widget._clearAlerts();
+		beforeEach(function() {
+			widget._alerts = [];
 			widget.$['search-widget']._showClearIcon = true;
+		});
+
+		it('should show no pinned courses in search message when no pinned courses in search', function() {
 			widget._updateEnrollmentAlerts(false, true);
 			expect(widget._noPinnedCoursesInSearch).to.be.true;
 		});
 		it('should show no unpinned courses in search message when no pinned courses in search', function() {
-			widget._clearAlerts();
-			widget.$['search-widget']._showClearIcon = true;
 			widget._updateEnrollmentAlerts(true, false);
 			expect(widget._noUnpinnedCoursesInSearch).to.be.true;
 		});
 		it('should not show message when there are pinned courses in search', function() {
-			widget._clearAlerts();
-			widget.$['search-widget']._showClearIcon = true;
 			widget._updateEnrollmentAlerts(true, true);
 			expect(widget._noPinnedCoursesInSearch).to.be.false;
 		});
 		it('should not show message when there are unpinned courses in search', function() {
-			widget._clearAlerts();
-			widget.$['search-widget']._showClearIcon = true;
 			widget._updateEnrollmentAlerts(true, true);
 			expect(widget._noUnpinnedCoursesInSearch).to.be.false;
 		});
 		it('should not show message if there is already an alert for no pinned courses', function() {
-			widget._clearAlerts();
 			widget._addAlert('call-to-action', 'noPinnedCourses', 'no pinned courses bruh');
-			widget.$['search-widget']._showClearIcon = true;
 			widget._updateEnrollmentAlerts(false, true);
 			expect(widget._noPinnedCoursesInSearch).to.be.false;
 		});
 		it('should not show messages if not searching', function() {
-			widget._clearAlerts();
+			widget._alerts = [];
 			widget.$['search-widget']._showClearIcon = false;
 			widget._updateEnrollmentAlerts(false, false);
 			expect(widget._noPinnedCoursesInSearch).to.be.false;

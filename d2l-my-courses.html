@@ -300,6 +300,12 @@
 							}
 						}
 
+						if (newPinnedEnrollments.length > 0
+							&& !enrollment.hasLinkByRel(/organization-image/)
+						) {
+							this._addAlert('warning', 'displayCourseImageFailure', this.localize('error.displayingImages'));
+						}
+
 						this._enrollmentIdMap[orgUnitId] = enrollmentId;
 					}, this);
 					this.getUpdates(Object.keys(this._enrollmentIdMap).join(','));
@@ -410,15 +416,13 @@
 				}
 			},
 			_updateEnrollmentAlerts: function(hasEnrollments, hasPinnedEnrollments) {
-				this._clearAlerts();
-
-				if (hasEnrollments) {
-					if (!hasPinnedEnrollments) {
-						this._addAlert('call-to-action', 'noPinnedCourses', this.localize('noPinnedCoursesMessage'));
-					}
-				} else {
+				hasEnrollments ?
+					this._removeAlert('noCourses') :
 					this._addAlert('call-to-action', 'noCourses', this.localize('noCoursesMessage'));
-				}
+
+				hasPinnedEnrollments ?
+					this._removeAlert('noPinnedCourses') :
+					this._addAlert('call-to-action', 'noPinnedCourses', this.localize('noPinnedCoursesMessage'));
 			},
 			_setStartedInactive: function(e) {
 				var type = e && e.detail && e.detail.type;

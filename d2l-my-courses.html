@@ -36,6 +36,12 @@
 			button:hover, button:focus {
 				text-decoration: underline;
 			}
+			#all-courses-button {
+				float: right;
+			}
+			:host-context([dir='rtl']) #all-courses-button {
+				float: left;
+			}
 			.d2l-my-courses-hidden {
 				display: none;
 			}
@@ -94,16 +100,14 @@
 				show-course-code="[[showCourseCode]]"
 				update-count-map="[[updateCountMap]]">
 			</d2l-course-tile-grid>
-			<h3 class="d2l-heading-3">
-				<a is="d2l-link" small
-					id="all-courses-button"
-					hidden$="{{!_hasEnrollments}}"
-					on-tap="_openAllCoursesView"
-					on-mouseover="_createAllCourses"
-					on-focus="_createAllCourses">
-					{{localize('viewAllCourses')}}
-				</a>
-			</h3>
+			<a is="d2l-link"
+				id="all-courses-button"
+				hidden$="{{!_hasEnrollments}}"
+				on-tap="_openAllCoursesView"
+				on-mouseover="_createAllCourses"
+				on-focus="_createAllCourses">
+				{{localize('viewAllCourses')}}
+			</a>
 		</div>
 
 		<div id="allCoursesPlaceholder">

@@ -30,19 +30,6 @@
 					user-select: none;
 				}
 			}
-			#all-courses-button {
-				@apply --d2l-body-small-text;
-				color: var(--d2l-color-celestine);
-				font-family: inherit;
-				margin: 1rem 0px 0px 0px;
-				font-weight: 700;
-				display: block;
-				background: none;
-				border: none;
-				padding: 0;
-				cursor: pointer;
-				position: relative;
-			}
 			.my-courses-content {
 				padding-top: 10px;
 			}
@@ -107,14 +94,16 @@
 				show-course-code="[[showCourseCode]]"
 				update-count-map="[[updateCountMap]]">
 			</d2l-course-tile-grid>
-			<button
-				id="all-courses-button"
-				hidden$="{{!_hasEnrollments}}"
-				on-tap="_openAllCoursesView"
-				on-mouseover="_createAllCourses"
-				on-focus="_createAllCourses">
-				{{localize('viewAllCourses')}}
-			</button>
+			<h3 class="d2l-heading-3">
+				<a is="d2l-link" small
+					id="all-courses-button"
+					hidden$="{{!_hasEnrollments}}"
+					on-tap="_openAllCoursesView"
+					on-mouseover="_createAllCourses"
+					on-focus="_createAllCourses">
+					{{localize('viewAllCourses')}}
+				</a>
+			</h3>
 		</div>
 
 		<div id="allCoursesPlaceholder">

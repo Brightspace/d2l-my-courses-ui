@@ -33,13 +33,10 @@
 			.my-courses-content {
 				padding-top: 10px;
 			}
-			button:hover, button:focus {
-				text-decoration: underline;
-			}
-			#all-courses-button {
+			#viewAllCourses {
 				float: right;
 			}
-			:host-context([dir='rtl']) #all-courses-button {
+			:host-context([dir='rtl']) #viewAllCourses {
 				float: left;
 			}
 			.d2l-my-courses-hidden {
@@ -100,12 +97,15 @@
 				show-course-code="[[showCourseCode]]"
 				update-count-map="[[updateCountMap]]">
 			</d2l-course-tile-grid>
-			<a is="d2l-link"
-				id="all-courses-button"
+			<a
+				is="d2l-link"
+				id="viewAllCourses"
 				hidden$="{{!_hasEnrollments}}"
 				on-tap="_openAllCoursesView"
+				on-keypress="_keypressOpenAllCoursesView"
 				on-mouseover="_createAllCourses"
-				on-focus="_createAllCourses">
+				on-focus="_createAllCourses"
+				tabindex="0" >
 				{{localize('viewAllCourses')}}
 			</a>
 		</div>
@@ -345,6 +345,11 @@
 
 					this.$$('d2l-all-courses').load();
 				}.bind(this), 600);
+			},
+			_keypressOpenAllCoursesView: function(e) {
+				if( e.code == 'Space' || e.code == 'Enter' ) {
+					return this._openAllCoursesView(e);
+				}
 			},
 			_refreshPage: function() {
 				document.location.reload(true);

@@ -547,7 +547,7 @@ describe('d2l-my-courses', function() {
 
 	describe('User interaction', function() {
 		it('should rescale the all courses view when it is opened', function() {
-			widget.$$('#all-courses-button').click();
+			widget.$$('#viewAllCourses').click();
 			var allCoursesRescaleSpy = sinon.spy(widget.$$('d2l-all-courses'), '_rescaleCourseTileRegions');
 
 			clock.tick(100);

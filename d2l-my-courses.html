@@ -33,11 +33,14 @@
 			.my-courses-content {
 				padding-top: 10px;
 			}
-			#viewAllCourses {
+			.my-courses-footer {
 				float: right;
 			}
-			:host-context([dir='rtl']) #viewAllCourses {
+			:host-context([dir='rtl']) .my-courses-footer {
 				float: left;
+			}
+			.my-courses-footer-end {
+				clear: both;
 			}
 			.d2l-my-courses-hidden {
 				display: none;
@@ -97,17 +100,20 @@
 				show-course-code="[[showCourseCode]]"
 				update-count-map="[[updateCountMap]]">
 			</d2l-course-tile-grid>
-			<a
-				is="d2l-link"
-				id="viewAllCourses"
-				hidden$="{{!_hasEnrollments}}"
-				on-tap="_openAllCoursesView"
-				on-keypress="_keypressOpenAllCoursesView"
-				on-mouseover="_createAllCourses"
-				on-focus="_createAllCourses"
-				tabindex="0" >
-				{{localize('viewAllCourses')}}
-			</a>
+			<div class="my-courses-footer">
+				<a
+					is="d2l-link"
+					id="viewAllCourses"
+					hidden$="{{!_hasEnrollments}}"
+					on-tap="_openAllCoursesView"
+					on-keypress="_keypressOpenAllCoursesView"
+					on-mouseover="_createAllCourses"
+					on-focus="_createAllCourses"
+					tabindex="0" >
+					{{localize('viewAllCourses')}}
+				</a>
+			</div>
+			<div class="my-courses-footer-end"></div>
 		</div>
 
 		<div id="allCoursesPlaceholder">

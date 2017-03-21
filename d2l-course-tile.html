@@ -33,7 +33,9 @@ the user has in that organization - student, teacher, TA, etc.
 			<a href$="[[_organizationHomepageUrl]]"
 				id="d2l-course-tile-anchor"
 				class="no-tap-interaction"
-				on-focus="_hoverCourseTile">
+				on-focus="_hoverCourseTile"
+				role="link"
+				aria-label$="[[_organization.properties.name]]">
 				<div class="course-image-container">
 					<div class="course-image">
 						<div class="image-overlay">
@@ -55,9 +57,9 @@ the user has in that organization - student, teacher, TA, etc.
 
 				<div class="course-info">
 					<div class="course-text">
-						{{_organization.properties.name}}
+						[[_organization.properties.name]]
 						<template id="courseCodeTemplate" is="dom-if" if="[[showCourseCode]]">
-							<span class="course-code-text">{{_organization.properties.code}}</span>
+							<span class="course-code-text">[[_organization.properties.code]]</span>
 						</template>
 						<d2l-offscreen>[[_courseNotificationLabel]]</d2l-offscreen>
 					</div>

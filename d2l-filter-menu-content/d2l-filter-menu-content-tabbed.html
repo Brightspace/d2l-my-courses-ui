@@ -401,9 +401,10 @@
 				if (response.detail.status === 200 || response.detail.status === 304) {
 					var responseEntity = this.parseEntity(response.detail.xhr.response);
 
-					responseEntity.entities.forEach(function(entity) {
+					for (var i = 0; i < responseEntity.entities.length; i++) {
+						var entity = responseEntity.entities[i];
 						this.push(organizationsPath, entity);
-					}.bind(this));
+					}
 
 					this.__onSearchResults(responseEntity, moreUrlPath, hasMorePath);
 				}

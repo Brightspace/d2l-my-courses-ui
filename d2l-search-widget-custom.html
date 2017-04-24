@@ -353,11 +353,12 @@
 				}
 			},
 			_onLiveSearchUrlChanged: function() {
-				this._organizationRequests.forEach(function(req) {
+				for (var i = 0; i < this._organizationRequests.length; i++) {
+					var req = this._organizationRequests[i];
 					if (req.abort) {
 						req.abort();
 					}
-				});
+				}
 				this.set('_organizationRequests', []);
 
 				this.$.liveSearchRequest.generateRequest();

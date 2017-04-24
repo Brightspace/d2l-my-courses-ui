@@ -358,12 +358,13 @@
 				// Load course tile and filter contents. Called from d2l-my-courses.
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
-				this._filteredPinnedEnrollments.forEach(function(enrollment) {
+
+				for (var i = 0; i < this._filteredPinnedEnrollments.length; i++) {
+					var enrollment = this._filteredPinnedEnrollments[i];
 					this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
-				}, this);
-				this._filteredPinnedEnrollments.forEach(function(enrollment) {
 					this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
-				}, this);
+				}
+
 				this.set('delayLoad', false);
 				this.set('updateCountMap', this.updateCountMap);
 
@@ -648,7 +649,9 @@
 				var newPinnedEnrollments = [];
 				var newUnpinnedEnrollments = [];
 				var orgUnitIds = [];
-				enrollmentEntities.forEach(function(enrollment) {
+
+				for (var i = 0; i < enrollmentEntities.length; i++) {
+					var enrollment = enrollmentEntities[i];
 					var enrollmentId = this.getEntityIdentifier(enrollment);
 					orgUnitIds.push(this.getOrgUnitId(enrollmentId));
 					if (enrollment.hasClass('pinned')) {
@@ -662,7 +665,7 @@
 							this._unpinnedCoursesMap[enrollmentId] = true;
 						}
 					}
-				}, this);
+				}
 				this.getUpdates(orgUnitIds.join(','));
 				if (append) {
 					this._filteredPinnedEnrollments = this._filteredPinnedEnrollments.concat(newPinnedEnrollments);

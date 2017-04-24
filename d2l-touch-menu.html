@@ -165,9 +165,10 @@
 				var menuEvent = 'touch-menu-' + (openMenu ? 'open' : 'close');
 				this.fire(menuEvent, {element: this._currentTarget});
 
-				this._menuItems.forEach(function(menuItem) {
+				for (var i = 0; i < this._menuItems.length; i++) {
+					var menuItem = this._menuItems[i];
 					menuItem.visible = openMenu;
-				}.bind(this));
+				}
 			},
 			_touchcancelHandler: function() {
 				clearTimeout(this._openMenuTimerID);
@@ -176,7 +177,8 @@
 			},
 			_touchendHandler: function(e) {
 				// When finger is released, if the item is selected, then do the fancy animation
-				this._menuItems.forEach(function(menuItem) {
+				for (var i = 0; i < this._menuItems.length; i++) {
+					var menuItem = this._menuItems[i];
 					if (menuItem.hoverState === true) {
 						menuItem.selected = true;
 
@@ -184,7 +186,7 @@
 							this.fire(menuItem.selectionEvent, {element: this._currentTarget});
 						}
 					}
-				}.bind(this));
+				}
 
 				this._touchcancelHandler(e);
 			},
@@ -205,9 +207,10 @@
 						this._touchendHandler();
 					}
 
-					this._menuItems.forEach(function(menuItem) {
+					for (var i = 0; i < this._menuItems.length; i++) {
+						var menuItem = this._menuItems[i];
 						menuItem.hoverState = menuItem.pointInTouchRegion(touchPoint);
-					}.bind(this));
+					}
 				} else {
 					clearTimeout(this._openMenuTimerID);
 				}

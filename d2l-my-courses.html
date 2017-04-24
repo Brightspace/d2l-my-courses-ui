@@ -320,7 +320,8 @@
 					var newPinnedEnrollments = [];
 					var newUnpinnedEnrollments = [];
 
-					enrollmentEntities.forEach(function(enrollment) {
+					for (var i = 0; i < enrollmentEntities.length; i++) {
+						var enrollment = enrollmentEntities[i];
 						var enrollmentId = this.getEntityIdentifier(enrollment);
 
 						var orgUnitId = this.getOrgUnitId(enrollmentId);
@@ -337,7 +338,8 @@
 						}
 
 						this._enrollmentIdMap[orgUnitId] = enrollmentId;
-					}, this);
+					}
+
 					this.getUpdates(Object.keys(this._enrollmentIdMap).join(','));
 					this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
 					this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);

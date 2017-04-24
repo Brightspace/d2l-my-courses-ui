@@ -232,9 +232,10 @@ the user has in that organization - student, teacher, TA, etc.
 
 				var body = {};
 				var fields = pinAction.fields || [];
-				fields.forEach(function(field) {
+				for (var i = 0; i < fields.length; i++) {
+					var field = fields[i];
 					body[field.name] = field.value;
-				});
+				}
 
 				this._enrollmentPinRequest = this._enrollmentPinRequest || document.createElement('d2l-ajax');
 				this._enrollmentPinRequest.url = pinAction.href;

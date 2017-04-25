@@ -53,7 +53,8 @@
 		},
 		_onUpdatesResponse: function(response) {
 			if (response.detail.status === 200) {
-				response.detail.xhr.response['Objects'].forEach(function(object) {
+				for (var i = 0; i < response.detail.xhr.response['Objects'].length; i++) {
+					var object = response.detail.xhr.response['Objects'][i];
 					var updates = 0;
 					if (this.courseUpdatesConfig['showUnattemptedQuizzes']) {
 						updates += object['UnattemptedQuizzes'];
@@ -71,7 +72,7 @@
 						updates += object['UnreadAssignmentSubmissions'];
 					}
 					this.set('updateCountMap.' + object['OrgUnitId'], updates);
-				}, this);
+				}
 			}
 		}
 	};

@@ -90,16 +90,19 @@
 				var colClasses = ['columns-2', 'columns-3', 'columns-4'];
 				var currentColClass = function(domNode) {
 					var foundClass = '';
-					colClasses.forEach(function(item) {
+
+					for (var i = 0; i < colClasses.length; i++) {
+						var item = colClasses[i];
 						if (!foundClass && domNode.classList.contains(item)) {
 							foundClass = item;
 						}
-					});
+					}
 					return foundClass;
 				};
 				this._numColsOverlay = this._calcNumColumns(window.innerWidth, itemCount);
 
-				containers.forEach(function(container) {
+				for (var i = 0; i < containers.length; i++) {
+					var container = containers[i];
 					var width = this._getAvailableWidth(container);
 					this._numCols = this._calcNumColumns(width, itemCount);
 
@@ -121,7 +124,7 @@
 					}
 
 					this._containerWidth = width;
-				}, this);
+				}
 			}
 		};
 	})();

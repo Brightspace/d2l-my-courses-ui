@@ -18,13 +18,14 @@
 			action.fields = action.fields || [];
 			var query = {};
 
-			action.fields.forEach(function(field) {
+			for (var i = 0; i < action.fields.length; i++) {
+				var field = action.fields[i];
 				if (parameters.hasOwnProperty(field.name)) {
 					query[field.name] = parameters[field.name];
 				} else {
 					query[field.name] = field.value;
 				}
-			});
+			}
 
 			var queryString = Object.keys(query).map(function(key) {
 				return key + '=' + query[key];

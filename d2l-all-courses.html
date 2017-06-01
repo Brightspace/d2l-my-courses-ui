@@ -320,7 +320,6 @@
 				for (var i = 0; i < courseTileGrids.length; i++) {
 					courseTileGrids[i].getCourseTileItemCount = this.getCourseTileItemCount.bind(this);
 				}
-				this._updateTileSizes();
 
 				this._filterText = this.localize('filtering.filter');
 				this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + this.defaultSortValue + ']').selected = true;
@@ -476,6 +475,7 @@
 				this._updateFilteredEnrollments(e.detail, false);
 			},
 			_onSimpleOverlayOpening: function() {
+				this._updateTileSizes();
 				this._removeAlert('setCourseImageFailure');
 				this._clearSearchWidget();
 				if (this._hasManyEnrollments) {

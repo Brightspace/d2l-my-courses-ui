@@ -16,7 +16,7 @@
 <link rel="import" href="d2l-course-management-behavior.html">
 <link rel="import" href="d2l-course-tile-grid.html">
 <link rel="import" href="d2l-course-tile-responsive-grid-behavior.html">
-<link rel="import" href="d2l-filter-menu-content/d2l-filter-menu-content.html">
+<link rel="import" href="d2l-filter-menu-content/d2l-filter-menu-content-tabbed.html">
 <link rel="import" href="d2l-search-widget-custom.html">
 <link rel="import" href="d2l-utility-behavior.html">
 <link rel="import" href="localize-behavior.html">
@@ -71,16 +71,12 @@
 									<d2l-icon icon="d2l-tier1:chevron-down" aria-hidden="true"></d2l-icon>
 								</button>
 								<d2l-dropdown-content id="filterDropdownContent" no-padding min-width="350" render-content>
-									<d2l-filter-menu-content
+									<d2l-filter-menu-content-tabbed
 										id="filterMenuContent"
 										my-enrollments-entity="[[myEnrollmentsEntity]]",
 										filter-standard-semester-name="[[filterStandardSemesterName]]",
 										filter-standard-department-name="[[filterStandardDepartmentName]]">
-									</d2l-filter-menu-content>
-									<iron-scroll-threshold
-										id="scrollThreshold"
-										on-lower-threshold="_onFilterMenuLowerThreshold">
-									</iron-scroll-threshold>
+									</d2l-filter-menu-content-tabbed>
 								</d2l-dropdown-content>
 							</d2l-dropdown>
 
@@ -337,8 +333,6 @@
 				this.listen(this.$.filterMenuContent, 'd2l-filter-menu-content-change', '_onFilterChanged');
 				this.listen(this.$['search-widget'], 'd2l-search-widget-results-changed', '_onSearchResultsChanged');
 
-				this.$.scrollThreshold.scrollTarget = this.$.filterDropdownContent.querySelector('.d2l-dropdown-content-container');
-
 				window.addEventListener('resize', this._onResize.bind(this));
 			},
 			detached: function() {
@@ -458,12 +452,7 @@
 			},
 			_onFilterDropdownOpen: function() {
 				this.set('_filterText', this.localize('filtering.filter'));
-				this.$.filterMenuContent.load();
 				this.$.filterMenuContent.open();
-			},
-			_onFilterMenuLowerThreshold: function() {
-				this.$.scrollThreshold.clearTriggers();
-				this.$.filterMenuContent.loadMore();
 			},
 			_onMenuItemChange: function(e) {
 				this.set('_sortParameter', this._sortOptions[e.detail.value].queryParameter);

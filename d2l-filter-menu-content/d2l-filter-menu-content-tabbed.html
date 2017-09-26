@@ -2,6 +2,7 @@
 <link rel="import" href="../../d2l-ajax/d2l-ajax.html">
 <link rel="import" href="../../d2l-colors/d2l-colors.html">
 <link rel="import" href="../../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
+<link rel="import" href="../../d2l-loading-spinner/d2l-loading-spinner.html">
 <link rel="import" href="../../d2l-menu/d2l-menu.html">
 <link rel="import" href="../../d2l-search-widget/d2l-search-widget.html">
 <link rel="import" href="../../d2l-typography/d2l-typography-shared-styles.html">
@@ -16,12 +17,6 @@
 				display: block;
 			}
 			:host([hidden]) {
-				display: none !important;
-			}
-			.d2l-filter-menu-content-invisible {
-				visibility: hidden;
-			}
-			.d2l-filter-menu-content-hidden {
 				display: none !important;
 			}
 			button:hover,
@@ -63,98 +58,136 @@
 				@apply --d2l-body-compact-text;
 				margin: 10px;
 			}
+			d2l-loading-spinner {
+				align-self: center;
+			}
+			.clear-button {
+				@apply --d2l-body-small-text;
+				color: var(--d2l-color-celestine);
+				background: none;
+				border: none;
+				cursor: pointer;
+				margin: 0 !important;
+				padding: 0;
+			}
+			.dropdown-content-header {
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				border-bottom: 1px solid var(--d2l-color-titanius);
+				width: 100%;
+				padding: 20px;
+			}
+			#contentView {
+				background: linear-gradient(to top, white, var(--d2l-color-regolith));
+			}
 		</style>
 
 		<d2l-ajax
-			id="moreDepartmentsRequest"
-			url="[[_moreDepartmentsUrl]]"
-			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onMoreDepartmentsResponse">
+			id="departmentsRequest"
+			url="[[_departmentsUrl]]"
+			headers='{ "Accept": "application/vnd.siren+json" }'>
 		</d2l-ajax>
 
 		<d2l-ajax
-			id="moreSemestersRequest"
-			url="[[_moreSemestersUrl]]"
-			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onMoreSemestersResponse">
+			id="semestersRequest"
+			url="[[_semestersUrl]]"
+			headers='{ "Accept": "application/vnd.siren+json" }'>
 		</d2l-ajax>
 
-		<div class="dropdown-content-tabs" role="tablist" hidden$="{{_oneTab}}">
-			<div class="dropdown-content-tab" role="tab" aria-controls="semesterList">
-				<div class="dropdown-content-tab-highlight" id="semesterListHighlight"></div>
-				<button
-					id="semesterListButton"
-					class="dropdown-content-tab-button"
-					on-tap="_selectSemesterList"
-					aria-pressed="true">
-					{{localize('filtering.semesterDefault')}}
-				</button>
-			</div>
-			<div class="dropdown-content-tab" role="tab" aria-controls="departmentList">
-				<div class="dropdown-content-tab-highlight" id="departmentListHighlight"></div>
-				<button
-					id="departmentListButton"
-					class="dropdown-content-tab-button"
-					on-tap="_selectDepartmentList"
-					aria-pressed="false">
-					{{localize('filtering.departmentDefault')}}
-				</button>
-			</div>
-		</div>
-		<div id="semesterList" aria-labelledby="semesterListButton" role="tabpanel">
-			<d2l-search-widget
-				id="semesterSearchWidget"
-				hidden$="[[!_hasSemesters]]"
-				placeholder-text="{{localize('filtering.searchSemesters')}}"
-				search-button-label="{{localize('search')}}"
-				clear-button-label="{{localize('search.clearSearch')}}"
-				search-action="[[_searchSemestersAction]]"
-				search-field-name="search"
-				cache-responses></d2l-search-widget>
-			<d2l-menu
-				label="{{localize('filtering.semesterDefault')}}"
-				hidden$="[[!_hasSemesters]]">
-				<template is="dom-repeat" items="[[_semesters]]">
-					<d2l-list-item-filter
-						enrollment-entity="[[item]]"
-						selected="[[_checkSelected(item)]]">
-					</d2l-list-item-filter>
-				</template>
-			</d2l-menu>
+		<d2l-loading-spinner
+			hidden=[[_showContent]]
+			size="50">
+		</d2l-loading-spinner>
 
-			<div id="noSemestersText" class="no-items-text" hidden$="[[_hasSemesters]]">
-				{{localize('filtering.noFilterItemsDefault')}}
-			</div>
+		<div hidden="[[!_showContent]]" class="dropdown-content-header">
+			<span>{{localize('filtering.filterBy')}}</span>
+			<template is="dom-if" if="[[_showClearButton]]">
+				<button class="clear-button" on-tap="_clearFilters">{{localize('filtering.clear')}}</button>
+			</template>
 		</div>
-		<div id="departmentList" aria-labelledby="departmentListButton" role="tabpanel">
-			<d2l-search-widget
-				id="departmentSearchWidget"
-				hidden$="[[!_hasDepartments]]"
-				placeholder-text="{{localize('filtering.searchDepartments')}}"
-				search-button-label="{{localize('search')}}"
-				clear-button-label="{{localize('search.clearSearch')}}"
-				search-action="[[_searchDepartmentsAction]]"
-				search-field-name="search"
-				cache-responses></d2l-search-widget>
-			<d2l-menu
-				label="{{localize('filtering.departmentDefault')}}"
-				hidden$="[[!_hasDepartments]]">
-				<template is="dom-repeat" items="[[_departments]]">
-					<d2l-list-item-filter
-						enrollment-entity="[[item]]"
-						selected="[[_checkSelected(item)]]">
-					</d2l-list-item-filter>
-				</template>
-			</d2l-menu>
 
-			<div id="noDepartmentsText" class="no-items-text" hidden$="[[_hasDepartments]]">
-				{{localize('filtering.noFilterItemsDefault')}}
+		<div hidden="[[!_showContent]]" id="contentView">
+			<div class="dropdown-content-tabs" role="tablist">
+				<div class="dropdown-content-tab" role="tab" aria-controls="semesterList">
+					<div class="dropdown-content-tab-highlight" id="semesterListHighlight" hidden="[[!_semesterListVisible]]"></div>
+					<button
+						id="semesterListButton"
+						class="dropdown-content-tab-button"
+						on-tap="_selectSemesterList"
+						aria-pressed="true">
+						{{localize('filtering.semesterDefault')}}
+					</button>
+				</div>
+				<div class="dropdown-content-tab" role="tab" aria-controls="departmentList">
+					<div class="dropdown-content-tab-highlight" id="departmentListHighlight" hidden="[[!_departmentListVisible]]"></div>
+					<button
+						id="departmentListButton"
+						class="dropdown-content-tab-button"
+						on-tap="_selectDepartmentList"
+						aria-pressed="false">
+						{{localize('filtering.departmentDefault')}}
+					</button>
+				</div>
+			</div>
+			<div id="semesterList" hidden="[[!_semesterListVisible]]" aria-labelledby="semesterListButton" role="tabpanel">
+				<d2l-search-widget
+					id="semesterSearchWidget"
+					hidden$="[[!_hasSemesters]]"
+					placeholder-text="{{localize('filtering.searchSemesters')}}"
+					search-button-label="{{localize('search')}}"
+					clear-button-label="{{localize('search.clearSearch')}}"
+					search-action="[[_searchSemestersAction]]"
+					search-field-name="search"
+					cache-responses></d2l-search-widget>
+				<d2l-menu
+					label="{{localize('filtering.semesterDefault')}}"
+					hidden$="[[!_hasSemesters]]">
+					<template is="dom-repeat" items="[[_semesters]]">
+						<d2l-list-item-filter
+							enrollment-entity="[[item]]"
+							selected="[[_checkSelected(item)]]">
+						</d2l-list-item-filter>
+					</template>
+				</d2l-menu>
+
+				<div id="noSemestersText" class="no-items-text" hidden$="[[_hasSemesters]]">
+					{{localize('filtering.noFilterItemsDefault')}}
+				</div>
+			</div>
+			<div id="departmentList" hidden="[[!_departmentListVisible]]" aria-labelledby="departmentListButton" role="tabpanel">
+				<d2l-search-widget
+					id="departmentSearchWidget"
+					hidden$="[[!_hasDepartments]]"
+					placeholder-text="{{localize('filtering.searchDepartments')}}"
+					search-button-label="{{localize('search')}}"
+					clear-button-label="{{localize('search.clearSearch')}}"
+					search-action="[[_searchDepartmentsAction]]"
+					search-field-name="search"
+					cache-responses></d2l-search-widget>
+				<d2l-menu
+					label="{{localize('filtering.departmentDefault')}}"
+					hidden$="[[!_hasDepartments]]">
+					<template is="dom-repeat" items="[[_departments]]">
+						<d2l-list-item-filter
+							enrollment-entity="[[item]]"
+							selected="[[_checkSelected(item)]]">
+						</d2l-list-item-filter>
+					</template>
+				</d2l-menu>
+
+				<div id="noDepartmentsText" class="no-items-text" hidden$="[[_hasDepartments]]">
+					{{localize('filtering.noFilterItemsDefault')}}
+				</div>
 			</div>
 		</div>
 	</template>
 
 	<script>
 		'use strict';
+
+		/* global Promise */
 
 		Polymer({
 			is: 'd2l-filter-menu-content-tabbed',
@@ -164,14 +197,23 @@
 					value: function() { return {}; },
 					observer: '_myEnrollmentsEntityChanged'
 				},
+				// Standard Semester OU Type name to be displayed
+				filterStandardSemesterName: String,
+				// Standard Department OU Type name to be displayed
+				filterStandardDepartmentName: String,
 				_currentFilters: {
 					type: Array,
 					value: function() { return []; }
+				},
+				_departmentListVisible: {
+					type: Boolean,
+					value: false
 				},
 				_departments: {
 					type: Array,
 					value: function() { return []; }
 				},
+				_departmentsUrl: String,
 				_hasDepartments: {
 					type: Boolean,
 					value: false
@@ -179,22 +221,6 @@
 				_hasSemesters: {
 					type: Boolean,
 					value: false
-				},
-				_hasMoreDepartments: {
-					type: Boolean,
-					value: false
-				},
-				_hasMoreSemesters: {
-					type: Boolean,
-					value: false
-				},
-				_moreDepartmentsUrl: {
-					type: String,
-					value: ''
-				},
-				_moreSemestersUrl: {
-					type: String,
-					value: ''
 				},
 				_numSemesterFilters: {
 					type: Number,
@@ -204,20 +230,25 @@
 					type: Number,
 					value: 0
 				},
-				_oneTab: {
+				_searchSemestersAction: Object,
+				_searchDepartmentsAction: Object,
+				_semesterListVisible: {
 					type: Boolean,
 					value: false
 				},
-				_searchSemestersAction: Object,
-				_searchDepartmentsAction: Object,
 				_semesters: {
 					type: Array,
 					value: function() { return []; }
 				},
-				// Standard Semester OU Type name to be displayed
-				filterStandardSemesterName: String,
-				// Standard Department OU Type name to be displayed
-				filterStandardDepartmentName: String
+				_semestersUrl: String,
+				_showClearButton: {
+					type: Boolean,
+					value: false
+				},
+				_showContent: {
+					type: Boolean,
+					value: false
+				}
 			},
 			behaviors: [
 				window.D2L.Hypermedia.HMConstantsBehavior,
@@ -245,22 +276,38 @@
 				this.filterStandardSemesterName = this.localize('filtering.semesterDefault');
 				this.filterStandardDepartmentName = this.localize('filtering.departmentDefault');
 			},
-			load: function(callback) {
-				this.$.departmentSearchWidget.search();
-				this.$.semesterSearchWidget.search();
-
-				this._loadCompleteCallback = callback;
-			},
-			loadMore: function() {
-				// Called from d2l-all-courses, as that's where the iron-scroll-threshold is
-				// Generate the request based off of which tab is selected, and whether there are more to load or not
-				if (this.$.semesterList.classList.contains('d2l-filter-menu-content-hidden') && this._hasMoreDepartments) {
-					this.$.moreDepartmentsRequest.generateRequest();
-				} else if (this._hasMoreSemesters) {
-					this.$.moreSemestersRequest.generateRequest();
+			load: function() {
+				if (this._departments.length > 0 || this._semesters.length > 0) {
+					this.$.departmentSearchWidget.search();
+					this.$.semesterSearchWidget.search();
+					return;
 				}
+
+				var self = this;
+				Promise
+					.all([
+						this._departmentsUrl ? this.$.departmentsRequest.generateRequest() : Promise.resolve({}),
+						this._semestersUrl ? this.$.semestersRequest.generateRequest() : Promise.resolve({})
+					])
+					.then(function(values) {
+						var departmentsResponse = self.parseEntity(values[0].response);
+						var semestersResponse = self.parseEntity(values[1].response);
+
+						self.set('_departments', departmentsResponse.entities || []);
+						self.set('_semesters', semestersResponse.entities || []);
+
+						self.$.departmentSearchWidget.search();
+						self.$.semesterSearchWidget.search();
+					})
+					.then(function() {
+						self._showContent = true;
+					})
+					.catch(function() {
+						self._showContent = true;
+					});
 			},
 			open: function() {
+				this.load();
 				if (this._searchSemestersAction) {
 					this._selectSemesterList();
 				} else {
@@ -269,7 +316,6 @@
 			},
 			_departmentsLoaded: false,
 			_semestersLoaded: false,
-			_loadCompleteCallback: null,
 			_checkSelected: function(entity) {
 				// Checks if the given entity should be "selected" - used when semester/department search results change mostly
 				var id = entity.href || entity.getLinkByRel(this.HypermediaRels.organization).href;
@@ -286,8 +332,10 @@
 					items[i].selected = false;
 				}
 
+				this._showClearButton = false;
+
 				// Clear button is removed via dom-if, so need to manually set focus to next element
-				if (this.$.semesterList.classList.contains('d2l-filter-menu-content-hidden')) {
+				if (this._departmentListVisible) {
 					this.$.departmentListButton.focus();
 				} else {
 					this.$.semesterListButton.focus();
@@ -318,46 +366,36 @@
 					} else if (myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.addDepartmentFilter)) {
 						this._searchDepartmentsAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.addDepartmentFilter);
 					}
-
-					this._oneTab = !this._searchDepartmentsAction || !this._searchSemestersAction;
 				}
 			},
 			_updateEmptyStateMessages: function(departmentFilterName, semesterFilterName) {
 				this.$.noSemestersText.textContent = this.localize('filtering.noFilterItems', 'semester', semesterFilterName, 'department', departmentFilterName);
 				this.$.noDepartmentsText.textContent = this.localize('filtering.noFilterItems', 'semester', semesterFilterName, 'department', departmentFilterName);
 			},
-			_updateDepartmentFilterLabel: function(numDepartmentFilters, departmentFilterName) {
-				var defaultName = this.localize('filtering.departmentDefault');
-				var label = this.filterStandardDepartmentName === defaultName ? defaultName : departmentFilterName;
-				this.$.departmentListButton.textContent = this.localize('filtering.filterLabel', 'filterLabel', label, 'num', numDepartmentFilters);
+			__updateFilterLabel: function(numFilters, filterName, button, searchWidget) {
+				button.textContent = this.localize('filtering.filterLabel', 'filterLabel', filterName, 'num', numFilters);
 
-				this.$.departmentSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', departmentFilterName);
-				this.$.departmentSearchWidget.searchButtonLabel = this.localize('filtering.searchBy', 'filter', departmentFilterName);
+				searchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', filterName);
+				searchWidget.searchButtonLabel = this.localize('filtering.searchBy', 'filter', filterName);
 
-				this.fire('d2l-filter-menu-content-filters-changed', {
-					filters: this._currentFilters
+				this.set('currentFilters', this._currentFilters);
+				this._showClearButton = this.currentFilters.length > 0;
+				this.fire('d2l-filter-menu-content-change', {
+					filters: this.currentFilters
 				});
+			},
+			_updateDepartmentFilterLabel: function(numDepartmentFilters, departmentFilterName) {
+				this.__updateFilterLabel(numDepartmentFilters, departmentFilterName, this.$.departmentListButton, this.$.departmentSearchWidget);
 			},
 			_updateSemesterFilterLabel: function(numSemesterFilters, semesterFilterName) {
-				var defaultName = this.localize('filtering.semesterDefault');
-				var label = this.filterStandardSemesterName === defaultName ? defaultName : semesterFilterName;
-				this.$.semesterListButton.textContent = this.localize('filtering.filterLabel', 'filterLabel', label, 'num', numSemesterFilters);
-
-				this.$.semesterSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', semesterFilterName);
-				this.$.semesterSearchWidget.searchButtonLabel = this.localize('filtering.searchBy', 'filter', semesterFilterName);
-
-				this.fire('d2l-filter-menu-content-filters-changed', {
-					filters: this._currentFilters
-				});
+				this.__updateFilterLabel(numSemesterFilters, semesterFilterName, this.$.semesterListButton, this.$.semesterSearchWidget);
 			},
-			__onSearchResults: function(entity, moreUrlPath, hasMorePath, hasPath) {
+			__onSearchResults: function(entity, hasPath) {
 				if (!entity.hasLinkByRel) {
 					entity = this.parseEntity(entity);
 				}
 
 				this.set(hasPath, (entity.entities || []).length > 0);
-				this.set(hasMorePath, entity.hasLinkByRel('next'));
-				this.set(moreUrlPath, this[hasMorePath] ? entity.getLinkByRel('next').href : '');
 			},
 			_onDepartmentSearchResults: function(e) {
 				if (!this._departmentsLoaded) {
@@ -367,11 +405,11 @@
 
 					// Hide loading spinner
 					if (this._semestersLoaded) {
-						this._loadCompleteCallback();
+						this._showContent = true;
 					}
 				}
 				this.set('_departments', e.detail.entities);
-				this.__onSearchResults(e.detail, '_moreDepartmentsUrl', '_hasMoreDepartments', '_hasDepartments');
+				this.__onSearchResults(e.detail, '_hasDepartments');
 				this.$.departmentList.querySelector('d2l-menu').resize();
 
 				setTimeout(function() {
@@ -387,11 +425,11 @@
 
 					// Hide loading spinner
 					if (this._departmentsLoaded) {
-						this._loadCompleteCallback();
+						this._showContent = true;
 					}
 				}
 				this.set('_semesters', e.detail.entities);
-				this.__onSearchResults(e.detail, '_moreSemestersUrl', '_hasMoreSemesters', '_hasSemesters');
+				this.__onSearchResults(e.detail, '_hasSemesters');
 				this.$.semesterList.querySelector('d2l-menu').resize();
 
 				setTimeout(function() {
@@ -399,49 +437,28 @@
 					window.dispatchEvent(new Event('resize'));
 				}.bind(this), 200);
 			},
-			__onMoreResponse: function(response, organizationsPath, moreUrlPath, hasMorePath) {
-				if (response.detail.status === 200 || response.detail.status === 304) {
-					var responseEntity = this.parseEntity(response.detail.xhr.response);
+			__selectList: function(semester, department) {
+				this._semesterListVisible = semester;
+				this._departmentListVisible = department;
+				this.$.semesterListButton.setAttribute('aria-pressed', semester);
+				this.$.departmentListButton.setAttribute('aria-pressed', department);
 
-					responseEntity.entities.forEach(function(entity) {
-						this.push(organizationsPath, entity);
-					}.bind(this));
+				semester && this.$.semesterSearchWidget.clear();
+				semester && this.$.semesterList.querySelector('d2l-menu').resize();
 
-					this.__onSearchResults(responseEntity, moreUrlPath, hasMorePath);
-				}
-			},
-			_onMoreDepartmentsResponse: function(response) {
-				this.__onMoreResponse(response, '_departments', '_moreDepartmentsUrl', '_hasMoreDepartments');
-			},
-			_onMoreSemestersResponse: function(response) {
-				this.__onMoreResponse(response, '_semesters', '_moreSemestersUrl', '_hasMoreSemesters');
-			},
-			__toggleSelectedList: function(list, button, highlight, selected) {
-				this.toggleClass('d2l-filter-menu-content-hidden', !selected, list);
-				this.toggleClass('d2l-filter-menu-content-invisible', !selected, highlight);
-				button.setAttribute('aria-pressed', selected);
+				department && this.$.departmentSearchWidget.clear();
+				department && this.$.departmentList.querySelector('d2l-menu').resize();
+
+				setTimeout(function() {
+					// DE24225 - force dropdown to resize after opening
+					window.dispatchEvent(new Event('resize'));
+				}.bind(this), 200);
 			},
 			_selectDepartmentList: function() {
-				this.__toggleSelectedList(this.$.departmentList, this.$.departmentListButton, this.$.departmentListHighlight, true);
-				this.__toggleSelectedList(this.$.semesterList, this.$.semesterListButton, this.$.semesterListHighlight, false);
-				this.$.departmentSearchWidget.clear();
-				this.$.departmentList.querySelector('d2l-menu').resize();
-
-				setTimeout(function() {
-					// DE24225 - force dropdown to resize after opening
-					window.dispatchEvent(new Event('resize'));
-				}.bind(this), 200);
+				this.__selectList(false, true);
 			},
 			_selectSemesterList: function() {
-				this.__toggleSelectedList(this.$.semesterList, this.$.semesterListButton, this.$.semesterListHighlight, true);
-				this.__toggleSelectedList(this.$.departmentList, this.$.departmentListButton, this.$.departmentListHighlight, false);
-				this.$.semesterSearchWidget.clear();
-				this.$.semesterList.querySelector('d2l-menu').resize();
-
-				setTimeout(function() {
-					// DE24225 - force dropdown to resize after opening
-					window.dispatchEvent(new Event('resize'));
-				}.bind(this), 200);
+				this.__selectList(true, false);
 			},
 			__updateFilter: function(e, path) {
 				if (e.detail.selected) {

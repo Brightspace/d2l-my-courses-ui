@@ -37,34 +37,6 @@ describe('d2l-filter-menu-content-tabbed', function() {
 		expect(component._searchSemestersAction.href).to.equal('/enrollments');
 	});
 
-	describe('d2l-filter-menu-content-filters-changed', function() {
-		it('should emit an event when a filter is added', function(done) {
-			var handler = function() {
-				document.removeEventListener('d2l-filter-menu-content-filters-changed', handler);
-				done();
-			};
-			document.addEventListener('d2l-filter-menu-content-filters-changed', handler);
-
-			component.$$('#departmentList d2l-menu').fire('d2l-menu-item-change', {
-				selected: true,
-				value: 'foo'
-			});
-		});
-
-		it('should emit an event when a filter is removed', function(done) {
-			var handler = function() {
-				document.removeEventListener('d2l-filter-menu-content-filters-changed', handler);
-				done();
-			};
-			document.addEventListener('d2l-filter-menu-content-filters-changed', handler);
-
-			component.$$('#departmentList d2l-menu').fire('d2l-menu-item-change', {
-				selected: false,
-				value: 'foo'
-			});
-		});
-	});
-
 	describe('Lazy loading', function() {
 		it('should set internal values appropriately when there are not any more departments', function(done) {
 			component.$.departmentSearchWidget.fire('d2l-search-component-results-changed', {

@@ -94,7 +94,7 @@ describe('d2l-all-courses', function() {
 		it('should update the parent organizations', function() {
 			expect(widget._parentOrganizations.length).to.equal(0);
 
-			widget.$$('d2l-filter-menu-content').fire('d2l-filter-menu-content-change', event);
+			widget.$$('d2l-filter-menu-content-tabbed').fire('d2l-filter-menu-content-change', event);
 
 			expect(widget._parentOrganizations.length).to.equal(1);
 		});

@@ -8,7 +8,6 @@
 <link rel="import" href="../localize-behavior.html">
 <link rel="import" href="../d2l-utility-behavior.html">
 <link rel="import" href="d2l-list-item-filter.html">
-<link rel="import" href="d2l-filter-menu-content-simple.html">
 <link rel="import" href="d2l-filter-menu-content-tabbed.html">
 
 <dom-module id="d2l-filter-menu-content">
@@ -75,14 +74,8 @@
 		</div>
 
 		<div id="contentView" class="d2l-filter-menu-content-hidden">
-			<d2l-filter-menu-content-simple
-				id="simpleContent"
-				hidden$="[[_hasManyFilters]]">
-			</d2l-filter-menu-content-simple>
-
 			<d2l-filter-menu-content-tabbed
 				id="tabbedContent"
-				hidden$="[[!_hasManyFilters]]"
 				my-enrollments-entity="[[myEnrollmentsEntity]]",
 				filter-standard-semester-name="[[filterStandardSemesterName]]",
 				filter-standard-department-name="[[filterStandardDepartmentName]]">
@@ -111,10 +104,6 @@
 				},
 				_departments: Array,
 				_departmentsUrl: String,
-				_hasManyFilters: {
-					type: Boolean,
-					value: false
-				},
 				_semesters: Array,
 				_semestersUrl: String,
 				_showClearButton: {
@@ -124,16 +113,14 @@
 			},
 			behaviors: [
 				window.D2L.Hypermedia.HMConstantsBehavior,
+				window.D2L.Hypermedia.OrganizationHMBehavior,
 				window.D2L.MyCourses.LocalizeBehavior,
-				window.D2L.MyCourses.UtilityBehavior,
-				window.D2L.Hypermedia.OrganizationHMBehavior
+				window.D2L.MyCourses.UtilityBehavior
 			],
 			attached: function() {
-				this.listen(this.$.simpleContent, 'd2l-filter-menu-content-filters-changed', '_onFiltersChanged');
 				this.listen(this.$.tabbedContent, 'd2l-filter-menu-content-filters-changed', '_onFiltersChanged');
 			},
 			detached: function() {
-				this.unlisten(this.$.simpleContent, 'd2l-filter-menu-content-filters-changed', '_onFiltersChanged');
 				this.unlisten(this.$.tabbedContent, 'd2l-filter-menu-content-filters-changed', '_onFiltersChanged');
 			},
 			load: function() {
@@ -147,20 +134,13 @@
 					this.set('_departments', departmentsResponse.entities || []);
 					this.set('_semesters', semestersResponse.entities || []);
 
-					this.set('_hasManyFilters', this._semesters.length + this._departments.length > 7);
-					if (this._hasManyFilters) {
-						this.$.tabbedContent.load(this._hideLoadingSpinner.bind(this));
-					} else {
-						this.$.simpleContent.filterItems = this._departments.concat(this._semesters);
-						this._hideLoadingSpinner();
-					}
+					this.$.tabbedContent.load(this._hideLoadingSpinner.bind(this));
+					this._hideLoadingSpinner();
 				}.bind(this)).catch(this._hideLoadingSpinner.bind(this));
 			},
 			loadMore: function() {
-				if (this._hasManyFilters) {
-					// Called from d2l-all-courses, as that's where the iron-scroll-threshold is
-					this.$.tabbedContent.loadMore();
-				}
+				// Called from d2l-all-courses, as that's where the iron-scroll-threshold is
+				this.$.tabbedContent.loadMore();
 			},
 			open: function() {
 				this._currentContent().open();

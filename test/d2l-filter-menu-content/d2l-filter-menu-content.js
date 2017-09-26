@@ -36,8 +36,7 @@ describe('d2l-filter-menu-content', function() {
 	});
 
 	describe('Content', function() {
-		var enrollment,
-			departmentsResponse,
+		var departmentsResponse,
 			semestersResponse,
 			server;
 
@@ -59,17 +58,6 @@ describe('d2l-filter-menu-content', function() {
 					req.respond(200, {}, JSON.stringify(semestersResponse));
 				});
 
-			enrollment = {
-				rel: ['enrollment'],
-				links: [{
-					rel: ['self'],
-					href: '/enrollments'
-				}, {
-					rel: ['https://api.brightspace.com/rels/organization'],
-					href: '/organizations/1'
-				}]
-			};
-
 			component.myEnrollmentsEntity = myEnrollmentsEntity;
 		});
 
@@ -88,35 +76,11 @@ describe('d2l-filter-menu-content', function() {
 				done();
 			});
 		});
-
-		it('should show a simplified menu for users with <=7 semesters + departments', function(done) {
-			departmentsResponse = { entities: [enrollment, enrollment, enrollment, enrollment] };
-			semestersResponse = { entities: [enrollment, enrollment, enrollment] };
-			component.load();
-
-			setTimeout(function() {
-				var content = component._currentContent();
-				expect(content.tagName).to.equal('D2L-FILTER-MENU-CONTENT-SIMPLE');
-				done();
-			});
-		});
-
-		it('should show a tabbed menu for users with >7 semesters + departments', function(done) {
-			departmentsResponse = { entities: [enrollment, enrollment, enrollment, enrollment] };
-			semestersResponse = { entities: [enrollment, enrollment, enrollment, enrollment] };
-			component.load();
-
-			setTimeout(function() {
-				var content = component._currentContent();
-				expect(content.tagName).to.equal('D2L-FILTER-MENU-CONTENT-TABBED');
-				done();
-			});
-		});
 	});
 
 	describe('Clear button', function() {
 		beforeEach(function() {
-			component.$$('d2l-filter-menu-content-simple').filterItems = [{
+			component.$$('d2l-filter-menu-content-tabbed').filterItems = [{
 				rel: ['enrollment'],
 				links: [{
 					rel: ['self'],

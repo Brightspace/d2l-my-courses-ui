@@ -77,10 +77,6 @@
 										filter-standard-semester-name="[[filterStandardSemesterName]]",
 										filter-standard-department-name="[[filterStandardDepartmentName]]">
 									</d2l-filter-menu-content-tabbed>
-									<iron-scroll-threshold
-										id="scrollThreshold"
-										on-lower-threshold="_onFilterMenuLowerThreshold">
-									</iron-scroll-threshold>
 								</d2l-dropdown-content>
 							</d2l-dropdown>
 
@@ -337,8 +333,6 @@
 				this.listen(this.$.filterMenuContent, 'd2l-filter-menu-content-change', '_onFilterChanged');
 				this.listen(this.$['search-widget'], 'd2l-search-widget-results-changed', '_onSearchResultsChanged');
 
-				this.$.scrollThreshold.scrollTarget = this.$.filterDropdownContent.querySelector('.d2l-dropdown-content-container');
-
 				window.addEventListener('resize', this._onResize.bind(this));
 			},
 			detached: function() {
@@ -458,12 +452,7 @@
 			},
 			_onFilterDropdownOpen: function() {
 				this.set('_filterText', this.localize('filtering.filter'));
-				this.$.filterMenuContent.load();
 				this.$.filterMenuContent.open();
-			},
-			_onFilterMenuLowerThreshold: function() {
-				this.$.scrollThreshold.clearTriggers();
-				this.$.filterMenuContent.loadMore();
 			},
 			_onMenuItemChange: function(e) {
 				this.set('_sortParameter', this._sortOptions[e.detail.value].queryParameter);

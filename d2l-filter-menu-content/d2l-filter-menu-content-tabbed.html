@@ -19,12 +19,6 @@
 			:host([hidden]) {
 				display: none !important;
 			}
-			.d2l-filter-menu-content-invisible {
-				visibility: hidden;
-			}
-			.d2l-filter-menu-content-hidden {
-				display: none !important;
-			}
 			button:hover,
 			button:focus {
 				text-decoration: underline;
@@ -102,34 +96,22 @@
 			headers='{ "Accept": "application/vnd.siren+json" }'>
 		</d2l-ajax>
 
-		<d2l-ajax
-			id="moreDepartmentsRequest"
-			url="[[_moreDepartmentsUrl]]"
-			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onMoreDepartmentsResponse">
-		</d2l-ajax>
-
-		<d2l-ajax
-			id="moreSemestersRequest"
-			url="[[_moreSemestersUrl]]"
-			headers='{ "Accept": "application/vnd.siren+json" }'
-			on-iron-ajax-response="_onMoreSemestersResponse">
-		</d2l-ajax>
-
-		<d2l-loading-spinner size="50">
+		<d2l-loading-spinner
+			hidden=[[_showContent]]
+			size="50">
 		</d2l-loading-spinner>
 
-		<div id="filterHeader" class="dropdown-content-header d2l-filter-menu-content-hidden">
+		<div hidden="[[!_showContent]]" class="dropdown-content-header">
 			<span>{{localize('filtering.filterBy')}}</span>
 			<template is="dom-if" if="[[_showClearButton]]">
 				<button class="clear-button" on-tap="_clearFilters">{{localize('filtering.clear')}}</button>
 			</template>
 		</div>
 
-		<div id="contentView" class="d2l-filter-menu-content-hidden">
+		<div hidden="[[!_showContent]]" id="contentView">
 			<div class="dropdown-content-tabs" role="tablist">
 				<div class="dropdown-content-tab" role="tab" aria-controls="semesterList">
-					<div class="dropdown-content-tab-highlight" id="semesterListHighlight"></div>
+					<div class="dropdown-content-tab-highlight" id="semesterListHighlight" hidden="[[!_semesterListVisible]]"></div>
 					<button
 						id="semesterListButton"
 						class="dropdown-content-tab-button"
@@ -139,7 +121,7 @@
 					</button>
 				</div>
 				<div class="dropdown-content-tab" role="tab" aria-controls="departmentList">
-					<div class="dropdown-content-tab-highlight" id="departmentListHighlight"></div>
+					<div class="dropdown-content-tab-highlight" id="departmentListHighlight" hidden="[[!_departmentListVisible]]"></div>
 					<button
 						id="departmentListButton"
 						class="dropdown-content-tab-button"
@@ -149,7 +131,7 @@
 					</button>
 				</div>
 			</div>
-			<div id="semesterList" aria-labelledby="semesterListButton" role="tabpanel">
+			<div id="semesterList" hidden="[[!_semesterListVisible]]" aria-labelledby="semesterListButton" role="tabpanel">
 				<d2l-search-widget
 					id="semesterSearchWidget"
 					hidden$="[[!_hasSemesters]]"
@@ -174,7 +156,7 @@
 					{{localize('filtering.noFilterItemsDefault')}}
 				</div>
 			</div>
-			<div id="departmentList" aria-labelledby="departmentListButton" role="tabpanel">
+			<div id="departmentList" hidden="[[!_departmentListVisible]]" aria-labelledby="departmentListButton" role="tabpanel">
 				<d2l-search-widget
 					id="departmentSearchWidget"
 					hidden$="[[!_hasDepartments]]"
@@ -223,6 +205,10 @@
 					type: Array,
 					value: function() { return []; }
 				},
+				_departmentListVisible: {
+					type: Boolean,
+					value: false
+				},
 				_departments: {
 					type: Array,
 					value: function() { return []; }
@@ -236,22 +222,6 @@
 					type: Boolean,
 					value: false
 				},
-				_hasMoreDepartments: {
-					type: Boolean,
-					value: false
-				},
-				_hasMoreSemesters: {
-					type: Boolean,
-					value: false
-				},
-				_moreDepartmentsUrl: {
-					type: String,
-					value: ''
-				},
-				_moreSemestersUrl: {
-					type: String,
-					value: ''
-				},
 				_numSemesterFilters: {
 					type: Number,
 					value: 0
@@ -262,12 +232,20 @@
 				},
 				_searchSemestersAction: Object,
 				_searchDepartmentsAction: Object,
+				_semesterListVisible: {
+					type: Boolean,
+					value: false
+				},
 				_semesters: {
 					type: Array,
 					value: function() { return []; }
 				},
 				_semestersUrl: String,
 				_showClearButton: {
+					type: Boolean,
+					value: false
+				},
+				_showContent: {
 					type: Boolean,
 					value: false
 				}
@@ -305,34 +283,31 @@
 					return;
 				}
 
+				var self = this;
 				Promise
 					.all([
 						this._departmentsUrl ? this.$.departmentsRequest.generateRequest() : Promise.resolve({}),
 						this._semestersUrl ? this.$.semestersRequest.generateRequest() : Promise.resolve({})
 					])
 					.then(function(values) {
-						var departmentsResponse = this.parseEntity(values[0].response);
-						var semestersResponse = this.parseEntity(values[1].response);
+						var departmentsResponse = self.parseEntity(values[0].response);
+						var semestersResponse = self.parseEntity(values[1].response);
 
-						this.set('_departments', departmentsResponse.entities || []);
-						this.set('_semesters', semestersResponse.entities || []);
+						self.set('_departments', departmentsResponse.entities || []);
+						self.set('_semesters', semestersResponse.entities || []);
 
-						this.$.departmentSearchWidget.search();
-						this.$.semesterSearchWidget.search();
-					}.bind(this))
-					.then(this._hideLoadingSpinner.bind(this))
-					.catch(this._hideLoadingSpinner.bind(this));
-			},
-			loadMore: function() {
-				// Called from d2l-all-courses, as that's where the iron-scroll-threshold is
-				// Generate the request based off of which tab is selected, and whether there are more to load or not
-				if (this.$.semesterList.classList.contains('d2l-filter-menu-content-hidden') && this._hasMoreDepartments) {
-					this.$.moreDepartmentsRequest.generateRequest();
-				} else if (this._hasMoreSemesters) {
-					this.$.moreSemestersRequest.generateRequest();
-				}
+						self.$.departmentSearchWidget.search();
+						self.$.semesterSearchWidget.search();
+					})
+					.then(function() {
+						self._showContent = true;
+					})
+					.catch(function() {
+						self._showContent = true;
+					});
 			},
 			open: function() {
+				this.load();
 				if (this._searchSemestersAction) {
 					this._selectSemesterList();
 				} else {
@@ -360,7 +335,7 @@
 				this._showClearButton = false;
 
 				// Clear button is removed via dom-if, so need to manually set focus to next element
-				if (this.$.semesterList.classList.contains('d2l-filter-menu-content-hidden')) {
+				if (this._departmentListVisible) {
 					this.$.departmentListButton.focus();
 				} else {
 					this.$.semesterListButton.focus();
@@ -372,11 +347,6 @@
 				this.set('_currentFilters', []);
 				this.set('_numSemesterFilters', 0);
 				this.set('_numDepartmentFilters', 0);
-			},
-			_hideLoadingSpinner: function() {
-				this.toggleClass('d2l-filter-menu-content-hidden', true, this.$$('d2l-loading-spinner'));
-				this.toggleClass('d2l-filter-menu-content-hidden', false, this.$.contentView);
-				this.toggleClass('d2l-filter-menu-content-hidden', false, this.$.filterHeader);
 			},
 			_myEnrollmentsEntityChanged: function(entity) {
 				// Set up search URLs and search Actions for filter dropdown
@@ -402,42 +372,30 @@
 				this.$.noSemestersText.textContent = this.localize('filtering.noFilterItems', 'semester', semesterFilterName, 'department', departmentFilterName);
 				this.$.noDepartmentsText.textContent = this.localize('filtering.noFilterItems', 'semester', semesterFilterName, 'department', departmentFilterName);
 			},
-			_updateDepartmentFilterLabel: function(numDepartmentFilters, departmentFilterName) {
-				var defaultName = this.localize('filtering.departmentDefault');
-				var label = this.filterStandardDepartmentName === defaultName ? defaultName : departmentFilterName;
-				this.$.departmentListButton.textContent = this.localize('filtering.filterLabel', 'filterLabel', label, 'num', numDepartmentFilters);
+			__updateFilterLabel: function(numFilters, filterName, button, searchWidget) {
+				button.textContent = this.localize('filtering.filterLabel', 'filterLabel', filterName, 'num', numFilters);
 
-				this.$.departmentSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', departmentFilterName);
-				this.$.departmentSearchWidget.searchButtonLabel = this.localize('filtering.searchBy', 'filter', departmentFilterName);
+				searchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', filterName);
+				searchWidget.searchButtonLabel = this.localize('filtering.searchBy', 'filter', filterName);
 
 				this.set('currentFilters', this._currentFilters);
 				this._showClearButton = this.currentFilters.length > 0;
 				this.fire('d2l-filter-menu-content-change', {
 					filters: this.currentFilters
 				});
+			},
+			_updateDepartmentFilterLabel: function(numDepartmentFilters, departmentFilterName) {
+				this.__updateFilterLabel(numDepartmentFilters, departmentFilterName, this.$.departmentListButton, this.$.departmentSearchWidget);
 			},
 			_updateSemesterFilterLabel: function(numSemesterFilters, semesterFilterName) {
-				var defaultName = this.localize('filtering.semesterDefault');
-				var label = this.filterStandardSemesterName === defaultName ? defaultName : semesterFilterName;
-				this.$.semesterListButton.textContent = this.localize('filtering.filterLabel', 'filterLabel', label, 'num', numSemesterFilters);
-
-				this.$.semesterSearchWidget.placeholderText = this.localize('filtering.searchBy', 'filter', semesterFilterName);
-				this.$.semesterSearchWidget.searchButtonLabel = this.localize('filtering.searchBy', 'filter', semesterFilterName);
-
-				this.set('currentFilters', this._currentFilters);
-				this._showClearButton = this.currentFilters.length > 0;
-				this.fire('d2l-filter-menu-content-change', {
-					filters: this.currentFilters
-				});
+				this.__updateFilterLabel(numSemesterFilters, semesterFilterName, this.$.semesterListButton, this.$.semesterSearchWidget);
 			},
-			__onSearchResults: function(entity, moreUrlPath, hasMorePath, hasPath) {
+			__onSearchResults: function(entity, hasPath) {
 				if (!entity.hasLinkByRel) {
 					entity = this.parseEntity(entity);
 				}
 
 				this.set(hasPath, (entity.entities || []).length > 0);
-				this.set(hasMorePath, entity.hasLinkByRel('next'));
-				this.set(moreUrlPath, this[hasMorePath] ? entity.getLinkByRel('next').href : '');
 			},
 			_onDepartmentSearchResults: function(e) {
 				if (!this._departmentsLoaded) {
@@ -447,11 +405,11 @@
 
 					// Hide loading spinner
 					if (this._semestersLoaded) {
-						this._hideLoadingSpinner();
+						this._showContent = true;
 					}
 				}
 				this.set('_departments', e.detail.entities);
-				this.__onSearchResults(e.detail, '_moreDepartmentsUrl', '_hasMoreDepartments', '_hasDepartments');
+				this.__onSearchResults(e.detail, '_hasDepartments');
 				this.$.departmentList.querySelector('d2l-menu').resize();
 
 				setTimeout(function() {
@@ -467,11 +425,11 @@
 
 					// Hide loading spinner
 					if (this._departmentsLoaded) {
-						this._hideLoadingSpinner();
+						this._showContent = true;
 					}
 				}
 				this.set('_semesters', e.detail.entities);
-				this.__onSearchResults(e.detail, '_moreSemestersUrl', '_hasMoreSemesters', '_hasSemesters');
+				this.__onSearchResults(e.detail, '_hasSemesters');
 				this.$.semesterList.querySelector('d2l-menu').resize();
 
 				setTimeout(function() {
@@ -479,49 +437,28 @@
 					window.dispatchEvent(new Event('resize'));
 				}.bind(this), 200);
 			},
-			__onMoreResponse: function(response, organizationsPath, moreUrlPath, hasMorePath) {
-				if (response.detail.status === 200 || response.detail.status === 304) {
-					var responseEntity = this.parseEntity(response.detail.xhr.response);
+			__selectList: function(semester, department) {
+				this._semesterListVisible = semester;
+				this._departmentListVisible = department;
+				this.$.semesterListButton.setAttribute('aria-pressed', semester);
+				this.$.departmentListButton.setAttribute('aria-pressed', department);
 
-					responseEntity.entities.forEach(function(entity) {
-						this.push(organizationsPath, entity);
-					}.bind(this));
+				semester && this.$.semesterSearchWidget.clear();
+				semester && this.$.semesterList.querySelector('d2l-menu').resize();
 
-					this.__onSearchResults(responseEntity, moreUrlPath, hasMorePath);
-				}
-			},
-			_onMoreDepartmentsResponse: function(response) {
-				this.__onMoreResponse(response, '_departments', '_moreDepartmentsUrl', '_hasMoreDepartments');
-			},
-			_onMoreSemestersResponse: function(response) {
-				this.__onMoreResponse(response, '_semesters', '_moreSemestersUrl', '_hasMoreSemesters');
-			},
-			__toggleSelectedList: function(list, button, highlight, selected) {
-				this.toggleClass('d2l-filter-menu-content-hidden', !selected, list);
-				this.toggleClass('d2l-filter-menu-content-invisible', !selected, highlight);
-				button.setAttribute('aria-pressed', selected);
+				department && this.$.departmentSearchWidget.clear();
+				department && this.$.departmentList.querySelector('d2l-menu').resize();
+
+				setTimeout(function() {
+					// DE24225 - force dropdown to resize after opening
+					window.dispatchEvent(new Event('resize'));
+				}.bind(this), 200);
 			},
 			_selectDepartmentList: function() {
-				this.__toggleSelectedList(this.$.departmentList, this.$.departmentListButton, this.$.departmentListHighlight, true);
-				this.__toggleSelectedList(this.$.semesterList, this.$.semesterListButton, this.$.semesterListHighlight, false);
-				this.$.departmentSearchWidget.clear();
-				this.$.departmentList.querySelector('d2l-menu').resize();
-
-				setTimeout(function() {
-					// DE24225 - force dropdown to resize after opening
-					window.dispatchEvent(new Event('resize'));
-				}.bind(this), 200);
+				this.__selectList(false, true);
 			},
 			_selectSemesterList: function() {
-				this.__toggleSelectedList(this.$.semesterList, this.$.semesterListButton, this.$.semesterListHighlight, true);
-				this.__toggleSelectedList(this.$.departmentList, this.$.departmentListButton, this.$.departmentListHighlight, false);
-				this.$.semesterSearchWidget.clear();
-				this.$.semesterList.querySelector('d2l-menu').resize();
-
-				setTimeout(function() {
-					// DE24225 - force dropdown to resize after opening
-					window.dispatchEvent(new Event('resize'));
-				}.bind(this), 200);
+				this.__selectList(true, false);
 			},
 			__updateFilter: function(e, path) {
 				if (e.detail.selected) {

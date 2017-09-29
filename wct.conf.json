@@ -2,7 +2,7 @@
   "plugins": {
     "local": {
       "browsers": [{
-        "browserName": "firefox"
+        "browserName": "chrome"
       }]
     },
     "sauce": {

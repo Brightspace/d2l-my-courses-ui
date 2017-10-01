@@ -356,6 +356,7 @@ describe('d2l-my-courses', function() {
 			it('should return correct org unit id if course tile used', function(done) {
 				widget.dispatchEvent(openChangeImageViewEvent);
 				expect(true).to.equal(true);
+				done();
 				/*
 				//console.log('_setImageOrg is: ', JSON.stringify(widget._setImageOrg));
 				console.log('test test test');

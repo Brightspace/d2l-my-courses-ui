@@ -518,6 +518,7 @@
 				this.toggleClass('d2l-my-courses-hidden', false, this.$$('.my-courses-content'));
 			},
 			_getOrgUnitId: function(organization) {
+				console.log('_getOrgUnitId start ', organization)
 				var match = /[0-9]+$/.exec(this.getEntityIdentifier(organization));
 
 				if (!match) {

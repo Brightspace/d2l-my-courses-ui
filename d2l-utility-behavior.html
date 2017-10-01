@@ -36,8 +36,10 @@
 		},
 		// Creates a unique identifier for a Siren Entity (really just the self Link href)
 		getEntityIdentifier: function(entity) {
+			console.log('getEntityIdentifier start: ', JSON.stringify(entity));
 			// An entity's self href should be unique, so use it as an identifier
 			var selfLink = entity.getLinkByRel('self');
+			console.log('getEntityIdentifier end');
 			return selfLink.href;
 		},
 		parseEntity: function(entity) {

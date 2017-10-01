@@ -357,10 +357,13 @@ describe('d2l-my-courses', function() {
 				widget.dispatchEvent(openChangeImageViewEvent);
 				widget.getLastOrgUnitId();
 				//expect(true).to.equal(true);
-				expect(widget.getLastOrgUnitId()).to.equal(widget._setImageOrg);
-				expect(widget.getLastOrgUnitId()).to.equal(null);
-				expect(widget.getLastOrgUnitId()).to.equal(1);
-				done();
+				//expect(widget.getLastOrgUnitId()).to.equal(widget._setImageOrg);
+				setTimeout(function() {
+					expect(widget.getLastOrgUnitId()).to.equal(1);
+					done();
+				}, 1000);
+				//expect(widget.getLastOrgUnitId()).to.equal(1);
+
 				/*
 				//console.log('_setImageOrg is: ', JSON.stringify(widget._setImageOrg));
 				console.log('test test test');

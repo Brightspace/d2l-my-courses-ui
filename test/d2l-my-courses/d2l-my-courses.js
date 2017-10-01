@@ -358,6 +358,8 @@ describe('d2l-my-courses', function() {
 				widget.getLastOrgUnitId();
 				//expect(true).to.equal(true);
 				expect(widget.getLastOrgUnitId()).to.equal(widget._setImageOrg);
+				expect(widget.getLastOrgUnitId()).to.equal(null);
+				expect(widget.getLastOrgUnitId()).to.equal(1);
 				done();
 				/*
 				//console.log('_setImageOrg is: ', JSON.stringify(widget._setImageOrg));

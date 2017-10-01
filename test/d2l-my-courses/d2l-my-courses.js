@@ -354,8 +354,9 @@ describe('d2l-my-courses', function() {
 			});
 			*/
 			it('should return correct org unit id if course tile used', function(done) {
-				widget.dispatchEvent(openChangeImageViewEvent);
-				console.log('_setImageOrg is: ', JSON.stringify(widget._setImageOrg));
+				//widget.dispatchEvent(openChangeImageViewEvent);
+				//console.log('_setImageOrg is: ', JSON.stringify(widget._setImageOrg));
+				console.log('test test test');
 				setTimeout(function() {
 					//widget.getLastOrgUnitId();
 					//expect(widget.getLastOrgUnitId()).to.equal(widget._setImageOrg);

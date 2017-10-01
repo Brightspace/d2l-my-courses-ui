@@ -353,14 +353,11 @@ describe('d2l-my-courses', function() {
 
 			it('should return correct org unit id if course tile used', function(done) {
 				widget.dispatchEvent(openChangeImageViewEvent);
-				/*
+
 				setTimeout(function() {
 					expect(widget.getLastOrgUnitId()).to.equal(widget._setImageOrg);
 					done();
 				});
-				*/
-				expect(true).to.equal(true);
-				done();
 			});
 		});
 

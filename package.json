@@ -7,7 +7,7 @@
     "build": "cp d2l-*.html ./dist/",
     "postinstall": "bower install",
     "publish:cdn": "npm run build -s && frau-publisher",
-    "test": "npm run test:lint:js && npm run test:lint:wc && wct",
+    "test": "wct",
     "test:lint:js": "eslint --ext .js,.html . d2l-filter-menu-content/ demo/ lang/ test/",
     "test:lint:wc": "polymer lint",
     "test:no-lint": "cross-env LAUNCHPAD_BROWSERS=firefox wct -p"

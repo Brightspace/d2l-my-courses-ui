@@ -9,8 +9,6 @@ addons:
       - oracle-java8-installer
       - oracle-java8-set-default
 before_script:
-- npm run test:lint:js
-- npm run test:lint:wc
 script:
 - xvfb-run wct
 after_success:

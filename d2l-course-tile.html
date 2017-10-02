@@ -219,6 +219,9 @@ the user has in that organization - student, teacher, TA, etc.
 			focus: function() {
 				this.$['d2l-course-tile-anchor'].focus();
 			},
+			getOrganization: function() {
+				return this._organization;
+			},
 			// Handler that triggers the API call to change an enrollment's pin state when the user says DO IT
 			pinClickHandler: function(isTouch) {
 				var pinAction = this.pinned

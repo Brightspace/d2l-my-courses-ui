@@ -34,7 +34,7 @@
     "d2l-dropdown": "^5.0.6",
     "d2l-hm-constants-behavior": "Brightspace/d2l-hm-constants-behavior#^2.4.1",
     "d2l-icons": "^3.2.0",
-    "d2l-image-selector": "git://github.com/Brightspace/image-selector#^1.0.4",
+    "d2l-image-selector": "git://github.com/Brightspace/image-selector#^1.1.0",
     "d2l-link": "^3.5.0",
     "d2l-loading-spinner": "^5.0.4",
     "d2l-menu": "^0.3.5",

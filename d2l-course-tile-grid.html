@@ -121,6 +121,24 @@
 					selectedTile.setCourseImage(detail.detail);
 				}
 			},
+			focus: function(organization) {
+				var courseTiles = Polymer.dom(this.root).querySelectorAll('d2l-course-tile'),
+					courseTileOrg,
+					x;
+
+				for (x = 0; x < courseTiles.length; x++) {
+					courseTileOrg = courseTiles[x].getOrganization();
+					if (
+						courseTileOrg && courseTileOrg.properties &&
+						organization && organization.properties &&
+						this.getEntityIdentifier(courseTileOrg) === this.getEntityIdentifier(organization)
+					) {
+						courseTiles[x].focus();
+						return true;
+					}
+				}
+				return false;
+			},
 			_grid_shouldAnimateEnrollmentInsertion: function gridShouldAnimateEnrollmentInsertion(enrollment) {
 				if (!this.enrollmentsToAnimate) {
 					return false;

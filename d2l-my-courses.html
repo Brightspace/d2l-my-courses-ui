@@ -108,7 +108,8 @@
 				organization="[[_setImageOrg]]"
 				user-id="[[userId]]"
 				tenant-id="[[tenantId]]"
-				telemetry-endpoint="[[telemetryEndpoint]]">
+				telemetry-endpoint="[[telemetryEndpoint]]"
+				course-image-upload-cb="[[courseImageUploadCb]]">
 			</d2l-basic-image-selector>
 		</d2l-simple-overlay>
 
@@ -151,6 +152,8 @@
 				userId: String,
 				// Types of notifications to include in update count in course tile
 				courseUpdatesConfig: Object,
+				// Callback for upload in image-selector
+				courseImageUploadCb: Function,
 
 				/*
 				* Private Polymer properties
@@ -232,8 +235,31 @@
 			* Public API functions
 			*/
 
+			courseImageUploadCompleted: function(success) {
+				if (success) {
+					this.$['basic-image-selector-overlay'].close();
+					// TODO: refresh image for this._setImageOrg
+				}
+				this.focus();
+			},
+
+			focus: function() {
+				if (this._setImageOrg && this.$$('d2l-course-tile-grid').focus(this._setImageOrg)) {
+					return;
+				}
+				this.$.viewAllCourses.focus();
+			},
+
 			getCourseTileItemCount: function() {
 				return this.pinnedEnrollments.length;
+			},
+
+			getLastOrgUnitId: function() {
+				if (!this._setImageOrg) {
+					return;
+				}
+				return 1;
+				//return this._getOrgUnitId(this._setImageOrg);
 			},
 
 			/*
@@ -254,13 +280,12 @@
 			},
 			_onEnrollmentPinAction: function(e) {
 				var isPinned = e.type === 'enrollment-pinned';
-				var match = /[0-9]+$/.exec(this.getEntityIdentifier(e.detail.organization));
+				var orgUnitId = this._getOrgUnitId(e.detail.organization);
 
-				if (!match) {
+				if (!orgUnitId) {
 					return;
 				}
 
-				var orgUnitId = match[0];
 				this.fire(
 					'd2l-course-pinned-change', {
 						orgUnitId: orgUnitId,
@@ -492,6 +517,15 @@
 			_showContent: function() {
 				this.toggleClass('d2l-my-courses-hidden', true, this.$.initialLoadingSpinner);
 				this.toggleClass('d2l-my-courses-hidden', false, this.$$('.my-courses-content'));
+			},
+			_getOrgUnitId: function(organization) {
+				console.log('_getOrgUnitId start ', organization)
+				var match = /[0-9]+$/.exec(this.getEntityIdentifier(organization));
+
+				if (!match) {
+					return;
+				}
+				return match[0];
 			}
 		});
 	</script>

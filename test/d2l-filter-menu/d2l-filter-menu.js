@@ -2,7 +2,7 @@
 
 'use strict';
 
-describe('d2l-filter-menu-content-tabbed', function() {
+describe('d2l-filter-menu', function() {
 	var component,
 		sandbox,
 		myEnrollmentsEntity;
@@ -18,7 +18,7 @@ describe('d2l-filter-menu-content-tabbed', function() {
 			}]
 		});
 		sandbox = sinon.sandbox.create();
-		component = fixture('d2l-filter-menu-content-fixture');
+		component = fixture('d2l-filter-menu-fixture');
 	});
 
 	afterEach(function() {

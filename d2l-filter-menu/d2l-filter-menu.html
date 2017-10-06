@@ -9,7 +9,7 @@
 <link rel="import" href="../localize-behavior.html">
 <link rel="import" href="d2l-list-item-filter.html">
 
-<dom-module id="d2l-filter-menu-content-tabbed">
+<dom-module id="d2l-filter-menu">
 	<template>
 		<style>
 			:host {
@@ -177,7 +177,7 @@
 		'use strict';
 
 		Polymer({
-			is: 'd2l-filter-menu-content-tabbed',
+			is: 'd2l-filter-menu',
 			properties: {
 				myEnrollmentsEntity: {
 					type: Object,
@@ -387,7 +387,7 @@
 
 				this.set('currentFilters', this._currentFilters);
 				this._showClearButton = this.currentFilters.length > 0;
-				this.fire('d2l-filter-menu-content-change', {
+				this.fire('d2l-filter-menu-change', {
 					filters: this.currentFilters
 				});
 			},

@@ -81,12 +81,12 @@ describe('d2l-all-courses', function() {
 	});
 
 	it('should load filter menu content when filter menu is opened', function() {
-		var stub = sinon.stub(widget.$.filterMenuContent, 'load');
+		var stub = sinon.stub(widget.$.filterMenu, 'load');
 		widget._onFilterDropdownOpen();
 		expect(stub.called).to.be.true;
 	});
 
-	describe('d2l-filter-menu-content-change', function() {
+	describe('d2l-filter-menu-change', function() {
 		var event = {
 			filters: [1]
 		};
@@ -94,7 +94,7 @@ describe('d2l-all-courses', function() {
 		it('should update the parent organizations', function() {
 			expect(widget._parentOrganizations.length).to.equal(0);
 
-			widget.$$('d2l-filter-menu-content-tabbed').fire('d2l-filter-menu-content-change', event);
+			widget.$$('d2l-filter-menu').fire('d2l-filter-menu-change', event);
 
 			expect(widget._parentOrganizations.length).to.equal(1);
 		});
@@ -102,19 +102,19 @@ describe('d2l-all-courses', function() {
 
 	describe('Filter text', function() {
 		it('should read "Filter" when no filters are selected', function() {
-			widget.$.filterMenuContent.currentFilters = [];
+			widget.$.filterMenu.currentFilters = [];
 			widget.$.filterDropdownContent.fire('d2l-dropdown-close', {});
 			expect(widget._filterText).to.equal('Filter');
 		});
 
 		it('should read "Filter: 1 filter" when any 1 filter is selected', function() {
-			widget.$.filterMenuContent.currentFilters = [1];
+			widget.$.filterMenu.currentFilters = [1];
 			widget.$.filterDropdownContent.fire('d2l-dropdown-close', {});
 			expect(widget._filterText).to.equal('Filter: 1 Filter');
 		});
 
 		it('should read "Filter: 2 filters" when any 2 filters are selected', function() {
-			widget.$.filterMenuContent.currentFilters = [1, 1];
+			widget.$.filterMenu.currentFilters = [1, 1];
 			widget.$.filterDropdownContent.fire('d2l-dropdown-close', {});
 			expect(widget._filterText).to.equal('Filter: 2 Filters');
 		});
@@ -261,11 +261,11 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should clear filters', function() {
-			var spy = sandbox.spy(widget.$.filterMenuContent, '_clearFilters');
+			var spy = sandbox.spy(widget.$.filterMenu, '_clearFilters');
 
 			widget._hasManyEnrollments = true;
 
-			widget.$.filterMenuContent.currentFilters = [1];
+			widget.$.filterMenu.currentFilters = [1];
 			widget.$.filterDropdownContent.fire('d2l-dropdown-close', {});
 
 			expect(widget._filterText).to.equal('Filter: 1 Filter');

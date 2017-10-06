@@ -16,7 +16,7 @@
 <link rel="import" href="d2l-course-management-behavior.html">
 <link rel="import" href="d2l-course-tile-grid.html">
 <link rel="import" href="d2l-course-tile-responsive-grid-behavior.html">
-<link rel="import" href="d2l-filter-menu-content/d2l-filter-menu-content-tabbed.html">
+<link rel="import" href="d2l-filter-menu/d2l-filter-menu.html">
 <link rel="import" href="d2l-search-widget-custom.html">
 <link rel="import" href="d2l-utility-behavior.html">
 <link rel="import" href="localize-behavior.html">
@@ -63,12 +63,12 @@
 									<d2l-icon icon="d2l-tier1:chevron-down" aria-hidden="true"></d2l-icon>
 								</button>
 								<d2l-dropdown-content id="filterDropdownContent" no-padding min-width="350" render-content>
-									<d2l-filter-menu-content-tabbed
-										id="filterMenuContent"
+									<d2l-filter-menu
+										id="filterMenu"
 										my-enrollments-entity="[[myEnrollmentsEntity]]",
 										filter-standard-semester-name="[[filterStandardSemesterName]]",
 										filter-standard-department-name="[[filterStandardDepartmentName]]">
-									</d2l-filter-menu-content-tabbed>
+									</d2l-filter-menu>
 								</d2l-dropdown-content>
 							</d2l-dropdown>
 
@@ -322,7 +322,7 @@
 				this.listen(this.$.sortDropdown, 'd2l-menu-item-change', '_onMenuItemChange');
 				this.listen(this.$.filterDropdownContent, 'd2l-dropdown-open', '_onFilterDropdownOpen');
 				this.listen(this.$.filterDropdownContent, 'd2l-dropdown-close', '_onFilterDropdownClose');
-				this.listen(this.$.filterMenuContent, 'd2l-filter-menu-content-change', '_onFilterChanged');
+				this.listen(this.$.filterMenu, 'd2l-filter-menu-change', '_onFilterChanged');
 				this.listen(this.$['search-widget'], 'd2l-search-widget-results-changed', '_onSearchResultsChanged');
 
 				window.addEventListener('resize', this._onResize.bind(this));
@@ -331,7 +331,7 @@
 				this.unlisten(this.$.sortDropdown, 'd2l-menu-item-change', '_onMenuItemChange');
 				this.unlisten(this.$.filterDropdownContent, 'd2l-dropdown-open', '_onFilterDropdownOpen');
 				this.unlisten(this.$.filterDropdownContent, 'd2l-dropdown-close', '_onFilterDropdownClose');
-				this.unlisten(this.$.filterMenuContent, 'd2l-filter-menu-content-change', '_onFilterChanged');
+				this.unlisten(this.$.filterMenu, 'd2l-filter-menu-change', '_onFilterChanged');
 				this.unlisten(this.$['search-widget'], 'd2l-search-widget-results-changed', '_onSearchResultsChanged');
 			},
 
@@ -429,7 +429,7 @@
 				this.set('_parentOrganizations', e.detail.filters);
 			},
 			_onFilterDropdownClose: function() {
-				var length = this.$.filterMenuContent.currentFilters.length;
+				var length = this.$.filterMenu.currentFilters.length;
 				var text;
 				if (length === 0) {
 					text = this.localize('filtering.filter');
@@ -442,7 +442,7 @@
 			},
 			_onFilterDropdownOpen: function() {
 				this.set('_filterText', this.localize('filtering.filter'));
-				this.$.filterMenuContent.open();
+				this.$.filterMenu.open();
 			},
 			_onMenuItemChange: function(e) {
 				this.set('_sortParameter', this._sortOptions[e.detail.value].queryParameter);
@@ -461,7 +461,7 @@
 				this._removeAlert('setCourseImageFailure');
 				this._clearSearchWidget();
 				if (this._hasManyEnrollments) {
-					this.$.filterMenuContent._clearFilters();
+					this.$.filterMenu._clearFilters();
 				}
 				this._filterText = this.localize('filtering.filter');
 				this._resetSortDropdown();

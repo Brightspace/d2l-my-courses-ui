@@ -32,7 +32,7 @@
     "d2l-colors": "^2.3.0",
     "d2l-course-image": "git://github.com/Brightspace/course-image.git#^1.0.3",
     "d2l-dropdown": "^5.0.6",
-    "d2l-fetch": "Brightspace/d2l-fetch#^1.5.1",
+    "d2l-fetch": "Brightspace/d2l-fetch#^2.5.1",
     "d2l-hm-constants-behavior": "Brightspace/d2l-hm-constants-behavior#^2.4.1",
     "d2l-icons": "^3.2.0",
     "d2l-image-selector": "git://github.com/Brightspace/image-selector#^2.0.1",

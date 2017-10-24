@@ -104,11 +104,8 @@
 			},
 			_onMenuItemChange: function(e) {
 				var changeFilterAction;
-				if (e.detail.selected) {
-					changeFilterAction = e.detail.value.getActionByName('add-filter');
-				} else {
-					changeFilterAction = e.detail.value.getActionByName('remove-filter');
-				}
+				changeFilterAction = e.detail.value.getActionByName('add-filter')
+					|| e.detail.value.getActionByName('remove-filter');
 				// Create the URL to add/remove the filter to overall filter
 				var addRemoveUrl = this.createActionUrl(changeFilterAction);
 

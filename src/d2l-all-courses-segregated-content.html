@@ -1,0 +1,103 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../../d2l-alert/d2l-alert.html">
+<link rel="import" href="../../d2l-dropdown/d2l-dropdown.html">
+<link rel="import" href="../../d2l-dropdown/d2l-dropdown-content.html">
+<link rel="import" href="../../d2l-dropdown/d2l-dropdown-menu.html">
+<link rel="import" href="../../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
+<link rel="import" href="../../d2l-icons/d2l-icons.html">
+<link rel="import" href="../../d2l-loading-spinner/d2l-loading-spinner.html">
+<link rel="import" href="../../d2l-menu/d2l-menu-item-radio.html">
+<link rel="import" href="../../d2l-organization-hm-behavior/d2l-organization-hm-behavior.html">
+<link rel="import" href="../../d2l-simple-overlay/d2l-simple-overlay.html">
+<link rel="import" href="../d2l-alert-behavior.html">
+<link rel="import" href="../d2l-all-courses-styles.html">
+<link rel="import" href="../d2l-course-management-behavior.html">
+<link rel="import" href="../d2l-course-tile-grid.html">
+<link rel="import" href="../d2l-course-tile-responsive-grid-behavior.html">
+<link rel="import" href="../d2l-filter-menu/d2l-filter-menu.html">
+<link rel="import" href="../d2l-search-widget-custom.html">
+<link rel="import" href="../d2l-utility-behavior.html">
+<link rel="import" href="../localize-behavior.html">
+
+<dom-module id="d2l-all-courses-segregated-content">
+	<template>
+		<style include="d2l-all-courses-styles"></style>
+
+		<h2>{{localize('pinnedCourses')}}</h2>
+		<span hidden$="[[!noPinnedCoursesInSearch]]">
+			{{localize('noPinnedCoursesInSearch')}}
+		</span>
+		<span hidden$="[[!noPinnedCoursesInSelection]]">
+			{{localize('noPinnedCoursesInSelection')}}
+		</span>
+
+		<template is="dom-repeat" items="{{_alerts}}">
+			<d2l-alert type="[[item.alertType]]">
+				{{item.alertMessage}}
+			</d2l-alert>
+		</template>
+
+		<d2l-course-tile-grid
+			id="all-courses-pinned"
+			enrollments="[[filteredPinnedEnrollments]]"
+			enrollments-to-animate="[[pinnedEnrollmentsToAnimate]]"
+			tile-sizes="[[tileSizes]]"
+			locale="[[locale]]"
+			show-course-code="[[showCourseCode]]"
+			show-semester="[[showSemester]]"
+			course-updates-config="[[courseUpdatesConfig]]"
+			updated-sort-logic="[[updatedSortLogic]]">
+		</d2l-course-tile-grid>
+
+		<h2>{{localize('unpinnedCourses')}}</h2>
+
+		<span class="bottom-pad" hidden$="[[!noUnpinnedCoursesInSearch]]">
+			{{localize('noUnpinnedCoursesInSearch')}}
+		</span>
+		<span class="bottom-pad" hidden$="[[!noUnpinnedCoursesInSelection]]">
+			{{localize('noUnpinnedCoursesInSelection')}}
+		</span>
+		<span class="bottom-pad" hidden$="[[!noUnpinnedCourses]]">
+			{{localize('noUnpinnedCoursesMessage')}}
+		</span>
+
+		<d2l-course-tile-grid
+			id="all-courses-unpinned"
+			enrollments="[[filteredUnpinnedEnrollments]]"
+			enrollments-to-animate="[[unpinnedEnrollmentsToAnimate]]"
+			tile-sizes="[[tileSizes]]"
+			locale="[[locale]]"
+			show-course-code="[[showCourseCode]]"
+			show-semester="[[showSemester]]"
+			course-updates-config="[[courseUpdatesConfig]]"
+			updated-sort-logic="[[updatedSortLogic]]">
+		</d2l-course-tile-grid>
+	</template>
+	<script>
+		Polymer({
+			is: 'd2l-all-courses-segregated-content',
+			properties: {
+				noPinnedCoursesInSearch: Boolean,
+				noPinnedCoursesInSelection: Boolean,
+				filteredPinnedEnrollments: Array,
+				pinnedEnrollmentsToAnimate: Array,
+				tileSizes: Object,
+				showCourseCode: Boolean,
+				showSemester: Boolean,
+				courseUpdatesConfig: Object,
+				updatedSortLogic: Boolean,
+				noUnpinnedCoursesInSearch: Boolean,
+				noUnpinnedCoursesInSelection: Boolean,
+				noUnpinnedCourses: Boolean,
+				filteredUnpinnedEnrollments: Array,
+				unpinnedEnrollmentsToAnimate: Array
+			},
+			behaviors: [
+				D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
+				window.D2L.MyCourses.AlertBehavior,
+				window.D2L.MyCourses.CourseTileResponsiveGridBehavior
+			]
+		});
+	</script>
+</dom-module>

@@ -91,13 +91,55 @@
 				noUnpinnedCoursesInSelection: Boolean,
 				noUnpinnedCourses: Boolean,
 				filteredUnpinnedEnrollments: Array,
-				unpinnedEnrollmentsToAnimate: Array
+				unpinnedEnrollmentsToAnimate: Array,
+				pinnedEnrollments: {
+					type: Array,
+					value: function() { return []; },
+					observer: '_pinnedEnrollmentsChanged'
+				},
+				unpinnedEnrollments: {
+					type: Array,
+					value: function() { return []; },
+					observer: '_unpinnedEnrollmentsChanged'
+				}
 			},
 			behaviors: [
 				D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 				window.D2L.MyCourses.AlertBehavior,
 				window.D2L.MyCourses.CourseTileResponsiveGridBehavior
-			]
+			],
+
+			ready: function() {
+				// Both course tile grids in this view should have the same number of columns, so use a custom getter
+				var courseTileGrids = Polymer.dom(this.root).querySelectorAll('d2l-course-tile-grid');
+				for (var i = 0; i < courseTileGrids.length; i++) {
+					courseTileGrids[i].getCourseTileItemCount = this.getCourseTileItemCount.bind(this);
+				}
+				this._updateTileSizes();
+			},
+			attached: function() {
+				window.addEventListener('resize', this._onResize.bind(this));
+			},
+
+			_onResize: function() {
+				this._updateTileSizes();
+			},
+			_pinnedEnrollmentsChanged: function() {
+				this._updateTileSizes();
+			},
+			_unpinnedEnrollmentsChanged: function() {
+				this._updateTileSizes();
+			},
+			_updateTileSizes: function() {
+				this._rescaleCourseTileRegions();
+				this.tileSizes = Math.floor(100 / this._numColsOverlay) + 'vw';
+			},
+
+			getCourseTileItemCount: function() {
+				var itemCount = Math.max(this.pinnedEnrollments ? this.pinnedEnrollments.length : 0,
+					this.unpinnedEnrollments ? this.unpinnedEnrollments.length : 0);
+				return itemCount;
+			},
 		});
 	</script>
 </dom-module>

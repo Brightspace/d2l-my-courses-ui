@@ -675,8 +675,7 @@ describe('<d2l-course-tile>', function() {
 					isActive: true
 				}
 			};
-			window.BSI = window.BSI || {};
-			window.BSI.Intl = window.BSI.Intl || {
+			window.d2lIntl = {
 				DateTimeFormat: function() {
 					this.format = sinon.stub().returns(formattedDate);
 				}

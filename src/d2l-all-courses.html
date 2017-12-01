@@ -323,8 +323,8 @@
 						}.bind(this), 1000); // delay until the tile fail icon animation begins to kick in (1 sec delay)
 					}
 				}
-				this.$$('#all-courses-pinned').setCourseImage(details);
-				this.$$('#all-courses-unpinned').setCourseImage(details);
+				this.$$('d2l-all-courses-segregated-content').$$('#all-courses-pinned').setCourseImage(details);
+				this.$$('d2l-all-courses-segregated-content').$$('#all-courses-unpinned').setCourseImage(details);
 			},
 
 			/*

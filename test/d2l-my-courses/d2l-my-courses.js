@@ -531,11 +531,11 @@ describe('d2l-my-courses', function() {
 			widget._enrollmentsSearchUrl = '';
 
 			widget.$$('#viewAllCourses').click();
-			var allCoursesRescaleSpy = sinon.spy(widget.$$('d2l-all-courses'), '_rescaleCourseTileRegions');
+			var allCoursesRescaleSpy = sinon.spy(widget.$$('d2l-all-courses').$$('d2l-all-courses-segregated-content'), '_rescaleCourseTileRegions');
 
 			clock.tick(100);
 			expect(allCoursesRescaleSpy.called);
-			widget.$$('d2l-all-courses')._rescaleCourseTileRegions.restore();
+			widget.$$('d2l-all-courses').$$('d2l-all-courses-segregated-content')._rescaleCourseTileRegions.restore();
 		});
 
 		it('should remove a setCourseImageFailure alert when the all-courses overlay is closed', function() {

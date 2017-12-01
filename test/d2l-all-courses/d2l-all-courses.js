@@ -79,7 +79,7 @@ describe('d2l-all-courses', function() {
 		widget.pinnedEnrollments = [pinnedEnrollmentEntity];
 		widget.unpinnedEnrollments = [unpinnedEnrollmentEntity];
 
-		expect(widget.getCourseTileItemCount()).to.equal(1);
+		expect(widget.$$('d2l-all-courses-segregated-content').getCourseTileItemCount()).to.equal(1);
 	});
 
 	it('should set getCourseTileItemCount on its child course-tile-grids', function() {
@@ -215,56 +215,56 @@ describe('d2l-all-courses', function() {
 			widget._clearAlerts();
 			widget.$['search-widget']._showClearIcon = true;
 			widget._updateEnrollmentAlerts(false, true);
-			expect(widget._noPinnedCoursesInSearch).to.be.true;
+			expect(widget.noPinnedCoursesInSearch).to.be.true;
 		});
 
 		it('should show no pinned courses in search message when no pinned courses in filter', function() {
 			widget._clearAlerts();
 			widget.$.filterMenu.fire('d2l-filter-menu-change', { filterCount: 1 });
 			widget._updateEnrollmentAlerts(false, true);
-			expect(widget._noPinnedCoursesInSelection).to.be.true;
+			expect(widget.noPinnedCoursesInSelection).to.be.true;
 		});
 
 		it('should show no unpinned courses in search message when no unpinned courses in search', function() {
 			widget._clearAlerts();
 			widget.$['search-widget']._showClearIcon = true;
 			widget._updateEnrollmentAlerts(true, false);
-			expect(widget._noUnpinnedCoursesInSearch).to.be.true;
+			expect(widget.noUnpinnedCoursesInSearch).to.be.true;
 		});
 
 		it('should show no unpinned courses in search message when no unpinned courses in filter', function() {
 			widget._clearAlerts();
 			widget.$.filterMenu.fire('d2l-filter-menu-change', { filterCount: 1 });
 			widget._updateEnrollmentAlerts(true, false);
-			expect(widget._noUnpinnedCoursesInSelection).to.be.true;
+			expect(widget.noUnpinnedCoursesInSelection).to.be.true;
 		});
 
 		it('should not show message when there are pinned courses in search', function() {
 			widget._clearAlerts();
 			widget.$['search-widget']._showClearIcon = true;
 			widget._updateEnrollmentAlerts(true, true);
-			expect(widget._noPinnedCoursesInSearch).to.be.false;
+			expect(widget.noPinnedCoursesInSearch).to.be.false;
 		});
 
 		it('should not show message when there are pinned courses in filter', function() {
 			widget._clearAlerts();
 			widget.$.filterMenu.fire('d2l-filter-menu-change', { filterCount: 1 });
 			widget._updateEnrollmentAlerts(true, true);
-			expect(widget._noPinnedCoursesInSelection).to.be.false;
+			expect(widget.noPinnedCoursesInSelection).to.be.false;
 		});
 
 		it('should not show message when there are unpinned courses in search', function() {
 			widget._clearAlerts();
 			widget.$['search-widget']._showClearIcon = true;
 			widget._updateEnrollmentAlerts(true, true);
-			expect(widget._noUnpinnedCoursesInSearch).to.be.false;
+			expect(widget.noUnpinnedCoursesInSearch).to.be.false;
 		});
 
 		it('should not show message when there are unpinned courses in filter', function() {
 			widget._clearAlerts();
 			widget.$.filterMenu.fire('d2l-filter-menu-change', { filterCount: 1 });
 			widget._updateEnrollmentAlerts(true, true);
-			expect(widget._noUnpinnedCoursesInSelection).to.be.false;
+			expect(widget.noUnpinnedCoursesInSelection).to.be.false;
 		});
 
 		it('should not show message if there is already an alert for no pinned courses', function() {
@@ -272,15 +272,15 @@ describe('d2l-all-courses', function() {
 			widget._addAlert('call-to-action', 'noPinnedCourses', 'no pinned courses bruh');
 			widget.$['search-widget']._showClearIcon = true;
 			widget._updateEnrollmentAlerts(false, true);
-			expect(widget._noPinnedCoursesInSearch).to.be.false;
+			expect(widget.noPinnedCoursesInSearch).to.be.false;
 		});
 
 		it('should not show messages if not searching', function() {
 			widget._clearAlerts();
 			widget.$['search-widget']._showClearIcon = false;
 			widget._updateEnrollmentAlerts(false, false);
-			expect(widget._noPinnedCoursesInSearch).to.be.false;
-			expect(widget._noUnpinnedCoursesInSearch).to.be.false;
+			expect(widget.noPinnedCoursesInSearch).to.be.false;
+			expect(widget.noUnpinnedCoursesInSearch).to.be.false;
 		});
 	});
 

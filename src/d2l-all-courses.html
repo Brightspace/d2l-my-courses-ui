@@ -93,19 +93,19 @@
 				</div>
 
 				<d2l-all-courses-segregated-content
-					no-Pinned-Courses-In-Search="[[noPinnedCoursesInSearch]]"
-					no-Pinned-Courses-In-Selection="[[noPinnedCoursesInSelection]]"
-					filtered-Pinned-Enrollments="[[filteredPinnedEnrollments]]"
-					pinned-Enrollments-To-Animate="[[pinnedEnrollmentsToAnimate]]"
-					show-Course-Code="[[showCourseCode]]"
-					show-Semester="[[showSemester]]"
-					course-Updates-Config="[[courseUpdatesConfig]]"
-					updated-Sort-Logic="[[updatedSortLogic]]"
-					no-Unpinned-Courses-In-Search="[[noUnpinnedCoursesInSearch]]"
-					no-Unpinned-Courses-In-Selection="[[noUnpinnedCoursesInSelection]]"
-					no-Unpinned-Courses="[[noUnpinnedCourses]]"
-					filtered-Unpinned-Enrollments="[[filteredUnpinnedEnrollments]]"
-					unpinned-Enrollments-To-Animate="[[unpinnedEnrollmentsToAnimate]]"
+					no-pinned-courses-in-search="[[noPinnedCoursesInSearch]]"
+					no-pinned-courses-in-selection="[[noPinnedCoursesInSelection]]"
+					filtered-pinned-enrollments="[[filteredPinnedEnrollments]]"
+					pinned-enrollments-to-animate="[[pinnedEnrollmentsToAnimate]]"
+					show-course-code="[[showCourseCode]]"
+					show-semester="[[showSemester]]"
+					course-updates-config="[[courseUpdatesConfig]]"
+					updated-sort-logic="[[updatedSortLogic]]"
+					no-unpinned-courses-in-search="[[noUnpinnedCoursesInSearch]]"
+					no-unpinned-courses-in-selection="[[noUnpinnedCoursesInSelection]]"
+					no-unpinned-courses="[[noUnpinnedCourses]]"
+					filtered-unpinned-enrollments="[[filteredUnpinnedEnrollments]]"
+					unpinned-enrollments-to-animate="[[unpinnedEnrollmentsToAnimate]]"
 					pinned-enrollments="[[pinnedEnrollments]]"
 					unpinned-enrollments="[[unpinnedEnrollments]]"
 				></d2l-all-courses-segregated-content>
@@ -269,8 +269,6 @@
 				this.listen(this.$.filterDropdownContent, 'd2l-dropdown-close', '_onFilterDropdownClose');
 				this.listen(this.$.filterMenu, 'd2l-filter-menu-change', '_onFilterChanged');
 				this.listen(this.$['search-widget'], 'd2l-search-widget-results-changed', '_onSearchResultsChanged');
-
-				// window.addEventListener('resize', this._onResize.bind(this));
 			},
 			detached: function() {
 				this.unlisten(this.$.sortDropdown, 'd2l-menu-item-change', '_onSortOrderChanged');

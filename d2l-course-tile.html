@@ -5,6 +5,7 @@
 <link rel="import" href="../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
 <link rel="import" href="../d2l-loading-spinner/d2l-loading-spinner.html">
 <link rel="import" href="../d2l-icons/d2l-icons.html">
+<link rel="import" href="../d2l-intl-import/d2l-intl.html">
 <link rel="import" href="../d2l-organization-hm-behavior/d2l-organization-hm-behavior.html">
 <link rel="import" href="../d2l-menu/d2l-menu-item-link.html">
 <link rel="import" href="../d2l-offscreen/d2l-offscreen.html">
@@ -603,9 +604,9 @@ the user has in that organization - student, teacher, TA, etc.
 			},
 			_setOverlayContent: function(type, date, inactive) {
 				this._clearOverlayContent();
-				if (!this._dateFormatter && window.BSI && window.BSI.Intl) {
-					this._dateFormatter = new window.BSI.Intl.DateTimeFormat(this.locale, { format: 'MMM d, yyyy' });
-					this._fullDateFormatter = new window.BSI.Intl.DateTimeFormat(this.locale, { format: 'MMMM d, yyyy' });
+				if (!this._dateFormatter && window.d2lIntl) {
+					this._dateFormatter = new window.d2lIntl.DateTimeFormat(this.locale, { format: 'MMM d, yyyy' });
+					this._fullDateFormatter = new window.d2lIntl.DateTimeFormat(this.locale, { format: 'MMMM d, yyyy' });
 				}
 
 				if (this._dateFormatter) {

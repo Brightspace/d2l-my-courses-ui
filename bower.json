@@ -53,7 +53,8 @@
     "iron-scroll-threshold": "PolymerElements/iron-scroll-threshold#^1.0.3",
     "iron-pages": "^1.0.9",
     "polymer": "^1.11.0",
-    "siren-parser-import": "Brightspace/siren-parser-import#^6.3.1"
+    "siren-parser-import": "Brightspace/siren-parser-import#^6.3.1",
+    "d2l-intl-import": "^1.0.0"
   },
   "devDependencies": {
     "web-component-tester": "^6.4.0"

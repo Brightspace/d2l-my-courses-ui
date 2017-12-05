@@ -249,8 +249,7 @@
 				window.D2L.MyCourses.AlertBehavior
 			],
 			listeners: {
-				'd2l-simple-overlay-opening': '_onSimpleOverlayOpening',
-				'tile-remove-complete': '_onTileRemoveComplete'
+				'd2l-simple-overlay-opening': '_onSimpleOverlayOpening'
 			},
 			observers: [
 				'_updateEnrollmentAlerts(_hasFilteredPinnedEnrollments, _hasFilteredUnpinnedEnrollments)',
@@ -407,13 +406,6 @@
 				this._filterText = this.localize('filtering.filter');
 				this._resetSortDropdown();
 			},
-			_onTileRemoveComplete: function(e) {
-				if (e.detail.pinned) {
-					this._moveEnrollmentToPinnedList(e.detail.enrollment);
-				} else {
-					this._moveEnrollmentToUnpinnedList(e.detail.enrollment);
-				}
-			},
 
 			/*
 			* Observers
@@ -506,38 +498,6 @@
 			},
 			_computeShowAdvancedSearchLink: function(link) {
 				return !!link;
-			},
-			_moveEnrollmentToPinnedList: function(enrollment) {
-				// Remove enrollment from unpinned list, add to pinned
-				var enrollmentId = this.getEntityIdentifier(enrollment);
-
-				for (var index = 0; index < this.filteredUnpinnedEnrollments.length; index++) {
-					var pinnedEnrollmentId = this.getEntityIdentifier(this.filteredUnpinnedEnrollments[index]);
-					if (pinnedEnrollmentId === enrollmentId) {
-						var foundEnrollment = this.filteredUnpinnedEnrollments[index];
-						this._setEnrollmentPinData(foundEnrollment, true);
-						this.pinnedEnrollmentsToAnimate.push(enrollmentId);
-						this.unshift('filteredPinnedEnrollments', foundEnrollment);
-						this.splice('filteredUnpinnedEnrollments', index, 1);
-						break;
-					}
-				}
-			},
-			_moveEnrollmentToUnpinnedList: function(enrollment) {
-				// Remove enrollment from pinned list, add to unpinned
-				var enrollmentId = this.getEntityIdentifier(enrollment);
-
-				for (var index = 0; index < this.filteredPinnedEnrollments.length; index++) {
-					var unpinnedEnrollmentId = this.getEntityIdentifier(this.filteredPinnedEnrollments[index]);
-					if (unpinnedEnrollmentId === enrollmentId) {
-						var foundEnrollment = this.filteredPinnedEnrollments[index];
-						this._setEnrollmentPinData(foundEnrollment, false);
-						this.unpinnedEnrollmentsToAnimate.push(enrollmentId);
-						this.unshift('filteredUnpinnedEnrollments', foundEnrollment);
-						this.splice('filteredPinnedEnrollments', index, 1);
-						break;
-					}
-				}
 			},
 			_resetSortDropdown: function() {
 				this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + this.defaultSortValue + ']').click();

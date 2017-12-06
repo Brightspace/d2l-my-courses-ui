@@ -20,6 +20,7 @@
 <link rel="import" href="d2l-utility-behavior.html">
 <link rel="import" href="localize-behavior.html">
 <link rel="import" href="d2l-all-courses-segregated-content.html">
+<link rel="import" href="d2l-all-courses-unified-content.html">
 
 <dom-module id="d2l-all-courses">
 	<template>
@@ -92,23 +93,34 @@
 					</div>
 				</div>
 
-				<d2l-all-courses-segregated-content
-					no-pinned-courses-in-search="[[noPinnedCoursesInSearch]]"
-					no-pinned-courses-in-selection="[[noPinnedCoursesInSelection]]"
-					filtered-pinned-enrollments="[[filteredPinnedEnrollments]]"
-					pinned-enrollments-to-animate="[[pinnedEnrollmentsToAnimate]]"
-					show-course-code="[[showCourseCode]]"
-					show-semester="[[showSemester]]"
-					course-updates-config="[[courseUpdatesConfig]]"
-					updated-sort-logic="[[updatedSortLogic]]"
-					no-unpinned-courses-in-search="[[noUnpinnedCoursesInSearch]]"
-					no-unpinned-courses-in-selection="[[noUnpinnedCoursesInSelection]]"
-					no-unpinned-courses="[[noUnpinnedCourses]]"
-					filtered-unpinned-enrollments="[[filteredUnpinnedEnrollments]]"
-					unpinned-enrollments-to-animate="[[unpinnedEnrollmentsToAnimate]]"
-					pinned-enrollments="[[pinnedEnrollments]]"
-					unpinned-enrollments="[[unpinnedEnrollments]]"
-				></d2l-all-courses-segregated-content>
+				<template is="dom-if" if="[[updatedSortLogic]]">
+					<d2l-all-courses-unified-content
+						show-course-code="[[showCourseCode]]"
+						show-semester="[[showSemester]]"
+						course-updates-config="[[courseUpdatesConfig]]"
+						updated-sort-logic="[[updatedSortLogic]]"
+						filtered-enrollments="[[filteredEnrollments]]"
+					></d2l-all-courses-segregated-content>
+				</template>
+				<template is="dom-if" if$="[[!updatedSortLogic]]">
+					<d2l-all-courses-segregated-content
+						no-pinned-courses-in-search="[[noPinnedCoursesInSearch]]"
+						no-pinned-courses-in-selection="[[noPinnedCoursesInSelection]]"
+						filtered-pinned-enrollments="[[filteredPinnedEnrollments]]"
+						pinned-enrollments-to-animate="[[pinnedEnrollmentsToAnimate]]"
+						show-course-code="[[showCourseCode]]"
+						show-semester="[[showSemester]]"
+						course-updates-config="[[courseUpdatesConfig]]"
+						updated-sort-logic="[[updatedSortLogic]]"
+						no-unpinned-courses-in-search="[[noUnpinnedCoursesInSearch]]"
+						no-unpinned-courses-in-selection="[[noUnpinnedCoursesInSelection]]"
+						no-unpinned-courses="[[noUnpinnedCourses]]"
+						filtered-unpinned-enrollments="[[filteredUnpinnedEnrollments]]"
+						unpinned-enrollments-to-animate="[[unpinnedEnrollmentsToAnimate]]"
+						pinned-enrollments="[[pinnedEnrollments]]"
+						unpinned-enrollments="[[unpinnedEnrollments]]"
+					></d2l-all-courses-segregated-content>
+				</template>
 
 				<d2l-loading-spinner
 					id="lazyLoadSpinner"
@@ -162,7 +174,10 @@
 				showCourseCode: Boolean,
 				showSemester: Boolean,
 				// Feature flag (switch) for using the updated sort logic and related fetaures
-				updatedSortLogic: Boolean,
+				updatedSortLogic: {
+					type: Boolean,
+					value: false
+				},
 				// Set of unpinned enrollment Entities
 				unpinnedEnrollments: {
 					type: Array,
@@ -186,6 +201,10 @@
 					value: function() { return []; }
 				},
 				filteredUnpinnedEnrollments: {
+					type: Array,
+					value: function() { return []; }
+				},
+				filteredEnrollments: {
 					type: Array,
 					value: function() { return []; }
 				},
@@ -517,6 +536,7 @@
 				var enrollmentEntities = enrollments.getSubEntitiesByClass(this.HypermediaClasses.enrollments.enrollment);
 				var newPinnedEnrollments = [];
 				var newUnpinnedEnrollments = [];
+				this.filteredEnrollments = enrollmentEntities;
 				enrollmentEntities.forEach(function(enrollment) {
 					var enrollmentId = this.getEntityIdentifier(enrollment);
 

@@ -26,7 +26,8 @@
 			show-course-code="[[showCourseCode]]"
 			show-semester="[[showSemester]]"
 			course-updates-config="[[courseUpdatesConfig]]"
-			updated-sort-logic="[[updatedSortLogic]]">
+			updated-sort-logic="[[updatedSortLogic]]"
+			animate="[[animate]]">
 		</d2l-course-tile-grid>
 	</template>
 	<script>
@@ -42,6 +43,10 @@
 					type: Array,
 					value: function() { return []; },
 					observer: '_filteredEnrollmentsChanged'
+				},
+				animate: {
+					type: Boolean,
+					value: false
 				}
 			},
 			behaviors: [

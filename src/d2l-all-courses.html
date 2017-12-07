@@ -184,6 +184,11 @@
 					value: function() { return []; },
 					observer: '_setFilteredUnpinnedEnrollments'
 				},
+				enrollments: {
+					type: Array,
+					value: function() { return []; },
+					observer: '_setFilteredEnrollments'
+				},
 
 				/*
 				* Private Polymer properties
@@ -232,6 +237,10 @@
 				pinnedEnrollmentsToAnimate: {
 					type: Array,
 					value: function() { return []; }
+				},
+				_coursesMap: {
+					type: Object,
+					value: function() { return {}; }
 				},
 				// URL passed to search widget, called for searching
 				_searchUrl: String,
@@ -303,12 +312,19 @@
 			load: function() {
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
-				this.filteredPinnedEnrollments.forEach(function(enrollment) {
-					this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
-				}, this);
-				this.filteredPinnedEnrollments.forEach(function(enrollment) {
-					this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
-				}, this);
+				if (!this.updatedSortLogic) {
+					this.filteredPinnedEnrollments.forEach(function(enrollment) {
+						this._pinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
+					}, this);
+					this.filteredPinnedEnrollments.forEach(function(enrollment) {
+						this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
+					}, this);
+				}
+				if (this.updatedSortLogic) {
+					this.filteredEnrollments.forEach(function(enrollment) {
+						this._coursesMap[this.getEntityIdentifier(enrollment)] = true;
+					}, this);
+				}
 
 				var url;
 				// We never want to autopin results in the overlay
@@ -339,8 +355,13 @@
 						}.bind(this), 1000); // delay until the tile fail icon animation begins to kick in (1 sec delay)
 					}
 				}
-				this.$$('d2l-all-courses-segregated-content').$$('#all-courses-pinned').setCourseImage(details);
-				this.$$('d2l-all-courses-segregated-content').$$('#all-courses-unpinned').setCourseImage(details);
+				if (!this.updatedSortLogic) {
+					this.$$('d2l-all-courses-segregated-content').$$('#all-courses-pinned').setCourseImage(details);
+					this.$$('d2l-all-courses-segregated-content').$$('#all-courses-unpinned').setCourseImage(details);
+				}
+				if (this.updatedSortLogic) {
+					this.$$('d2l-all-courses-segregated-content').$$('#all-courses-unified').setCourseImage(details);
+				}
 			},
 
 			/*
@@ -433,6 +454,7 @@
 			_enrollmentsChanged: function() {
 				this._hasFilteredPinnedEnrollments = this.filteredPinnedEnrollments.length > 0;
 				this._hasFilteredUnpinnedEnrollments = this.filteredUnpinnedEnrollments.length > 0;
+				// pretty sure this isn't used
 				this._hasFilteredEnrollments = this._hasFilteredPinnedEnrollments || this._hasFilteredUnpinnedEnrollments;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 			},
@@ -443,19 +465,22 @@
 						this.lastEnrollmentsSearchResponse = enrollmentsEntity;
 
 						var enrollmentEntities = enrollmentsEntity.getSubEntitiesByClass('enrollment');
-						var newPinnedEnrollments = [];
-						var newUnpinnedEnrollments = [];
-
-						enrollmentEntities.forEach(function(enrollment) {
-							if (enrollment.hasClass('pinned')) {
-								newPinnedEnrollments.push(enrollment);
-							} else {
-								newUnpinnedEnrollments.push(enrollment);
-							}
-						}, this);
-
-						this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
-						this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
+						if (!this.updatedSortLogic) {
+							var newPinnedEnrollments = [];
+							var newUnpinnedEnrollments = [];
+							enrollmentEntities.forEach(function(enrollment) {
+								if (enrollment.hasClass('pinned')) {
+									newPinnedEnrollments.push(enrollment);
+								} else {
+									newUnpinnedEnrollments.push(enrollment);
+								}
+							}, this);
+							this.pinnedEnrollments = this.pinnedEnrollments.concat(newPinnedEnrollments);
+							this.unpinnedEnrollments = this.unpinnedEnrollments.concat(newUnpinnedEnrollments);
+						}
+						if (this.updatedSortLogic) {
+							this.pinnedEnrollments = this.pinnedEnrollments.concat(enrollmentEntities);
+						}
 
 						this.load();
 					}.bind(this));
@@ -502,10 +527,16 @@
 			*/
 
 			_clearFilteredCourses: function() {
-				this._pinnedCoursesMap = {};
-				this._unpinnedCoursesMap = {};
-				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
-				this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.slice();
+				if (!this.updatedSortLogic) {
+					this._pinnedCoursesMap = {};
+					this._unpinnedCoursesMap = {};
+					this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
+					this.filteredUnpinnedEnrollments = this.unpinnedEnrollments.slice();
+				}
+				if (this.updatedSortLogic) {
+					this._coursesMap = {};
+					this.filteredEnrollments = this.enrollments.slice();
+				}
 			},
 			_clearSearchWidget: function() {
 				this.$['search-widget'].clear();
@@ -527,6 +558,9 @@
 				}
 			},
 			_setFilteredPinnedEnrollments: function() {
+				this.filteredEnrollments = this.enrollments.slice();
+			},
+			_setFilteredPinnedEnrollments: function() {
 				this.filteredPinnedEnrollments = this.pinnedEnrollments.slice();
 			},
 			_setFilteredUnpinnedEnrollments: function() {
@@ -534,31 +568,45 @@
 			},
 			_updateFilteredEnrollments: function(enrollments, append) {
 				var enrollmentEntities = enrollments.getSubEntitiesByClass(this.HypermediaClasses.enrollments.enrollment);
-				var newPinnedEnrollments = [];
-				var newUnpinnedEnrollments = [];
-				this.filteredEnrollments = enrollmentEntities;
-				enrollmentEntities.forEach(function(enrollment) {
-					var enrollmentId = this.getEntityIdentifier(enrollment);
+				if (!this.updatedSortLogic) {
+					var newPinnedEnrollments = [];
+					var newUnpinnedEnrollments = [];
+					enrollmentEntities.forEach(function(enrollment) {
+						var enrollmentId = this.getEntityIdentifier(enrollment);
 
-					if (enrollment.hasClass(this.HypermediaClasses.enrollments.pinned)) {
-						if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
-							newPinnedEnrollments.push(enrollment);
-							this._pinnedCoursesMap[enrollmentId] = true;
+						if (enrollment.hasClass(this.HypermediaClasses.enrollments.pinned)) {
+							if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
+								newPinnedEnrollments.push(enrollment);
+								this._pinnedCoursesMap[enrollmentId] = true;
+							}
+						} else {
+							if (!this._unpinnedCoursesMap.hasOwnProperty(enrollmentId)) {
+								newUnpinnedEnrollments.push(enrollment);
+								this._unpinnedCoursesMap[enrollmentId] = true;
+							}
 						}
+					}, this);
+
+					if (append) {
+						this.filteredPinnedEnrollments = this.filteredPinnedEnrollments.concat(newPinnedEnrollments);
+						this.filteredUnpinnedEnrollments = this.filteredUnpinnedEnrollments.concat(newUnpinnedEnrollments);
 					} else {
-						if (!this._unpinnedCoursesMap.hasOwnProperty(enrollmentId)) {
-							newUnpinnedEnrollments.push(enrollment);
-							this._unpinnedCoursesMap[enrollmentId] = true;
-						}
+						this.filteredPinnedEnrollments = newPinnedEnrollments;
+						this.filteredUnpinnedEnrollments = newUnpinnedEnrollments;
 					}
-				}, this);
-
-				if (append) {
-					this.filteredPinnedEnrollments = this.filteredPinnedEnrollments.concat(newPinnedEnrollments);
-					this.filteredUnpinnedEnrollments = this.filteredUnpinnedEnrollments.concat(newUnpinnedEnrollments);
-				} else {
-					this.filteredPinnedEnrollments = newPinnedEnrollments;
-					this.filteredUnpinnedEnrollments = newUnpinnedEnrollments;
+				}
+				if (this.updatedSortLogic) {
+					var newEnrollments = [];
+					enrollmentEntities.forEach(function(enrollment) {
+						var enrollmentId = this.getEntityIdentifier(enrollment);
+						newEnrollments.push(enrollment);
+						this._coursesMap[enrollmentId] = true;
+					}, this);
+					if (append) {
+						this.filteredEnrollments = this.filteredEnrollments.concat(newEnrollments);
+					} else {
+						this.filteredEnrollments = newEnrollments;
+					}
 				}
 
 				this.$['all-courses-scroll-threshold'].clearTriggers();

@@ -93,7 +93,7 @@
 					</div>
 				</div>
 
-				<template is="dom-if" if="[[updatedSortLogic]]">
+				<div hidden$="[[!updatedSortLogic]]">
 					<d2l-all-courses-unified-content
 						show-course-code="[[showCourseCode]]"
 						show-semester="[[showSemester]]"
@@ -101,8 +101,8 @@
 						updated-sort-logic="[[updatedSortLogic]]"
 						filtered-enrollments="[[filteredEnrollments]]"
 					></d2l-all-courses-segregated-content>
-				</template>
-				<template is="dom-if" if$="[[!updatedSortLogic]]">
+				</div>
+				<div hidden="[[updatedSortLogic]]">
 					<d2l-all-courses-segregated-content
 						no-pinned-courses-in-search="[[noPinnedCoursesInSearch]]"
 						no-pinned-courses-in-selection="[[noPinnedCoursesInSelection]]"
@@ -120,8 +120,7 @@
 						pinned-enrollments="[[pinnedEnrollments]]"
 						unpinned-enrollments="[[unpinnedEnrollments]]"
 					></d2l-all-courses-segregated-content>
-				</template>
-
+				</div>
 				<d2l-loading-spinner
 					id="lazyLoadSpinner"
 					hidden$="[[!_hasMoreEnrollments]]"

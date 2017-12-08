@@ -79,10 +79,21 @@
 										<div class="dropdown-content-header">
 											<span>{{localize('sorting.sortBy')}}</span>
 										</div>
-										<d2l-menu-item-radio class="dropdown-content-gradient" value="OrgUnitName" text="{{localize('sorting.sortCourseName')}}"></d2l-menu-item-radio>
-										<d2l-menu-item-radio value="OrgUnitCode" text="{{localize('sorting.sortCourseCode')}}"></d2l-menu-item-radio>
-										<d2l-menu-item-radio value="PinDate" text="{{localize('sorting.sortDatePinned')}}"></d2l-menu-item-radio>
-										<d2l-menu-item-radio value="LastAccessed" text="{{localize('sorting.sortLastAccessed')}}"></d2l-menu-item-radio>
+										<div hidden$="[[!updatedSortLogic]]">
+											<d2l-menu-item-radio class="dropdown-content-gradient" value="Default" text="{{localize('sorting.default')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="OrgUnitName" text="{{localize('sorting.sortCourseName')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="OrgUnitCode" text="{{localize('sorting.sortCourseCode')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="PinDate" text="{{localize('sorting.sortDatePinned')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="LastAccessed" text="{{localize('sorting.sortLastAccessed')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="EnrollmentDate" text="{{localize('sorting.enrollmentDate')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="Current" text="{{localize('sorting.current')}}"></d2l-menu-item-radio>
+										</div>
+										<div hidden="[[updatedSortLogic]]">
+											<d2l-menu-item-radio class="dropdown-content-gradient" value="OrgUnitName" text="{{localize('sorting.sortCourseName')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="OrgUnitCode" text="{{localize('sorting.sortCourseCode')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="PinDate" text="{{localize('sorting.sortDatePinned')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="LastAccessed" text="{{localize('sorting.sortLastAccessed')}}"></d2l-menu-item-radio>
+										</div>
 									</d2l-menu>
 								</d2l-dropdown-menu>
 							</d2l-dropdown>
@@ -404,29 +415,67 @@
 			},
 			_onSortOrderChanged: function(e) {
 				var queryParameter, langterm;
+				var promotePins = false;
 
-				switch (e.detail.value) {
-					case 'OrgUnitCode':
-						langterm = 'sorting.sortCourseCode';
-						queryParameter = '-PinDate,OrgUnitCode,OrgUnitId';
-						break;
-					case 'PinDate':
-						langterm = 'sorting.sortDatePinned';
-						queryParameter = '-PinDate,OrgUnitId';
-						break;
-					case 'LastAccessed':
-						langterm = 'sorting.sortLastAccessed';
-						// Note: Sorting by LastAccessed is done differently LMS-side, hence this being different
-						queryParameter = 'LastAccessed';
-						break;
-					default: // Includes 'OrgUnitName', which is the default sort order
-						langterm = 'sorting.sortCourseName';
-						queryParameter = '-PinDate,OrgUnitName,OrgUnitId';
-						break;
+				if (!this.updatedSortLogic) {
+					switch (e.detail.value) {
+						case 'OrgUnitCode':
+							langterm = 'sorting.sortCourseCode';
+							queryParameter = '-PinDate,OrgUnitCode,OrgUnitId';
+							break;
+						case 'PinDate':
+							langterm = 'sorting.sortDatePinned';
+							queryParameter = '-PinDate,OrgUnitId';
+							break;
+						case 'LastAccessed':
+							langterm = 'sorting.sortLastAccessed';
+							// Note: Sorting by LastAccessed is done differently LMS-side, hence this being different
+							queryParameter = 'LastAccessed';
+							break;
+						default: // Includes 'OrgUnitName', which is the default sort order
+							langterm = 'sorting.sortCourseName';
+							queryParameter = '-PinDate,OrgUnitName,OrgUnitId';
+							break;
+					}
+				}
+				if (this.updatedSortLogic) {
+					switch (e.detail.value) {
+						case 'OrgUnitName':
+							langterm = 'sorting.sortCourseName';
+							queryParameter = 'Current,OrgUnitId';
+							break;
+						case 'OrgUnitCode':
+							langterm = 'sorting.sortCourseCode';
+							queryParameter = 'OrgUnitCode,OrgUnitId';
+							break;
+						case 'PinDate':
+							langterm = 'sorting.sortDatePinned';
+							queryParameter = 'OrgUnitId';
+							promotePins = true;
+							break;
+						case 'LastAccessed':
+							langterm = 'sorting.sortLastAccessed';
+							queryParameter = 'LastAccessed,OrgUnitId';
+							break;
+						case 'EnrollmentDate':
+							langterm = 'sorting.enrollmentDate';
+							queryParameter = 'LastModifiedDate,OrgUnitId';
+							break;
+						case 'Current':
+							langterm = 'sorting.current';
+							queryParameter = 'Current,OrgUnitId';
+							break;
+						default: // Includes 'Current/Last accessed', which is the default sort order
+							langterm = 'sorting.default';
+							queryParameter = 'Current,OrgUnitId';
+							promotePins = true;
+							break;
+					}
 				}
 
 				this._searchUrl = this.createActionUrl(this._enrollmentsSearchAction, {
-					sort: queryParameter
+					sort: queryParameter,
+					promotePins: promotePins
 				});
 
 				this.$.sortText.textContent = this.localize(langterm || '');

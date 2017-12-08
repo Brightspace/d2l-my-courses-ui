@@ -255,6 +255,7 @@
 			_courseImagesLoadedEventCount: 0,
 			_courseTileOrganizationEventCount: 0,
 			_initiallyVisibleCourseTileCount: 0,
+			_enrollmentsSearchUrl: null,
 
 			/*
 			* Listeners
@@ -457,10 +458,10 @@
 					return Promise.resolve();
 				}
 
-				var searchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity);
+				this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity);
 
 				this.performanceMark('d2l.my-courses.search-enrollments.request');
-				return this.fetchSirenEntity(searchUrl)
+				return this.fetchSirenEntity(this._enrollmentsSearchUrl)
 					.then(this._enrollmentsResponsePerfMeasures.bind(this))
 					.then(this._populateEnrollments.bind(this));
 			},
@@ -495,9 +496,9 @@
 					return Promise.resolve();
 				}
 
-				var enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity, true);
+				this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity, true);
 
-				return this.fetchSirenEntity(enrollmentsSearchUrl)
+				return this.fetchSirenEntity(this._enrollmentsSearchUrl)
 					.then(this._populateEnrollments.bind(this));
 			},
 			_populateEnrollments: function(enrollmentsEntity) {
@@ -602,7 +603,7 @@
 				e.preventDefault();
 				e.stopPropagation();
 
-				allCourses.myEnrollmentsEntity = this._lastEnrollmentsSearchResponse;
+				allCourses.searchUrl = this._enrollmentsSearchUrl;
 				allCourses.locale = this.locale;
 				allCourses.showCourseCode = this.showCourseCode;
 				allCourses.showSemester = this.showSemester;

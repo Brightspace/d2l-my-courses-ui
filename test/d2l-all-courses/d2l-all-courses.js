@@ -315,6 +315,7 @@ describe('d2l-all-courses', function() {
 				value: 'OrgUnitCode'
 			};
 
+			widget.searchUrl = '';
 			widget.load();
 			widget.$$('d2l-dropdown-menu').fire('d2l-menu-item-change', event);
 			expect(widget._searchUrl).to.contain('-PinDate,OrgUnitCode,OrgUnitId');

@@ -189,6 +189,7 @@
 					value: function() { return []; },
 					observer: '_pinnedEnrollmentsChanged'
 				},
+				searchUrl: String,
 				showCourseCode: Boolean,
 				showSemester: Boolean,
 				// Feature flag (switch) for using the updated sort logic and related fetaures
@@ -338,11 +339,12 @@
 					this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);
 
-				this._searchUrl = this.createActionUrl(this._enrollmentsSearchAction, {
-					embedDepth: 1,
-					autoPinCourses: false,
-					pageSize: 25
-				}) + '&bustCache=' + Math.random();
+				// We never want to autopin results in the overlay
+				var url = this.searchUrl.replace('autoPinCourses=true', 'autoPinCourses=false');
+				// Busts d2l-fetch cache, since enrollments may have been pinned/unpinned
+				// since last time this URL was fetched
+				url += '&bustCache=' + Math.random();
+				this._searchUrl = url;
 
 				requestAnimationFrame(function() {
 					this.fire('recalculate-columns');

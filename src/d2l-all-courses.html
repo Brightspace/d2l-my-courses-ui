@@ -338,6 +338,12 @@
 					this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);
 
+				this._searchUrl = this.createActionUrl(this._enrollmentsSearchAction, {
+					embedDepth: 1,
+					autoPinCourses: false,
+					pageSize: 25
+				}) + '&bustCache=' + Math.random();
+
 				requestAnimationFrame(function() {
 					this.fire('recalculate-columns');
 					this._showContent = true;
@@ -468,10 +474,6 @@
 				}
 
 				this._enrollmentsSearchAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
-				this._searchUrl = this.createActionUrl(this._enrollmentsSearchAction, {
-					embedDepth: 1,
-					autoPinCourses: false
-				});
 			},
 			_pinnedEnrollmentsChanged: function() {
 				this._updateTileSizes();

@@ -86,7 +86,8 @@ describe('d2l-all-courses', function() {
 		widget.pinnedEnrollments = [pinnedEnrollmentEntity];
 		widget.unpinnedEnrollments = [unpinnedEnrollmentEntity];
 
-		var courseTileGrids = widget.querySelectorAll('d2l-course-tile-grid');
+		var segregatedContent = widget.querySelectorAll('d2l-all-courses-segregated-content');
+		var courseTileGrids = segregatedContent[0].querySelectorAll('d2l-course-tile-grid');
 		expect(courseTileGrids.length).to.equal(2);
 
 		for (var i = 0; i < courseTileGrids.length; i++) {

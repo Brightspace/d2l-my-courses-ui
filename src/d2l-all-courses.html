@@ -462,13 +462,16 @@
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 			},
 			_myEnrollmentsEntityChanged: function(entity) {
-				if (entity) {
-					var myEnrollmentsEntity = this.parseEntity(entity);
-
-					if (myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyEnrollments)) {
-						this._enrollmentsSearchAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
-					}
+				var myEnrollmentsEntity = this.parseEntity(entity);
+				if (!myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyEnrollments)) {
+					return;
 				}
+
+				this._enrollmentsSearchAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+				this._searchUrl = this.createActionUrl(this._enrollmentsSearchAction, {
+					embedDepth: 1,
+					autoPinCourses: false
+				});
 			},
 			_pinnedEnrollmentsChanged: function() {
 				this._updateTileSizes();

@@ -602,25 +602,17 @@
 				e.preventDefault();
 				e.stopPropagation();
 
-				this.async(function() {
-					// The opening of the overlay lags slightly if we try to do this while it
-					// is opening - do it after the animation is finished. Animation takes
-					// 500ms, but some lag if we wait exactly that long, so +100ms for safety)
-					allCourses.pinnedEnrollments = this.pinnedEnrollments;
-					allCourses.unpinnedEnrollments = this.unpinnedEnrollments;
-					allCourses.myEnrollmentsEntity = this._lastEnrollmentsSearchResponse;
-					allCourses.lastEnrollmentsSearchResponse = this._lastEnrollmentsSearchResponse;
-					allCourses.locale = this.locale;
-					allCourses.showCourseCode = this.showCourseCode;
-					allCourses.showSemester = this.showSemester;
-					allCourses.advancedSearchUrl = this.advancedSearchUrl;
-					allCourses.filterStandardSemesterName = this.standardSemesterName;
-					allCourses.filterStandardDepartmentName = this.standardDepartmentName;
-					allCourses.courseUpdatesConfig = this.courseUpdatesConfig;
-					allCourses.updatedSortLogic = this.updatedSortLogic;
+				allCourses.myEnrollmentsEntity = this._lastEnrollmentsSearchResponse;
+				allCourses.locale = this.locale;
+				allCourses.showCourseCode = this.showCourseCode;
+				allCourses.showSemester = this.showSemester;
+				allCourses.advancedSearchUrl = this.advancedSearchUrl;
+				allCourses.filterStandardSemesterName = this.standardSemesterName;
+				allCourses.filterStandardDepartmentName = this.standardDepartmentName;
+				allCourses.courseUpdatesConfig = this.courseUpdatesConfig;
+				allCourses.updatedSortLogic = this.updatedSortLogic;
 
-					this.$$('d2l-all-courses').load();
-				}.bind(this), 600);
+				this.$$('d2l-all-courses').load();
 			},
 			_refreshPage: function() {
 				document.location.reload(true);

@@ -39,7 +39,8 @@
 				showSemester: Boolean,
 				courseUpdatesConfig: Object,
 				updatedSortLogic: Boolean,
-				filteredEnrollments: {
+				filteredEnrollments: Array,
+				enrollments: {
 					type: Array,
 					observer: '_filteredEnrollmentsChanged'
 				},
@@ -51,13 +52,8 @@
 			behaviors: [
 				D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 				window.D2L.MyCourses.AlertBehavior,
-				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
-				window.D2L.MyCourses.UtilityBehavior,
-				window.D2L.MyCourses.CourseManagementBehavior
+				window.D2L.MyCourses.CourseTileResponsiveGridBehavior
 			],
-			listeners: {
-				'tile-remove-complete': '_onTileRemoveComplete'
-			},
 
 			ready: function() {
 				// Both course tile grids in this view should have the same number of columns, so use a custom getter
@@ -83,9 +79,7 @@
 			},
 
 			getCourseTileItemCount: function() {
-				var itemCount = Math.max(this.pinnedEnrollments ? this.pinnedEnrollments.length : 0,
-					this.unpinnedEnrollments ? this.unpinnedEnrollments.length : 0);
-				return itemCount;
+				return this.enrollments.length;
 			}
 		});
 	</script>

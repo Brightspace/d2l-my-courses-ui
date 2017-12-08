@@ -1,0 +1,84 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../d2l-alert/d2l-alert.html">
+<link rel="import" href="d2l-alert-behavior.html">
+<link rel="import" href="d2l-all-courses-styles.html">
+<link rel="import" href="d2l-course-tile-grid.html">
+<link rel="import" href="d2l-course-tile-responsive-grid-behavior.html">
+<link rel="import" href="localize-behavior.html">
+
+<dom-module id="d2l-all-courses-unified-content">
+	<template strip-whitespace>
+		<style include="d2l-all-courses-styles"></style>
+
+		<template is="dom-repeat" items="{{_alerts}}">
+			<d2l-alert type="[[item.alertType]]">
+				{{item.alertMessage}}
+			</d2l-alert>
+		</template>
+
+		<d2l-course-tile-grid
+			id="all-courses-unified"
+			enrollments="[[filteredEnrollments]]"
+			tile-sizes="[[tileSizes]]"
+			locale="[[locale]]"
+			show-course-code="[[showCourseCode]]"
+			show-semester="[[showSemester]]"
+			course-updates-config="[[courseUpdatesConfig]]"
+			updated-sort-logic="[[updatedSortLogic]]"
+			animate="[[animate]]">
+		</d2l-course-tile-grid>
+	</template>
+	<script>
+		Polymer({
+			is: 'd2l-all-courses-unified-content',
+			properties: {
+				tileSizes: Object,
+				showCourseCode: Boolean,
+				showSemester: Boolean,
+				courseUpdatesConfig: Object,
+				updatedSortLogic: Boolean,
+				filteredEnrollments: Array,
+				enrollments: {
+					type: Array,
+					observer: '_filteredEnrollmentsChanged'
+				},
+				animate: {
+					type: Boolean,
+					value: false
+				}
+			},
+			behaviors: [
+				D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
+				window.D2L.MyCourses.AlertBehavior,
+				window.D2L.MyCourses.CourseTileResponsiveGridBehavior
+			],
+
+			ready: function() {
+				// Both course tile grids in this view should have the same number of columns, so use a custom getter
+				var courseTileGrids = Polymer.dom(this.root).querySelectorAll('d2l-course-tile-grid');
+				for (var i = 0; i < courseTileGrids.length; i++) {
+					courseTileGrids[i].getCourseTileItemCount = this.getCourseTileItemCount.bind(this);
+				}
+				this._updateTileSizes();
+			},
+			attached: function() {
+				window.addEventListener('resize', this._onResize.bind(this));
+			},
+
+			_onResize: function() {
+				this._updateTileSizes();
+			},
+			_filteredEnrollmentsChanged: function() {
+				this._updateTileSizes();
+			},
+			_updateTileSizes: function() {
+				this._rescaleCourseTileRegions();
+				this.tileSizes = Math.floor(100 / this._numColsOverlay) + 'vw';
+			},
+
+			getCourseTileItemCount: function() {
+				return this.enrollments.length;
+			}
+		});
+	</script>
+</dom-module>

@@ -3,36 +3,38 @@ describe('d2l-my-courses', function() {
 		widget,
 		rootHref = '/enrollments',
 		searchHref = '/enrollments/users/169',
+		searchAction = {
+			name: 'search-my-enrollments',
+			method: 'GET',
+			href: searchHref,
+			fields: [{
+				name: 'search',
+				type: 'search',
+				value: ''
+			}, {
+				name: 'pageSize',
+				type: 'number',
+				value: 20
+			}, {
+				name: 'embedDepth',
+				type: 'number',
+				value: 0
+			}, {
+				name: 'sort',
+				type: 'text',
+				value: ''
+			}]
+		},
 		enrollmentsRootResponse = {
 			class: ['enrollments', 'root'],
-			actions: [{
-				name: 'search-my-enrollments',
-				method: 'GET',
-				href: searchHref,
-				fields: [{
-					name: 'search',
-					type: 'search',
-					value: ''
-				}, {
-					name: 'pageSize',
-					type: 'number',
-					value: 20
-				}, {
-					name: 'embedDepth',
-					type: 'number',
-					value: 0
-				}, {
-					name: 'sort',
-					type: 'text',
-					value: ''
-				}]
-			}],
+			actions: [searchAction],
 			links: [{
 				rel: ['self'],
 				href: rootHref
 			}]
 		},
 		enrollmentsSearchResponse = {
+			actions: [searchAction],
 			entities: [{
 				class: ['pinned', 'enrollment'],
 				rel: ['https://api.brightspace.com/rels/user-enrollment'],
@@ -526,16 +528,20 @@ describe('d2l-my-courses', function() {
 	describe('User interaction', function() {
 		it('should rescale the all courses view when it is opened', function() {
 			clock = sinon.useFakeTimers();
+			widget._enrollmentsSearchUrl = '';
+
 			widget.$$('#viewAllCourses').click();
-			var allCoursesRescaleSpy = sinon.spy(widget.$$('d2l-all-courses'), '_rescaleCourseTileRegions');
+			var allCoursesRescaleSpy = sinon.spy(widget.$$('d2l-all-courses').$$('d2l-all-courses-segregated-content'), '_rescaleCourseTileRegions');
 
 			clock.tick(100);
 			expect(allCoursesRescaleSpy.called);
-			widget.$$('d2l-all-courses')._rescaleCourseTileRegions.restore();
+			widget.$$('d2l-all-courses').$$('d2l-all-courses-segregated-content')._rescaleCourseTileRegions.restore();
 		});
 
 		it('should remove a setCourseImageFailure alert when the all-courses overlay is closed', function() {
 			clock = sinon.useFakeTimers();
+			widget._enrollmentsSearchUrl = '';
+
 			widget._addAlert('warning', 'setCourseImageFailure', 'failed to do that thing it should do');
 			widget._openAllCoursesView(new Event('foo'));
 			clock.tick(1001);

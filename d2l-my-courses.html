@@ -255,6 +255,7 @@
 			_courseImagesLoadedEventCount: 0,
 			_courseTileOrganizationEventCount: 0,
 			_initiallyVisibleCourseTileCount: 0,
+			_enrollmentsSearchUrl: null,
 
 			/*
 			* Listeners
@@ -457,10 +458,10 @@
 					return Promise.resolve();
 				}
 
-				var searchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity);
+				this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity);
 
 				this.performanceMark('d2l.my-courses.search-enrollments.request');
-				return this.fetchSirenEntity(searchUrl)
+				return this.fetchSirenEntity(this._enrollmentsSearchUrl)
 					.then(this._enrollmentsResponsePerfMeasures.bind(this))
 					.then(this._populateEnrollments.bind(this));
 			},
@@ -495,9 +496,9 @@
 					return Promise.resolve();
 				}
 
-				var enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity, true);
+				this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity, true);
 
-				return this.fetchSirenEntity(enrollmentsSearchUrl)
+				return this.fetchSirenEntity(this._enrollmentsSearchUrl)
 					.then(this._populateEnrollments.bind(this));
 			},
 			_populateEnrollments: function(enrollmentsEntity) {
@@ -597,30 +598,21 @@
 				this._createAllCourses();
 
 				var allCourses = this.$$('d2l-all-courses');
+
+				allCourses.searchUrl = this._enrollmentsSearchUrl;
+				allCourses.locale = this.locale;
+				allCourses.showCourseCode = this.showCourseCode;
+				allCourses.showSemester = this.showSemester;
+				allCourses.advancedSearchUrl = this.advancedSearchUrl;
+				allCourses.filterStandardSemesterName = this.standardSemesterName;
+				allCourses.filterStandardDepartmentName = this.standardDepartmentName;
+				allCourses.courseUpdatesConfig = this.courseUpdatesConfig;
+				allCourses.updatedSortLogic = this.updatedSortLogic;
+
 				allCourses.open();
 
 				e.preventDefault();
 				e.stopPropagation();
-
-				this.async(function() {
-					// The opening of the overlay lags slightly if we try to do this while it
-					// is opening - do it after the animation is finished. Animation takes
-					// 500ms, but some lag if we wait exactly that long, so +100ms for safety)
-					allCourses.pinnedEnrollments = this.pinnedEnrollments;
-					allCourses.unpinnedEnrollments = this.unpinnedEnrollments;
-					allCourses.myEnrollmentsEntity = this._lastEnrollmentsSearchResponse;
-					allCourses.lastEnrollmentsSearchResponse = this._lastEnrollmentsSearchResponse;
-					allCourses.locale = this.locale;
-					allCourses.showCourseCode = this.showCourseCode;
-					allCourses.showSemester = this.showSemester;
-					allCourses.advancedSearchUrl = this.advancedSearchUrl;
-					allCourses.filterStandardSemesterName = this.standardSemesterName;
-					allCourses.filterStandardDepartmentName = this.standardDepartmentName;
-					allCourses.courseUpdatesConfig = this.courseUpdatesConfig;
-					allCourses.updatedSortLogic = this.updatedSortLogic;
-
-					this.$$('d2l-all-courses').load();
-				}.bind(this), 600);
 			},
 			_refreshPage: function() {
 				document.location.reload(true);

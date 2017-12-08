@@ -1,0 +1,177 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../d2l-alert/d2l-alert.html">
+<link rel="import" href="d2l-alert-behavior.html">
+<link rel="import" href="d2l-all-courses-styles.html">
+<link rel="import" href="d2l-course-tile-grid.html">
+<link rel="import" href="d2l-course-tile-responsive-grid-behavior.html">
+<link rel="import" href="localize-behavior.html">
+<link rel="import" href="d2l-utility-behavior.html">
+<link rel="import" href="d2l-course-management-behavior.html">
+
+<dom-module id="d2l-all-courses-segregated-content">
+	<template strip-whitespace>
+		<style include="d2l-all-courses-styles"></style>
+
+		<h2>{{localize('pinnedCourses')}}</h2>
+		<span hidden$="[[!noPinnedCoursesInSearch]]">
+			{{localize('noPinnedCoursesInSearch')}}
+		</span>
+		<span hidden$="[[!noPinnedCoursesInSelection]]">
+			{{localize('noPinnedCoursesInSelection')}}
+		</span>
+
+		<template is="dom-repeat" items="{{_alerts}}">
+			<d2l-alert type="[[item.alertType]]">
+				{{item.alertMessage}}
+			</d2l-alert>
+		</template>
+
+		<d2l-course-tile-grid
+			id="all-courses-pinned"
+			enrollments="[[filteredPinnedEnrollments]]"
+			enrollments-to-animate="[[pinnedEnrollmentsToAnimate]]"
+			tile-sizes="[[tileSizes]]"
+			locale="[[locale]]"
+			show-course-code="[[showCourseCode]]"
+			show-semester="[[showSemester]]"
+			course-updates-config="[[courseUpdatesConfig]]"
+			updated-sort-logic="[[updatedSortLogic]]">
+		</d2l-course-tile-grid>
+
+		<h2>{{localize('unpinnedCourses')}}</h2>
+
+		<span class="bottom-pad" hidden$="[[!noUnpinnedCoursesInSearch]]">
+			{{localize('noUnpinnedCoursesInSearch')}}
+		</span>
+		<span class="bottom-pad" hidden$="[[!noUnpinnedCoursesInSelection]]">
+			{{localize('noUnpinnedCoursesInSelection')}}
+		</span>
+		<span class="bottom-pad" hidden$="[[!noUnpinnedCourses]]">
+			{{localize('noUnpinnedCoursesMessage')}}
+		</span>
+
+		<d2l-course-tile-grid
+			id="all-courses-unpinned"
+			enrollments="[[filteredUnpinnedEnrollments]]"
+			enrollments-to-animate="[[unpinnedEnrollmentsToAnimate]]"
+			tile-sizes="[[tileSizes]]"
+			locale="[[locale]]"
+			show-course-code="[[showCourseCode]]"
+			show-semester="[[showSemester]]"
+			course-updates-config="[[courseUpdatesConfig]]"
+			updated-sort-logic="[[updatedSortLogic]]">
+		</d2l-course-tile-grid>
+	</template>
+	<script>
+		Polymer({
+			is: 'd2l-all-courses-segregated-content',
+			properties: {
+				noPinnedCoursesInSearch: Boolean,
+				noPinnedCoursesInSelection: Boolean,
+				filteredPinnedEnrollments: Array,
+				pinnedEnrollmentsToAnimate: Array,
+				tileSizes: Object,
+				showCourseCode: Boolean,
+				showSemester: Boolean,
+				courseUpdatesConfig: Object,
+				updatedSortLogic: Boolean,
+				noUnpinnedCoursesInSearch: Boolean,
+				noUnpinnedCoursesInSelection: Boolean,
+				noUnpinnedCourses: Boolean,
+				filteredUnpinnedEnrollments: Array,
+				unpinnedEnrollmentsToAnimate: Array,
+				pinnedEnrollments: {
+					type: Array,
+					value: function() { return []; },
+					observer: '_pinnedEnrollmentsChanged'
+				},
+				unpinnedEnrollments: {
+					type: Array,
+					value: function() { return []; },
+					observer: '_unpinnedEnrollmentsChanged'
+				}
+			},
+			behaviors: [
+				D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
+				window.D2L.MyCourses.AlertBehavior,
+				window.D2L.MyCourses.CourseTileResponsiveGridBehavior,
+				window.D2L.MyCourses.UtilityBehavior,
+				window.D2L.MyCourses.CourseManagementBehavior
+			],
+			listeners: {
+				'tile-remove-complete': '_onTileRemoveComplete'
+			},
+
+			ready: function() {
+				// Both course tile grids in this view should have the same number of columns, so use a custom getter
+				var courseTileGrids = Polymer.dom(this.root).querySelectorAll('d2l-course-tile-grid');
+				for (var i = 0; i < courseTileGrids.length; i++) {
+					courseTileGrids[i].getCourseTileItemCount = this.getCourseTileItemCount.bind(this);
+				}
+				this._updateTileSizes();
+			},
+			attached: function() {
+				window.addEventListener('resize', this._onResize.bind(this));
+			},
+
+			_onResize: function() {
+				this._updateTileSizes();
+			},
+			_onTileRemoveComplete: function(e) {
+				if (e.detail.pinned) {
+					this._moveEnrollmentToPinnedList(e.detail.enrollment);
+				} else {
+					this._moveEnrollmentToUnpinnedList(e.detail.enrollment);
+				}
+			},
+			_pinnedEnrollmentsChanged: function() {
+				this._updateTileSizes();
+			},
+			_unpinnedEnrollmentsChanged: function() {
+				this._updateTileSizes();
+			},
+			_updateTileSizes: function() {
+				this._rescaleCourseTileRegions();
+				this.tileSizes = Math.floor(100 / this._numColsOverlay) + 'vw';
+			},
+			_moveEnrollmentToPinnedList: function(enrollment) {
+				// Remove enrollment from unpinned list, add to pinned
+				var enrollmentId = this.getEntityIdentifier(enrollment);
+
+				for (var index = 0; index < this.filteredUnpinnedEnrollments.length; index++) {
+					var pinnedEnrollmentId = this.getEntityIdentifier(this.filteredUnpinnedEnrollments[index]);
+					if (pinnedEnrollmentId === enrollmentId) {
+						var foundEnrollment = this.filteredUnpinnedEnrollments[index];
+						this._setEnrollmentPinData(foundEnrollment, true);
+						this.pinnedEnrollmentsToAnimate.push(enrollmentId);
+						this.unshift('filteredPinnedEnrollments', foundEnrollment);
+						this.splice('filteredUnpinnedEnrollments', index, 1);
+						break;
+					}
+				}
+			},
+			_moveEnrollmentToUnpinnedList: function(enrollment) {
+				// Remove enrollment from pinned list, add to unpinned
+				var enrollmentId = this.getEntityIdentifier(enrollment);
+
+				for (var index = 0; index < this.filteredPinnedEnrollments.length; index++) {
+					var unpinnedEnrollmentId = this.getEntityIdentifier(this.filteredPinnedEnrollments[index]);
+					if (unpinnedEnrollmentId === enrollmentId) {
+						var foundEnrollment = this.filteredPinnedEnrollments[index];
+						this._setEnrollmentPinData(foundEnrollment, false);
+						this.unpinnedEnrollmentsToAnimate.push(enrollmentId);
+						this.unshift('filteredUnpinnedEnrollments', foundEnrollment);
+						this.splice('filteredPinnedEnrollments', index, 1);
+						break;
+					}
+				}
+			},
+
+			getCourseTileItemCount: function() {
+				var itemCount = Math.max(this.pinnedEnrollments ? this.pinnedEnrollments.length : 0,
+					this.unpinnedEnrollments ? this.unpinnedEnrollments.length : 0);
+				return itemCount;
+			}
+		});
+	</script>
+</dom-module>

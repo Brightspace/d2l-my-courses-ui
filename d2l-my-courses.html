@@ -598,10 +598,6 @@
 				this._createAllCourses();
 
 				var allCourses = this.$$('d2l-all-courses');
-				allCourses.open();
-
-				e.preventDefault();
-				e.stopPropagation();
 
 				allCourses.searchUrl = this._enrollmentsSearchUrl;
 				allCourses.locale = this.locale;
@@ -613,7 +609,10 @@
 				allCourses.courseUpdatesConfig = this.courseUpdatesConfig;
 				allCourses.updatedSortLogic = this.updatedSortLogic;
 
-				this.$$('d2l-all-courses').load();
+				allCourses.open();
+
+				e.preventDefault();
+				e.stopPropagation();
 			},
 			_refreshPage: function() {
 				document.location.reload(true);

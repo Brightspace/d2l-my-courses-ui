@@ -329,7 +329,6 @@
 				return itemCount;
 			},
 			load: function() {
-				// Load course tile and filter contents. Called from d2l-my-courses.
 				this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 				this._filteredPinnedEnrollments.forEach(function(enrollment) {
@@ -339,8 +338,9 @@
 					this._unpinnedCoursesMap[this.getEntityIdentifier(enrollment)] = true;
 				}, this);
 
+				var url;
 				// We never want to autopin results in the overlay
-				var url = this.searchUrl.replace('autoPinCourses=true', 'autoPinCourses=false');
+				url = this.searchUrl.replace('autoPinCourses=true', 'autoPinCourses=false');
 				// Busts d2l-fetch cache, since enrollments may have been pinned/unpinned
 				// since last time this URL was fetched
 				url += '&bustCache=' + Math.random();
@@ -348,11 +348,15 @@
 
 				requestAnimationFrame(function() {
 					this.fire('recalculate-columns');
-					this._showContent = true;
 				}.bind(this));
 			},
 			open: function() {
+				// Initially hide the content, until we have some data to show
+				// (set back to true in _onSearchResultsChanged)
+				this._showContent = false;
+
 				this.$$('#all-courses').open();
+				this.load();
 			},
 			setCourseImage: function(details) {
 				this._removeAlert('setCourseImageFailure');
@@ -443,6 +447,7 @@
 				this._unpinnedCoursesMap = {};
 				this._updateFilteredEnrollments(e.detail, false);
 				this.myEnrollmentsEntity = e.detail;
+				this._showContent = true;
 			},
 			_onSimpleOverlayOpening: function() {
 				this._removeAlert('setCourseImageFailure');

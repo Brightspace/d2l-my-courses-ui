@@ -79,21 +79,13 @@
 										<div class="dropdown-content-header">
 											<span>{{localize('sorting.sortBy')}}</span>
 										</div>
-										<div hidden$="[[!updatedSortLogic]]">
-											<d2l-menu-item-radio class="dropdown-content-gradient" value="Default" text="{{localize('sorting.default')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="OrgUnitName" text="{{localize('sorting.sortCourseName')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="OrgUnitCode" text="{{localize('sorting.sortCourseCode')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="PinDate" text="{{localize('sorting.sortDatePinned')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="LastAccessed" text="{{localize('sorting.sortLastAccessed')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="EnrollmentDate" text="{{localize('sorting.enrollmentDate')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="Current" text="{{localize('sorting.current')}}"></d2l-menu-item-radio>
-										</div>
-										<div hidden="[[updatedSortLogic]]">
-											<d2l-menu-item-radio class="dropdown-content-gradient" value="OrgUnitName" text="{{localize('sorting.sortCourseName')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="OrgUnitCode" text="{{localize('sorting.sortCourseCode')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="PinDate" text="{{localize('sorting.sortDatePinned')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="LastAccessed" text="{{localize('sorting.sortLastAccessed')}}"></d2l-menu-item-radio>
-										</div>
+										<d2l-menu-item-radio hidden$="[[!updatedSortLogic]]" class="dropdown-content-gradient" value="Default" text="{{localize('sorting.default')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="OrgUnitName" class$="{{_showDropdownGradient(updatedSortLogic)}}" text="{{localize('sorting.sortCourseName')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="OrgUnitCode" text="{{localize('sorting.sortCourseCode')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="PinDate" text="{{localize('sorting.sortDatePinned')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio value="LastAccessed" text="{{localize('sorting.sortLastAccessed')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio hidden$="[[!updatedSortLogic]]" value="EnrollmentDate" text="{{localize('sorting.enrollmentDate')}}"></d2l-menu-item-radio>
+										<d2l-menu-item-radio hidden$="[[!updatedSortLogic]]" value="Current" text="{{localize('sorting.current')}}"></d2l-menu-item-radio>
 									</d2l-menu>
 								</d2l-dropdown-menu>
 							</d2l-dropdown>
@@ -660,6 +652,9 @@
 
 				this.$['all-courses-scroll-threshold'].clearTriggers();
 				this.lastEnrollmentsSearchResponse = enrollments;
+			},
+			_showDropdownGradient: function(updatedSortLogic) {
+				return updatedSortLogic ? '' : 'dropdown-content-gradient';
 			}
 		});
 	</script>

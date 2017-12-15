@@ -264,9 +264,9 @@ describe('d2l-my-courses-content-animated', function() {
 			return widget._fetchRoot().then(function() {
 				expect(widget._hasEnrollments).to.equal(true);
 				expect(widget._alerts).to.include({ alertName: 'noPinnedCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any pinned courses. Pin your favorite courses to make them easier to find.' });
-				var updateEnrollmentAlertsSpy = sandbox.spy(widget, '_updateEnrollmentAlerts');
+				var enrollmentsLengthChangedSpy = sandbox.spy(widget, '_enrollmentsChanged');
 				widget._hasPinnedEnrollments = true;
-				expect(updateEnrollmentAlertsSpy.called);
+				expect(enrollmentsLengthChangedSpy.called);
 			});
 		});
 
@@ -274,7 +274,7 @@ describe('d2l-my-courses-content-animated', function() {
 			widget._addAlert('error', 'testError', 'this is a test');
 			widget._addAlert('warning', 'testWarning', 'this is another test');
 			expect(widget._alerts).to.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
-			widget._updateEnrollmentAlerts(true, true);
+			widget._enrollmentsChanged(true, true);
 			expect(widget._alerts).to.not.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
 		});
 	});

@@ -93,20 +93,6 @@ describe('d2l-my-courses-content-behavior', () => {
 		});
 	});
 
-	describe('Consumer-implemented functionality', () => {
-		[
-			'getCourseTileItemCount',
-			'_onCourseTileOrganization',
-			'_onEnrollmentPinnedMessage',
-			'_createFetchEnrollmentsUrl',
-			'_populateEnrollments'
-		].forEach(method => {
-			it('should require ' + method + ' be implemented in the consumer', () => {
-				expect(component[method]).to.throw;
-			});
-		});
-	});
-
 	describe('Events', () => {
 		describe('open-change-image-view', () => {
 			it('should update _setImageOrg', done => {

@@ -110,6 +110,11 @@
 					type: Array,
 					value: function() { return []; }
 				},
+				// Override for MyCoursesContentBehavior._animateCourseTileGrid
+				_animateCourseTileGrid: {
+					type: Boolean,
+					value: true
+				},
 				_pinnedEnrollments: {
 					type: Array,
 					value: function() { return []; }
@@ -119,9 +124,10 @@
 					type: Boolean,
 					value: false
 				},
+				// Override for MyCoursesContentBehavior._viewAllCoursesText
 				_viewAllCoursesText: {
-					type: Number,
-					computed: '_getViewAllCoursesCount(_hasMoreEnrollments, _allEnrollments)'
+					type: String,
+					computed: '_getViewAllCoursesText(_hasMoreEnrollments, _allEnrollments)'
 				}
 			},
 			behaviors: [
@@ -133,23 +139,15 @@
 				'tile-remove-complete': '_onTileRemoveComplete'
 			},
 			observers: [
-				'_enrollmentsChanged(_pinnedEnrollments.length, _allEnrollments.length)',
-				'_updateEnrollmentAlerts(_hasEnrollments, _hasPinnedEnrollments)'
+				// Override for MyCoursesContentBehavior observer
+				'_enrollmentsChanged(_pinnedEnrollments.length, _allEnrollments.length)'
 			],
-			ready: function() {
-				this._updateEnrollmentAlerts(this._hasEnrollments, this._hasPinnedEnrollments);
-			},
-			attached: function() {
-				this.__myCoursesContentBehavior_attached();
-			},
-			detached: function() {
-				this.__myCoursesContentBehavior_detached();
-			},
 
 			/*
 			* Public API functions
 			*/
 
+			// Override for MyCoursesContentBehavior.getCourseTileItemCount
 			getCourseTileItemCount: function() {
 				return this._pinnedEnrollments.length;
 			},
@@ -158,6 +156,7 @@
 			* Listeners
 			*/
 
+			// Override for MyCoursesContentBehavior._onEnrollmentPinnedMessage
 			_onEnrollmentPinnedMessage: function(e) {
 				if (e.target === this) return;
 
@@ -181,6 +180,7 @@
 					this._removeFromPinnedEnrollments(e.detail.enrollment);
 				}
 			},
+			// Override for MyCoursesContentBehavior._onCourseTileOrganization
 			_onCourseTileOrganization: function() {
 				if (this._initiallyVisibleCourseTileCount === 0 && this._courseTileOrganizationEventCount === 0) {
 					// If no course tiles are initially visible (widget is outside of initial viewport)
@@ -222,15 +222,15 @@
 			* Observers
 			*/
 
-			_enrollmentsChanged: function() {
-				this.set('_hasPinnedEnrollments', this._pinnedEnrollments.length > 0);
-				this.set('_hasEnrollments', this._allEnrollments.length > 0);
-			},
-			_updateEnrollmentAlerts: function(hasEnrollments, hasPinnedEnrollments) {
+			// Override for MyCoursesContentBehavior._enrollmentsChanged
+			_enrollmentsChanged: function(pinnedEnrollmentsLength, allEnrollmentsLength) {
+				this._hasPinnedEnrollments = pinnedEnrollmentsLength > 0;
+				this._hasEnrollments = allEnrollmentsLength > 0;
+
 				this._clearAlerts();
 
-				if (hasEnrollments) {
-					if (!hasPinnedEnrollments) {
+				if (this._hasEnrollments) {
+					if (!this._hasPinnedEnrollments) {
 						this._addAlert('call-to-action', 'noPinnedCourses', this.localize('noPinnedCoursesMessage'));
 					}
 				} else {
@@ -242,6 +242,7 @@
 			* Utility/helper functions
 			*/
 
+			// Override for MyCoursesContentBehavior._createFetchEnrollmentsUrl
 			_createFetchEnrollmentsUrl: function(enrollmentsRootEntity, bustCache) {
 				var searchAction = enrollmentsRootEntity.getActionByName('search-my-enrollments');
 				var pageSize = this.updatedSortLogic ? 50 : 25;
@@ -260,6 +261,7 @@
 
 				return enrollmentsSearchUrl;
 			},
+			// Override for MyCoursesContentBehavior._populateEnrollments
 			_populateEnrollments: function(enrollmentsEntity) {
 				var enrollmentEntities = enrollmentsEntity.getSubEntitiesByClass('enrollment');
 				this._hasMoreEnrollments = enrollmentsEntity.hasLinkByRel('next');
@@ -319,7 +321,8 @@
 					}
 				}
 			},
-			_getViewAllCoursesCount: function(hasMoreEnrollments, allEnrollments) {
+			// Override for MyCoursesContentBehavior._getViewAllCoursesText
+			_getViewAllCoursesText: function(hasMoreEnrollments, allEnrollments) {
 				var viewAllCourses = this.localize('viewAllCourses');
 				if (!this.updatedSortLogic) return viewAllCourses;
 

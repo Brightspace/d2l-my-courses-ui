@@ -1,4 +1,4 @@
-describe('d2l-my-courses-content-behavior', () => {
+describe('d2l-my-courses-content', () => {
 	var sandbox,
 		component,
 		searchAction,
@@ -31,14 +31,14 @@ describe('d2l-my-courses-content-behavior', () => {
 		enrollmentsRootEntity = window.D2L.Hypermedia.Siren.Parse({
 			actions: [searchAction]
 		});
-		component = fixture('d2l-my-courses-content-behavior-fixture');
+		component = fixture('d2l-my-courses-content-fixture');
 	});
 
 	afterEach(() => {
 		sandbox.restore();
 	});
 
-	it('should be properly inherited by the consumer element', () => {
+	it('should properly implement d2l-my-courses-content-behvavior', () => {
 		expect(component).to.exist;
 		expect(component._alerts).to.be.an.instanceof(Array);
 		expect(component._existingEnrollmentsMap).to.be.an('object');
@@ -95,6 +95,11 @@ describe('d2l-my-courses-content-behavior', () => {
 
 	describe('Events', () => {
 		describe('open-change-image-view', () => {
+			beforeEach(() => {
+				// Prevents the _searchPath of the image selector from being null
+				component.imageCatalogLocation = '/foo/bar';
+			});
+
 			it('should update _setImageOrg', done => {
 				var event = new CustomEvent('open-change-image-view', {
 					detail: {
@@ -111,7 +116,11 @@ describe('d2l-my-courses-content-behavior', () => {
 
 			it('should open the course image overlay', done => {
 				var spy = sandbox.spy(component.$['basic-image-selector-overlay'], 'open');
-				var event = new CustomEvent('open-change-image-view', { detail: {} });
+				var event = new CustomEvent('open-change-image-view', {
+					detail: {
+						organization: organizationEntity
+					}
+				});
 				component.dispatchEvent(event);
 
 				setTimeout(() => {

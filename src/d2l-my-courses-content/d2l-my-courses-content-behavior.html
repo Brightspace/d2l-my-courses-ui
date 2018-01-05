@@ -92,12 +92,16 @@
 			this._onEnrollmentPinnedMessage = this._onEnrollmentPinnedMessage.bind(this);
 			document.body.addEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 			document.body.addEventListener('set-course-image', this._onSetCourseImage.bind(this));
-			this.$$('d2l-course-tile-grid').addEventListener('startedInactiveAlert', this._onStartedInactiveAlert.bind(this));
+			window.addEventListener('resize', this._onResize.bind(this));
 			this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-overlay'].scrollRegion;
+
+			var courseTileGrid = this.$$('d2l-course-tile-grid');
+			courseTileGrid && courseTileGrid.addEventListener('startedInactiveAlert', this._onStartedInactiveAlert.bind(this));
 		},
 		detached: function() {
 			document.body.removeEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 			document.body.removeEventListener('set-course-image', this._onSetCourseImage.bind(this));
+			window.removeEventListener('resize', this._onResize.bind(this));
 		},
 		observers: [
 			'_enrollmentsChanged(_enrollments)',
@@ -282,6 +286,21 @@
 					}
 				}.bind(this));
 		},
+		_onResize: function() {
+			var courseTileGrid = this.$$('.course-tile-grid');
+			if (!courseTileGrid) {
+				return;
+			}
+
+			courseTileGrid.classList.remove('columns-1');
+			courseTileGrid.classList.remove('columns-2');
+			courseTileGrid.classList.remove('columns-3');
+			courseTileGrid.classList.remove('columns-4');
+
+			var gridWidth = courseTileGrid.offsetWidth;
+			var numColumns = Math.min(Math.floor(gridWidth / 300), 4) + 1;
+			courseTileGrid.classList.add('columns-' + numColumns);
+		},
 		_onStartedInactiveAlert: function(e) {
 			var type = e && e.detail && e.detail.type;
 
@@ -358,7 +377,7 @@
 
 			this.performanceMark('d2l.my-courses.root-enrollments.request');
 
-			var showContent = function() {
+			var showContent = function(e) {
 				this._showContent = true;
 			}.bind(this);
 
@@ -452,7 +471,8 @@
 				&& searchAction.getFieldByName('sort').value.toLowerCase() === 'current'
 			) {
 				// When using Current sort, hide past courses in the widget view
-				this.$$('d2l-course-tile-grid').setAttribute('hide-past-courses', '');
+				var grid = this.$$('d2l-course-tile-grid') || this.$$('.course-tile-grid');
+				grid.setAttribute('hide-past-courses', '');
 			}
 
 			enrollmentEntities.forEach(function(enrollment) {

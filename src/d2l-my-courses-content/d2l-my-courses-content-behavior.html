@@ -83,9 +83,12 @@
 			'enrollment-unpinned': '_onEnrollmentPinAction',
 			'course-tile-organization': '_onCourseTileOrganization',
 			'course-image-loaded': '_onCourseImageLoaded',
-			'initially-visible-course-tile': '_onInitiallyVisibleCourseTile'
+			'initially-visible-course-tile': '_onInitiallyVisibleCourseTile',
+			'started-inactive': '_onStartedInactiveAlert'
 		},
 		attached: function() {
+			// Sets initial number of columns
+			this._onResize();
 			this.performanceMark('d2l.my-courses.attached');
 			this._fetchRoot();
 
@@ -114,12 +117,20 @@
 		courseImageUploadCompleted: function(success) {
 			if (success) {
 				this.$['basic-image-selector-overlay'].close();
-				this.$$('d2l-course-tile-grid').refreshCourseTileImage(this._setImageOrg);
+				this.$$('d2l-course-tile-grid') && this.$$('d2l-course-tile-grid').refreshCourseTileImage(this._setImageOrg);
+
+				var tileGrid = this.$$('.course-tile-grid');
+				if (tileGrid) {
+					var courseTiles = tileGrid.querySelectorAll('d2l-course-image-tile');
+					for (var i = 0; i < courseTiles.length; i++) {
+						courseTiles[i].refreshImage(this._setImageOrg);
+					}
+				}
 			}
 			this.focus();
 		},
 		focus: function() {
-			if (this.$$('d2l-course-tile-grid').focus(this._setImageOrg)) {
+			if ((this.$$('d2l-course-tile-grid') || this.$$('.course-tile-grid')).focus(this._setImageOrg)) {
 				return;
 			}
 			this.$.viewAllCourses.focus();
@@ -291,21 +302,25 @@
 			if (!courseTileGrid) {
 				return;
 			}
+			var containerWidth = this.$$('.spinner-container').offsetWidth;
+			var numColumns = Math.min(Math.floor(containerWidth / 300), 4) + 1;
 
 			courseTileGrid.classList.remove('columns-1');
 			courseTileGrid.classList.remove('columns-2');
 			courseTileGrid.classList.remove('columns-3');
 			courseTileGrid.classList.remove('columns-4');
-
-			var gridWidth = courseTileGrid.offsetWidth;
-			var numColumns = Math.min(Math.floor(gridWidth / 300), 4) + 1;
 			courseTileGrid.classList.add('columns-' + numColumns);
 		},
 		_onStartedInactiveAlert: function(e) {
 			var type = e && e.detail && e.detail.type;
 
+			var courseTileGrid = this.$$('d2l-course-tile-grid');
+			var startedInactiveCourseTile = this.$$('.course-tile-grid d2l-course-image-tile[started-inactive]');
 			this._removeAlert('startedInactiveCourses');
-			if (this.$$('d2l-course-tile-grid').checkForStartedInactive(type)) {
+			if (
+				startedInactiveCourseTile
+				|| courseTileGrid && courseTileGrid.checkForStartedInactive(type)
+			) {
 				this._addAlert('warning', 'startedInactiveCourses', this.localize('startedInactiveAlert'));
 			}
 		},
@@ -333,7 +348,7 @@
 			if (this._allCoursesCreated) {
 				this.$$('d2l-all-courses').setCourseImage(e);
 			}
-			this.$$('d2l-course-tile-grid').setCourseImage(e);
+			this.$$('d2l-course-tile-grid') && this.$$('d2l-course-tile-grid').setCourseImage(e);
 		},
 
 		/*
@@ -471,8 +486,7 @@
 				&& searchAction.getFieldByName('sort').value.toLowerCase() === 'current'
 			) {
 				// When using Current sort, hide past courses in the widget view
-				var grid = this.$$('d2l-course-tile-grid') || this.$$('.course-tile-grid');
-				grid.setAttribute('hide-past-courses', '');
+				(this.$$('d2l-course-tile-grid') || this.$$('.course-tile-grid')).setAttribute('hide-past-courses', '');
 			}
 
 			enrollmentEntities.forEach(function(enrollment) {

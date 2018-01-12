@@ -44,6 +44,7 @@
     "d2l-polymer-behaviors": "^1.1.0",
     "d2l-search-widget": "git://github.com/Brightspace/d2l-search-widget-ui.git#^2.2.0",
     "d2l-simple-overlay": "git://github.com/Brightspace/simple-overlay#^1.1.2",
+    "d2l-tile": "BrightspaceUI/tile#master",
     "d2l-typography": "^5.5.0",
     "d2l-organization-hm-behavior": "git://github.com/Brightspace/organization-hm-behavior.git#^1.1.0",
     "iron-a11y-announcer": "^1.0.6",

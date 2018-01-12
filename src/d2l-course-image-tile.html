@@ -1,0 +1,743 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../d2l-course-image/d2l-course-image.html">
+<link rel="import" href="../../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
+<link rel="import" href="../../d2l-icons/d2l-icon.html">
+<link rel="import" href="../../d2l-icons/tier1-icons.html">
+<link rel="import" href="../../d2l-dropdown/d2l-dropdown-menu.html">
+<link rel="import" href="../../d2l-menu/d2l-menu-item.html">
+<link rel="import" href="../../d2l-menu/d2l-menu-item-link.html">
+<link rel="import" href="../../d2l-organization-hm-behavior/d2l-organization-hm-behavior.html">
+<link rel="import" href="../../d2l-tile/d2l-image-tile.html">
+<link rel="import" href="localize-behavior.html">
+<link rel="import" href="d2l-utility-behavior.html">
+
+<dom-module id="d2l-course-image-tile">
+	<template strip-whitespace>
+		<style>
+			:host {
+				margin-bottom: 0.75rem;
+				--course-image-height: 5rem;
+			}
+
+			d2l-image-tile {
+				border-color: transparent;
+				text-align: inherit;
+				width: 100%;
+				--d2l-image-tile-image-height: var(--course-image-height);
+			}
+			d2l-icon {
+				color: white;
+				--d2l-icon-width: 18px;
+				--d2l-icon-height: 18px;
+			}
+
+			.flex {
+				display: flex;
+			}
+
+			.course-text {
+				margin-top: 0.6rem;
+				float: left;
+				flex: 1;
+				overflow: hidden;
+				word-wrap: break-word; /* IE/Edge */
+				overflow-wrap: break-word; /* replaces 'word-wrap' in Firefox, Chrome, Safari */
+			}
+			:host:hover .course-text,
+			:host:focus .course-text {
+				text-decoration: underline;
+			}
+			:host:hover a[disabled],
+			:host:focus a[disabled] {
+				cursor: default;
+			}
+			:host:hover a[disabled] .course-text,
+			:host:focus a[disabled] .course-text {
+				text-decoration: none;
+			}
+
+			.course-code-text,
+			.separator-icon,
+			.semester-text {
+				display: none;
+			}
+			:host([show-course-code]) .course-code-text,
+			:host([show-course-code]) .separator-icon,
+			:host([show-semester]) .semester-text {
+				display: inline-block;
+			}
+			.course-code-text,
+			.semester-text  {
+				-ms-word-break: break-all;
+				word-break: break-all;
+				word-break: break-word; /* Best case, only works in Chrome though */
+				@apply --d2l-body-small-text;
+			}
+			.separator-icon {
+				color: var(--d2l-color-tungsten)
+			}
+			.uppercase {
+				text-transform: uppercase;
+			}
+
+			.pin-indicator {
+				line-height: 20px;
+				opacity: 1;
+				background: rgba(0,0,0,0.5);
+				border: none;
+				border-radius: 5px;
+				transition: color 0.5s, background 0.5s, opacity 0.25s, width 0.15s, margin-right 0.25s, padding-left 0.25s, padding-right 0.25s;
+				cursor: pointer;
+				width: 35px;
+				height: 35px;
+				margin-right: 10px;
+			}
+			.pin-indicator:hover,
+			.pin-indicator:focus {
+				color: rgba(255,255,255,1);
+				background: var(--d2l-color-celestine);
+			}
+			:host-context([dir="rtl"]) .pin-indicator {
+				margin-left: 10px;
+				margin-right: auto;
+			}
+
+			.overlay {
+				box-sizing: border-box;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				position: absolute;
+				top: calc(-1 * var(--course-image-height));
+				height: var(--course-image-height);
+				width: 100%;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+				color: white;
+				padding: 10px;
+				text-align: center;
+				background-color: rgba(0,0,0,0.7);
+			}
+			.overlay.transparent {
+				background-color: transparent;
+			}
+			.overlay-text {
+				font-size: 1rem;
+				font-weight: bold;
+			}
+			.overlay-date {
+				font-size: 0.8rem;
+			}
+
+			.icon-container {
+				height: 64px;
+				width: 64px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				border-style: none;
+				border-radius: 100px;
+				background-color: white;
+				overflow: hidden;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				margin: auto;
+				animation-name: container;
+				animation-duration: 1s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes container {
+				0% { height: 64px; width: 64px; }
+				70% { height: 64px; width: 64px; opacity: 1; }
+				90% { height: 80px; width: 80px; opacity: 0.4 }
+				100% { height: 20px; width: 20px; opacity: 0; }
+			}
+
+			.checkmark {
+				color: var(--d2l-color-olivine);
+			}
+			.fail-icon {
+				color: #ffce51;
+			}
+			.checkmark,
+			.fail-icon {
+				display: flex;
+				animation-name: inner;
+				animation-duration: 1s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes inner {
+				0% { transform: scale(1); }
+				15% { transform: scale(2.30); }
+				20% { transform: scale(2.0); }
+				100% { transform: scale(2.0); }
+			}
+
+			.update-text-box {
+				border: 2px solid var(--d2l-color-carnelian);
+				color: var(--d2l-color-carnelian);
+				border-radius: 0.25rem;
+				font-size: 1rem;
+				font-weight: 700;
+				width: 2rem;
+				height: 2rem;
+				line-height: 2rem;
+				display: inline-flex;
+				margin-top: 0.25rem;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.alert-colour-circle {
+				height: 24px;
+				width: 24px;
+				border-radius: 12px;
+				border: 3px solid white;
+				background-color: #ffce51;
+				position: absolute;
+				top: calc(-1 * var(--course-image-height) - 12px);
+				right: -12px;
+			}
+			[dir="rtl"] .alert-colour-circle {
+				right: auto;
+				left: -2px;
+			}
+		</style>
+
+		<d2l-image-tile
+			hover-effect="[[_hoverEffects]]"
+			dropdown-label="[[_courseSettingsLabel]]"
+			no-mobile-more-button>
+			<d2l-course-image
+				slot="d2l-image-tile-image"
+				aria-hidden="true"
+				class="image-layer-bottom"
+				image="[[_image]]"
+				sizes="[[tileSizes]]"
+				type="tile">
+			</d2l-course-image>
+			<d2l-dropdown-menu slot="d2l-image-tile-dropdown">
+				<d2l-menu>
+					<d2l-menu-item-link
+						hidden$="[[!_canAccessCourseInfo]]"
+						text="[[localize('courseOfferingInformation')]]"
+						href="[[_courseInfoUrl]]">
+					</d2l-menu-item-link>
+					<d2l-menu-item
+						on-d2l-menu-item-select="_launchCourseImageSelector"
+						hidden$="[[!_canChangeCourseImage]]"
+						text="[[localize('changeImage')]]">
+					</d2l-menu-item>
+					<d2l-menu-item
+						on-d2l-menu-item-select="_pinClickHandler"
+						hidden$="[[pinned]]"
+						text="[[localize('pin')]]">
+					</d2l-menu-item>
+					<d2l-menu-item
+						on-d2l-menu-item-select="_pinClickHandler"
+						hidden$="[[!pinned]]"
+						text="[[localize('unpin')]]">
+					</d2l-menu-item>
+				</d2l-menu>
+			</d2l-dropdown-menu>
+			<button
+				slot="d2l-image-tile-menu-adjacent"
+				hidden$="[[!pinned]]"
+				class="pin-indicator"
+				on-tap="_pinClickHandler"
+				on-keypress="_pinClickHandler"
+				aria-label$="[[_pinButtonLabel]]">
+				<d2l-icon hidden$="[[!pinned]]" icon="d2l-tier1:pin-filled"></d2l-icon>
+			</button>
+
+			<a
+				href="[[_organizationHomepageUrl]]"
+				aria-disabled="[[!_canAccessCourse]]">
+				<div hidden$="[[!_hasOverlay]]" class="overlay">
+					<div class="overlay-text">[[_overlayTitle]]</div>
+					<div class="overlay-date">[[_overlayDate]]</div>
+					<div>[[_overlayInactive]]</div>
+				</div>
+				<div hidden$="[[_hasOverlay]]" class="overlay transparent"></div>
+				<div hidden$="[[!_imageLoading]]" class="overlay">
+					<d2l-loading-spinner hidden$="[[!_imageLoadingProgress]]" size="85"></d2l-loading-spinner>
+					<div class="icon-container" hidden$="[[_imageLoadingProgress]]">
+						<d2l-icon></d2l-icon>
+					</div>
+				</div>
+				<div class="alert-colour-circle" hidden$="[[!startedInactive]]"></div>
+				<div class="flex">
+					<div class="course-text">
+						[[_organization.properties.name]]
+						<div>
+							<span class="course-code-text uppercase">[[_organization.properties.code]]</span>
+							<d2l-icon hidden$="[[!_showSeparator]]" class="separator-icon" icon="d2l-tier1:bullet"></d2l-icon>
+							<span class="semester-text">[[_semesterName]]</span>
+						</div>
+						<d2l-offscreen hidden$="[[!_hasOverlay]]">[[_overlayAnnounceText]]</d2l-offscreen>
+					</div>
+					<div hidden$="[[!_showUpdateCount]]">
+						<d2l-offscreen>[[localize('courseTile.updates')]]</d2l-offscreen>
+						<span class="update-text-box">[[_updateCount]]</span>
+					</div>
+				</div>
+			</a>
+		</d2l-image-tile>
+	</template>
+	<script>
+		Polymer({
+			is: 'd2l-course-image-tile',
+
+			properties: {
+				courseUpdatesConfig: Object,
+				enrollment: Object,
+				pinned: {
+					type: Boolean,
+					value: false,
+					reflectToAttribute: true
+				},
+				showCourseCode: {
+					type: Boolean,
+					reflectToAttribute: true
+				},
+				showSemester: {
+					type: Boolean,
+					reflectToAttribute: true
+				},
+				startedInactive: {
+					type: Boolean,
+					value: false,
+					reflectToAttribute: true
+				},
+				tileSizes: Object,
+
+				_canAccessCourse: {
+					type: Boolean,
+					value: false
+				},
+				_canAccessCourseInfo: {
+					type: Boolean,
+					computed: '_computeCanAccessCourseInfo(_organization)'
+				},
+				_canChangeCourseImage: {
+					type: Boolean,
+					computed: '_computeCanChangeCourseImage(_organization)'
+				},
+				_courseInfoUrl: String,
+				_courseSettingsLabel: {
+					type: String,
+					computed: '_computeCourseSettingsLabel(_organization)'
+				},
+				_hasOverlay: {
+					type: Boolean,
+					value: false
+				},
+				_hoverEffects: {
+					type: String,
+					value: 'emphasize-image lower-menu'
+				},
+				_image: Object,
+				_imageLoading: {
+					type: Boolean,
+					value: false
+				},
+				_imageLoadingProgress: {
+					type: Boolean,
+					value: false
+				},
+				_load: Boolean,
+				_nextImage: Object,
+				_organization: Object,
+				_organizationHomepageUrl: String,
+				_overlayAnnounceText: {
+					type: String,
+					computed: '_computeOverlayAnnounceText(_organization)'
+				},
+				_overlayDate: String,
+				_overlayInactive: String,
+				_overlayTitle: String,
+				_pinButtonLabel: {
+					type: String,
+					computed: '_computePinButtonLabel(_organization)'
+				},
+				_semesterName: String,
+				_semesterUrl: String,
+				_showSeparator: {
+					type: Boolean,
+					value: false,
+					computed: '_computeShowSeparator(_semesterName)'
+				},
+				_showUpdateCount: {
+					type: Boolean,
+					value: false,
+					computed: '_computeShowUpdateCount(courseUpdatesConfig, _updateCount)'
+				},
+				_updateString: {
+					type: String,
+					computed: '_computeUpdateString(_updateCount)'
+				},
+				_updateCount: {
+					type: Number,
+					value: 0
+				}
+			},
+			behaviors: [
+				window.D2L.Hypermedia.HMConstantsBehavior,
+				window.D2L.Hypermedia.OrganizationHMBehavior,
+				window.D2L.MyCourses.UtilityBehavior,
+				D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
+			],
+			observers: [
+				'_fetchEnrollmentData(_load, enrollment)'
+			],
+			attached: function() {
+				document.body.addEventListener('set-course-image', this._onSetCourseImage.bind(this));
+				Polymer.RenderStatus.afterNextRender(this, function() {
+					var anchorElement = this.$$('d2l-image-tile');
+
+					var observerCallback = function(entries, observer) {
+						if (this._load) {
+							// The tile already loaded via requestIdleCallback/setTimeout
+							return;
+						}
+
+						for (var i = 0; i < entries.length; i++) {
+							// Chrome/FF immediately call the callback when we observer.observe()
+							// so we need to also make sure the tile is visible for that first run
+							// see https://bugs.chromium.org/p/chromium/issues/detail?id=713819
+							if (entries[i].intersectionRatio > 0) {
+								observer.unobserve(anchorElement);
+								this.fire('initially-visible-course-tile');
+								this._load = true;
+								break;
+							}
+						}
+					};
+
+					// Small shim for Edge/IE/Safari
+					var delayFunction = window.requestIdleCallback || setTimeout;
+					delayFunction(function() {
+						if (this._load) {
+							// The tile already loaded via the IntersectionObserver
+							return;
+						}
+						// Whether we load because the tile became visible, or because we got some
+						// idle time, we want to disconnect the observer either way
+						observer.unobserve(anchorElement);
+						this._load = true;
+					}.bind(this));
+
+					var observer = new IntersectionObserver(observerCallback.bind(this));
+					observer.observe(anchorElement);
+				});
+			},
+			detached: function() {
+				document.body.removeEventListener('set-course-image', this._onSetCourseImage.bind(this));
+			},
+			ready: function() {
+				Polymer.IronA11yAnnouncer.requestAvailability();
+			},
+
+			refreshImage: function(organization) {
+				if (this.getEntityIdentifier(organization) !== this.getEntityIdentifier(this._organization)) {
+					return;
+				}
+
+				this._imageLoading = true;
+				this._imageLoadingProgress = true;
+
+				var organizationHref = organization.getLinkByRel('self').href;
+				organizationHref += '?embedDepth=1';
+
+				return this._fetchOrganization(organizationHref)
+					.then(this._displaySetImageResult.bind(this, true, true))
+					.catch(this._displaySetImageResult.bind(this, false));
+			},
+
+			_computeCanAccessCourseInfo: function(organization) {
+				return organization
+					&& organization.hasLinkByRel(this.HypermediaRels.courseOfferingInfoPage);
+			},
+			_computeCanChangeCourseImage: function(organization) {
+				return organization
+					&& organization.hasActionByName(this.HypermediaActions.organizations.setCatalogImage);
+			},
+			_computeCourseSettingsLabel: function(organization) {
+				return organization
+					&& organization.properties
+					&& this.localize('courseSettings', 'course', organization.properties.name);
+			},
+			_computeOverlayAnnounceText: function(organization) {
+				var nowDate = Date.now();
+				var endDate = Date.parse(organization.properties.endDate);
+				var startDate = Date.parse(organization.properties.startDate);
+				var inactive = !organization.properties.isActive;
+
+				this.removeAttribute('past-course');
+				this._hasOverlay = true;
+
+				if (endDate < nowDate) {
+					this.setAttribute('past-course', '');
+					endDate = new Date(endDate);
+					this._overlayDate = this.formatDateTime(endDate, {format: 'medium'});
+					this._overlayInactive = null;
+					this._overlayTitle = this.localize('overlay.courseClosed');
+					return this.localize('courseEnded', 'date', this.formatDate(endDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(endDate));
+				} else if (startDate > nowDate) {
+					startDate = new Date(startDate);
+					this._overlayDate = this.formatDateTime(startDate, {format: 'medium'});
+					this._overlayInactive = inactive ? null : this.localize('brackets', 'content', this.localize('overlay.inactive'));
+					this._overlayTitle = this.localize('overlay.courseOpens');
+					return this.localize('courseStarting', 'date', this.formatDate(startDate, {format: 'MMMM d, yyyy'}), 'time', this.formatTime(startDate));
+				} else if (startDate && inactive) {
+					this._overlayInactive = this.localize('brackets', 'content', this.localize('overlay.inactive'));
+					this._overlayTitle = this.localize('overlay.courseStarted');
+					if (this.pinned) {
+						// We only care about calling out started-inactive courses if they're pinned
+						this.startedInactive = true;
+						this.fire('started-inactive');
+					}
+					return this._overlayTitle + ' ' + this._overlayInactive;
+				} else if (inactive) {
+					this._overlayTitle = this.localize('overlay.inactive');
+					return this._overlayTitle;
+				} else {
+					this._overlayDate = null;
+					this._overlayInactive = null;
+					this._overlayTitle = null;
+					this._hasOverlay = false;
+					return null;
+				}
+			},
+			_computePinButtonLabel: function(organization) {
+				return organization
+					&& organization.properties
+					&& this.localize('coursePinButton', 'course', organization.properties.name);
+			},
+			_computeShowSeparator: function(semesterName) {
+				return this.showSemester && semesterName.length > 0;
+			},
+			_computeShowUpdateCount: function(courseUpdatesConfig, updateCount) {
+				return !!courseUpdatesConfig && updateCount > 0;
+			},
+			_computeUpdateString: function(updateCount) {
+				return updateCount + (updateCount > 99 ? '+' : '');
+			},
+
+			_displaySetImageResult: function(success, skipSetImage) {
+				setTimeout(function() {
+					var icon = this.$$('.icon-container d2l-icon');
+					this.toggleClass('checkmark', false, icon);
+					this.toggleClass('fail-icon', false, icon);
+					var iconName = success ? 'd2l-tier2:check' : 'd2l-tier3:close';
+					var className = success ? 'checkmark' : 'fail-icon';
+					icon.setAttribute('icon', iconName);
+					this.toggleClass(className, true, icon);
+
+					// Hide the loading spinner, so that the success/failure icon shows
+					this._imageLoadingProgress = false;
+
+					if (success && !skipSetImage) {
+						this._image = this._nextImage;
+					}
+
+					setTimeout(function() {
+						// Hide the entire image-loading overlay and contents
+						this._imageLoading = false;
+					}.bind(this), 1000);
+				}.bind(this), 1000);
+			},
+			_fetchEnrollmentData: function(load, enrollment) {
+				if (!load || !enrollment || !enrollment.hasLinkByRel(this.HypermediaRels.organization)) {
+					return;
+				}
+
+				this.pinned = enrollment.hasClass(this.HypermediaClasses.enrollments.pinned);
+
+				var organizationHref = enrollment.getLinkByRel(this.HypermediaRels.organization).href;
+				organizationHref += '?embedDepth=1';
+
+				return this._fetchOrganization(organizationHref)
+					.then(function() {
+						return Promise.all([
+							this._fetchSemester(),
+							this._fetchNotifications()
+						]);
+					}.bind(this));
+			},
+			_fetchOrganization: function(url) {
+				return window.d2lfetch
+					.fetch(new Request(url, {
+						headers: {
+							'accept': 'application/vnd.siren+json',
+							// Needs no-cache so that images refresh if the users here using the back button
+							'cache-control': 'no-cache',
+							'pragma': 'no-cache'
+						}
+					}))
+					.then(this.responseToSirenEntity.bind(this))
+					.then(this._handleOrganizationResponse.bind(this));
+			},
+			_fetchNotifications: function() {
+				if (!this._notificationsUrl || !this.courseUpdatesConfig) {
+					return Promise.resolve();
+				}
+
+				return this.fetchSirenEntity(this._notificationsUrl)
+					.then(function(notifications) {
+						if (!notifications) {
+							return;
+						}
+
+						var total = 0;
+						if (this.courseUpdatesConfig.showUnattemptedQuizzes) {
+							total += notifications.properties.UnattemptedQuizzes;
+						}
+						if (this.courseUpdatesConfig.showDropboxUnreadFeedback) {
+							total += notifications.properties.UnreadAssignmentFeedback;
+						}
+						if (this.courseUpdatesConfig.showUngradedQuizAttempts) {
+							total += notifications.properties.UngradedQuizzes;
+						}
+						if (this.courseUpdatesConfig.showUnreadDiscussionMessages) {
+							total += notifications.properties.UnreadDiscussions + notifications.properties.UnapprovedDiscussions;
+						}
+						if (this.courseUpdatesConfig.showUnreadDropboxSubmissions) {
+							total += notifications.properties.UnreadAssignmentSubmissions;
+						}
+
+						this._updateCount = total;
+					}.bind(this))
+					.catch(function() {
+						// If we fail to fetch notifications, hide the orange box (via computed _showUpdateCount)
+						this._updateCount = 0;
+					});
+			},
+			_fetchSemester: function() {
+				if (!this._semesterUrl || !this.showSemester) {
+					return Promise.resolve();
+				}
+
+				return this.fetchSirenEntity(this._semesterUrl)
+					.then(function(semester) {
+						this._semesterName = (semester.properties || {}).name;
+					}.bind(this));
+			},
+			_handleOrganizationResponse: function(organization) {
+				this._organization = organization;
+
+				Polymer.RenderStatus.afterNextRender(this, function() {
+					// Telemetry event for organization loaded, meaning tile is interactive
+					this.fire('course-tile-organization');
+				});
+
+				if (organization.hasLinkByRel(this.HypermediaRels.courseOfferingInfoPage)) {
+					this._courseInfoUrl = organization.getLinkByRel(this.HypermediaRels.courseOfferingInfoPage).href;
+				}
+				if (organization.hasLinkByRel(this.HypermediaRels.parentSemester)) {
+					this._semesterUrl = organization.getLinkByRel(this.HypermediaRels.parentSemester).href;
+				}
+				if (organization.hasLinkByRel(this.HypermediaRels.Notifications.organizationNotifications)) {
+					this._notificationsUrl = organization.getLinkByRel(this.HypermediaRels.Notifications.organizationNotifications).href;
+				}
+				if (organization.hasSubEntityByClass(this.HypermediaClasses.courseImage.courseImage)) {
+					this._image = organization.getSubEntityByClass(this.HypermediaClasses.courseImage.courseImage);
+				}
+				if (organization.hasSubEntityByRel(this.HypermediaRels.organizationHomepage)) {
+					var homepageEntity = organization.getSubEntityByRel(this.HypermediaRels.organizationHomepage);
+					this._organizationHomepageUrl = homepageEntity
+						&& homepageEntity.properties
+						&& homepageEntity.properties.path;
+				} else {
+					// If the user doens't have access, don't animate image/show menu/underline on hover
+					this._hoverEffects = '';
+					this._canAccessCourse = false;
+					this.$$('a').setAttribute('disabled', '');
+				}
+
+				return Promise.resolve();
+			},
+			_launchCourseImageSelector: function() {
+				this.fire('open-change-image-view', {
+					organization: this._organization
+				});
+			},
+			_onSetCourseImage: function(e) {
+				if (this.getEntityIdentifier(e.detail.organization) != this.getEntityIdentifier(this._organization)) {
+					return;
+				}
+
+				this._imageLoading = true;
+
+				var status = e.detail.status;
+				var newImageHref = this.getDefaultImageLink(e.detail.image);
+				var newSrcSet = this.getImageSrcset(e.detail.image, 'tile');
+
+				switch (status) {
+					case 'set':
+						this._imageLoadingProgress = true;
+						// load the image while the loading spinner runs to that we have it when the spinner ends
+						this._nextImage = e.detail.image;
+						var imagePreloader = document.createElement('img');
+						imagePreloader.setAttribute('src', newImageHref);
+						imagePreloader.setAttribute('srcset', newSrcSet);
+						imagePreloader.setAttribute('sizes', this.$$('d2l-course-image').getTileSizes());
+						break;
+					case 'success':
+						this._displaySetImageResult(true);
+						break;
+					case 'failure':
+					default:
+						this._displaySetImageResult(false);
+						break;
+				}
+			},
+			_pinClickHandler: function() {
+				var pinAction = this.pinned
+					? this.enrollment.getActionByName(this.HypermediaActions.enrollments.unpinCourse)
+					: this.enrollment.getActionByName(this.HypermediaActions.enrollments.pinCourse);
+
+				var body = '';
+				var fields = pinAction.fields || [];
+				fields.forEach(function(field) {
+					body = body + encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value) + '&';
+				});
+
+				this.fire(this.pinned ? 'enrollment-pinned' : 'enrollment-unpinned', {
+					enrollment: this.enrollment,
+					organization: this._organization
+				});
+
+				var localizeKey = this.pinned ? 'pinActionResult' : 'unpinActionResult';
+				this.fire('iron-announce', {
+					text: this.localize(localizeKey, 'course', this._organization.properties.name)
+				}, { bubbles: true });
+
+				return window.d2lfetch
+					.fetch(new Request(pinAction.href, {
+						method: pinAction.method,
+						body: body,
+						headers: {
+							'accept':'application/vnd.siren+json',
+							'content-type':'application/x-www-form-urlencoded'
+						}
+					}))
+					.then(this.responseToSirenEntity.bind(this))
+					.then(function(enrollment) {
+						this.enrollment = enrollment;
+					}.bind(this))
+					.then(function() {
+						// Wait until after PUT has finished to fire, so that
+						// listeners are guaranteed to fetch updated entity
+						this.fire('d2l-course-pinned-change', {
+							enrollment: this.enrollment,
+							isPinned: this.pinned
+						});
+					}.bind(this));
+			}
+		});
+	</script>
+</dom-module>

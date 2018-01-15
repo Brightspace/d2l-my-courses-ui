@@ -11,6 +11,8 @@ describe('d2l-my-courses-content', () => {
 		organizationEntity,
 		organizationEntityHydrated;
 
+	var self = this;
+
 	function SetupFetchStub(url, entity) {
 		fetchStub.withArgs(sinon.match.has('url', sinon.match(url)))
 			.returns(Promise.resolve({
@@ -288,7 +290,11 @@ describe('d2l-my-courses-content', () => {
 				{ enrollmentPinStates: [true, false], pin: true, name: 'one pins, pin non-displayed course' },
 				{ enrollmentPinStates: [true, true], pin: true, name: 'two pins, pin non-displayed course' },
 			].forEach(testCase => {
-				it.skip(testCase.name, () => {
+				(window.navigator.platform.indexOf('Mac') > -1 ? it.skip : it)(testCase.name, () => {
+					if (window.navigator.platform.match(/Mac/)) {
+						self.skip();
+					}
+
 					for (var i = 0; i < testCase.enrollmentPinStates.length; i++) {
 						var enrollment = window.D2L.Hypermedia.Siren.Parse({
 							links: [
@@ -350,7 +356,7 @@ describe('d2l-my-courses-content', () => {
 				{ enrollmentPinStates: [true, true, true], switchStateIndex: 1, name: 'three pins, unpin second course goes to index 2' },
 				{ enrollmentPinStates: [true, true, true], switchStateIndex: 2, name: 'three pins, unpin third course goes to index 2' },
 			].forEach(testCase => {
-				it.skip(testCase.name, () => {
+				(window.navigator.platform.indexOf('Mac') > -1 ? it.skip : it)(testCase.name, () => {
 					for (var i = 0; i < testCase.enrollmentPinStates.length; i++) {
 						var enrollment = window.D2L.Hypermedia.Siren.Parse({
 							links: [

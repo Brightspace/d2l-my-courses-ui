@@ -21,24 +21,24 @@
           "version": ""
         },
         {
-          "browserName": "firefox",
+          "browserName": "chrome",
           "platform": "OS X 10.12",
-          "version": ""
+          "version": "dev"
         },
         {
-          "browserName": "firefox",
+          "browserName": "chrome",
           "platform": "Windows 10",
-          "version": ""
+          "version": "dev"
         },
         {
-          "browserName": "safari",
+          "browserName": "chrome",
           "platform": "OS X 10.12",
-          "version": ""
+          "version": "beta"
         },
         {
-          "browserName": "microsoftedge",
+          "browserName": "chrome",
           "platform": "Windows 10",
-          "version": ""
+          "version": "beta"
         }
       ]
     }

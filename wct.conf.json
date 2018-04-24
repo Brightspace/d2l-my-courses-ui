@@ -9,6 +9,7 @@
       }
     },
     "sauce": {
+      "idleTimeout": 240,
       "browsers": [
         {
           "browserName": "chrome",
@@ -21,24 +22,24 @@
           "version": ""
         },
         {
-          "browserName": "chrome",
+          "browserName": "firefox",
           "platform": "OS X 10.12",
-          "version": "dev"
+          "version": ""
         },
         {
-          "browserName": "chrome",
+          "browserName": "firefox",
           "platform": "Windows 10",
-          "version": "dev"
+          "version": ""
         },
         {
-          "browserName": "chrome",
+          "browserName": "safari",
           "platform": "OS X 10.12",
-          "version": "beta"
+          "version": ""
         },
         {
-          "browserName": "chrome",
+          "browserName": "microsoftedge",
           "platform": "Windows 10",
-          "version": "beta"
+          "version": ""
         }
       ]
     }

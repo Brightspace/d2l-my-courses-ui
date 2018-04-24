@@ -9,6 +9,7 @@
       }
     },
     "sauce": {
+      "idleTimeout": 240,
       "browsers": [
         {
           "browserName": "chrome",

@@ -12,7 +12,7 @@
       "idleTimeout": 360,
       "browsers": [
         {
-          "browserName": "MicrosoftEdge",
+          "browserName": "microsoftedge",
           "platform": "Windows 10",
           "version": ""
         }

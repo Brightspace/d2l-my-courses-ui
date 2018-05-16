@@ -12,8 +12,8 @@
       "idleTimeout": 360,
       "browsers": [
         {
-          "browserName": "safari",
-          "platform": "OS X 10.12",
+          "browserName": "firefox",
+          "platform": "Windows 10",
           "version": ""
         }
       ]

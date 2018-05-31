@@ -1,5 +1,8 @@
 <link rel="import" href="../../../polymer/polymer.html">
 
+<link rel="import" href="../../../siren-parser-import/siren-parser.html">
+<script type="text/javascript" src="../../saved-searches.json"></script>
+
 <script>
 	window.D2L = window.D2L || {};
 	window.D2L.MyCourses = window.D2L.MyCourses || {};
@@ -33,11 +36,18 @@
 				type: Boolean,
 				value: false
 			},
+			tabSearchActions: {
+				type: Array,
+				value: []
+			},
 			// Feature flag (switch) for using the updated sort logic and related fetaures
 			updatedSortLogic: {
 				type: Boolean,
 				value: false
 			}
+		},
+		attached: function() {
+			this.fetchTabSearchActions();
 		},
 		courseImageUploadCompleted: function(success) {
 			return this.updatedSortLogic
@@ -48,6 +58,24 @@
 			return this.updatedSortLogic
 				? this.$$('d2l-my-courses-content').getLastOrgUnitId()
 				: this.$$('d2l-my-courses-content-animated').getLastOrgUnitId();
+		},
+		fetchTabSearchActions: function() {
+			return this.fetchSirenEntity(this.enrollmentsUrl)
+				.then(function(enrollmentsRootEntity) {
+					if (!enrollmentsRootEntity.hasAction('search-my-enrollments')) {
+						return Promise.resolve();
+					}
+					var searchAction = enrollmentsRootEntity.getActionByName('search-my-enrollments');
+					this.tabSearchActions = [{'name': searchAction.name, 'title': 'All', 'selected': false, 'enrollmentsSearchAction': searchAction}];
+				}.bind(this))
+				.then(function() {
+					// TODO: Call the promoted-searches route to get the list of searchActions, rather than from savedSearches.json
+					// TODO: Look for the "most-recent" class property in the returned searchActions to select the right initial tab
+					const promotedSearchesEntity = window.D2L.Hypermedia.Siren.Parse(savedSearches);
+					const promotedSearchesArray = promotedSearchesEntity.actions.map(action => ({'name': action.name, 'title': action.title, 'selected': false, 'enrollmentsSearchAction': action}));
+					promotedSearchesArray[1].selected = true;
+					this.tabSearchActions = this.tabSearchActions.concat(promotedSearchesArray);
+				}.bind(this));
 		}
 	};
 </script>

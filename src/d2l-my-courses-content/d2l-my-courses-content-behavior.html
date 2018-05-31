@@ -21,6 +21,7 @@
 	*/
 	D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		properties: {
+			enrollmentsSearchAction: Object,
 			// Alerts to display in widget, above course tiles
 			_alerts: {
 				type: Array,
@@ -90,11 +91,11 @@
 		},
 		attached: function() {
 			this.performanceMark('d2l.my-courses.attached');
-			this._fetchRoot();
 
 			this._onEnrollmentPinnedMessage = this._onEnrollmentPinnedMessage.bind(this);
 			document.body.addEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 			document.body.addEventListener('set-course-image', this._onSetCourseImage.bind(this));
+			document.body.addEventListener('d2l-tab-panel-selected', this._onTabSelected.bind(this));
 			this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-overlay'].scrollRegion;
 
 			Polymer.RenderStatus.afterNextRender(this, function() {
@@ -102,10 +103,12 @@
 					this.$$('d2l-course-tile-grid').addEventListener('startedInactiveAlert', this._onStartedInactiveAlert.bind(this));
 				}
 			});
+			// this._fetchRoot();
 		},
 		detached: function() {
 			document.body.removeEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 			document.body.removeEventListener('set-course-image', this._onSetCourseImage.bind(this));
+			document.body.removeEventListener('d2l-tab-panel-selected', this._onTabSelected.bind(this));
 		},
 		observers: [
 			'_enrollmentsChanged(_enrollments)',
@@ -245,12 +248,15 @@
 		_onEnrollmentPinnedMessage: function(e) {
 			if (Polymer.dom(e).rootTarget === this) return;
 
-			var enrollment = e.detail.enrollment || this._orgUnitIdMap[e.detail.orgUnitId];
-			if (!enrollment) {
-				return this.fetchSirenEntity(this.enrollmentsUrl)
-					.then(this._refetchEnrollments.bind(this));
-			}
+			var orgUnitId = e.detail.orgUnitId ?
+				e.detail.orgUnitId :
+				this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(this.HypermediaRels.organization).href);
 
+			// Only want to move pinned/unpinned enrollment if it exists in the panel
+			var enrollment = this._orgUnitIdMap[orgUnitId];
+			if (!enrollment) {
+				return this._refetchEnrollments.bind(this);
+			}
 			var changedEnrollmentId = this.getEntityIdentifier(enrollment);
 			var removalIndex = -1;
 			var lastPinnedIndex = 0;
@@ -310,6 +316,23 @@
 				this._addAlert('warning', 'startedInactiveCourses', this.localize('startedInactiveAlert'));
 			}
 		},
+		_onTabSelected: function(e) {
+			// Only handle if tab selected corresponds to this panel
+			if (e.target.id === this.parentElement.id) {
+				if (!this._hasEnrollments) {
+					this._fetchRoot()
+						.then(function() {
+							window.dispatchEvent(new Event('resize'));
+						});
+				}
+				else {
+					setTimeout(function() {
+						// Force redraw of course tiles.
+						window.dispatchEvent(new Event('resize'));
+					}.bind(this), 10);
+				}
+			}
+		},
 		_checkIfStartedInactiveCourses: function(e) {
 			var type = e && e.detail && e.detail.type;
 			var hasStartedInactiveCourses = false;
@@ -352,9 +375,7 @@
 		* Utility/helper functions
 		*/
 
-		_createFetchEnrollmentsUrl: function(enrollmentsRootEntity, bustCache) {
-			var searchAction = enrollmentsRootEntity.getActionByName('search-my-enrollments');
-
+		_createFetchEnrollmentsUrl: function(bustCache) {
 			var query = {
 				pageSize: 20,
 				embedDepth: 1,
@@ -362,7 +383,7 @@
 				autoPinCourses: false,
 				promotePins: true
 			};
-			var enrollmentsSearchUrl = this.createActionUrl(searchAction, query);
+			var enrollmentsSearchUrl = this.createActionUrl(this.enrollmentsSearchAction, query);
 
 			if (bustCache) {
 				enrollmentsSearchUrl += '&bustCache=' + Math.random();
@@ -383,18 +404,16 @@
 			}
 		},
 		_fetchRoot: function() {
-			if (!this.enrollmentsUrl) {
+			if (!this.enrollmentsSearchAction) {
 				return;
 			}
-
 			this.performanceMark('d2l.my-courses.root-enrollments.request');
 
 			var showContent = function() {
 				this._showContent = true;
 			}.bind(this);
 
-			return this.fetchSirenEntity(this.enrollmentsUrl)
-				.then(this._fetchEnrollments.bind(this))
+			return this._fetchEnrollments()
 				.then(function() {
 					// At worst, display content 1s after we fetch enrollments
 					// (Usually set to true before that, in _onCourseTileOrganization)
@@ -403,7 +422,7 @@
 				}.bind(this))
 				.catch(showContent);
 		},
-		_fetchEnrollments: function(enrollmentsRootEntity) {
+		_fetchEnrollments: function() {
 			this.performanceMark('d2l.my-courses.root-enrollments.response');
 			this.performanceMeasure(
 				'd2l.my-courses.root-enrollments',
@@ -411,11 +430,7 @@
 				'd2l.my-courses.root-enrollments.response'
 			);
 
-			if (!enrollmentsRootEntity.hasAction('search-my-enrollments')) {
-				return Promise.resolve();
-			}
-
-			this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity);
+			this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl();
 
 			this.performanceMark('d2l.my-courses.search-enrollments.request');
 			return this.fetchSirenEntity(this._enrollmentsSearchUrl)
@@ -478,11 +493,10 @@
 			this._hasMoreEnrollments = enrollmentsEntity.hasLinkByRel('next');
 			var newEnrollments = [];
 
-			var searchAction = enrollmentsEntity.getActionByName('search-my-enrollments');
 			if (
-				searchAction
-				&& searchAction.hasFieldByName('sort')
-				&& searchAction.getFieldByName('sort').value.toLowerCase() === 'current'
+				this.enrollmentsSearchAction
+				&& this.enrollmentsSearchAction.hasFieldByName('sort')
+				&& this.enrollmentsSearchAction.getFieldByName('sort').value.toLowerCase() === 'current'
 			) {
 				// When using Current sort, hide past courses in the widget view
 				var tileGrid = this.cssGridView ? this.$$('.course-tile-grid') : this.$$('d2l-course-tile-grid');
@@ -525,12 +539,9 @@
 					.then(this._populateEnrollments.bind(this));
 			}
 		},
-		_refetchEnrollments: function(enrollmentsRootEntity) {
-			if (!enrollmentsRootEntity.hasAction('search-my-enrollments')) {
-				return Promise.resolve();
-			}
+		_refetchEnrollments: function() {
 
-			this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(enrollmentsRootEntity, true);
+			this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(true);
 
 			return this.fetchSirenEntity(this._enrollmentsSearchUrl)
 				.then(this._populateEnrollments.bind(this));

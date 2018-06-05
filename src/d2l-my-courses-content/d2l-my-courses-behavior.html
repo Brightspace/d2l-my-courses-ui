@@ -1,8 +1,5 @@
 <link rel="import" href="../../../polymer/polymer.html">
 
-<link rel="import" href="../../../siren-parser-import/siren-parser.html">
-<script type="text/javascript" src="../../saved-searches.json"></script>
-
 <script>
 	window.D2L = window.D2L || {};
 	window.D2L.MyCourses = window.D2L.MyCourses || {};
@@ -36,6 +33,7 @@
 				type: Boolean,
 				value: false
 			},
+			promotedSearches: String,
 			tabSearchActions: {
 				type: Array,
 				value: []
@@ -60,22 +58,29 @@
 				: this.$$('d2l-my-courses-content-animated').getLastOrgUnitId();
 		},
 		fetchTabSearchActions: function() {
-			return this.fetchSirenEntity(this.enrollmentsUrl)
-				.then(function(enrollmentsRootEntity) {
-					if (!enrollmentsRootEntity.hasAction('search-my-enrollments')) {
-						return Promise.resolve();
+			return Promise.all([
+				this._fetchSirenEntityIfExists(this.enrollmentsUrl),
+				this._fetchSirenEntityIfExists(this.promotedSearches)
+			])
+				.then(function([enrollmentsRootEntity, promotedSearchesEntity]) {
+					if (enrollmentsRootEntity && !enrollmentsRootEntity.hasAction('search-my-enrollments')) {
+						this.tabSearchActions = [];
 					}
-					var searchAction = enrollmentsRootEntity.getActionByName('search-my-enrollments');
-					this.tabSearchActions = [{'name': searchAction.name, 'title': 'All', 'selected': false, 'enrollmentsSearchAction': searchAction}];
-				}.bind(this))
-				.then(function() {
-					// TODO: Call the promoted-searches route to get the list of searchActions, rather than from savedSearches.json
-					// TODO: Look for the "most-recent" class property in the returned searchActions to select the right initial tab
-					const promotedSearchesEntity = window.D2L.Hypermedia.Siren.Parse(savedSearches);
-					const promotedSearchesArray = promotedSearchesEntity.actions.map(action => ({'name': action.name, 'title': action.title, 'selected': false, 'enrollmentsSearchAction': action}));
-					promotedSearchesArray[1].selected = true;
-					this.tabSearchActions = this.tabSearchActions.concat(promotedSearchesArray);
+					else {
+						var searchAction = enrollmentsRootEntity.getActionByName('search-my-enrollments');
+						this.tabSearchActions = [{'name': searchAction.name, 'title': this.localize('allTab'), 'selected': false, 'enrollmentsSearchAction': searchAction}];
+					}
+					if (promotedSearchesEntity) {
+					 	var promotedSearchesArray = promotedSearchesEntity.actions.map(action => ({'name': action.name, 'title': action.title, 'selected': false, 'enrollmentsSearchAction': action}));
+						this.tabSearchActions = this.tabSearchActions.concat(promotedSearchesArray);
+					}
 				}.bind(this));
+		},
+		_fetchSirenEntityIfExists: function(url) {
+			if (url) {
+				return this.fetchSirenEntity(url);
+			}
+			return;
 		}
 	};
 </script>

@@ -103,7 +103,6 @@
 					this.$$('d2l-course-tile-grid').addEventListener('startedInactiveAlert', this._onStartedInactiveAlert.bind(this));
 				}
 			});
-			// this._fetchRoot();
 		},
 		detached: function() {
 			document.body.removeEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
@@ -253,7 +252,7 @@
 				this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(this.HypermediaRels.organization).href);
 
 			// Only want to move pinned/unpinned enrollment if it exists in the panel
-			var enrollment = this._orgUnitIdMap[orgUnitId];
+			var enrollment = orgUnitId ? this._orgUnitIdMap[orgUnitId] : null;
 			if (!enrollment) {
 				return this._refetchEnrollments.bind(this);
 			}

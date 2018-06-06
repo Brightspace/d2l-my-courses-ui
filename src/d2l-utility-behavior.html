@@ -50,6 +50,9 @@
 			return window.D2L.Hypermedia.Siren.Parse(entity);
 		},
 		fetchSirenEntity: function(url) {
+			if (!url) {
+				return;
+			}
 			return window.d2lfetch
 				.fetch(new Request(url, {
 					headers: { Accept: 'application/vnd.siren+json' }

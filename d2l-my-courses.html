@@ -1,4 +1,3 @@
-<script src="../webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="src/d2l-my-courses-content/d2l-my-courses-content.html">
 <link rel="import" href="src/d2l-my-courses-content/d2l-my-courses-content-animated.html">
@@ -35,9 +34,9 @@ If it is off and the attribute is not added, the `d2l-my-courses-content-animate
 		</template>
 		<template is="dom-if" if="[[updatedSortLogic]]">
 				<d2l-tabs>
-					<template slot="tab" items="[[tabSearchActions]]" is="dom-repeat">
+					<template items="[[_tabSearchActions]]" is="dom-repeat">
 						<!-- item.name is an OrgUnitId, and querySelector does not work with components with ids that start with a number -->
-						<d2l-tab-panel slot="panel" id="panel-[[item.name]]" text="[[item.title]]" selected=[[item.selected]]>
+						<d2l-tab-panel id="panel-[[item.name]]" text="[[item.title]]" selected=[[item.selected]]>
 							<d2l-my-courses-content
 								advanced-search-url="[[advancedSearchUrl]]"
 								enrollments-url="[[enrollmentsUrl]]"
@@ -55,16 +54,13 @@ If it is off and the attribute is not added, the `d2l-my-courses-content-animate
 						</d2l-tab-panel>
 					</template>
 				</d2l-tabs>
-			<!-- </div> -->
 		</template>
 	</template>
 	<script>
 		Polymer({
 			is: 'd2l-my-courses',
 			behaviors: [
-				D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
-				D2L.MyCourses.MyCoursesBehavior,
-				D2L.MyCourses.UtilityBehavior,
+				D2L.MyCourses.MyCoursesBehavior
 			]
 		});
 	</script>

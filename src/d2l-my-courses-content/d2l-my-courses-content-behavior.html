@@ -247,12 +247,16 @@
 		_onEnrollmentPinnedMessage: function(e) {
 			if (Polymer.dom(e).rootTarget === this) return;
 
-			var orgUnitId = e.detail.orgUnitId ?
-				e.detail.orgUnitId :
-				this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(this.HypermediaRels.organization).href);
+			var orgUnitId;
+			if (e.detail.orgUnitId) {
+				orgUnitId = e.detail.orgUnitId;
+			}
+			else if (e.detail.enrollment && e.detail.enrollment.hasLinkByRel(this.HypermediaRels.organization)) {
+				orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(this.HypermediaRels.organization).href);
+			}
 
 			// Only want to move pinned/unpinned enrollment if it exists in the panel
-			var enrollment = orgUnitId ? this._orgUnitIdMap[orgUnitId] : null;
+			var enrollment = orgUnitId && this._orgUnitIdMap[orgUnitId];
 			if (!enrollment) {
 				return this._refetchEnrollments.bind(this);
 			}
@@ -317,19 +321,20 @@
 		},
 		_onTabSelected: function(e) {
 			// Only handle if tab selected corresponds to this panel
-			if (e.target.id === this.parentElement.id) {
-				if (!this._hasEnrollments) {
-					this._fetchRoot()
-						.then(function() {
-							window.dispatchEvent(new Event('resize'));
-						});
-				}
-				else {
-					setTimeout(function() {
-						// Force redraw of course tiles.
+			if (e.target.id !== this.parentElement.id) {
+				return;
+			}
+			if (!this._hasEnrollments) {
+				this._fetchRoot()
+					.then(function() {
 						window.dispatchEvent(new Event('resize'));
-					}.bind(this), 10);
-				}
+					});
+			}
+			else {
+				setTimeout(function() {
+					// Force redraw of course tiles.
+					window.dispatchEvent(new Event('resize'));
+				}, 10);
 			}
 		},
 		_checkIfStartedInactiveCourses: function(e) {

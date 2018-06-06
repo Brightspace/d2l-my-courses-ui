@@ -8,7 +8,7 @@
 	* Common properties between d2l-my-courses and d2l-my-courses-content-behavior-animated
 	* @polymerBehavior D2L.MyCourses.MyCoursesBehavior
 	*/
-	D2L.MyCourses.MyCoursesBehavior = {
+	D2L.MyCourses.MyCoursesBehaviorImpl = {
 		properties: {
 			// URL that directs to the advanced search page
 			advancedSearchUrl: String,
@@ -34,18 +34,18 @@
 				value: false
 			},
 			promotedSearches: String,
-			tabSearchActions: {
-				type: Array,
-				value: []
-			},
 			// Feature flag (switch) for using the updated sort logic and related fetaures
 			updatedSortLogic: {
 				type: Boolean,
 				value: false
+			},
+			_tabSearchActions: {
+				type: Array,
+				value: []
 			}
 		},
 		attached: function() {
-			this.fetchTabSearchActions();
+			this._fetchTabSearchActions();
 		},
 		courseImageUploadCompleted: function(success) {
 			return this.updatedSortLogic
@@ -57,30 +57,37 @@
 				? this.$$('d2l-my-courses-content').getLastOrgUnitId()
 				: this.$$('d2l-my-courses-content-animated').getLastOrgUnitId();
 		},
-		fetchTabSearchActions: function() {
+		_fetchTabSearchActions: function() {
 			return Promise.all([
-				this._fetchSirenEntityIfExists(this.enrollmentsUrl),
-				this._fetchSirenEntityIfExists(this.promotedSearches)
+				this.fetchSirenEntity(this.enrollmentsUrl),
+				this.fetchSirenEntity(this.promotedSearches)
 			])
-				.then(function([enrollmentsRootEntity, promotedSearchesEntity]) {
-					if (enrollmentsRootEntity && !enrollmentsRootEntity.hasAction('search-my-enrollments')) {
-						this.tabSearchActions = [];
+				.then(function(values) {
+					var enrollmentsRootEntity = values[0];
+					var promotedSearchesEntity = values[1];
+					if (!enrollmentsRootEntity || !enrollmentsRootEntity.hasAction('search-my-enrollments')) {
+						this._tabSearchActions = [];
 					}
 					else {
 						var searchAction = enrollmentsRootEntity.getActionByName('search-my-enrollments');
-						this.tabSearchActions = [{'name': searchAction.name, 'title': this.localize('allTab'), 'selected': false, 'enrollmentsSearchAction': searchAction}];
+						this._tabSearchActions = [{'name': searchAction.name, 'title': this.localize('allTab'), 'selected': false, 'enrollmentsSearchAction': searchAction}];
 					}
-					if (promotedSearchesEntity) {
-					 	var promotedSearchesArray = promotedSearchesEntity.actions.map(action => ({'name': action.name, 'title': action.title, 'selected': false, 'enrollmentsSearchAction': action}));
-						this.tabSearchActions = this.tabSearchActions.concat(promotedSearchesArray);
+					if (promotedSearchesEntity && promotedSearchesEntity.actions) {
+						var promotedSearchesArray = promotedSearchesEntity.actions.map(function(action) {
+							return { 'name': action.name, 'title': action.title, 'selected': false, 'enrollmentsSearchAction': action };
+						});
+						this._tabSearchActions = this._tabSearchActions.concat(promotedSearchesArray);
 					}
 				}.bind(this));
-		},
-		_fetchSirenEntityIfExists: function(url) {
-			if (url) {
-				return this.fetchSirenEntity(url);
-			}
-			return;
 		}
 	};
+
+	/*
+	* @polymerBehavior D2L.MyCourses.MyCoursesContentBehavior
+	*/
+	D2L.MyCourses.MyCoursesBehavior = [
+		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
+		D2L.MyCourses.UtilityBehavior,
+		D2L.MyCourses.MyCoursesBehaviorImpl
+	];
 </script>

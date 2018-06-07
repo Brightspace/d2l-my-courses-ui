@@ -113,6 +113,7 @@ This is only used if the `US90527-my-courses-updates` LD flag is OFF
 			is: 'd2l-my-courses-content-animated',
 
 			properties: {
+				enrollmentsSearchAction: Object,
 				_allEnrollments: {
 					type: Array,
 					value: function() { return []; }
@@ -151,7 +152,8 @@ This is only used if the `US90527-my-courses-updates` LD flag is OFF
 			},
 			observers: [
 				// Override for MyCoursesContentBehavior observer
-				'_enrollmentsChanged(_pinnedEnrollments.length, _allEnrollments.length)'
+				'_enrollmentsChanged(_pinnedEnrollments.length, _allEnrollments.length)',
+				'_enrollmentSearchActionChanged(enrollmentsSearchAction)',
 			],
 
 			/*
@@ -258,27 +260,27 @@ This is only used if the `US90527-my-courses-updates` LD flag is OFF
 					this._addAlert('call-to-action', 'noCourses', this.localize('noCoursesMessage'));
 				}
 			},
+			_enrollmentSearchActionChanged: function() {
+				this._fetchRoot();
+			},
 
 			/*
 			* Utility/helper functions
 			*/
 
 			// Override for MyCoursesContentBehavior._createFetchEnrollmentsUrl
-			_createFetchEnrollmentsUrl: function(enrollmentsRootEntity, bustCache) {
-				var searchAction = enrollmentsRootEntity.getActionByName('search-my-enrollments');
-
+			_createFetchEnrollmentsUrl: function(bustCache) {
 				var query = {
 					pageSize: 20,
 					embedDepth: 1,
 					sort: '-PinDate,OrgUnitName,OrgUnitId',
 					autoPinCourses: true
 				};
-				var enrollmentsSearchUrl = this.createActionUrl(searchAction, query);
+				var enrollmentsSearchUrl = this.createActionUrl(this.enrollmentsSearchAction, query);
 
 				if (bustCache) {
 					enrollmentsSearchUrl += '&bustCache=' + Math.random();
 				}
-
 				return enrollmentsSearchUrl;
 			},
 			// Override for MyCoursesContentBehavior._populateEnrollments

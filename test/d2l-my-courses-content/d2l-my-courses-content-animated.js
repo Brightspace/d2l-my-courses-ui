@@ -198,7 +198,8 @@ describe('d2l-my-courses-content-animated', function() {
 				rel: ['self'],
 				href: searchHref
 			}]
-		};
+		},
+		enrollmentsSearchEntity = window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse);
 
 	var clock;
 
@@ -206,15 +207,13 @@ describe('d2l-my-courses-content-animated', function() {
 		sandbox = sinon.sandbox.create();
 
 		widget = fixture('d2l-my-courses-content-animated-fixture');
-
 		widget.fetchSirenEntity = sandbox.stub();
 		widget.fetchSirenEntity.withArgs(rootHref).returns(Promise.resolve(
 			window.D2L.Hypermedia.Siren.Parse(enrollmentsRootResponse)
 		));
 		widget.fetchSirenEntity.withArgs(searchHref).returns(Promise.resolve(
-			window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse)
+			enrollmentsSearchEntity
 		));
-
 		setTimeout(() => {
 			done();
 		});
@@ -229,13 +228,23 @@ describe('d2l-my-courses-content-animated', function() {
 	});
 
 	it('should load', function() {
+		widget.fetchSirenEntity.withArgs(sinon.match('/enrollments/users/169?search='))
+			.returns(Promise.resolve(
+				enrollmentsSearchEntity
+			));
+		widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
+
 		expect(widget).to.exist;
 	});
 
 	describe('Enrollments requests and responses', function() {
 		it('should send a search request for enrollments with the correct query params', function() {
+			widget.fetchSirenEntity.withArgs(sinon.match('/enrollments/users/169?search='))
+				.returns(Promise.resolve(
+					enrollmentsSearchEntity
+				));
+			widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
 			var spy = sandbox.spy(widget, '_fetchEnrollments');
-
 			return widget._fetchRoot().then(function() {
 				expect(spy).to.have.been.called;
 				expect(widget.fetchSirenEntity).to.have.been.calledWith(sinon.match('autoPinCourses=true'));
@@ -248,14 +257,15 @@ describe('d2l-my-courses-content-animated', function() {
 		it('should append enrollments on successive search requests', function() {
 			widget.fetchSirenEntity.withArgs(sinon.match('/enrollments/users/169?search='))
 				.onFirstCall().returns(Promise.resolve(
-					window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse)
+					enrollmentsSearchEntity
 				))
 				.onSecondCall().returns(Promise.resolve(
 					window.D2L.Hypermedia.Siren.Parse(enrollmentsNextPageSearchResponse)
 				));
-
+			// first call to _fetchRoot on enrollmentsSearchActionChanged
+			widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
+			// second call to _fetchRoot done explicitly
 			return widget._fetchRoot()
-				.then(widget._fetchRoot.bind(widget))
 				.then(function() {
 					expect(widget._pinnedEnrollments.length).to.equal(2);
 				});
@@ -274,6 +284,7 @@ describe('d2l-my-courses-content-animated', function() {
 				.returns(Promise.resolve(
 					window.D2L.Hypermedia.Siren.Parse(enrollmentsNextPageSearchResponse)
 				));
+			widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
 
 			return widget._fetchRoot()
 				.then(function() {
@@ -282,6 +293,10 @@ describe('d2l-my-courses-content-animated', function() {
 		});
 
 		it('should rescale the course tile grid on search response', function() {
+			widget.fetchSirenEntity.withArgs(sinon.match('/enrollments/users/169?search=')).returns(Promise.resolve(
+				window.D2L.Hypermedia.Siren.Parse(noEnrollmentsResponse)
+			));
+			widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
 			var gridRescaleSpy = sandbox.spy(widget.$$('d2l-course-tile-grid'), '_rescaleCourseTileRegions');
 
 			return widget._fetchRoot().then(function() {
@@ -293,6 +308,7 @@ describe('d2l-my-courses-content-animated', function() {
 			widget.fetchSirenEntity.withArgs(sinon.match('/enrollments/users/169?search=')).returns(Promise.resolve(
 				window.D2L.Hypermedia.Siren.Parse(noEnrollmentsResponse)
 			));
+			widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
 
 			return widget._fetchRoot().then(function() {
 				expect(widget._hasEnrollments).to.equal(false);
@@ -304,6 +320,7 @@ describe('d2l-my-courses-content-animated', function() {
 			widget.fetchSirenEntity.withArgs(sinon.match('/enrollments/users/169?search=')).returns(Promise.resolve(
 				window.D2L.Hypermedia.Siren.Parse(noPinnedEnrollmentsResponse)
 			));
+			widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
 
 			return widget._fetchRoot().then(function() {
 				expect(widget._hasEnrollments).to.equal(true);
@@ -315,6 +332,7 @@ describe('d2l-my-courses-content-animated', function() {
 			widget.fetchSirenEntity.withArgs(sinon.match('/enrollments/users/169?search=')).returns(Promise.resolve(
 				window.D2L.Hypermedia.Siren.Parse(noPinnedEnrollmentsResponse)
 			));
+			widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
 
 			return widget._fetchRoot().then(function() {
 				expect(widget._hasEnrollments).to.equal(true);
@@ -340,8 +358,9 @@ describe('d2l-my-courses-content-animated', function() {
 			widget.imageCatalogLocation = '/foo/bar';
 
 			widget.fetchSirenEntity.withArgs(sinon.match('/enrollments/users/169?search=')).returns(Promise.resolve(
-				window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse)
+				enrollmentsSearchEntity
 			));
+			widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
 		});
 
 		it('should return the correct value from getCourseTileItemCount', function() {

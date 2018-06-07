@@ -258,7 +258,7 @@
 			// Only want to move pinned/unpinned enrollment if it exists in the panel
 			var enrollment = orgUnitId && this._orgUnitIdMap[orgUnitId];
 			if (!enrollment) {
-				return this._refetchEnrollments.bind(this);
+				return this._refetchEnrollments();
 			}
 			var changedEnrollmentId = this.getEntityIdentifier(enrollment);
 			var removalIndex = -1;
@@ -435,7 +435,6 @@
 			);
 
 			this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl();
-
 			this.performanceMark('d2l.my-courses.search-enrollments.request');
 			return this.fetchSirenEntity(this._enrollmentsSearchUrl)
 				.then(this._enrollmentsResponsePerfMeasures.bind(this))
@@ -544,9 +543,7 @@
 			}
 		},
 		_refetchEnrollments: function() {
-
 			this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(true);
-
 			return this.fetchSirenEntity(this._enrollmentsSearchUrl)
 				.then(this._populateEnrollments.bind(this));
 		},

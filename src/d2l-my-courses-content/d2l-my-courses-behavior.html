@@ -1,4 +1,5 @@
 <link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../../../d2l-hm-constants-behavior/d2l-hm-constants-behavior.html">
 
 <script>
 	window.D2L = window.D2L || {};
@@ -39,6 +40,7 @@
 				type: Boolean,
 				value: false
 			},
+			_enrollmentsSearchAction: Object,
 			_tabSearchActions: {
 				type: Array,
 				value: []
@@ -65,19 +67,19 @@
 				.then(function(values) {
 					var enrollmentsRootEntity = values[0];
 					var promotedSearchesEntity = values[1];
-					if (!enrollmentsRootEntity || !enrollmentsRootEntity.hasAction('search-my-enrollments')) {
-						this._tabSearchActions = [];
-					}
-					else {
-						var searchAction = enrollmentsRootEntity.getActionByName('search-my-enrollments');
-						this._tabSearchActions = [{'name': searchAction.name, 'title': this.localize('allTab'), 'selected': false, 'enrollmentsSearchAction': searchAction}];
+					var tabSearchActions = [];
+					if (enrollmentsRootEntity && enrollmentsRootEntity.hasAction(this.HypermediaActions.enrollments.searchMyEnrollments)) {
+						var searchAction = enrollmentsRootEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+						this._enrollmentsSearchAction = searchAction;	// For d2l-my-courses-content-animated
+						tabSearchActions = [{name: searchAction.name, title: this.localize('allTab'), selected: false, enrollmentsSearchAction: searchAction}];
 					}
 					if (promotedSearchesEntity && promotedSearchesEntity.actions) {
 						var promotedSearchesArray = promotedSearchesEntity.actions.map(function(action) {
-							return { 'name': action.name, 'title': action.title, 'selected': false, 'enrollmentsSearchAction': action };
+							return { name: action.name, title: action.title, selected: false, enrollmentsSearchAction: action };
 						});
-						this._tabSearchActions = this._tabSearchActions.concat(promotedSearchesArray);
+						tabSearchActions = tabSearchActions.concat(promotedSearchesArray);
 					}
+					this._tabSearchActions = tabSearchActions;
 				}.bind(this));
 		}
 	};
@@ -86,6 +88,7 @@
 	* @polymerBehavior D2L.MyCourses.MyCoursesContentBehavior
 	*/
 	D2L.MyCourses.MyCoursesBehavior = [
+		window.D2L.Hypermedia.HMConstantsBehavior,
 		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 		D2L.MyCourses.UtilityBehavior,
 		D2L.MyCourses.MyCoursesBehaviorImpl

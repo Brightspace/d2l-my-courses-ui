@@ -126,6 +126,7 @@ describe('d2l-my-courses-content', () => {
 
 		component = fixture('d2l-my-courses-content-fixture');
 		component.enrollmentsUrl = '/enrollments';
+		component.enrollmentsSearchAction = enrollmentsRootEntity.actions[0];
 
 		setTimeout(() => {
 			done();
@@ -385,7 +386,6 @@ describe('d2l-my-courses-content', () => {
 				};
 
 				var refetchSpy = sandbox.spy(component, '_refetchEnrollments');
-
 				return component._onEnrollmentPinnedMessage(event).then(() => {
 					expect(refetchSpy).to.have.been.called;
 				});
@@ -979,6 +979,7 @@ describe('d2l-my-courses-content', () => {
 					isPinned: true
 				}
 			};
+			component._orgUnitIdMap = {69: enrollmentMock};
 			component._enrollments = [];
 			component.getEntityIdentifier = sinon.stub().returns('69');
 			var spy = sandbox.spy(component, '_addOnlyPastCoursesAlert');
@@ -1000,6 +1001,7 @@ describe('d2l-my-courses-content', () => {
 					isPinned: false
 				}
 			};
+			component._orgUnitIdMap = {69: enrollmentMock};
 			component._enrollments = [enrollmentMock];
 			component.getEntityIdentifier = sinon.stub().returns('69');
 			var spy = sandbox.spy(component, '_addOnlyPastCoursesAlert');

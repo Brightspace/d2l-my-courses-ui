@@ -29,32 +29,30 @@ If it is off and the attribute is not added, the `d2l-my-courses-content-animate
 				standard-semester-name="[[standardSemesterName]]"
 				course-updates-config="[[courseUpdatesConfig]]"
 				course-image-upload-cb="[[courseImageUploadCb]]"
-				css-grid-view="false"
 				updated-sort-logic="[[updatedSortLogic]]">
 			</d2l-my-courses-content-animated>
 		</template>
 		<template is="dom-if" if="[[updatedSortLogic]]">
-				<d2l-tabs>
-					<template items="[[_tabSearchActions]]" is="dom-repeat">
-						<!-- item.name is an OrgUnitId, and querySelector does not work with components with ids that start with a number -->
-						<d2l-tab-panel id="panel-[[item.name]]" text="[[item.title]]" selected=[[item.selected]]>
-							<d2l-my-courses-content
-								advanced-search-url="[[advancedSearchUrl]]"
-								enrollments-url="[[enrollmentsUrl]]"
-								enrollments-search-action="[[item.enrollmentsSearchAction]]"
-								image-catalog-location="[[imageCatalogLocation]]"
-								show-course-code="[[showCourseCode]]"
-								show-semester="[[showSemester]]"
-								standard-department-name="[[standardDepartmentName]]"
-								standard-semester-name="[[standardSemesterName]]"
-								course-updates-config="[[courseUpdatesConfig]]"
-								course-image-upload-cb="[[courseImageUploadCb]]"
-								css-grid-view="[[cssGridView]]"
-								updated-sort-logic="[[updatedSortLogic]]">
-							</d2l-my-courses-content>
-						</d2l-tab-panel>
-					</template>
-				</d2l-tabs>
+			<d2l-tabs>
+				<template items="[[_tabSearchActions]]" is="dom-repeat">
+					<!-- item.name is an OrgUnitId, and querySelector does not work with components with ids that start with a number -->
+					<d2l-tab-panel id="panel-[[item.name]]" text="[[item.title]]" selected=[[item.selected]]>
+						<d2l-my-courses-content
+							advanced-search-url="[[advancedSearchUrl]]"
+							enrollments-url="[[enrollmentsUrl]]"
+							enrollments-search-action="[[item.enrollmentsSearchAction]]"
+							image-catalog-location="[[imageCatalogLocation]]"
+							show-course-code="[[showCourseCode]]"
+							show-semester="[[showSemester]]"
+							standard-department-name="[[standardDepartmentName]]"
+							standard-semester-name="[[standardSemesterName]]"
+							course-updates-config="[[courseUpdatesConfig]]"
+							course-image-upload-cb="[[courseImageUploadCb]]"
+							updated-sort-logic="[[updatedSortLogic]]">
+						</d2l-my-courses-content>
+					</d2l-tab-panel>
+				</template>
+			</d2l-tabs>
 		</template>
 	</template>
 	<script>

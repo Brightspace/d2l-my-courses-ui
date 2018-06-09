@@ -144,7 +144,7 @@ describe('d2l-my-courses-content', () => {
 		expect(component.courseImageUploadCompleted).to.be.a('function');
 		expect(component.getLastOrgUnitId).to.be.a('function');
 		expect(component.updatedSortLogic).to.equal(false);
-		expect(component.cssGridView).to.equal(false);
+		expect(component.cssGridView).to.equal(true);
 	});
 
 	it('should properly implement d2l-my-courses-content-behavior', () => {
@@ -159,22 +159,10 @@ describe('d2l-my-courses-content', () => {
 		expect(component._tileSizes).to.be.an('object');
 	});
 
-	describe('When cssGridView = true', () => {
-
+	describe('Tile grid', () => {
 		beforeEach((done) => {
-			component = fixture('d2l-my-courses-content-css-grid-view-fixture');
-			component.enrollmentsUrl = '/enrollments';
-
 			component._fetchRoot();
 			setTimeout(done, 300);
-		});
-
-		it('should render the correct tile grid', () => {
-			var courseTileGrid = component.$$('.course-tile-grid');
-			expect(courseTileGrid).to.not.be.null;
-
-			var oldCourseTileGrid = component.$$('d2l-course-tile-grid');
-			expect(oldCourseTileGrid).to.be.null;
 		});
 
 		it('should set the columns-"n" class on the correct tile grid on resize', done => {
@@ -325,7 +313,7 @@ describe('d2l-my-courses-content', () => {
 			});
 
 			it('should focus on course grid when focus called after course interacted with', done => {
-				var tileGridFocusSpy = sandbox.spy(component.$$('d2l-course-tile-grid'), 'focus');
+				var tileGridFocusSpy = sandbox.spy(component.$$('.course-tile-grid'), 'focus');
 
 				component.addEventListener('open-change-image-view', function() {
 					expect(tileGridFocusSpy.called);
@@ -873,142 +861,127 @@ describe('d2l-my-courses-content', () => {
 			expect(component._viewAllCoursesText).to.equal('View All Courses (20+)');
 		});
 
-		it('should not add the Only Past Courses alert if not hiding past courses', () => {
-			var currentOrFutureCourses = false,
-				pinnedEnrollment = false,
-				hidePastCourses = false;
+		describe('Only Past Courses alert', () => {
+			function setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses) {
+				var courseTileGridStub = {
+					hasAttribute: function() {
+						return hidePastCourses;
+					}
+				};
 
-			var courseTileGridStub = sandbox.stub();
-			courseTileGridStub.$$ = sandbox.stub();
-			courseTileGridStub.$$.withArgs('d2l-course-tile:not([past-course])').returns(currentOrFutureCourses);
-			courseTileGridStub.$$.withArgs('d2l-course-tile[pinned]').returns(pinnedEnrollment);
-			courseTileGridStub.hasAttribute = sandbox.stub().returns(hidePastCourses);
-			sandbox.stub(component, '$$').returns(courseTileGridStub);
-			component.$$ = sandbox.stub().returns(courseTileGridStub);
+				sandbox.stub(component, '$$')
+					.withArgs('.course-tile-grid').returns(courseTileGridStub)
+					.withArgs('.course-tile-grid d2l-course-image-tile:not([past-course])').returns(currentOrFutureCourses)
+					.withArgs('.course-tile-grid d2l-course-image-tile[pinned]').returns(pinnedEnrollment);
+			}
 
-			this._alerts = [];
-			component._hasEnrollments = true;
-			component._addOnlyPastCoursesAlert();
-			expect(component._alerts).not.to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
-		});
+			it('should not add the Only Past Courses alert if not hiding past courses', () => {
+				var currentOrFutureCourses = false,
+					pinnedEnrollment = false,
+					hidePastCourses = false;
 
-		it('should not add the Only Past Courses alert if not there are present or future courses', () => {
-			var currentOrFutureCourses = true,
-				pinnedEnrollment = false,
-				hidePastCourses = true;
+				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
 
-			var courseTileGridStub = sandbox.stub();
-			courseTileGridStub.$$ = sandbox.stub();
-			courseTileGridStub.$$.withArgs('d2l-course-tile:not([past-course])').returns(currentOrFutureCourses);
-			courseTileGridStub.$$.withArgs('d2l-course-tile[pinned]').returns(pinnedEnrollment);
-			courseTileGridStub.hasAttribute = sandbox.stub().returns(hidePastCourses);
-			sandbox.stub(component, '$$').returns(courseTileGridStub);
-			component.$$ = sandbox.stub().returns(courseTileGridStub);
+				this._alerts = [];
+				component._hasEnrollments = true;
+				component._addOnlyPastCoursesAlert();
+				expect(component._alerts).not.to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
+			});
 
-			this._alerts = [];
-			component._hasEnrollments = true;
-			component._addOnlyPastCoursesAlert();
-			expect(component._alerts).not.to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
-		});
+			it('should not add the Only Past Courses alert if not there are present or future courses', () => {
+				var currentOrFutureCourses = true,
+					pinnedEnrollment = false,
+					hidePastCourses = true;
 
-		it('should add the Only Past Courses alert if there are only past courses and hides past courses', () => {
-			var currentOrFutureCourses = false,
-				pinnedEnrollment = false,
-				hidePastCourses = true;
+				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
 
-			var courseTileGridStub = sandbox.stub();
-			courseTileGridStub.$$ = sandbox.stub();
-			courseTileGridStub.$$.withArgs('d2l-course-tile:not([past-course])').returns(currentOrFutureCourses);
-			courseTileGridStub.$$.withArgs('d2l-course-tile[pinned]').returns(pinnedEnrollment);
-			courseTileGridStub.hasAttribute = sandbox.stub().returns(hidePastCourses);
-			sandbox.stub(component, '$$').returns(courseTileGridStub);
-			component.$$ = sandbox.stub().returns(courseTileGridStub);
+				this._alerts = [];
+				component._hasEnrollments = true;
+				component._addOnlyPastCoursesAlert();
+				expect(component._alerts).not.to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
+			});
 
-			this._alerts = [];
-			component._hasEnrollments = true;
-			component._addOnlyPastCoursesAlert();
-			expect(component._alerts).to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
-		});
+			it('should add the Only Past Courses alert if there are only past courses and hides past courses', () => {
+				var currentOrFutureCourses = false,
+					pinnedEnrollment = false,
+					hidePastCourses = true;
 
-		it('should add the Only Past Courses alert if there are only past courses, hides past courses and no pinned enrollments', () => {
-			var currentOrFutureCourses = false,
-				pinnedEnrollment = false,
-				hidePastCourses = true;
+				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
 
-			var courseTileGridStub = sandbox.stub();
-			courseTileGridStub.$$ = sandbox.stub();
-			courseTileGridStub.$$.withArgs('d2l-course-tile:not([past-course])').returns(currentOrFutureCourses);
-			courseTileGridStub.$$.withArgs('d2l-course-tile[pinned]').returns(pinnedEnrollment);
-			courseTileGridStub.hasAttribute = sandbox.stub().returns(hidePastCourses);
-			sandbox.stub(component, '$$').returns(courseTileGridStub);
-			component.$$ = sandbox.stub().returns(courseTileGridStub);
+				this._alerts = [];
+				component._hasEnrollments = true;
+				component._addOnlyPastCoursesAlert();
+				expect(component._alerts).to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
+			});
 
-			this._alerts = [];
-			component._hasEnrollments = true;
-			component._addOnlyPastCoursesAlert();
-			expect(component._alerts).to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
-		});
+			it('should add the Only Past Courses alert if there are only past courses, hides past courses and no pinned enrollments', () => {
+				var currentOrFutureCourses = false,
+					pinnedEnrollment = false,
+					hidePastCourses = true;
 
-		it('should remove the Only Past Courses alert if there is a pinned enrollments', () => {
-			var currentOrFutureCourses = false,
-				pinnedEnrollment = true,
-				hidePastCourses = true;
+				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
 
-			var courseTileGridStub = sandbox.stub();
-			courseTileGridStub.$$ = sandbox.stub();
-			courseTileGridStub.$$.withArgs('d2l-course-tile:not([past-course])').returns(currentOrFutureCourses);
-			courseTileGridStub.$$.withArgs('d2l-course-tile[pinned]').returns(pinnedEnrollment);
-			courseTileGridStub.hasAttribute = sandbox.stub().returns(hidePastCourses);
-			sandbox.stub(component, '$$').returns(courseTileGridStub);
-			component.$$ = sandbox.stub().returns(courseTileGridStub);
+				this._alerts = [];
+				component._hasEnrollments = true;
+				component._addOnlyPastCoursesAlert();
+				expect(component._alerts).to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
+			});
 
-			this._alerts = [{ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' }];
-			component._hasEnrollments = true;
-			component._addOnlyPastCoursesAlert();
-			expect(component._alerts).to.not.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
-		});
+			it('should remove the Only Past Courses alert if there is a pinned enrollments', () => {
+				var currentOrFutureCourses = false,
+					pinnedEnrollment = true,
+					hidePastCourses = true;
 
-		it('should set past courses alert with pinned enrollment when a course is pinned', () => {
-			var enrollmentMock = {
-				getLinkByRel: sandbox.stub().returns({ href: 'href' })
-			};
-			var e = {
-				detail: {
-					orgUnitId: 69,
-					enrollment: enrollmentMock,
-					isPinned: true
-				}
-			};
-			component._orgUnitIdMap = {69: enrollmentMock};
-			component._enrollments = [];
-			component.getEntityIdentifier = sinon.stub().returns('69');
-			var spy = sandbox.spy(component, '_addOnlyPastCoursesAlert');
-			sandbox.stub(component, 'fetchSirenEntity').returns(Promise.resolve(enrollmentMock));
+				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
 
-			component._onEnrollmentPinnedMessage(e);
-			expect(spy).to.have.been.calledWith(true);
-		});
+				this._alerts = [{ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' }];
+				component._hasEnrollments = true;
+				component._addOnlyPastCoursesAlert();
+				expect(component._alerts).to.not.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
+			});
 
-		it('should set past courses alert with unpinned enrollment when a course is unpinned', () => {
-			var enrollmentMock = {
-				getLinkByRel: sandbox.stub().returns({ href: 'href' }),
-				hasClass: sandbox.stub().returns(true)
-			};
-			var e = {
-				detail: {
-					orgUnitId: 69,
-					enrollment: enrollmentMock,
-					isPinned: false
-				}
-			};
-			component._orgUnitIdMap = {69: enrollmentMock};
-			component._enrollments = [enrollmentMock];
-			component.getEntityIdentifier = sinon.stub().returns('69');
-			var spy = sandbox.spy(component, '_addOnlyPastCoursesAlert');
-			sandbox.stub(component, 'fetchSirenEntity').returns(Promise.resolve(enrollmentMock));
+			it('should set past courses alert with pinned enrollment when a course is pinned', () => {
+				var enrollmentMock = {
+					getLinkByRel: sandbox.stub().returns({ href: 'href' })
+				};
+				var e = {
+					detail: {
+						orgUnitId: 69,
+						enrollment: enrollmentMock,
+						isPinned: true
+					}
+				};
+				component._orgUnitIdMap = {69: enrollmentMock};
+				component._enrollments = [];
+				component.getEntityIdentifier = sinon.stub().returns('69');
+				var spy = sandbox.spy(component, '_addOnlyPastCoursesAlert');
+				sandbox.stub(component, 'fetchSirenEntity').returns(Promise.resolve(enrollmentMock));
 
-			component._onEnrollmentPinnedMessage(e);
-			expect(spy).to.have.been.calledWith(false);
+				component._onEnrollmentPinnedMessage(e);
+				expect(spy).to.have.been.calledWith(true);
+			});
+
+			it('should set past courses alert with unpinned enrollment when a course is unpinned', () => {
+				var enrollmentMock = {
+					getLinkByRel: sandbox.stub().returns({ href: 'href' }),
+					hasClass: sandbox.stub().returns(true)
+				};
+				var e = {
+					detail: {
+						orgUnitId: 69,
+						enrollment: enrollmentMock,
+						isPinned: false
+					}
+				};
+				component._orgUnitIdMap = {69: enrollmentMock};
+				component._enrollments = [enrollmentMock];
+				component.getEntityIdentifier = sinon.stub().returns('69');
+				var spy = sandbox.spy(component, '_addOnlyPastCoursesAlert');
+				sandbox.stub(component, 'fetchSirenEntity').returns(Promise.resolve(enrollmentMock));
+
+				component._onEnrollmentPinnedMessage(e);
+				expect(spy).to.have.been.calledWith(false);
+			});
 		});
 
 	});

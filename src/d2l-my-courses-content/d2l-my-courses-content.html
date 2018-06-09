@@ -6,11 +6,10 @@
 <link rel="import" href="../../../d2l-loading-spinner/d2l-loading-spinner.html">
 <link rel="import" href="../../../d2l-simple-overlay/d2l-simple-overlay.html">
 <link rel="import" href="../../../d2l-image-selector/d2l-basic-image-selector.html">
-<link rel="import" href="../d2l-css-grid-view/d2l-css-grid-view-styles.html">
 <link rel="import" href="../../../d2l-typography/d2l-typography-shared-styles.html">
 <link rel="import" href="../d2l-all-courses.html">
 <link rel="import" href="../d2l-course-image-tile.html">
-<link rel="import" href="../d2l-course-tile-grid.html">
+<link rel="import" href="../d2l-css-grid-view/d2l-css-grid-view-styles.html">
 <link rel="import" href="../localize-behavior.html">
 <link rel="import" href="d2l-my-courses-behavior.html">
 <link rel="import" href="d2l-my-courses-content-behavior.html">
@@ -70,34 +69,19 @@ This is only used if the `US90527-my-courses-updates` LD flag is ON
 					[[item.alertMessage]]
 				</d2l-alert>
 			</template>
-			<template is="dom-if" if="[[cssGridView]]">
-				<div class="course-tile-grid">
-					<template is="dom-repeat" items="[[_enrollments]]">
-						<div>
-							<d2l-course-image-tile
-								enrollment="[[item]]"
-								tile-sizes="[[_tileSizes]]"
-								show-course-code="[[showCourseCode]]"
-								show-semester="[[showSemester]]"
-								course-updates-config="[[courseUpdatesConfig]]">
-							</d2l-course-image-tile>
-						</div>
-					</template>
-				</div>
-			</template>
-			<template is="dom-if" if="[[!cssGridView]]">
-				<d2l-course-tile-grid
-					limit-to-12
-					enrollments="[[_enrollments]]"
-					tile-sizes="[[_tileSizes]]"
-					locale="[[locale]]"
-					show-course-code="[[showCourseCode]]"
-					show-semester="[[showSemester]]"
-					course-updates-config="[[courseUpdatesConfig]]"
-					updated-sort-logic="[[updatedSortLogic]]"
-					animate="[[_animateCourseTileGrid]]">
-				</d2l-course-tile-grid>
-			</template>
+			<div class="course-tile-grid">
+				<template is="dom-repeat" items="[[_enrollments]]">
+					<div>
+						<d2l-course-image-tile
+							enrollment="[[item]]"
+							tile-sizes="[[_tileSizes]]"
+							show-course-code="[[showCourseCode]]"
+							show-semester="[[showSemester]]"
+							course-updates-config="[[courseUpdatesConfig]]">
+						</d2l-course-image-tile>
+					</div>
+				</template>
+			</div>
 			<d2l-link
 				id="viewAllCourses"
 				hidden$="[[!_hasEnrollments]]"

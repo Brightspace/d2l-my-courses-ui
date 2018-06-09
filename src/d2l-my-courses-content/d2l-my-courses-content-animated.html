@@ -114,6 +114,11 @@ This is only used if the `US90527-my-courses-updates` LD flag is OFF
 
 			properties: {
 				enrollmentsSearchAction: Object,
+				// Override for CssGridBehavior.cssGridView
+				cssGridView: {
+					type: Boolean,
+					value: false
+				},
 				_allEnrollments: {
 					type: Array,
 					value: function() { return []; }

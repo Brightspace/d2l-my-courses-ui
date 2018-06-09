@@ -60,7 +60,6 @@ describe('d2l-my-courses', () => {
 		expect(component.courseImageUploadCompleted).to.be.a('function');
 		expect(component.getLastOrgUnitId).to.be.a('function');
 		expect(component.updatedSortLogic).to.equal(false);
-		expect(component.cssGridView).to.equal(false);
 	});
 
 	it('should properly fetch tabs data', () => {

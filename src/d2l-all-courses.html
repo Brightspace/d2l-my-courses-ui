@@ -10,10 +10,8 @@
 <link rel="import" href="../../d2l-menu/d2l-menu-item-radio.html">
 <link rel="import" href="../../d2l-organization-hm-behavior/d2l-organization-hm-behavior.html">
 <link rel="import" href="../../d2l-simple-overlay/d2l-simple-overlay.html">
-<link rel="import" href="d2l-css-grid-view/d2l-css-grid-view-behavior.html">
 <link rel="import" href="d2l-all-courses-styles.html">
 <link rel="import" href="d2l-course-management-behavior.html">
-<link rel="import" href="d2l-course-tile-grid.html">
 <link rel="import" href="d2l-course-tile-responsive-grid-behavior.html">
 <link rel="import" href="d2l-filter-menu/d2l-filter-menu.html">
 <link rel="import" href="d2l-search-widget-custom.html">
@@ -115,7 +113,6 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 							filter-counts="[[_filterCounts]]"
 							is-searched="[[_isSearched]]"
 							filtered-enrollments="[[_filteredEnrollments]]"
-							css-grid-view="[[cssGridView]]"
 						></d2l-all-courses-unified-content>
 					</template>
 					<template is="dom-if" if="[[!updatedSortLogic]]">
@@ -156,11 +153,6 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 				advancedSearchUrl: String,
 				// Types of notifications to include in update count in course tile
 				courseUpdatesConfig: Object,
-				// Pass-through property to set cssGridView on d2l-all-courses-unified-content
-				cssGridView: {
-					type: Boolean,
-					value: false
-				},
 				// Default option in Sort menu
 				defaultSortValue: {
 					type: String,
@@ -470,7 +462,62 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 					return;
 				}
 
-				this._enrollmentsSearchAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+				var searchAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+				this._enrollmentsSearchAction = searchAction;
+
+				if (searchAction && searchAction.hasFieldByName('sort')) {
+					var sortParameter = searchAction.getFieldByName('sort').value;
+					if (!sortParameter) {
+						return;
+					}
+
+					var sortMap = {
+						'OrgUnitName,OrgUnitId': {
+							name: 'OrgUnitName',
+							langterm: 'sorting.sortCourseName'
+						},
+						// Only used if updatedSortLogic = false
+						'-PinDate,OrgUnitName,OrgUnitId': {
+							name: 'OrgUnitName',
+							langterm: 'sorting.sortCourseName'
+						},
+						'OrgUnitCode,OrgUnitId': {
+							name: 'OrgUnitCode',
+							langterm: 'sorting.sortCourseCode'
+						},
+						// Only used if updatedSortLogic = false
+						'-PinDate,OrgUnitCode,OrgUnitId': {
+							name: 'OrgUnitCode',
+							langterm: 'sorting.sortCourseCode'
+						},
+						'-PinDate,OrgUnitId': {
+							name: 'PinDate',
+							langterm: 'sorting.sortDatePinned'
+						},
+						'LastAccessed': {
+							name: 'LastAccessed',
+							langterm: 'sorting.sortLastAccessed'
+						},
+						'-LastModifiedDate,OrgUnitId': {
+							name: 'EnrollmentDate',
+							langterm: 'sorting.sortEnrollmentDate'
+						},
+						'Current': {
+							name: 'Default',
+							langterm: 'sorting.sortDefault'
+						}
+					};
+
+					var sort = sortMap[sortParameter];
+					if (sort) {
+						this.$.sortText.textContent = this.localize(sort.langterm || '');
+						this._selectSortOption(sort.name);
+					} else {
+						var langterm = this.updatedSortLogic ? 'sorting.sortDefault' : 'sorting.sortCourseName';
+						this.$.sortText.textContent = this.localize(langterm);
+						this._selectSortOption(this.defaultSortValue);
+					}
+				}
 			},
 
 			/*
@@ -497,12 +544,20 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 				return !!link;
 			},
 			_resetSortDropdown: function() {
-				this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + this.defaultSortValue + ']').click();
+				this._selectSortOption(this.defaultSortValue);
 
 				var content = this.$.sortDropdown.queryEffectiveChildren('[d2l-dropdown-content]');
 				if (content) {
 					content.close();
 				}
+			},
+			_selectSortOption: function(sortName) {
+				var items = this.$.sortDropdownMenu.querySelectorAll('d2l-menu-item-radio');
+				for (var i = 0; i < items.length; i++) {
+					items[i].selected = false;
+				}
+
+				this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + sortName + ']').selected = true;
 			},
 			_updateFilteredEnrollments: function(enrollments, append) {
 				var enrollmentEntities = enrollments.getSubEntitiesByClass(this.HypermediaClasses.enrollments.enrollment);
@@ -557,7 +612,7 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 			_updatedSortLogicChanged: function(updatedSortLogic) {
 				if (this._updatedSortLogicInitallyObserved) {
 					this.defaultSortValue = updatedSortLogic ? 'Default' : 'OrgUnitName';
-					this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + this.defaultSortValue + ']').selected = true;
+					this._selectSortOption(this.defaultSortValue);
 					var langterm = updatedSortLogic ? 'sorting.sortDefault' : 'sorting.sortCourseName';
 					this.$.sortText.textContent = this.localize(langterm || '');
 				} else {

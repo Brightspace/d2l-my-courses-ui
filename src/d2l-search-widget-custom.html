@@ -236,13 +236,17 @@ Polymer-based web component for the search widget.
 					this.$$('iron-pages').select('recent-searches-page');
 				}
 
-				// Checking for _searchAction required here to avoid problems on init
-				if (this._searchAction && !this.$.dropdown.opened) {
-					// If a user enters a new key after having searched, re-open dropdown
-					this.$.dropdown.open();
-				}
-				if (this._listboxes) {
-					this.debounce('liveSearchJob', this._liveSearch, 750);
+				// If the search input has changed programmatically (e.g. via
+				// searchAction changing), the input won't be focused, and we
+				// don't want to open the dropdown or live search
+				if (document.activeElement === this.$$('input')) {
+					if (!this.$.dropdown.opened) {
+						// If a user enters a new key after having searched, re-open dropdown
+						this.$.dropdown.open();
+					}
+					if (this._listboxes) {
+						this.debounce('liveSearchJob', this._liveSearch, 750);
+					}
 				}
 			},
 			_onSearchInputKeyPressed: function(e) {

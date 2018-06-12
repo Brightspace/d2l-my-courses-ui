@@ -31,6 +31,7 @@
 			courseImageUploadCb: Function,
 
 			promotedSearches: String,
+			userSettingsUrl: String,
 			// Feature flag (switch) for using the updated sort logic and related fetaures
 			updatedSortLogic: {
 				type: Boolean,
@@ -58,12 +59,17 @@
 		_fetchTabSearchActions: function() {
 			return Promise.all([
 				this.fetchSirenEntity(this.enrollmentsUrl),
-				this.fetchSirenEntity(this.promotedSearches)
+				this.fetchSirenEntity(this.promotedSearches),
+				this.fetchSirenEntity(this.userSettingsUrl)
 			])
 				.then(function(values) {
 					var enrollmentsRootEntity = values[0];
 					var promotedSearchesEntity = values[1];
+					var userSettingsEntity = values[2];
 					var tabSearchActions = [];
+					var mostRecentSearchName = userSettingsEntity
+						&& userSettingsEntity.properties
+						&& userSettingsEntity.properties.MostRecentEnrollmentsSearchName;
 					if (enrollmentsRootEntity && enrollmentsRootEntity.hasAction(this.HypermediaActions.enrollments.searchMyEnrollments)) {
 						var searchAction = enrollmentsRootEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
 						this._enrollmentsSearchAction = searchAction;	// For d2l-my-courses-content-animated
@@ -71,7 +77,8 @@
 					}
 					if (promotedSearchesEntity && promotedSearchesEntity.actions) {
 						var promotedSearchesArray = promotedSearchesEntity.actions.map(function(action) {
-							return { name: action.name, title: action.title, selected: false, enrollmentsSearchAction: action };
+							var selected = action.name === mostRecentSearchName;
+							return { name: action.name, title: action.title, selected: selected, enrollmentsSearchAction: action };
 						});
 						tabSearchActions = tabSearchActions.concat(promotedSearchesArray);
 					}

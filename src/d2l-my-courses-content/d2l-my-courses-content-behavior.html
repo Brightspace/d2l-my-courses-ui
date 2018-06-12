@@ -7,6 +7,7 @@
 <link rel="import" href="../d2l-interaction-detection-behavior.html">
 <link rel="import" href="../d2l-utility-behavior.html">
 <link rel="import" href="../localize-behavior.html">
+<link rel="import" href="../../../d2l-fetch/d2l-fetch.html">
 
 <script>
 	window.D2L = window.D2L || {};
@@ -22,6 +23,7 @@
 	D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		properties: {
 			enrollmentsSearchAction: Object,
+			userSettingsUrl: String,
 			// Alerts to display in widget, above course tiles
 			_alerts: {
 				type: Array,
@@ -336,6 +338,7 @@
 					window.dispatchEvent(new Event('resize'));
 				}, 10);
 			}
+			this._setLastSearchName(this.enrollmentsSearchAction.name);
 		},
 		_checkIfStartedInactiveCourses: function(e) {
 			var type = e && e.detail && e.detail.type;
@@ -566,6 +569,16 @@
 			} else {
 				this._removeAlert('onlyPastCourses');
 			}
+		},
+		_setLastSearchName: function(id) {
+			var formData = new FormData();
+			formData.append('mostRecentEnrollmentsSearchType', '0');
+			formData.append('mostRecentEnrollmentsSearchName', id);
+			return window.d2lfetch
+				.fetch(new Request(this.userSettingsUrl, {
+					method: 'PUT',
+					body: formData
+				}));
 		}
 	};
 

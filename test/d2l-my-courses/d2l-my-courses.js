@@ -3,6 +3,7 @@ describe('d2l-my-courses', () => {
 		sandbox,
 		enrollmentsHref = '/enrollments/users/169',
 		promotedSearchHref = '/promoted-search-url',
+		lastSearchHref = 'homepages/components/1/user-settings/169',
 		searchAction = {
 			name: 'search-my-enrollments',
 			method: 'GET',
@@ -37,6 +38,12 @@ describe('d2l-my-courses', () => {
 					]
 				}
 			]
+		},
+		lastSearchResponse = {
+			properties: {
+				MostRecentEnrollmentsSearchType: 0,
+				MostRecentEnrollmentsSearchName: '6607'
+			}
 		};
 
 	beforeEach(() => {
@@ -48,8 +55,11 @@ describe('d2l-my-courses', () => {
 			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse)));
 		component.fetchSirenEntity.withArgs(sinon.match(promotedSearchHref))
 			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(promotedSearchResponse)));
+		component.fetchSirenEntity.withArgs(sinon.match(lastSearchHref))
+			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(lastSearchResponse)));
 		component.enrollmentsUrl = enrollmentsHref;
 		component.promotedSearches = promotedSearchHref;
+		component.userSettingsUrl = lastSearchHref;
 	});
 
 	afterEach(() => {
@@ -67,6 +77,7 @@ describe('d2l-my-courses', () => {
 			.then(function() {
 				expect(component.fetchSirenEntity).to.be.called;
 				expect(component._tabSearchActions.length).to.equal(2);
+				expect(component._tabSearchActions[1].selected).to.be.true;
 			});
 	});
 

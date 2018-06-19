@@ -80,7 +80,7 @@ Polymer-based web component for the filter menu.
 
 		<div id="contentView">
 			<div class="dropdown-content-tabs" role="tablist">
-				<div class="dropdown-content-tab" role="tab" aria-controls="semestersTab" hidden$="[[_semestersTabHidden]]">
+				<div class="dropdown-content-tab" role="tab" aria-controls="semestersTab" hidden$="[[_semestersAndDepartmentsTabsHidden]]">
 					<div class="dropdown-content-tab-highlight" hidden$="[[!_semestersTabSelected]]"></div>
 					<button
 						id="semestersTabButton"
@@ -89,7 +89,7 @@ Polymer-based web component for the filter menu.
 						data-tab-name="semesters"
 						aria-pressed="true">[[_semestersTabText]]</button>
 				</div>
-				<div class="dropdown-content-tab" role="tab" aria-controls="departmentsTab" hidden$="[[_departmentsTabHidden]]">
+				<div class="dropdown-content-tab" role="tab" aria-controls="departmentsTab" hidden$="[[_semestersAndDepartmentsTabsHidden]]">
 					<div class="dropdown-content-tab-highlight" hidden$="[[!_departmentsTabSelected]]"></div>
 					<button
 						id="departmentsTabButton"
@@ -120,7 +120,7 @@ Polymer-based web component for the filter menu.
 				search-action="[[_searchSemestersAction]]"
 				search-placeholder-text="[[_semestersSearchPlaceholderText]]"
 				selected-filters="{{_semesterFilters}}"
-				hidden$="[[_semestersTabHidden]]">
+				hidden$="[[_semestersAndDepartmentsTabsHidden]]">
 			</d2l-filter-menu-tab>
 
 			<d2l-filter-menu-tab
@@ -132,7 +132,7 @@ Polymer-based web component for the filter menu.
 				search-action="[[_searchDepartmentsAction]]"
 				search-placeholder-text="[[_departmentsSearchPlaceholderText]]"
 				selected-filters="{{_departmentFilters}}"
-				hidden$="[[_departmentsTabHidden]]">
+				hidden$="[[_semestersAndDepartmentsTabsHidden]]">
 			</d2l-filter-menu-tab>
 
 			<d2l-filter-menu-tab-roles
@@ -156,8 +156,10 @@ Polymer-based web component for the filter menu.
 					type: Object,
 					observer: '_myEnrollmentsEntityChanged'
 				},
-				tabSearchType: String,
-
+				tabSearchType: {
+					type: String,
+					observer: '_tabSearchTypeChanged'
+				},
 				_departmentFilters: {
 					type: Array,
 					value: function() { return []; }
@@ -210,9 +212,8 @@ Polymer-based web component for the filter menu.
 					type: String,
 					computed: '_computeSearchPlaceholderText(filterStandardDepartmentName)'
 				},
-				_semestersTabHidden: Boolean,
-				_departmentsTabHidden: Boolean,
-				_rolesTabHidden: Boolean
+				_rolesTabHidden: Boolean,
+				_semestersAndDepartmentsTabsHidden: Boolean
 			},
 			behaviors: [
 				window.D2L.Hypermedia.HMConstantsBehavior,
@@ -228,13 +229,8 @@ Polymer-based web component for the filter menu.
 			},
 
 			open: function() {
-				// If My Courses is grouped by semesters/departments, don't show either of these tabs
-				this._semestersTabHidden = this.tabSearchType === 'BySemester' || this.tabSearchType === 'ByDepartment';
-				this._departmentsTabHidden = this._semestersTabHidden;
-				// If My Courses is grouped by role alias, don't show the Role tab
-				this._rolesTabHidden = this.tabSearchType === 'ByRoleAlias';
 
-				var defaultTab = this._semestersTabHidden ? 'roles' : 'semesters';
+				var defaultTab = this._semestersAndDepartmentsTabsHidden ? 'roles' : 'semesters';
 
 				this._selectTab({ target: { dataset: { tabName: defaultTab }}});
 
@@ -265,7 +261,7 @@ Polymer-based web component for the filter menu.
 				}
 
 				var params = {};
-				if (!this._semestersTabHidden || !this._departmentsTabHidden) {
+				if (!this._semestersAndDepartmentsTabsHidden) {
 					// Only clear semesters/departments when My Courses is grouped by role
 					params.parentOrganizations = '';
 				}
@@ -349,6 +345,12 @@ Polymer-based web component for the filter menu.
 				this.$.semestersTabButton.setAttribute('aria-pressed', this._semestersTabSelected);
 				this.$.departmentsTabButton.setAttribute('aria-pressed', this._departmentsTabSelected);
 				this.$.rolesTabButton.setAttribute('aria-pressed', this._rolesTabSelected);
+			},
+			_tabSearchTypeChanged: function() {
+				// If My Courses is grouped by semesters/departments, don't show either of these tabs
+				this._semestersAndDepartmentsTabsHidden = this.tabSearchType === 'BySemester' || this.tabSearchType === 'ByDepartment';
+				// If My Courses is grouped by role alias, don't show the Role tab
+				this._rolesTabHidden = this.tabSearchType === 'ByRoleAlias';
 			},
 			_computeHasFilters: function(departmentFiltersLength, semesterFiltersLength, roleFiltersCount) {
 				return departmentFiltersLength + semesterFiltersLength + roleFiltersCount > 0;

@@ -34,6 +34,7 @@ describe('<d2l-search-widget-custom>', function() {
 		sandbox = sinon.sandbox.create();
 		clock = sinon.useFakeTimers();
 
+		sandbox.stub(window.d2lfetch, 'fetch').returns(Promise.resolve());
 		widget = fixture('d2l-search-widget-custom-fixture');
 		widget._searchResultsCache = {};
 		widget.searchAction = searchAction;

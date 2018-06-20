@@ -287,9 +287,13 @@ describe('d2l-all-courses', function() {
 					}, {
 						name: 'sort',
 						value: 'foobar'
+					}, {
+						name: 'search',
+						value: ''
 					}]
 				}
 			}];
+			widget._enrollmentsSearchAction.getFieldByName = sandbox.stub();
 			Polymer.dom.flush();
 		});
 
@@ -312,7 +316,7 @@ describe('d2l-all-courses', function() {
 				stopPropagation: function() {}
 			});
 
-			expect(widget._searchUrl).to.equal('/example/foo?autoPinCourses=false&embedDepth=1&sort=SortOrder');
+			expect(widget._searchUrl).to.equal('/example/foo?autoPinCourses=false&embedDepth=1&sort=SortOrder&search=');
 		});
 	});
 

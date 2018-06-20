@@ -493,12 +493,15 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 				var tabAction = this.tabSearchActions.find(function(action) {
 					return action.name === actionName;
 				});
+				var search = this._enrollmentsSearchAction && this._enrollmentsSearchAction.getFieldByName('search') ?
+					this._enrollmentsSearchAction.getFieldByName('search').value : '';
 				if (!tabAction) {
 					return;
 				}
 
 				this._showTabContent = false;
 				this._searchUrl = this.createActionUrl(tabAction.enrollmentsSearchAction, {
+					search: search,
 					autoPinCourses: false,
 					embedDepth: 1,
 					sort: this._sortParameter || (this.updatedSortLogic ? 'Current' : '-PinDate,OrgUnitName,OrgUnitId')

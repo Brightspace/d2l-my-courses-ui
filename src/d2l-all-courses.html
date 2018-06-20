@@ -490,9 +490,13 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 			_onTabSelected: function(e) {
 				this._selectedTabId = e.target.id;
 				var actionName = e.target.id.replace('all-courses-tab-', '');
-				var tabAction = this.tabSearchActions.find(function(action) {
-					return action.name === actionName;
-				});
+				var tabAction;
+				for (var i = 0; i < this.tabSearchActions.length; i++) {
+					if (this.tabSearchActions[i].name === actionName) {
+						tabAction = this.tabSearchActions[i];
+						break;
+					}
+				}
 				var search = this._enrollmentsSearchAction && this._enrollmentsSearchAction.getFieldByName('search') ?
 					this._enrollmentsSearchAction.getFieldByName('search').value : '';
 				if (!tabAction) {

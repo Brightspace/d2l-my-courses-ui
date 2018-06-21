@@ -532,6 +532,7 @@
 				searchAction
 				&& searchAction.hasFieldByName('sort')
 				&& searchAction.getFieldByName('sort').value.toLowerCase() === 'current'
+				&& (!searchAction.hasFieldByName('parentOrganizations') || this.tabSearchType.value.toLowerCase() !== 'bysemester' )
 			) {
 				// When using Current sort, hide past courses in the widget view
 				var tileGrid = this.cssGridView ? this.$$('.course-tile-grid') : this.$$('d2l-course-tile-grid');

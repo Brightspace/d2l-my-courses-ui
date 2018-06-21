@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="../../web-component-tester/browser.js"></script>
+	</head>
+	<body>
+		<script>
+			var testVariants = [], tests = [
+				'./d2l-all-courses/d2l-all-courses.html',
+				'./d2l-all-courses-unified-content/d2l-all-courses-unified-content.html',
+				'./d2l-course-image-tile/d2l-course-image-tile.html',
+				'./d2l-filter-menu/d2l-filter-menu.html',
+				'./d2l-filter-menu/d2l-filter-menu-tab-roles.html',
+				'./d2l-filter-menu/d2l-filter-menu-tab.html',
+				'./d2l-filter-menu/d2l-filter-list-item.html',
+				'./d2l-filter-menu/d2l-filter-list-item-role.html',
+				'./d2l-my-courses/d2l-my-courses.html',
+				'./d2l-my-courses-content/d2l-my-courses-content.html',
+				'./d2l-search-widget-custom/d2l-search-widget-custom.html',
+				'./d2l-utility-behavior/d2l-utility-behavior.html',
+				'./localize-behavior/localize-behavior.html'
+			];
+
+			for (var i = 0; i < tests.length; i++) {
+				testVariants.push(tests[i] + '?wc-shadydom=true');
+				testVariants.push(tests[i] + '?dom=shadow');
+			}
+
+			WCT.loadSuites(testVariants);
+		</script>
+	</body>
+</html>

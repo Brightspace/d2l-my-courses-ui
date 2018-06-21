@@ -1,10 +1,23 @@
 language: node_js
 node_js: 9
-script:
+before_script:
 - npm run lint
-- polymer test --skip-plugin sauce
-# Sauce tests are too flakey (constant timeouts) - need to investigate further when time permits.
-# - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then polymer test --skip-plugin local; fi'
+- cp test/index.all.html test/index.html
+# `cp` because of https://github.com/Polymer/tools/issues/416#issue-327241592
+- cp wct.conf.local.json wct.conf.json
+- polymer test
+script:
+- cp test/index.high-priority.html test/index.html
+- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+    cp wct.conf.sauce-chrome.json wct.conf.json;
+    polymer test || travis_terminate 1;
+
+    cp wct.conf.sauce-firefox.json wct.conf.json;
+    polymer test || travis_terminate 1;
+
+    cp wct.conf.sauce-others.json wct.conf.json;
+    polymer test || travis_terminate 1;
+  fi'
 env:
   global:
     # SAUCE_USERNAME

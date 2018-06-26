@@ -510,16 +510,11 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 					embedDepth: 1,
 					sort: this._sortParameter || (this.updatedSortLogic ? 'Current' : '-PinDate,OrgUnitName,OrgUnitId')
 				};
-				// Depending on tabSearchType, update the search params with changes from filter menu changes.
-				if (this.tabSearchType === 'ByRoleAlias') {
-					var parentOrganizations = this._enrollmentsSearchAction && this._enrollmentsSearchAction.getFieldByName('parentOrganizations') ?
-						this._enrollmentsSearchAction.getFieldByName('parentOrganizations').value : '';
-					params.parentOrganizations = parentOrganizations;
+				if ((this._filterCounts.departments > 0 || this._filterCounts.semesters > 0) && this._enrollmentsSearchAction && this._enrollmentsSearchAction.getFieldByName('parentOrganizations')) {
+					params.parentOrganizations =  this._enrollmentsSearchAction.getFieldByName('parentOrganizations').value;
 				}
-				else if (this.tabSearchType === 'ByDepartment' || this.tabSearchType === 'BySemester') {
-					var roles = this._enrollmentsSearchAction && this._enrollmentsSearchAction.getFieldByName('roles') ?
-						this._enrollmentsSearchAction.getFieldByName('roles').value : '';
-					params.roles = roles;
+				if (this._filterCounts.roles > 0 && this._enrollmentsSearchAction && this._enrollmentsSearchAction.getFieldByName('roles')) {
+					params.roles =  this._enrollmentsSearchAction.getFieldByName('roles').value;
 				}
 				this._searchUrl = this.createActionUrl(tabAction.enrollmentsSearchAction, params);
 			},

@@ -225,7 +225,6 @@
 			this._courseTileOrganizationEventCount++;
 
 			if (this._courseTileOrganizationEventCount === this._initiallyVisibleCourseTileCount) {
-				this._addOnlyPastCoursesAlert();
 				// Only show content once the last visible organization has loaded, to reduce jank
 				this._showContent = true;
 				this.performanceMark('d2l.my-courses.visible-organizations-complete');
@@ -301,9 +300,6 @@
 
 			var url = enrollment.getLinkByRel('self').href;
 			url += (url.indexOf('?') === -1 ? '?' : '&') + 'bustCache=' + Math.random();
-
-			var isPinned = lastPinnedIndex === 1 ? e.detail.isPinned : true;
-			this._addOnlyPastCoursesAlert(isPinned);
 
 			return this.fetchSirenEntity(url)
 				.then(function(updatedEnrollment) {
@@ -449,7 +445,6 @@
 				.then(function() {
 					// At worst, display content 1s after we fetch enrollments
 					// (Usually set to true before that, in _onCourseTileOrganization)
-					this._addOnlyPastCoursesAlert();
 					setTimeout(showContent, 1000);
 				}.bind(this))
 				.catch(showContent);

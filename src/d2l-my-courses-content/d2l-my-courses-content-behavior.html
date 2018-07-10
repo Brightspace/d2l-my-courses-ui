@@ -584,24 +584,26 @@
 				.then(this._populateEnrollments.bind(this));
 		},
 		_addOnlyPastCoursesAlert: function(hasPinnedEnrollmentArg) {
-			var courseTileGrid = this.cssGridView ? this.$$('.course-tile-grid') : this.$$('d2l-course-tile-grid');
-			var hasCurrentOrFutureSelector, hasPinnedEnrollmentSelector;
+			setTimeout(function() {
+				var courseTileGrid = this.cssGridView ? this.$$('.course-tile-grid') : this.$$('d2l-course-tile-grid');
+				var hasCurrentOrFutureSelector, hasPinnedEnrollmentSelector;
 
-			if (this.cssGridView) {
-				hasCurrentOrFutureSelector = this.$$('.course-tile-grid d2l-course-image-tile:not([past-course])');
-				hasPinnedEnrollmentSelector = this.$$('.course-tile-grid d2l-course-image-tile[pinned]');
-			} else {
-				hasCurrentOrFutureSelector = courseTileGrid.$$('d2l-course-tile:not([past-course])');
-				hasPinnedEnrollmentSelector = courseTileGrid.$$('d2l-course-tile[pinned]');
-			}
+				if (this.cssGridView) {
+					hasCurrentOrFutureSelector = this.$$('.course-tile-grid d2l-course-image-tile:not([past-course])');
+					hasPinnedEnrollmentSelector = this.$$('.course-tile-grid d2l-course-image-tile[pinned]');
+				} else {
+					hasCurrentOrFutureSelector = courseTileGrid.$$('d2l-course-tile:not([past-course])');
+					hasPinnedEnrollmentSelector = courseTileGrid.$$('d2l-course-tile[pinned]');
+				}
 
-			var hasPinnedEnrollment = hasPinnedEnrollmentArg !== undefined ? hasPinnedEnrollmentArg : hasPinnedEnrollmentSelector;
+				var hasPinnedEnrollment = hasPinnedEnrollmentArg !== undefined ? hasPinnedEnrollmentArg : hasPinnedEnrollmentSelector;
 
-			if (!hasPinnedEnrollment && this._hasEnrollments && !hasCurrentOrFutureSelector && courseTileGrid.hasAttribute('hide-past-courses')) {
-				if (!this._hasAlert('onlyPastCourses')) this._addAlert('call-to-action', 'onlyPastCourses', this.localize('onlyPastCoursesMessage'));
-			} else {
-				this._removeAlert('onlyPastCourses');
-			}
+				if (!hasPinnedEnrollment && this._hasEnrollments && !hasCurrentOrFutureSelector && courseTileGrid.hasAttribute('hide-past-courses')) {
+					if (!this._hasAlert('onlyPastCourses')) this._addAlert('call-to-action', 'onlyPastCourses', this.localize('onlyPastCoursesMessage'));
+				} else {
+					this._removeAlert('onlyPastCourses');
+				}
+			}.bind(this), 1000);
 		},
 		_setLastSearchName: function(id) {
 			var formData = new FormData();

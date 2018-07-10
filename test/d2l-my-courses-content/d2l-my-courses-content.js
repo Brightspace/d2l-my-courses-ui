@@ -908,6 +908,14 @@ describe('d2l-my-courses-content', () => {
 		});
 
 		describe('Only Past Courses alert', () => {
+			beforeEach(function() {
+				clock = sinon.useFakeTimers();
+			});
+
+			afterEach(function() {
+				clock.restore();
+			});
+
 			function setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses) {
 				var courseTileGridStub = {
 					hasAttribute: function() {
@@ -931,6 +939,7 @@ describe('d2l-my-courses-content', () => {
 				this._alerts = [];
 				component._hasEnrollments = true;
 				component._addOnlyPastCoursesAlert();
+				clock.tick(1000);
 				expect(component._alerts).not.to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
 			});
 
@@ -944,6 +953,7 @@ describe('d2l-my-courses-content', () => {
 				this._alerts = [];
 				component._hasEnrollments = true;
 				component._addOnlyPastCoursesAlert();
+				clock.tick(1000);
 				expect(component._alerts).not.to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
 			});
 
@@ -957,6 +967,7 @@ describe('d2l-my-courses-content', () => {
 				this._alerts = [];
 				component._hasEnrollments = true;
 				component._addOnlyPastCoursesAlert();
+				clock.tick(1000);
 				expect(component._alerts).to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
 			});
 
@@ -970,6 +981,7 @@ describe('d2l-my-courses-content', () => {
 				this._alerts = [];
 				component._hasEnrollments = true;
 				component._addOnlyPastCoursesAlert();
+				clock.tick(1000);
 				expect(component._alerts).to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
 			});
 
@@ -983,6 +995,7 @@ describe('d2l-my-courses-content', () => {
 				this._alerts = [{ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' }];
 				component._hasEnrollments = true;
 				component._addOnlyPastCoursesAlert();
+				clock.tick(1000);
 				expect(component._alerts).to.not.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
 			});
 
@@ -1004,6 +1017,7 @@ describe('d2l-my-courses-content', () => {
 				sandbox.stub(component, 'fetchSirenEntity').returns(Promise.resolve(enrollmentMock));
 
 				component._onEnrollmentPinnedMessage(e);
+				clock.tick(1000);
 				expect(spy).to.have.been.calledWith(true);
 			});
 
@@ -1026,6 +1040,7 @@ describe('d2l-my-courses-content', () => {
 				sandbox.stub(component, 'fetchSirenEntity').returns(Promise.resolve(enrollmentMock));
 
 				component._onEnrollmentPinnedMessage(e);
+				clock.tick(1000);
 				expect(spy).to.have.been.calledWith(false);
 			});
 		});

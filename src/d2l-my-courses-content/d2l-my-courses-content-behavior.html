@@ -41,6 +41,10 @@
 				type: Boolean,
 				value: false
 			},
+			_courseTileOrganizationEventCount: {
+				type: Number,
+				value: 0
+			},
 			// Array of enrollments being displayed by the widget
 			_enrollments: {
 				type: Array,
@@ -60,6 +64,11 @@
 			_hasMoreEnrollments: {
 				type: Boolean,
 				value: false
+			},
+			_hasOnlyPastCourses: {
+				type: Boolean,
+				value: false,
+				computed: '_computeHasOnlyPastCourses(_courseTileOrganizationEventCount)'
 			},
 			// Lookup table of org unit ID -> enrollment, to avoid having to re-fetch enrollments
 			_orgUnitIdMap: {
@@ -161,7 +170,6 @@
 
 		_allCoursesCreated: false,
 		_courseImagesLoadedEventCount: 0,
-		_courseTileOrganizationEventCount: 0,
 		_initiallyVisibleCourseTileCount: 0,
 		_enrollmentsSearchUrl: null,
 
@@ -179,6 +187,21 @@
 				// otherwise, the fetch is initiated when a tab is selected.
 				this._fetchRoot();
 			}
+		},
+		_computeHasOnlyPastCourses: function() {
+			if (!this.updatedSortLogic) {
+				// d2l-my-courses-content-animated should never show this alert, as it doesn't use current/future courses
+				return false;
+			}
+
+			var currentOrFutureEnrollment = this.$$('.course-tile-grid d2l-course-image-tile:not([past-course])');
+			var pinnedEnrollment = this.$$('.course-tile-grid d2l-course-image-tile[pinned]');
+			var shouldHidePastCourses = this.$$('.course-tile-grid').hasAttribute('hide-past-courses');
+
+			return this._hasEnrollments
+				&& shouldHidePastCourses
+				&& !currentOrFutureEnrollment
+				&& !pinnedEnrollment;
 		},
 
 		/*
@@ -225,7 +248,6 @@
 			this._courseTileOrganizationEventCount++;
 
 			if (this._courseTileOrganizationEventCount === this._initiallyVisibleCourseTileCount) {
-				this._addOnlyPastCoursesAlert();
 				// Only show content once the last visible organization has loaded, to reduce jank
 				this._showContent = true;
 				this.performanceMark('d2l.my-courses.visible-organizations-complete');
@@ -267,8 +289,7 @@
 			var orgUnitId;
 			if (e.detail.orgUnitId) {
 				orgUnitId = e.detail.orgUnitId;
-			}
-			else if (e.detail.enrollment && e.detail.enrollment.hasLinkByRel(this.HypermediaRels.organization)) {
+			} else if (e.detail.enrollment && e.detail.enrollment.hasLinkByRel(this.HypermediaRels.organization)) {
 				orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(this.HypermediaRels.organization).href);
 			}
 
@@ -301,9 +322,6 @@
 
 			var url = enrollment.getLinkByRel('self').href;
 			url += (url.indexOf('?') === -1 ? '?' : '&') + 'bustCache=' + Math.random();
-
-			var isPinned = lastPinnedIndex === 1 ? e.detail.isPinned : true;
-			this._addOnlyPastCoursesAlert(isPinned);
 
 			return this.fetchSirenEntity(url)
 				.then(function(updatedEnrollment) {
@@ -449,7 +467,6 @@
 				.then(function() {
 					// At worst, display content 1s after we fetch enrollments
 					// (Usually set to true before that, in _onCourseTileOrganization)
-					this._addOnlyPastCoursesAlert();
 					setTimeout(showContent, 1000);
 				}.bind(this))
 				.catch(showContent);
@@ -582,26 +599,6 @@
 			this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(true);
 			return this.fetchSirenEntity(this._enrollmentsSearchUrl)
 				.then(this._populateEnrollments.bind(this));
-		},
-		_addOnlyPastCoursesAlert: function(hasPinnedEnrollmentArg) {
-			var courseTileGrid = this.cssGridView ? this.$$('.course-tile-grid') : this.$$('d2l-course-tile-grid');
-			var hasCurrentOrFutureSelector, hasPinnedEnrollmentSelector;
-
-			if (this.cssGridView) {
-				hasCurrentOrFutureSelector = this.$$('.course-tile-grid d2l-course-image-tile:not([past-course])');
-				hasPinnedEnrollmentSelector = this.$$('.course-tile-grid d2l-course-image-tile[pinned]');
-			} else {
-				hasCurrentOrFutureSelector = courseTileGrid.$$('d2l-course-tile:not([past-course])');
-				hasPinnedEnrollmentSelector = courseTileGrid.$$('d2l-course-tile[pinned]');
-			}
-
-			var hasPinnedEnrollment = hasPinnedEnrollmentArg !== undefined ? hasPinnedEnrollmentArg : hasPinnedEnrollmentSelector;
-
-			if (!hasPinnedEnrollment && this._hasEnrollments && !hasCurrentOrFutureSelector && courseTileGrid.hasAttribute('hide-past-courses')) {
-				if (!this._hasAlert('onlyPastCourses')) this._addAlert('call-to-action', 'onlyPastCourses', this.localize('onlyPastCoursesMessage'));
-			} else {
-				this._removeAlert('onlyPastCourses');
-			}
 		},
 		_setLastSearchName: function(id) {
 			var formData = new FormData();

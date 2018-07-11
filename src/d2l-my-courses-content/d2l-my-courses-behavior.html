@@ -87,8 +87,7 @@
 
 					this._tabSearchType = promotedSearchesEntity.properties.UserEnrollmentsSearchType;
 
-					if(promotedSearchesEntity.actions.length < 2 || !promotedSearchesEntity.actions) {
-						this.useSavedSearches = false;
+					if (!promotedSearchesEntity.actions) {
 						return;
 					}
 

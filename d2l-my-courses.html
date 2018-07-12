@@ -32,7 +32,7 @@ If it is off and the attribute is not added, the `d2l-my-courses-content-animate
 			</d2l-my-courses-content-animated>
 		</template>
 		<template is="dom-if" if="[[updatedSortLogic]]">
-			<template is="dom-if" if="[[useSavedSearches]]">
+			<template is="dom-if" if="[[_tabSearchActions.length]]">
 				<d2l-tabs max-to-show="5">
 					<template items="[[_tabSearchActions]]" is="dom-repeat">
 						<!-- item.name is an OrgUnitId, and querySelector does not work with components with ids that start with a number -->
@@ -48,7 +48,6 @@ If it is off and the attribute is not added, the `d2l-my-courses-content-animate
 								standard-semester-name="[[standardSemesterName]]"
 								course-updates-config="[[courseUpdatesConfig]]"
 								course-image-upload-cb="[[courseImageUploadCb]]"
-								use-saved-searches="[[useSavedSearches]]"
 								user-settings-url="[[userSettingsUrl]]"
 								tab-search-actions="[[_tabSearchActions]]"
 								tab-search-type="[[_tabSearchType]]">
@@ -57,7 +56,7 @@ If it is off and the attribute is not added, the `d2l-my-courses-content-animate
 					</template>
 				</d2l-tabs>
 			</template>
-			<template is="dom-if" if="[[!useSavedSearches]]">
+			<template is="dom-if" if="[[!_tabSearchActions.length]]">
 				<d2l-my-courses-content
 					advanced-search-url="[[advancedSearchUrl]]"
 					enrollments-url="[[enrollmentsUrl]]"
@@ -69,7 +68,9 @@ If it is off and the attribute is not added, the `d2l-my-courses-content-animate
 					standard-semester-name="[[standardSemesterName]]"
 					course-updates-config="[[courseUpdatesConfig]]"
 					course-image-upload-cb="[[courseImageUploadCb]]"
-					use-saved-searches="[[useSavedSearches]]">
+					user-settings-url="[[userSettingsUrl]]"
+					tab-search-actions="[[_tabSearchActions]]"
+					tab-search-type="[[_tabSearchType]]">
 				</d2l-my-courses-content>
 			</template>
 		</template>

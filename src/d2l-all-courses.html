@@ -113,7 +113,7 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 				</template>
 
 				<template is="dom-if" if="[[updatedSortLogic]]">
-					<template is="dom-if" if="[[useSavedSearches]]">
+					<template is="dom-if" if="[[tabSearchActions.length]]">
 						<d2l-tabs max-to-show="5">
 							<template items="[[tabSearchActions]]" is="dom-repeat">
 								<d2l-tab-panel id="all-courses-tab-[[item.name]]" text="[[item.title]]" selected=[[item.selected]]>
@@ -135,7 +135,7 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 							</template>
 						</d2l-tabs>
 					</template>
-					<template is="dom-if" if="[[!useSavedSearches]]">
+					<template is="dom-if" if="[[!tabSearchActions.length]]">
 						<d2l-all-courses-unified-content
 							show-course-code="[[showCourseCode]]"
 							show-semester="[[showSemester]]"
@@ -203,7 +203,10 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 				showCourseCode: Boolean,
 				showSemester: Boolean,
 				// Siren Actions corresponding to each tab that is displayed
-				tabSearchActions: Array,
+				tabSearchActions:  {
+					type: Array,
+					value: []
+				},
 				// Type of tabs being displayed (BySemester, ByDepartment, ByRoleAlias)
 				tabSearchType: String,
 				// Feature flag (switch) for using the updated sort logic and related fetaures
@@ -211,10 +214,6 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 					type: Boolean,
 					value: false,
 					observer: '_updatedSortLogicChanged'
-				},
-				useSavedSearches: {
-					type: Boolean,
-					value: false
 				},
 
 				/*
@@ -338,7 +337,7 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 					}, this);
 				}
 
-				if (!this.useSavedSearches) {
+				if (!this.tabSearchActions.length) {
 					this._showTabContent = true;
 					this._searchUrl = this.createActionUrl(this.enrollmentsSearchAction, {
 						autoPinCourses: false,
@@ -633,7 +632,7 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 				var enrollmentEntities = enrollments.getSubEntitiesByClass(this.HypermediaClasses.enrollments.enrollment);
 
 				if (this.updatedSortLogic) {
-					var unifiedContent = this.useSavedSearches
+					var unifiedContent = this.tabSearchActions.length
 						? this.$$('#' + this._selectedTabId + ' d2l-all-courses-unified-content')
 						: this.$$('d2l-all-courses-unified-content');
 					if (append) {

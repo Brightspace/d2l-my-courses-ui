@@ -203,7 +203,10 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 				showCourseCode: Boolean,
 				showSemester: Boolean,
 				// Siren Actions corresponding to each tab that is displayed
-				tabSearchActions: Array,
+				tabSearchActions:  {
+					type: Array,
+					value: []
+				},
 				// Type of tabs being displayed (BySemester, ByDepartment, ByRoleAlias)
 				tabSearchType: String,
 				// Feature flag (switch) for using the updated sort logic and related fetaures

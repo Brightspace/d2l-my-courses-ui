@@ -143,7 +143,7 @@ describe('d2l-my-courses-content', () => {
 	it('should properly implement d2l-my-courses-behavior', () => {
 		expect(component.courseImageUploadCompleted).to.be.a('function');
 		expect(component.getLastOrgUnitId).to.be.a('function');
-		expect(component.updatedSortLogic).to.equal(false);
+		expect(component.updatedSortLogic).to.equal(true);
 		expect(component.cssGridView).to.equal(true);
 	});
 
@@ -921,113 +921,54 @@ describe('d2l-my-courses-content', () => {
 					.withArgs('.course-tile-grid d2l-course-image-tile[pinned]').returns(pinnedEnrollment);
 			}
 
-			it('should not add the Only Past Courses alert if not hiding past courses', () => {
+			beforeEach(() => {
+				component._hasEnrollments = true;
+			});
+
+			it('should not add the alert if not hiding past courses (e.g. admin user)', () => {
 				var currentOrFutureCourses = false,
 					pinnedEnrollment = false,
 					hidePastCourses = false;
 
 				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
+				component._courseTileOrganizationEventCount = 1;
 
-				this._alerts = [];
-				component._hasEnrollments = true;
-				component._addOnlyPastCoursesAlert();
-				expect(component._alerts).not.to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
+				expect(component._hasOnlyPastCourses).to.be.false;
 			});
 
-			it('should not add the Only Past Courses alert if not there are present or future courses', () => {
+			it('should not add the alert if user has current or future courses', () => {
 				var currentOrFutureCourses = true,
 					pinnedEnrollment = false,
 					hidePastCourses = true;
 
 				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
+				component._courseTileOrganizationEventCount = 1;
 
-				this._alerts = [];
-				component._hasEnrollments = true;
-				component._addOnlyPastCoursesAlert();
-				expect(component._alerts).not.to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
+				expect(component._hasOnlyPastCourses).to.be.false;
 			});
 
-			it('should add the Only Past Courses alert if there are only past courses and hides past courses', () => {
+			it('should add the alert if there are only past courses, no pinned courses, and is hiding past courses', () => {
 				var currentOrFutureCourses = false,
 					pinnedEnrollment = false,
 					hidePastCourses = true;
 
 				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
+				component._courseTileOrganizationEventCount = 1;
 
-				this._alerts = [];
-				component._hasEnrollments = true;
-				component._addOnlyPastCoursesAlert();
-				expect(component._alerts).to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
+				expect(component._hasOnlyPastCourses).to.be.true;
 			});
 
-			it('should add the Only Past Courses alert if there are only past courses, hides past courses and no pinned enrollments', () => {
-				var currentOrFutureCourses = false,
-					pinnedEnrollment = false,
-					hidePastCourses = true;
-
-				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
-
-				this._alerts = [];
-				component._hasEnrollments = true;
-				component._addOnlyPastCoursesAlert();
-				expect(component._alerts).to.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
-			});
-
-			it('should remove the Only Past Courses alert if there is a pinned enrollments', () => {
+			it('should not add the alert if there is a pinned course', () => {
 				var currentOrFutureCourses = false,
 					pinnedEnrollment = true,
 					hidePastCourses = true;
 
 				setUp(currentOrFutureCourses, pinnedEnrollment, hidePastCourses);
+				component._courseTileOrganizationEventCount = 1;
 
-				this._alerts = [{ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' }];
-				component._hasEnrollments = true;
-				component._addOnlyPastCoursesAlert();
-				expect(component._alerts).to.not.include({ alertName: 'onlyPastCourses', alertType: 'call-to-action', alertMessage: 'You don\'t have any current or future courses. View All Courses to browse your past courses.' });
+				expect(component._hasOnlyPastCourses).to.be.false;
 			});
 
-			it('should set past courses alert with pinned enrollment when a course is pinned', () => {
-				var enrollmentMock = {
-					getLinkByRel: sandbox.stub().returns({ href: 'href' })
-				};
-				var e = {
-					detail: {
-						orgUnitId: 69,
-						enrollment: enrollmentMock,
-						isPinned: true
-					}
-				};
-				component._orgUnitIdMap = {69: enrollmentMock};
-				component._enrollments = [];
-				component.getEntityIdentifier = sinon.stub().returns('69');
-				var spy = sandbox.spy(component, '_addOnlyPastCoursesAlert');
-				sandbox.stub(component, 'fetchSirenEntity').returns(Promise.resolve(enrollmentMock));
-
-				component._onEnrollmentPinnedMessage(e);
-				expect(spy).to.have.been.calledWith(true);
-			});
-
-			it('should set past courses alert with unpinned enrollment when a course is unpinned', () => {
-				var enrollmentMock = {
-					getLinkByRel: sandbox.stub().returns({ href: 'href' }),
-					hasClass: sandbox.stub().returns(true)
-				};
-				var e = {
-					detail: {
-						orgUnitId: 69,
-						enrollment: enrollmentMock,
-						isPinned: false
-					}
-				};
-				component._orgUnitIdMap = {69: enrollmentMock};
-				component._enrollments = [enrollmentMock];
-				component.getEntityIdentifier = sinon.stub().returns('69');
-				var spy = sandbox.spy(component, '_addOnlyPastCoursesAlert');
-				sandbox.stub(component, 'fetchSirenEntity').returns(Promise.resolve(enrollmentMock));
-
-				component._onEnrollmentPinnedMessage(e);
-				expect(spy).to.have.been.calledWith(false);
-			});
 		});
 
 	});

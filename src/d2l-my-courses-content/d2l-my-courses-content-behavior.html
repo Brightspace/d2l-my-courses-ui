@@ -23,7 +23,10 @@
 	D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		properties: {
 			enrollmentsSearchAction: Object,
-			tabSearchActions: Array,
+			tabSearchActions: {
+				type: Array,
+				value: function() { return []; }
+			},
 			tabSearchType: String,
 			userSettingsUrl: String,
 			useSavedSearches: {
@@ -182,7 +185,7 @@
 			}
 		},
 		_enrollmentSearchActionChanged: function() {
-			if (!this.useSavedSearches) {
+			if (!this.tabSearchActions.length) {
 				// We only need to manually fetch if we're not using tabs;
 				// otherwise, the fetch is initiated when a tab is selected.
 				this._fetchRoot();

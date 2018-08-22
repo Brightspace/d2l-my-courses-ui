@@ -326,17 +326,17 @@ Polymer-based web component for the filter menu.
 			_myEnrollmentsEntityChanged: function(myEnrollmentsEntity) {
 				myEnrollmentsEntity = this.parseEntity(myEnrollmentsEntity);
 
-				this._semestersTabHidden = !myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMySemesters);
+				this._semestersTabHidden = this._semestersTabHidden || !myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMySemesters);
 				if (!this._semestersTabHidden) {
 					this._searchSemestersAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMySemesters);
 				}
 
-				this._departmentsTabHidden = !myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyDepartments);
+				this._departmentsTabHidden = this._departmentsTabHidden || !myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyDepartments);
 				if (!this._departmentsTabHidden) {
 					this._searchDepartmentsAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyDepartments);
 				}
 
-				if (myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyEnrollments)) {
+				if (!this._rolesTabHidden || myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyEnrollments)) {
 					this._searchMyEnrollmentsAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
 				}
 			},

@@ -665,7 +665,7 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 				if (this.updatedSortLogic) {
 					var gridEntities = enrollmentEntities.map(function(value) {
 						return this.useEnrollmentCards ? value.href : window.D2L.Hypermedia.Siren.Parse(value);
-					});
+					}.bind(this));
 					var unifiedContent = this._showGroupByTabs
 						? this.$$('#' + this._selectedTabId + ' d2l-all-courses-unified-content')
 						: this.$$('d2l-all-courses-unified-content');

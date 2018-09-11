@@ -260,12 +260,15 @@
 			}
 		},
 		_onD2lEnrollmentNew: function() {
+			if (this._hasAlert('newEnrollmentMultiple')) {
+				return;
+			}
 			var message = 'newEnrollment';
-			if (this._hasAlert('d2l-enrollment-new')) {
-				this._removeAlert('d2l-enrollment-new');
+			if (this._hasAlert(message)) {
+				this._removeAlert(message);
 				message = 'newEnrollmentMultiple';
 			}
-			this._addAlert('call-to-action', 'd2l-enrollment-new', this.localize(message));
+			this._addAlert('call-to-action', message, this.localize(message));
 		},
 		_onChangeImageLowerThreshold: function() {
 			this.$$('d2l-basic-image-selector').loadMore(this.$['image-selector-threshold']);
@@ -379,7 +382,6 @@
 			}
 		},
 		_onStartedInactiveAlert: function(e) {
-			this._removeAlert('startedInactiveCourses');
 			if (this._checkIfStartedInactiveCourses(e)) {
 				this._addAlert('warning', 'startedInactiveCourses', this.localize('startedInactiveAlert'));
 			}

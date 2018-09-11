@@ -14,34 +14,47 @@
 		properties: {
 			// Array containing alert objects for display
 			_alerts: {
-				type: Array,
-				value: function() { return []; }
+				type: Array
+			},
+			_alertContainer: {
+				type: Object,
+				value: function() { return {}; }
 			}
 		},
+		_alertToArray: function(alertContainer) {
+			this._alerts = Object.keys(alertContainer).map(function(key) {
+				if (!alertContainer[key]) {
+					return null;
+				}
+				return {
+					alertType: alertContainer[key].alertType,
+					alertMessage: alertContainer[key].alertMessage
+				};
+			}.bind(this)).filter(function(element) {
+				return element;
+			});
+		},
 		_addAlert: function(type, name, message) {
-			if (this._alerts) {
-				this.push('_alerts', {
+			if (this._alertContainer) {
+				this._alertContainer[name] = {
 					alertType: type,
-					alertName: name,
 					alertMessage: message
-				});
+				};
+				this._alertToArray(this._alertContainer);
 			}
 		},
 		_hasAlert: function(name) {
-			if (!this._alerts || this._alerts.length <= 0) {
-				return false;
-			}
-			return this._alerts.some(function(alert) {
-				return alert.alertName === name;
-			});
+			return !!this._alertContainer && !!this._alertContainer[name];
 		},
 		_removeAlert: function(name) {
-			if (this._alerts && this._alerts.length > 0 && this._hasAlert(name)) {
-				this.splice('_alerts', this._alerts.map(function(alert) { return alert.name; }).indexOf(name), 1);
+			if (this._alertContainer) {
+				this._alertContainer[name] = null;
+				this._alertToArray(this._alertContainer);
 			}
 		},
 		_clearAlerts: function() {
 			this._alerts = [];
+			this._alertContainer = {};
 		}
 	};
 </script>

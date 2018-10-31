@@ -10,13 +10,10 @@ before_script:
 script:
 - cp test/index.high-priority.html test/index.html
 - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-    cp wct.conf.sauce-chrome.json wct.conf.json;
+    cp wct.conf.sauce-w10.json wct.conf.json;
     polymer test || travis_terminate 1;
 
-    cp wct.conf.sauce-firefox.json wct.conf.json;
-    polymer test || travis_terminate 1;
-
-    cp wct.conf.sauce-others.json wct.conf.json;
+    cp wct.conf.sauce-osx.json wct.conf.json;
     polymer test || travis_terminate 1;
   fi'
 env:

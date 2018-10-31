@@ -5,11 +5,11 @@
       "browsers": [
         {
           "browserName": "firefox",
-          "platform": "OS X 10.13",
+          "platform": "Windows 10",
           "version": ""
         },
         {
-          "browserName": "firefox",
+          "browserName": "microsoftedge",
           "platform": "Windows 10",
           "version": ""
         }

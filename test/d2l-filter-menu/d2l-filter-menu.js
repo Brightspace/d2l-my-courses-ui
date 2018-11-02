@@ -1,9 +1,9 @@
-describe( 'd2l-filter-menu', function() {
+describe('d2l-filter-menu', function() {
 	var sandbox,
 		component,
 		myEnrollmentsEntity;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		myEnrollmentsEntity = window.D2L.Hypermedia.Siren.Parse({
 			actions: [{
 				name: 'search-my-semesters',
@@ -27,13 +27,13 @@ describe( 'd2l-filter-menu', function() {
 		component = fixture('d2l-filter-menu-fixture');
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		sandbox.restore();
 	});
 
-	describe('d2l-filter-menu', function () {
+	describe('d2l-filter-menu', function() {
 
-		it('should update actions from myEnrollmentsEntity', function () {
+		it('should update actions from myEnrollmentsEntity', function() {
 			var spy = sandbox.spy(component, '_myEnrollmentsEntityChanged');
 
 			component.myEnrollmentsEntity = myEnrollmentsEntity;
@@ -47,9 +47,9 @@ describe( 'd2l-filter-menu', function() {
 			expect(component._searchMyEnrollmentsAction.href).to.equal('/enrollments');
 		});
 
-		describe('setting org unit type names', function () {
+		describe('setting org unit type names', function() {
 
-			it('should set the empty state text correctly for the tabs', function () {
+			it('should set the empty state text correctly for the tabs', function() {
 				component.filterStandardSemesterName = 'foo';
 				component.filterStandardDepartmentName = 'bar';
 
@@ -57,16 +57,16 @@ describe( 'd2l-filter-menu', function() {
 				expect(component.$.departmentsTab.noFiltersText).to.equal('You do not have any bar filters.');
 			});
 
-			describe('tab text', function () {
+			describe('tab text', function() {
 
-				it('should render semester name', function () {
+				it('should render semester name', function() {
 					component.filterStandardSemesterName = 'foo';
 
 					var button = component.$.semestersTabButton;
 					expect(button.innerText).to.equal('foo');
 				});
 
-				it('should render semester name with 1 filter', function () {
+				it('should render semester name with 1 filter', function() {
 					component.filterStandardSemesterName = 'foo';
 					component._semesterFilters = [1];
 
@@ -74,14 +74,14 @@ describe( 'd2l-filter-menu', function() {
 					expect(button.innerText).to.equal('foo (1)');
 				});
 
-				it('should render department name', function () {
+				it('should render department name', function() {
 					component.filterStandardDepartmentName = 'foo';
 
 					var button = component.$.departmentsTabButton;
 					expect(button.innerText).to.equal('foo');
 				});
 
-				it('should render department name with 1 filter', function () {
+				it('should render department name with 1 filter', function() {
 					component.filterStandardDepartmentName = 'foo';
 					component._departmentFilters = [1];
 
@@ -89,14 +89,14 @@ describe( 'd2l-filter-menu', function() {
 					expect(button.innerText).to.equal('foo (1)');
 				});
 
-				it('should render the roles name', function () {
+				it('should render the roles name', function() {
 					component.filterRolesName = 'foo';
 
 					var button = component.$.rolesTabButton;
 					expect(button.innerText).to.equal('foo');
 				});
 
-				it('should render roles name with 1 filter', function () {
+				it('should render roles name with 1 filter', function() {
 					component.filterRolesName = 'foo';
 					component._roleFiltersCount = 1;
 
@@ -106,15 +106,15 @@ describe( 'd2l-filter-menu', function() {
 
 			});
 
-			describe('search input placeholder text', function () {
+			describe('search input placeholder text', function() {
 
-				it('should set the search placeholder text for semesters', function () {
+				it('should set the search placeholder text for semesters', function() {
 					component.filterStandardSemesterName = 'foo';
 
 					expect(component._semestersSearchPlaceholderText).to.equal('Search by foo');
 				});
 
-				it('should set the search placeholder text for departments', function () {
+				it('should set the search placeholder text for departments', function() {
 					component.filterStandardDepartmentName = 'foo';
 
 					expect(component._departmentsSearchPlaceholderText).to.equal('Search by foo');
@@ -124,38 +124,38 @@ describe( 'd2l-filter-menu', function() {
 
 		});
 
-		describe('clear button', function () {
+		describe('clear button', function() {
 
-			beforeEach(function () {
+			beforeEach(function() {
 				component._semesterFilters = [];
 				component._departmentFilters = [];
 			});
 
-			it('should be hidden when there are no filters selected', function () {
+			it('should be hidden when there are no filters selected', function() {
 				expect(component.$$('.clear-button').getAttribute('hidden')).to.not.be.null;
 			});
 
-			it('should appear when at least one semester filter is selected', function () {
+			it('should appear when at least one semester filter is selected', function() {
 				component._semesterFilters = [1];
 				component.fire('selected-filters-changed');
 
 				expect(component.$$('.clear-button').getAttribute('hidden')).to.be.null;
 			});
 
-			it('should appear when at least one department filter is selected', function () {
+			it('should appear when at least one department filter is selected', function() {
 				component._departmentFilters = [1];
 				component.fire('selected-filters-changed');
 
 				expect(component.$$('.clear-button').getAttribute('hidden')).to.be.null;
 			});
 
-			it('should appear when at least one roles filter is selected', function () {
+			it('should appear when at least one roles filter is selected', function() {
 				component._roleFiltersCount = 1;
 
 				expect(component.$$('.clear-button').getAttribute('hidden')).to.be.null;
 			});
 
-			it('should clear filters when clicked', function () {
+			it('should clear filters when clicked', function() {
 				component._semesterFilters = [1];
 				component._departmentFilters = [1];
 				component._roleFiltersCount = 1;
@@ -170,7 +170,7 @@ describe( 'd2l-filter-menu', function() {
 				expect(component._roleFiltersCount).to.equal(0);
 			});
 
-			it('should generate a d2l-filter-menu-change event with filterCount = 0 when clicked', function (done) {
+			it('should generate a d2l-filter-menu-change event with filterCount = 0 when clicked', function(done) {
 
 				component._semesterFilters = [1];
 				component._departmentFilters = [1];
@@ -179,7 +179,7 @@ describe( 'd2l-filter-menu', function() {
 
 				component.myEnrollmentsEntity = myEnrollmentsEntity;
 
-				var listener = function (e) {
+				var listener = function(e) {
 					if (e.detail.url === '/enrollments?parentOrganizations=&roles='
 						&& e.detail.filterCounts.departments === 0
 						&& e.detail.filterCounts.semesters === 0
@@ -196,11 +196,11 @@ describe( 'd2l-filter-menu', function() {
 
 		});
 
-		describe('changing filters', function () {
+		describe('changing filters', function() {
 
-			describe('when role filters change', function () {
+			describe('when role filters change', function() {
 
-				it('should update _roleFiltersCount', function () {
+				it('should update _roleFiltersCount', function() {
 					component.fire('role-filters-changed', {
 						url: 'http://example.com',
 						filterCount: 4
@@ -209,8 +209,8 @@ describe( 'd2l-filter-menu', function() {
 					expect(component._roleFiltersCount).to.equal(4);
 				});
 
-				it('should re-fire the role-filters-change event as a d2l-filter-menu-change event', function (done) {
-					var listener = function (e) {
+				it('should re-fire the role-filters-change event as a d2l-filter-menu-change event', function(done) {
+					var listener = function(e) {
 						component.removeEventListener('d2l-filter-menu-change', listener);
 						expect(e.detail.url).to.equal('http://example.com');
 						expect(e.detail.filterCounts.roles).to.equal(4);
@@ -224,8 +224,8 @@ describe( 'd2l-filter-menu', function() {
 					});
 				});
 
-				it('should include departments, semesters and roles', function (done) {
-					var listener = function (e) {
+				it('should include departments, semesters and roles', function(done) {
+					var listener = function(e) {
 						component.removeEventListener('d2l-filter-menu-change', listener);
 						expect(e.detail.url).to.equal('http://example.com');
 						expect(e.detail.filterCounts.semesters).to.equal(1);
@@ -247,12 +247,12 @@ describe( 'd2l-filter-menu', function() {
 			});
 
 			[
-			{ path: '_semesterFilters', target: 'semesters', otherPath: '_departmentFilters', name: 'semester', otherName: 'departments'},
-			{ path: '_departmentFilters', target: 'departments', otherPath: '_semesterFilters', name: 'department', otherName: 'semesters'}
-			].forEach(function (testCase) {
-				describe('when ' + testCase.name + ' filters change', function () {
-					it('should fire a d2l-filter-menu-change event', function (done) {
-						var listener = function (e) {
+				{ path: '_semesterFilters', target: 'semesters', otherPath: '_departmentFilters', name: 'semester', otherName: 'departments'},
+				{ path: '_departmentFilters', target: 'departments', otherPath: '_semesterFilters', name: 'department', otherName: 'semesters'}
+			].forEach(function(testCase) {
+				describe('when ' + testCase.name + ' filters change', function() {
+					it('should fire a d2l-filter-menu-change event', function(done) {
+						var listener = function(e) {
 							component.removeEventListener('d2l-filter-menu-change', listener);
 							expect(e.detail.url).to.equal('/enrollments?parentOrganizations=a,b&roles=');
 							expect(e.detail.filterCounts[testCase.target]).to.equal(2);
@@ -266,8 +266,8 @@ describe( 'd2l-filter-menu', function() {
 						component.fire('selected-filters-changed');
 					});
 
-					it('should include ' + testCase.otherName + ' and roles in the event', function (done) {
-						var listener = function (e) {
+					it('should include ' + testCase.otherName + ' and roles in the event', function(done) {
+						var listener = function(e) {
 							component.removeEventListener('d2l-filter-menu-change', listener);
 							expect(e.detail.url).to.equal('/enrollments?parentOrganizations=a,b&roles=');
 							expect(e.detail.filterCounts[testCase.target]).to.equal(2);

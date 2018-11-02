@@ -1,4 +1,4 @@
-describe( 'd2l-filter-menu-tab', function() {
+describe('d2l-filter-menu-tab', function() {
 	var sandbox,
 		component,
 		organization;

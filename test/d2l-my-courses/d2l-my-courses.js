@@ -1,6 +1,5 @@
 describe('d2l-my-courses', () => {
-	var component,
-		sandbox,
+	var sandbox,
 		enrollmentsHref = '/enrollments/users/169',
 		promotedSearchHref = '/promoted-search-url',
 		lastSearchHref = 'homepages/components/1/user-settings/169',
@@ -48,18 +47,6 @@ describe('d2l-my-courses', () => {
 
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
-		component = fixture('d2l-my-courses-fixture');
-		component.fetchSirenEntity = sandbox.stub();
-
-		component.fetchSirenEntity.withArgs(sinon.match(enrollmentsHref))
-			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse)));
-		component.fetchSirenEntity.withArgs(sinon.match(promotedSearchHref))
-			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(promotedSearchResponse)));
-		component.fetchSirenEntity.withArgs(sinon.match(lastSearchHref))
-			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(lastSearchResponse)));
-		component.enrollmentsUrl = enrollmentsHref;
-		component.promotedSearches = promotedSearchHref;
-		component.userSettingsUrl = lastSearchHref;
 	});
 
 	afterEach(() => {
@@ -67,12 +54,14 @@ describe('d2l-my-courses', () => {
 	});
 
 	it('should properly implement the d2l-my-courses-behavior', () => {
+		var component = CreateFixture();
 		expect(component.courseImageUploadCompleted).to.be.a('function');
 		expect(component.getLastOrgUnitId).to.be.a('function');
 		expect(component.updatedSortLogic).to.equal(false);
 	});
 
 	it('should properly fetch saved search data', () => {
+		var component = CreateFixture();
 		return component._fetchTabSearchActions()
 			.then(function() {
 				expect(component.fetchSirenEntity).to.be.called;
@@ -82,6 +71,7 @@ describe('d2l-my-courses', () => {
 	});
 
 	it('should properly fetch default search data when set', () => {
+		var component = CreateFixture();
 		component._enrollmentsSearchAction = searchAction;
 		return component._fetchTabSearchActions()
 			.then(function() {
@@ -93,6 +83,7 @@ describe('d2l-my-courses', () => {
 
 	describe('Public API', () => {
 		it('should call d2l-my-courses-content-animated.courseImageUploadCompleted', done => {
+			var component = CreateFixture();
 			component.updatedSortLogic = false;
 			Polymer.dom.flush();
 			var stub = sandbox.stub(component.$$('d2l-my-courses-content-animated'), 'courseImageUploadCompleted');
@@ -102,6 +93,7 @@ describe('d2l-my-courses', () => {
 		});
 
 		it('should call d2l-my-courses-content.courseImageUploadCompleted', done => {
+			var component = CreateFixture();
 			component.updatedSortLogic = true;
 			component._tabSearchActions = [{'name': 'testName', 'title': 'testTitle', 'selected': false, 'enrollmentsSearchAction': {}}];
 			Polymer.dom.flush();
@@ -112,6 +104,7 @@ describe('d2l-my-courses', () => {
 		});
 
 		it('should call d2l-my-courses-content-animated.getLastOrgUnitId', done => {
+			var component = CreateFixture();
 			component.updatedSortLogic = false;
 			Polymer.dom.flush();
 			var stub = sandbox.stub(component.$$('d2l-my-courses-content-animated'), 'getLastOrgUnitId');
@@ -121,6 +114,7 @@ describe('d2l-my-courses', () => {
 		});
 
 		it('should call d2l-my-courses-content.getLastOrgUnitId', done => {
+			var component = CreateFixture();
 			component.updatedSortLogic = true;
 			component._tabSearchActions = [{'name': 'testName', 'title': 'testTitle', 'selected': false, 'enrollmentsSearchAction': {}}];
 			Polymer.dom.flush();
@@ -130,4 +124,20 @@ describe('d2l-my-courses', () => {
 			done();
 		});
 	});
+
+	function CreateFixture() {
+		var component = fixture('d2l-my-courses-fixture')
+		component.fetchSirenEntity = sandbox.stub();
+
+		component.fetchSirenEntity.withArgs(sinon.match(enrollmentsHref))
+			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse)));
+		component.fetchSirenEntity.withArgs(sinon.match(promotedSearchHref))
+			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(promotedSearchResponse)));
+		component.fetchSirenEntity.withArgs(sinon.match(lastSearchHref))
+			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(lastSearchResponse)));
+		component.enrollmentsUrl = enrollmentsHref;
+		component.promotedSearches = promotedSearchHref;
+		component.userSettingsUrl = lastSearchHref;
+		return component;
+	}
 });

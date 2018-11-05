@@ -1,7 +1,5 @@
 describe('d2l-utility-behavior', function() {
-	var
-		component,
-		enrollment = {
+	var enrollment = {
 			class: ['pinned', 'enrollment'],
 			rel: ['https://api.brightspace.com/rels/user-enrollment'],
 			actions: [{
@@ -35,18 +33,16 @@ describe('d2l-utility-behavior', function() {
 		enrollmentEntity = window.D2L.Hypermedia.Siren.Parse(enrollment);
 	});
 
-	beforeEach(function() {
-		component = fixture('default-fixture');
-	});
-
 	describe('createActionUrl', function() {
 		it('should return the URL with default values if no parameters are specified', function() {
+			var component = fixture('default-fixture');
 			var url = component.createActionUrl(enrollmentEntity.getActionByName(component.HypermediaActions.enrollments.unpinCourse));
 
 			expect(url).to.equal(enrollment.actions[0].href + '?pinned=false');
 		});
 
 		it('should return the URL with the specified query parameter(s)', function() {
+			var component = fixture('default-fixture');
 			var url = component.createActionUrl(
 				enrollmentEntity.getActionByName(component.HypermediaActions.enrollments.unpinCourse),
 				{ pinned: 'foo' }
@@ -56,6 +52,7 @@ describe('d2l-utility-behavior', function() {
 		});
 
 		it('should not add any fields that are not on the action', function() {
+			var component = fixture('default-fixture');
 			var url = component.createActionUrl(
 				enrollmentEntity.getActionByName(component.HypermediaActions.enrollments.unpinCourse),
 				{ foo: 'bar' }
@@ -65,6 +62,7 @@ describe('d2l-utility-behavior', function() {
 		});
 
 		it('should work with hrefs that already have query params', function() {
+			var component = fixture('default-fixture');
 			var url = component.createActionUrl(
 				enrollmentEntity.getActionByName('action-with-query-params'),
 				{ param2: 'baz' }
@@ -76,6 +74,7 @@ describe('d2l-utility-behavior', function() {
 
 	describe('getEntityIdentifier', function() {
 		it('should get the unique enrollment ID based off the self link', function() {
+			var component = fixture('default-fixture');
 			var id = component.getEntityIdentifier(enrollmentEntity);
 
 			expect(id).to.equal(enrollment.links[1].href);

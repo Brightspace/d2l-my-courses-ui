@@ -66,25 +66,21 @@ describe('d2l-course-tile-grid', () => {
 	});
 
 	describe('DOM styling', () => {
-		var enrollmentsEntities;
-
-		function getEnrollments() {
-			return Array(20).fill({
-				links: [{ rel: ['self'], href: 'foo' }],
-				rel: ['enrollment']
-			});
-		}
-
-		function getEnrollmentsFixture(entities) {
-			var widget = getFixture();
-			widget.enrollments = entities;
-			return widget;
-		}
+		var component;
 
 		beforeEach(done => {
-			enrollmentsEntities = window.D2L.Hypermedia.Siren.Parse(
-				getEnrollments()
-			).entities;
+			component = getFixture();
+
+			var enrollmentsEntities = window.D2L.Hypermedia.Siren.Parse({
+				entities: Array(20).fill(() => {
+					return {
+						links: [{ rel: ['self'], href: 'foo' }],
+						rel: ['enrollment']
+					};
+				})
+			}).entities;
+
+			component.enrollments = enrollmentsEntities;
 
 			setTimeout(() => {
 				done();
@@ -92,7 +88,6 @@ describe('d2l-course-tile-grid', () => {
 		});
 
 		it('should only show 12 tiles when limit-to-12 attribute is set', () => {
-			var component = getEnrollmentsFixture(enrollmentsEntities);
 			component.setAttribute('limit-to-12', true);
 
 			var twelfthTile = component.$$('.course-tile-container d2l-course-tile:nth-of-type(12)');
@@ -102,7 +97,6 @@ describe('d2l-course-tile-grid', () => {
 		});
 
 		it('should hide past courses when hide-past-courses attribute is set', () => {
-			var component = getEnrollmentsFixture(enrollmentsEntities);
 			component.setAttribute('hide-past-courses', true);
 
 			var pastCourseTile = component.$$('.course-tile-container d2l-course-tile');
@@ -114,7 +108,6 @@ describe('d2l-course-tile-grid', () => {
 		});
 
 		it('should not hide a pinned past course, even if hide-past-courses is set', () => {
-			var component = getEnrollmentsFixture(enrollmentsEntities);
 			var courseTile = component.$$('.course-tile-container d2l-course-tile');
 			courseTile.setAttribute('pinned', true);
 			expect(window.getComputedStyle(courseTile).getPropertyValue('display')).to.equal('block');
@@ -126,7 +119,6 @@ describe('d2l-course-tile-grid', () => {
 		});
 
 		it('should only show 12 current courses when limit-to-12 and hide-past-courses are both set', () => {
-			var component = getEnrollmentsFixture(enrollmentsEntities);
 			var courseTile = component.$$('.course-tile-container d2l-course-tile');
 
 			component.setAttribute('limit-to-12', true);

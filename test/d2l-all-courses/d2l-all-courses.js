@@ -89,6 +89,7 @@ describe('d2l-all-courses', function() {
 	it('should return the correct value from getCourseTileItemCount (should be maximum of pinned or unpinned course count)', function() {
 		var widget = getFixture();
 		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+		Polymer.dom.flush();
 
 		widget._filteredPinnedEnrollments = [window.D2L.Hypermedia.Siren.Parse(pinnedEnrollmentJson)];
 		widget._filteredUnpinnedEnrollments = [window.D2L.Hypermedia.Siren.Parse(unpinnedEnrollmentJson)];
@@ -99,6 +100,8 @@ describe('d2l-all-courses', function() {
 	it('should set getCourseTileItemCount on its child course-tile-grids', function() {
 		var widget = getFixture();
 		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+		Polymer.dom.flush();
+
 		widget._filteredPinnedEnrollments = [window.D2L.Hypermedia.Siren.Parse(pinnedEnrollmentJson)];
 		widget._filteredUnpinnedEnrollments = [window.D2L.Hypermedia.Siren.Parse(unpinnedEnrollmentJson)];
 		var courseTileGrids;
@@ -118,6 +121,8 @@ describe('d2l-all-courses', function() {
 	it('should load filter menu content when filter menu is opened', function() {
 		var widget = getFixture();
 		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+		Polymer.dom.flush();
+
 		var semestersTabStub = sandbox.stub(widget.$.filterMenu.$.semestersTab, 'load');
 		var departmentsTabStub = sandbox.stub(widget.$.filterMenu.$.departmentsTab, 'load');
 
@@ -131,6 +136,8 @@ describe('d2l-all-courses', function() {
 		it('should set the _searchUrl and filterCounts', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			widget.$.filterMenu.fire('d2l-filter-menu-change', {
 				url: 'http://example.com',
 				filterCounts: {
@@ -149,6 +156,8 @@ describe('d2l-all-courses', function() {
 		it('should set the _searchUrl', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			widget.$.sortDropdown.fire('d2l-menu-item-change', {
 				value: 'LastAccessed'
 			});
@@ -174,6 +183,8 @@ describe('d2l-all-courses', function() {
 		it('should read "Filter" when no filters are selected', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			fireEvents(widget, 0);
 			expect(widget._filterText).to.equal('Filter');
 		});
@@ -181,6 +192,8 @@ describe('d2l-all-courses', function() {
 		it('should read "Filter: 1 filter" when any 1 filter is selected', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			fireEvents(widget, 1);
 			expect(widget._filterText).to.equal('Filter: 1 Filter');
 		});
@@ -188,6 +201,8 @@ describe('d2l-all-courses', function() {
 		it('should read "Filter: 2 filters" when any 2 filters are selected', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			fireEvents(widget, 2);
 			expect(widget._filterText).to.equal('Filter: 2 Filters');
 		});
@@ -199,6 +214,8 @@ describe('d2l-all-courses', function() {
 		it('should remove a setCourseImageFailure alert when the overlay is opened', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			widget._addAlert('warning', 'setCourseImageFailure', 'failed to do that thing it should do');
 			expect(widget._alertsView).to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
 			widget.$$('d2l-simple-overlay')._renderOpened();
@@ -208,6 +225,8 @@ describe('d2l-all-courses', function() {
 		it('should remove and course image failure alerts before adding and new ones', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			var removeAlertSpy = sandbox.spy(widget, '_removeAlert');
 			widget.setCourseImage();
 			expect(removeAlertSpy.called);
@@ -217,6 +236,8 @@ describe('d2l-all-courses', function() {
 			clock = sinon.useFakeTimers();
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			var setCourseImageEvent = { detail: { status: 'failure'} };
 			widget.setCourseImage(setCourseImageEvent);
 			clock.tick(1001);
@@ -226,6 +247,8 @@ describe('d2l-all-courses', function() {
 		it('should not add a setCourseImageFailure warning alert when a request to set the image succeeds', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			var setCourseImageEvent = { detail: { status: 'success'} };
 			widget.setCourseImage(setCourseImageEvent);
 			expect(widget._alertsView).not.to.include(setCourseImageFailureAlert);
@@ -235,6 +258,8 @@ describe('d2l-all-courses', function() {
 			clock = sinon.useFakeTimers();
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			var setCourseImageEvent = { detail: { status: 'failure'} };
 			widget.setCourseImage(setCourseImageEvent);
 			clock.tick(1001);
@@ -249,6 +274,8 @@ describe('d2l-all-courses', function() {
 		it('should initially hide content', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			widget.open();
 			expect(widget._showContent).to.be.false;
 		});
@@ -259,6 +286,8 @@ describe('d2l-all-courses', function() {
 		it('should clear search text', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			var spy = sandbox.spy(widget, '_clearSearchWidget');
 			var searchField = widget.$['search-widget'];
 
@@ -271,6 +300,8 @@ describe('d2l-all-courses', function() {
 		it('should clear filters', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			var spy = sandbox.spy(widget.$.filterMenu, 'clearFilters');
 
 			widget.$.filterMenu.fire('d2l-filter-menu-change', {
@@ -291,6 +322,8 @@ describe('d2l-all-courses', function() {
 		it('should clear sort', function() {
 			var widget = getFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			var spy = sandbox.spy(widget, '_resetSortDropdown');
 
 			var event = {
@@ -341,6 +374,8 @@ describe('d2l-all-courses', function() {
 		it('should hide tab contents when loading a tab\'s contents', function() {
 			var widget = getTabbedFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			widget._showTabContent = true;
 
 			widget._onTabSelected({
@@ -354,6 +389,8 @@ describe('d2l-all-courses', function() {
 		it('should set the _searchUrl based on the selected tab\'s action', function() {
 			var widget = getTabbedFixture();
 			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
+
 			widget._sortParameter = 'SortOrder';
 
 			widget._onTabSelected({

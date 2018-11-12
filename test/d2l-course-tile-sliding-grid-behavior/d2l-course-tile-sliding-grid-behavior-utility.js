@@ -1,7 +1,7 @@
 describe('d2l-course-tile-sliding-grid-behavior-utility', () => {
 	var utility = D2L.MyCourses.CourseTileSlidingGridBehaviorUtility;
 
-	describe('calculatePositionChange', function() {
+	describe.skip('calculatePositionChange', function() {
 		[
 			[1, 2, true, 1, 0, 1, 'one column, one insertion'],
 			[1, 0, true, 4, 0, 4, 'one column, multiple insertions'],

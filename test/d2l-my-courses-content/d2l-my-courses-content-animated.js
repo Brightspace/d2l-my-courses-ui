@@ -1,4 +1,4 @@
-describe('d2l-my-courses-content-animated', function() {
+describe.skip('d2l-my-courses-content-animated', function() {
 	var sandbox,
 		widget,
 		organization = {

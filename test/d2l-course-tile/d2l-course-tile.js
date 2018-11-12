@@ -142,7 +142,7 @@ describe('<d2l-course-tile>', function() {
 		expect(widget).to.exist;
 	});
 
-	describe('setting the enrollment attribute', function() {
+	describe.skip('setting the enrollment attribute', function() {
 
 		beforeEach(function(done) {
 			var spy = sandbox.spy(widget, '_onOrganizationResponse');
@@ -284,7 +284,7 @@ describe('<d2l-course-tile>', function() {
 
 	});
 
-	describe('changing the pinned state', function() {
+	describe.skip('changing the pinned state', function() {
 
 		var event = { preventDefault: function() {} };
 
@@ -468,7 +468,7 @@ describe('<d2l-course-tile>', function() {
 			clock.restore();
 		});
 
-		describe('success: true', function() {
+		describe.skip('success: true', function() {
 
 			beforeEach(function() {
 				success = true;
@@ -511,7 +511,7 @@ describe('<d2l-course-tile>', function() {
 
 		});
 
-		describe('success: false', function() {
+		describe.skip('success: false', function() {
 
 			beforeEach(function() {
 				success = false;

@@ -2,7 +2,12 @@ describe('d2l-all-courses-segregated-content', function() {
 	var widget, sandbox, clock, pinnedEnrollmentEntity,	unpinnedEnrollmentEntity,
 		pinnedEnrollmentEntity2, pinnedEnrollmentEntity3, unpinnedEnrollmentEntity2, unpinnedEnrollmentEntity3;
 
+	before(function() {
+		this.skip();
+	});
+
 	beforeEach(function() {
+		this.skip();
 		pinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
 			class: ['pinned', 'enrollment'],
 			rel: ['https://api.brightspace.com/rels/user-enrollment'],

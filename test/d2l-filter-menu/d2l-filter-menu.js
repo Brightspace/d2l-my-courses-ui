@@ -1,36 +1,35 @@
-var sandbox,
-	component,
-	myEnrollmentsEntity;
-
-beforeEach(function() {
-	myEnrollmentsEntity = window.D2L.Hypermedia.Siren.Parse({
-		actions: [{
-			name: 'search-my-semesters',
-			href: '/enrollments'
-		}, {
-			name: 'search-my-departments',
-			href: '/enrollments'
-		}, {
-			name: 'search-my-enrollments',
-			href: '/enrollments',
-			fields: [{
-				name: 'parentOrganizations',
-				value: ''
-			}, {
-				name: 'roles',
-				value: ''
-			}]
-		}]
-	});
-	sandbox = sinon.sandbox.create();
-	component = fixture('d2l-filter-menu-fixture');
-});
-
-afterEach(function() {
-	sandbox.restore();
-});
-
 describe('d2l-filter-menu', function() {
+	var sandbox,
+		component,
+		myEnrollmentsEntity;
+
+	beforeEach(function() {
+		myEnrollmentsEntity = window.D2L.Hypermedia.Siren.Parse({
+			actions: [{
+				name: 'search-my-semesters',
+				href: '/enrollments'
+			}, {
+				name: 'search-my-departments',
+				href: '/enrollments'
+			}, {
+				name: 'search-my-enrollments',
+				href: '/enrollments',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'roles',
+					value: ''
+				}]
+			}]
+		});
+		sandbox = sinon.sandbox.create();
+		component = fixture('d2l-filter-menu-fixture');
+	});
+
+	afterEach(function() {
+		sandbox.restore();
+	});
 
 	it('should update actions from myEnrollmentsEntity', function() {
 		var spy = sandbox.spy(component, '_myEnrollmentsEntityChanged');

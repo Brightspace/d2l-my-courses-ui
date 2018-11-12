@@ -1,6 +1,4 @@
 describe('d2l-course-tile-sliding-grid-behavior-utility', () => {
-	var utility = D2L.MyCourses.CourseTileSlidingGridBehaviorUtility;
-
 	describe.skip('calculatePositionChange', function() {
 		[
 			[1, 2, true, 1, 0, 1, 'one column, one insertion'],
@@ -25,7 +23,7 @@ describe('d2l-course-tile-sliding-grid-behavior-utility', () => {
 			[2, 7, false, 5, -1, -2, 'two columns, second column, five removals']
 		].forEach(function(test) {
 			it('should work for ' + test[6], function() {
-				expect(utility.calculatePositionChange(
+				expect(D2L.MyCourses.CourseTileSlidingGridBehaviorUtility.calculatePositionChange(
 					test[0],
 					test[1],
 					test[2],
@@ -50,7 +48,7 @@ describe('d2l-course-tile-sliding-grid-behavior-utility', () => {
 				[[], [1], 0, 1]
 			].forEach(function(test, i) {
 				it('should work [' + i + ']', function() {
-					expect(utility.findDifferenceInLists(
+					expect(D2L.MyCourses.CourseTileSlidingGridBehaviorUtility.findDifferenceInLists(
 						test[0],
 						test[1]
 					)).to.deep.equal({

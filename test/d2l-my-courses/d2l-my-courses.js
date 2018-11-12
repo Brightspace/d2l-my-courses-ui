@@ -1,5 +1,6 @@
 describe('d2l-my-courses', () => {
 	var sandbox,
+		fixtureStub,
 		enrollmentsHref = '/enrollments/users/169',
 		promotedSearchHref = '/promoted-search-url',
 		lastSearchHref = 'homepages/components/1/user-settings/169',
@@ -45,8 +46,24 @@ describe('d2l-my-courses', () => {
 			}
 		};
 
+	function CreateFixture() {
+		var component = fixture('d2l-my-courses-fixture');
+		component.fetchSirenEntity = fixtureStub;
+		component.enrollmentsUrl = enrollmentsHref;
+		component.promotedSearches = promotedSearchHref;
+		component.userSettingsUrl = lastSearchHref;
+		return component;
+	}
+
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
+		fixtureStub = sandbox.stub();
+		fixtureStub.fetchSirenEntity.withArgs(sinon.match(enrollmentsHref))
+			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse)));
+		fixtureStub.fetchSirenEntity.withArgs(sinon.match(promotedSearchHref))
+			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(promotedSearchResponse)));
+		fixtureStub.fetchSirenEntity.withArgs(sinon.match(lastSearchHref))
+			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(lastSearchResponse)));
 	});
 
 	afterEach(() => {
@@ -124,20 +141,4 @@ describe('d2l-my-courses', () => {
 			done();
 		});
 	});
-
-	function CreateFixture() {
-		var component = fixture('d2l-my-courses-fixture')
-		component.fetchSirenEntity = sandbox.stub();
-
-		component.fetchSirenEntity.withArgs(sinon.match(enrollmentsHref))
-			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse)));
-		component.fetchSirenEntity.withArgs(sinon.match(promotedSearchHref))
-			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(promotedSearchResponse)));
-		component.fetchSirenEntity.withArgs(sinon.match(lastSearchHref))
-			.returns(Promise.resolve(window.D2L.Hypermedia.Siren.Parse(lastSearchResponse)));
-		component.enrollmentsUrl = enrollmentsHref;
-		component.promotedSearches = promotedSearchHref;
-		component.userSettingsUrl = lastSearchHref;
-		return component;
-	}
 });

@@ -1,12 +1,8 @@
 describe('d2l-course-tile-responsive-grid-behavior', function() {
-	var component;
-
-	beforeEach(function() {
-		component = fixture('default-fixture');
-	});
 
 	describe('column calculations', function() {
 		it('should properly respond to a window resize event', function(done) {
+			var component = fixture('default-fixture');
 			sinon
 				.stub(component, 'getCourseTileItemCount')
 				.returns(1);
@@ -24,6 +20,7 @@ describe('d2l-course-tile-responsive-grid-behavior', function() {
 		});
 
 		it('should properly respond to a "recalculate-columns" event', function() {
+			var component = fixture('default-fixture');
 			sinon
 				.stub(component, 'getCourseTileItemCount')
 				.returns(1);
@@ -106,6 +103,7 @@ describe('d2l-course-tile-responsive-grid-behavior', function() {
 				itemCount: 7,
 				expectedColumns: 4
 			}].forEach(function(scenario) {
+				var component = fixture('default-fixture');
 				var description = 'width: ' + scenario.width + '; itemCount: ' + scenario.itemCount;
 				var numberOfColumns = component._calcNumColumns(scenario.width, scenario.itemCount);
 				expect(numberOfColumns, description).to.equal(scenario.expectedColumns);

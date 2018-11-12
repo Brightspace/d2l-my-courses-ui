@@ -1,39 +1,31 @@
 describe('d2l-all-courses', function() {
-	var widget,
-		pinnedEnrollmentEntity,
-		unpinnedEnrollmentEntity,
-		clock,
+	var clock,
 		sandbox;
+	var pinnedEnrollmentJson = {
+		class: ['pinned', 'enrollment'],
+		rel: ['https://api.brightspace.com/rels/user-enrollment'],
+		links: [{
+			rel: ['self'],
+			href: '/enrollments/users/169/organizations/1'
+		}, {
+			rel: ['https://api.brightspace.com/rels/organization'],
+			href: '/organizations/123'
+		}]
+	};
+	var unpinnedEnrollmentJson = {
+		class: ['unpinned', 'enrollment'],
+		rel: ['https://api.brightspace.com/rels/user-enrollment'],
+		links: [{
+			rel: ['self'],
+			href: '/enrollments/users/169/organizations/1'
+		}, {
+			rel: ['https://api.brightspace.com/rels/organization'],
+			href: '/organizations/123'
+		}]
+	};
 
-	beforeEach(function() {
-
-		pinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
-			class: ['pinned', 'enrollment'],
-			rel: ['https://api.brightspace.com/rels/user-enrollment'],
-			links: [{
-				rel: ['self'],
-				href: '/enrollments/users/169/organizations/1'
-			}, {
-				rel: ['https://api.brightspace.com/rels/organization'],
-				href: '/organizations/123'
-			}]
-		});
-		unpinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
-			class: ['unpinned', 'enrollment'],
-			rel: ['https://api.brightspace.com/rels/user-enrollment'],
-			links: [{
-				rel: ['self'],
-				href: '/enrollments/users/169/organizations/1'
-			}, {
-				rel: ['https://api.brightspace.com/rels/organization'],
-				href: '/organizations/123'
-			}]
-		});
-
-		sandbox = sinon.sandbox.create();
-
-		widget = fixture('d2l-all-courses-fixture');
-		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+	function getFixture() {
+		var widget = fixture('d2l-all-courses-fixture');
 		widget._enrollmentsSearchAction = {
 			name: 'search-my-enrollments',
 			href: '/enrollments/users/169',
@@ -48,8 +40,15 @@ describe('d2l-all-courses', function() {
 
 		widget.updatedSortLogic = false;
 
-		Polymer.dom.flush();
+		return widget;
+	}
 
+	beforeEach(function(done) {
+		sandbox = sinon.sandbox.create();
+
+		setTimeout(function() {
+			done();
+		});
 	});
 
 	afterEach(function() {
@@ -59,14 +58,17 @@ describe('d2l-all-courses', function() {
 		sandbox.restore();
 	});
 
-	describe('loading spinner', function() {
-		it('should show before content has loaded', function() {
-			expect(widget.$$('d2l-loading-spinner:not(#lazyLoadSpinner)').hasAttribute('hidden')).to.be.false;
-		});
+	it('loading spinner should show before content has loaded', function() {
+		var widget = getFixture();
+		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+		expect(widget.$$('d2l-loading-spinner:not(#lazyLoadSpinner)').hasAttribute('hidden')).to.be.false;
 	});
 
 	describe('advanced search link', function() {
 		it('should not render when advancedSearchUrl is not set', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
 			widget.advancedSearchUrl = null;
 
 			expect(widget._showAdvancedSearchLink).to.be.false;
@@ -74,6 +76,9 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should render when advancedSearchUrl is set', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			Polymer.dom.flush();
 			widget.advancedSearchUrl = '/test/url';
 
 			expect(widget._showAdvancedSearchLink).to.be.true;
@@ -82,15 +87,20 @@ describe('d2l-all-courses', function() {
 	});
 
 	it('should return the correct value from getCourseTileItemCount (should be maximum of pinned or unpinned course count)', function() {
-		widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
-		widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
+		var widget = getFixture();
+		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+
+		widget._filteredPinnedEnrollments = [window.D2L.Hypermedia.Siren.Parse(pinnedEnrollmentJson)];
+		widget._filteredUnpinnedEnrollments = [window.D2L.Hypermedia.Siren.Parse(unpinnedEnrollmentJson)];
 
 		expect(widget.$$('d2l-all-courses-segregated-content').getCourseTileItemCount()).to.equal(1);
 	});
 
 	it('should set getCourseTileItemCount on its child course-tile-grids', function() {
-		widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
-		widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
+		var widget = getFixture();
+		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+		widget._filteredPinnedEnrollments = [window.D2L.Hypermedia.Siren.Parse(pinnedEnrollmentJson)];
+		widget._filteredUnpinnedEnrollments = [window.D2L.Hypermedia.Siren.Parse(unpinnedEnrollmentJson)];
 		var courseTileGrids;
 		var segregatedContent = widget.$$('d2l-all-courses-segregated-content');
 		if (segregatedContent.shadowRoot) {
@@ -106,6 +116,8 @@ describe('d2l-all-courses', function() {
 	});
 
 	it('should load filter menu content when filter menu is opened', function() {
+		var widget = getFixture();
+		widget.$['search-widget']._setSearchUrl = sandbox.stub();
 		var semestersTabStub = sandbox.stub(widget.$.filterMenu.$.semestersTab, 'load');
 		var departmentsTabStub = sandbox.stub(widget.$.filterMenu.$.departmentsTab, 'load');
 
@@ -117,6 +129,8 @@ describe('d2l-all-courses', function() {
 
 	describe('d2l-filter-menu-change event', function() {
 		it('should set the _searchUrl and filterCounts', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			widget.$.filterMenu.fire('d2l-filter-menu-change', {
 				url: 'http://example.com',
 				filterCounts: {
@@ -133,6 +147,8 @@ describe('d2l-all-courses', function() {
 
 	describe('d2l-menu-item-change event', function() {
 		it('should set the _searchUrl', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			widget.$.sortDropdown.fire('d2l-menu-item-change', {
 				value: 'LastAccessed'
 			});
@@ -143,7 +159,7 @@ describe('d2l-all-courses', function() {
 	});
 
 	describe('Filter text', function() {
-		function fireEvents(filterCount) {
+		function fireEvents(widget, filterCount) {
 			widget.$.filterMenu.fire('d2l-filter-menu-change', {
 				url: 'http://example.com',
 				filterCounts: {
@@ -156,17 +172,23 @@ describe('d2l-all-courses', function() {
 		}
 
 		it('should read "Filter" when no filters are selected', function() {
-			fireEvents(0);
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			fireEvents(widget, 0);
 			expect(widget._filterText).to.equal('Filter');
 		});
 
 		it('should read "Filter: 1 filter" when any 1 filter is selected', function() {
-			fireEvents(1);
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			fireEvents(widget, 1);
 			expect(widget._filterText).to.equal('Filter: 1 Filter');
 		});
 
 		it('should read "Filter: 2 filters" when any 2 filters are selected', function() {
-			fireEvents(2);
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			fireEvents(widget, 2);
 			expect(widget._filterText).to.equal('Filter: 2 Filters');
 		});
 	});
@@ -175,6 +197,8 @@ describe('d2l-all-courses', function() {
 		var setCourseImageFailureAlert = { alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'Sorry, we\'re unable to change your image right now. Please try again later.' };
 
 		it('should remove a setCourseImageFailure alert when the overlay is opened', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			widget._addAlert('warning', 'setCourseImageFailure', 'failed to do that thing it should do');
 			expect(widget._alertsView).to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
 			widget.$$('d2l-simple-overlay')._renderOpened();
@@ -182,6 +206,8 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should remove and course image failure alerts before adding and new ones', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			var removeAlertSpy = sandbox.spy(widget, '_removeAlert');
 			widget.setCourseImage();
 			expect(removeAlertSpy.called);
@@ -189,6 +215,8 @@ describe('d2l-all-courses', function() {
 
 		it('should add an alert after setting the course image results in failure (after a timeout)', function() {
 			clock = sinon.useFakeTimers();
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			var setCourseImageEvent = { detail: { status: 'failure'} };
 			widget.setCourseImage(setCourseImageEvent);
 			clock.tick(1001);
@@ -196,6 +224,8 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should not add a setCourseImageFailure warning alert when a request to set the image succeeds', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			var setCourseImageEvent = { detail: { status: 'success'} };
 			widget.setCourseImage(setCourseImageEvent);
 			expect(widget._alertsView).not.to.include(setCourseImageFailureAlert);
@@ -203,6 +233,8 @@ describe('d2l-all-courses', function() {
 
 		it('should remove a setCourseImageFailure warning alert when a request to set the image is made', function() {
 			clock = sinon.useFakeTimers();
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			var setCourseImageEvent = { detail: { status: 'failure'} };
 			widget.setCourseImage(setCourseImageEvent);
 			clock.tick(1001);
@@ -215,6 +247,8 @@ describe('d2l-all-courses', function() {
 
 	describe('opening the overlay', function() {
 		it('should initially hide content', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			widget.open();
 			expect(widget._showContent).to.be.false;
 		});
@@ -223,6 +257,8 @@ describe('d2l-all-courses', function() {
 	describe('closing the overlay', function() {
 
 		it('should clear search text', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			var spy = sandbox.spy(widget, '_clearSearchWidget');
 			var searchField = widget.$['search-widget'];
 
@@ -233,6 +269,8 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should clear filters', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			var spy = sandbox.spy(widget.$.filterMenu, 'clearFilters');
 
 			widget.$.filterMenu.fire('d2l-filter-menu-change', {
@@ -251,6 +289,8 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should clear sort', function() {
+			var widget = getFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			var spy = sandbox.spy(widget, '_resetSortDropdown');
 
 			var event = {
@@ -269,7 +309,8 @@ describe('d2l-all-courses', function() {
 	});
 
 	describe('Tabbed view', function() {
-		beforeEach(function() {
+		function getTabbedFixture() {
+			var widget = getFixture();
 			widget.updatedSortLogic = true;
 			widget.tabSearchActions = [{
 				name: '12345',
@@ -294,10 +335,12 @@ describe('d2l-all-courses', function() {
 				}
 			}];
 			widget._enrollmentsSearchAction.getFieldByName = sandbox.stub();
-			Polymer.dom.flush();
-		});
+			return widget;
+		}
 
 		it('should hide tab contents when loading a tab\'s contents', function() {
+			var widget = getTabbedFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			widget._showTabContent = true;
 
 			widget._onTabSelected({
@@ -309,6 +352,8 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should set the _searchUrl based on the selected tab\'s action', function() {
+			var widget = getTabbedFixture();
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
 			widget._sortParameter = 'SortOrder';
 
 			widget._onTabSelected({

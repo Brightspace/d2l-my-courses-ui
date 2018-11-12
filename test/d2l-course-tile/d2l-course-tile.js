@@ -2,7 +2,6 @@ describe('<d2l-course-tile>', function() {
 
 	var sandbox,
 		server,
-		widget,
 		enrollment = {
 			class: ['pinned', 'enrollment'],
 			rel: ['https://api.brightspace.com/rels/user-enrollment'],
@@ -113,6 +112,10 @@ describe('<d2l-course-tile>', function() {
 		organizationEntity,
 		semesterOrganizationEntity;
 
+	function getFixture() {
+		return fixture('d2l-course-tile-fixture');
+	}
+
 	before(function() {
 		enrollmentEntity = window.D2L.Hypermedia.Siren.Parse(enrollment);
 		organizationEntity = window.D2L.Hypermedia.Siren.Parse(organization);
@@ -124,7 +127,6 @@ describe('<d2l-course-tile>', function() {
 		server = sinon.fakeServer.create();
 		server.respondImmediately = true;
 
-		widget = fixture('d2l-course-tile-fixture');
 		window.d2lfetch.fetch = sandbox.stub()
 			.withArgs(sinon.match.has('url', sinon.match('/organizations/1?embedDepth=1')))
 			.returns(Promise.resolve({
@@ -139,10 +141,12 @@ describe('<d2l-course-tile>', function() {
 	});
 
 	it('loads element', function() {
+		var widget = getFixture();
 		expect(widget).to.exist;
 	});
 
 	describe.skip('setting the enrollment attribute', function() {
+		var widget;
 
 		beforeEach(function(done) {
 			var spy = sandbox.spy(widget, '_onOrganizationResponse');
@@ -287,6 +291,7 @@ describe('<d2l-course-tile>', function() {
 	describe.skip('changing the pinned state', function() {
 
 		var event = { preventDefault: function() {} };
+		var widget;
 
 		beforeEach(function(done) {
 			var spy = sandbox.spy(widget, '_onOrganizationResponse');
@@ -385,12 +390,16 @@ describe('<d2l-course-tile>', function() {
 
 	describe('setCourseImage', function() {
 
-		var details,
-			href;
+		var details;
+		var href = 'http://testImage.ninja';
+
+		function getDefaultImageFixture() {
+			var widget = getFixture();
+			widget.getDefaultImageLink = sinon.stub().returns(href);
+			return widget;
+		}
 
 		beforeEach(function() {
-			href = 'http://testImage.ninja';
-
 			details = {
 				image: {
 					href: href,
@@ -398,11 +407,10 @@ describe('<d2l-course-tile>', function() {
 				},
 				status: null
 			};
-
-			widget.getDefaultImageLink = sinon.stub().returns(href);
 		});
 
 		it('should have a change-image-button if the set-catalog-image action exists on the organization', function() {
+			var widget = getDefaultImageFixture();
 			var orgWithSetCatalogImageAction = JSON.parse(JSON.stringify(organization));
 			orgWithSetCatalogImageAction.actions = [{
 				name: 'set-catalog-image',
@@ -415,12 +423,14 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should not have a change-image-button if the set-catalog-image action does not exist on the organization', function() {
+			var widget = getDefaultImageFixture();
 			var result = widget._getCanChangeCourseImage(organizationEntity);
 			expect(result).to.not.be.ok;
 		});
 
 		describe('status: set', function() {
 			it('toggles on the "change-image-loading" class on the tile-container', function() {
+				var widget = getDefaultImageFixture();
 				details.status = 'set';
 				expect(widget.$$('.tile-container.change-image-loading')).to.equal(null);
 				widget.setCourseImage(details);
@@ -430,6 +440,7 @@ describe('<d2l-course-tile>', function() {
 
 		describe('status: success', function() {
 			it('calls _displaySetImageResult with success = true', function() {
+				var widget = getDefaultImageFixture();
 				details.status = 'success';
 				widget._displaySetImageResult = sinon.stub();
 				widget.setCourseImage(details);
@@ -439,6 +450,7 @@ describe('<d2l-course-tile>', function() {
 
 		describe('status: failure', function() {
 			it('calls _displaySetImageResult with success = false', function() {
+				var widget = getDefaultImageFixture();
 				details.status = 'failure';
 				widget._displaySetImageResult = sinon.stub();
 				widget.setCourseImage(details);
@@ -469,6 +481,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		describe.skip('success: true', function() {
+			var widget;
 
 			beforeEach(function() {
 				success = true;
@@ -512,6 +525,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		describe.skip('success: false', function() {
+			var widget;
 
 			beforeEach(function() {
 				success = false;
@@ -557,6 +571,7 @@ describe('<d2l-course-tile>', function() {
 	describe('setting course updates attribute', function() {
 
 		it('should set the notifications URL from the organization response', function(done) {
+			var widget = getFixture();
 			server.respondWith(
 				'GET',
 				'/organizations/1?embedDepth=1',
@@ -572,6 +587,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should show update number when less than 99', function() {
+			var widget = getFixture();
 			widget._setCourseUpdates(85);
 			expect(widget.$.courseUpdates.hasAttribute('hidden')).to.be.false;
 			expect(widget._courseUpdates).to.equal(85);
@@ -580,6 +596,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should show 99 when 99 updates', function() {
+			var widget = getFixture();
 			widget._setCourseUpdates(99);
 			expect(widget.$.courseUpdates.hasAttribute('hidden')).to.be.false;
 			expect(widget._courseUpdates).to.equal(99);
@@ -587,6 +604,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should show 99+ when more than 99 updates', function() {
+			var widget = getFixture();
 			widget._setCourseUpdates(100);
 			expect(widget.$.courseUpdates.hasAttribute('hidden')).to.be.false;
 			expect(widget._courseUpdates).to.equal('99+');
@@ -595,12 +613,14 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should not show updates number when 0', function() {
+			var widget = getFixture();
 			widget._setCourseUpdates(0);
 			expect(widget.$.courseUpdates.hasAttribute('hidden')).to.be.true;
 			expect(widget.$$('.update-text-box').innerText).to.equal('0');
 		});
 
 		it('should not display when given less than 0', function() {
+			var widget = getFixture();
 			widget._setCourseUpdates(-1);
 			expect(widget.$.courseUpdates.hasAttribute('hidden')).to.be.true;
 			expect(widget.$$('.update-text-box').innerText).to.equal('0');
@@ -610,11 +630,8 @@ describe('<d2l-course-tile>', function() {
 
 	describe('pin indicator button', function() {
 
-		beforeEach(function() {
-			widget = fixture('d2l-course-tile-fixture');
-		});
-
 		it('should show the pin indicator button when a course is pinned', function() {
+			var widget = getFixture();
 			widget.pinned = true;
 			Polymer.dom.flush();
 
@@ -624,6 +641,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should not show the pin indicator button when a course is not pinned', function() {
+			var widget = getFixture();
 			widget.pinned = false;
 			Polymer.dom.flush();
 
@@ -633,7 +651,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should unpin the course when pressed', function() {
-			widget = fixture('d2l-course-tile-fixture');
+			var widget = getFixture();
 			widget._pinClickHandler = sinon.stub();
 			widget.pinned = true;
 			Polymer.dom.flush();
@@ -652,7 +670,7 @@ describe('<d2l-course-tile>', function() {
 			formattedPastDateTime,
 			inactiveText = '(Inactive)';
 
-		function verifyOverlay(params) {
+		function verifyOverlay(widget, params) {
 			var title = params.title;
 			var inactive = params.showInactiveIndicator;
 			var showFutureDate = params.showFutureDate;
@@ -694,9 +712,10 @@ describe('<d2l-course-tile>', function() {
 		describe('given the course not started', function() {
 			describe('when the course is active', function() {
 				it('Adds an overlay with the date and time', function() {
+					var widget = getFixture();
 					org.properties.startDate = futureDate;
 					widget._checkDateBounds(org);
-					verifyOverlay({
+					verifyOverlay(widget, {
 						title: 'Course Starts',
 						showInactiveIndicator: false,
 						showFutureDate: true
@@ -706,10 +725,11 @@ describe('<d2l-course-tile>', function() {
 
 			describe('when the course is inactive', function() {
 				it('Adds an overlay with the date/time and "inactive"', function() {
+					var widget = getFixture();
 					org.properties.startDate = futureDate;
 					org.properties.isActive = false;
 					widget._checkDateBounds(org);
-					verifyOverlay({
+					verifyOverlay(widget, {
 						title: 'Course Starts',
 						showInactiveIndicator: true,
 						showFutureDate: true
@@ -722,8 +742,9 @@ describe('<d2l-course-tile>', function() {
 			describe('when the course is active', function() {
 				it('Adds an overlay with the date and time', function() {
 					org.properties.endDate = pastDate;
+					var widget = getFixture();
 					widget._checkDateBounds(org);
-					verifyOverlay({
+					verifyOverlay(widget, {
 						title: 'Course Ended',
 						showPastDate: true,
 						showInactiveIndicator: false
@@ -735,8 +756,9 @@ describe('<d2l-course-tile>', function() {
 				it('Adds an overlay with the date and time', function() {
 					org.properties.endDate = pastDate;
 					org.properties.isActive = false;
+					var widget = getFixture();
 					widget._checkDateBounds(org);
-					verifyOverlay({
+					verifyOverlay(widget, {
 						title: 'Course Ended',
 						showPastDate: true,
 						showInactiveIndicator: false
@@ -748,8 +770,9 @@ describe('<d2l-course-tile>', function() {
 		describe('given the course is in progress', function() {
 			describe('when the course is active', function() {
 				it('does not add an overlay', function() {
+					var widget = getFixture();
 					widget._checkDateBounds(org);
-					verifyOverlay({
+					verifyOverlay(widget, {
 						title: '',
 						showInactiveIndicator: false
 					});
@@ -758,9 +781,10 @@ describe('<d2l-course-tile>', function() {
 
 			describe('when the course is inactive', function() {
 				it('adds an "inactive" overlay', function() {
+					var widget = getFixture();
 					org.properties.isActive = false;
 					widget._checkDateBounds(org);
-					verifyOverlay({
+					verifyOverlay(widget, {
 						title: 'Course Started',
 						showInactiveIndicator: true
 					});
@@ -771,9 +795,10 @@ describe('<d2l-course-tile>', function() {
 		describe('given there is no start date, and the course has not ended', function() {
 			describe('when the course is active', function() {
 				it('does not add an overlay', function() {
+					var widget = getFixture();
 					org.properties.startDate = null;
 					widget._checkDateBounds(org);
-					verifyOverlay({
+					verifyOverlay(widget, {
 						title: '',
 						showInactiveIndicator: false
 					});
@@ -782,10 +807,11 @@ describe('<d2l-course-tile>', function() {
 
 			describe('when the course is inactive', function() {
 				it('adds an overlay with the "inactive" tile', function() {
+					var widget = getFixture();
 					org.properties.startDate = null;
 					org.properties.isActive = false;
 					widget._checkDateBounds(org);
-					verifyOverlay({
+					verifyOverlay(widget, {
 						title: 'Inactive',
 						showInactiveIndicator: false
 					});
@@ -797,6 +823,7 @@ describe('<d2l-course-tile>', function() {
 	describe('Setting alerts', () => {
 		describe('_setOverlayStartedInactive', () => {
 			it('should fire startedInactiveAlert event when course is inactive but started, and instructor can access course info link', () => {
+				var widget = getFixture();
 				widget.hasCourseInfoUrl = true;
 				var fireSpy = sandbox.spy(widget, 'fire');
 				widget._setOverlayStartedInactive();
@@ -804,6 +831,7 @@ describe('<d2l-course-tile>', function() {
 			});
 
 			it('should not fire startedInactiveAlert event when course is inactive but started, and instructor cant access course info link', () => {
+				var widget = getFixture();
 				widget.hasCourseInfoUrl = false;
 				var fireSpy = sandbox.spy(widget, 'fire');
 				widget._setOverlayStartedInactive();
@@ -811,12 +839,14 @@ describe('<d2l-course-tile>', function() {
 			});
 
 			it('should add warning circle when course is inactive but started, and instructor can access course info link', () => {
+				var widget = getFixture();
 				widget.hasCourseInfoUrl = true;
 				widget._setOverlayStartedInactive();
 				expect(widget.$$('.alert-color-circle').classList.contains('warning-circle')).to.be.true;
 			});
 
 			it('should not add warning circle when course is inactive but started, and instructor cant access course info link', () => {
+				var widget = getFixture();
 				Polymer.dom.flush();
 				widget.hasCourseInfoUrl = false;
 				widget._setOverlayStartedInactive();

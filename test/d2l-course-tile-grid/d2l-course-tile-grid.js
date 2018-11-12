@@ -1,10 +1,15 @@
 describe('d2l-course-tile-grid', () => {
-	var component,
-		sandbox;
+	var sandbox;
 
-	beforeEach(() => {
+	function getFixture() {
+		return fixture('d2l-course-tile-grid-fixture');
+	}
+
+	beforeEach(done => {
 		sandbox = sinon.sandbox.create();
-		component = fixture('d2l-course-tile-grid-fixture');
+		setTimeout(function() {
+			done();
+		});
 	});
 
 	afterEach(() => {
@@ -12,6 +17,7 @@ describe('d2l-course-tile-grid', () => {
 	});
 
 	it('should properly instantiate', () => {
+		var component = getFixture();
 		expect(component).to.exist;
 		expect(component.enrollments).to.be.an.instanceof(Array);
 		expect(component.animate).to.equal(true);
@@ -31,6 +37,7 @@ describe('d2l-course-tile-grid', () => {
 			{ eventName: 'dom-change', handler: '_onCourseTilesChanged' }
 		].forEach(testCase => {
 			it('should listen for ' + testCase.eventName + ' events', done => {
+				var component = getFixture();
 				var stub = sandbox.stub(component, testCase.handler);
 
 				var event = new CustomEvent(testCase.eventName);
@@ -52,25 +59,32 @@ describe('d2l-course-tile-grid', () => {
 			'refreshCourseTileImage'
 		].forEach(methodName => {
 			it('should implement ' + methodName, () => {
+				var component = getFixture();
 				expect(component[methodName]).to.be.a('function');
 			});
 		});
 	});
 
 	describe('DOM styling', () => {
-		function getEnrollment() {
-			return {
+		var enrollmentsEntities;
+
+		function getEnrollments() {
+			return Array(20).fill({
 				links: [{ rel: ['self'], href: 'foo' }],
 				rel: ['enrollment']
-			};
+			});
+		}
+
+		function getEnrollmentsFixture(entities) {
+			var widget = getFixture();
+			widget.enrollments = entities;
+			return widget;
 		}
 
 		beforeEach(done => {
-			var enrollments = window.D2L.Hypermedia.Siren.Parse({
-				entities: Array(20).fill(getEnrollment())
-			});
-
-			component.enrollments = enrollments.entities;
+			enrollmentsEntities = window.D2L.Hypermedia.Siren.Parse(
+				getEnrollments()
+			).entities;
 
 			setTimeout(() => {
 				done();
@@ -78,6 +92,7 @@ describe('d2l-course-tile-grid', () => {
 		});
 
 		it('should only show 12 tiles when limit-to-12 attribute is set', () => {
+			var component = getEnrollmentsFixture(enrollmentsEntities);
 			component.setAttribute('limit-to-12', true);
 
 			var twelfthTile = component.$$('.course-tile-container d2l-course-tile:nth-of-type(12)');
@@ -87,6 +102,7 @@ describe('d2l-course-tile-grid', () => {
 		});
 
 		it('should hide past courses when hide-past-courses attribute is set', () => {
+			var component = getEnrollmentsFixture(enrollmentsEntities);
 			component.setAttribute('hide-past-courses', true);
 
 			var pastCourseTile = component.$$('.course-tile-container d2l-course-tile');
@@ -98,6 +114,7 @@ describe('d2l-course-tile-grid', () => {
 		});
 
 		it('should not hide a pinned past course, even if hide-past-courses is set', () => {
+			var component = getEnrollmentsFixture(enrollmentsEntities);
 			var courseTile = component.$$('.course-tile-container d2l-course-tile');
 			courseTile.setAttribute('pinned', true);
 			expect(window.getComputedStyle(courseTile).getPropertyValue('display')).to.equal('block');
@@ -109,6 +126,7 @@ describe('d2l-course-tile-grid', () => {
 		});
 
 		it('should only show 12 current courses when limit-to-12 and hide-past-courses are both set', () => {
+			var component = getEnrollmentsFixture(enrollmentsEntities);
 			var courseTile = component.$$('.course-tile-container d2l-course-tile');
 
 			component.setAttribute('limit-to-12', true);

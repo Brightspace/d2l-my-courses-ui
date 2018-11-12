@@ -1,18 +1,8 @@
 describe('d2l-all-courses-unified-content', function() {
-	var widget, sandbox;
 
-	beforeEach(function(done) {
-		sandbox = sinon.sandbox.create();
-		widget = fixture('d2l-all-courses-unified-content-fixture');
-
-		setTimeout(function() {
-			done();
-		});
-	});
-
-	afterEach(function() {
-		sandbox.restore();
-	});
+	function getFixture() {
+		return fixture('d2l-all-courses-unified-content-fixture');
+	}
 
 	describe('changing enrollment entities', function() {
 		[
@@ -21,6 +11,7 @@ describe('d2l-all-courses-unified-content', function() {
 			{ isSearched: false, totalFilterCount: 2, enrollmentsChanged: 0, noCoursesInSearch: false, noCoursesInSelection: true }
 		].forEach(testCase => {
 			it(`should set noCoursesInSearch to ${testCase.noCoursesInSearch} and noCoursesInSelection to ${testCase.noCoursesInSelection} when enrollments change to ${testCase.enrollmentsChanged}, isSearched is ${testCase.isSearched} and totalFilterCount is ${testCase.totalFilterCount}`, () => {
+				var widget = getFixture();
 				widget.isSearched = testCase.isSearched;
 				widget.totalFilterCount = testCase.totalFilterCount;
 				widget._enrollmentsChanged(testCase.enrollmentsChanged);
@@ -35,6 +26,7 @@ describe('d2l-all-courses-unified-content', function() {
 			{ isSearched: false, totalFilterCount: 1, enrollmentsChanged: 2, itemCount: 0 }
 		].forEach(testCase => {
 			it(`should set itemCount to ${testCase.itemCount} when enrollments change to ${testCase.enrollmentsChanged}, isSearched is ${testCase.isSearched} and totalFilterCount is ${testCase.totalFilterCount}`, () => {
+				var widget = getFixture();
 				widget.isSearched = testCase.isSearched;
 				widget.totalFilterCount = testCase.totalFilterCount;
 				widget._enrollmentsChanged(testCase.enrollmentsChanged);
@@ -50,6 +42,7 @@ describe('d2l-all-courses-unified-content', function() {
 			{ target: '_noCoursesInRole', filter: 'roles' }
 		].forEach(testCase => {
 			it(`should set ${testCase.target} when there are no enrollments and one ${testCase.filter} is filtered`, () => {
+				var widget = getFixture();
 				widget.isSearched = false;
 				widget.totalFilterCount = 1;
 				widget.filterCounts = {};
@@ -65,6 +58,7 @@ describe('d2l-all-courses-unified-content', function() {
 			{ target: '_noCoursesInRole', filter: 'roles' }
 		].forEach(testCase => {
 			it(`should not set ${testCase.target} when there are no enrollments and more than one ${testCase.filter} are filtered`, () => {
+				var widget = getFixture();
 				widget.isSearched = false;
 				widget.totalFilterCount = 1;
 				widget.filterCounts = {};
@@ -75,6 +69,7 @@ describe('d2l-all-courses-unified-content', function() {
 		});
 
 		it('should not set empty filter messages when there are more than one filters', () => {
+			var widget = getFixture();
 			widget.isSearched = false;
 			widget.totalFilterCount = 4;
 			widget.filterCounts = {};

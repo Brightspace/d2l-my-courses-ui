@@ -32,7 +32,7 @@
     "d2l-colors": "^3.1.2",
     "d2l-course-image": "Brightspace/course-image#^2.1.4",
     "d2l-dropdown": "^6.6.1",
-    "d2l-enrollments": "BrightspaceHypermediaComponents/enrollments#0.3.14-hf1",
+    "d2l-enrollments": "BrightspaceHypermediaComponents/enrollments#0.3.14-hf2",
     "d2l-fetch": "Brightspace/d2l-fetch#^1.8.0",
     "d2l-hm-constants-behavior": "Brightspace/d2l-hm-constants-behavior#^5.16.0",
     "d2l-icons": "^5.0.0",

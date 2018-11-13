@@ -6,7 +6,7 @@
    "changeImage" : "Alterar imagem",
    "closeSimpleOverlayAltText" : "Fechar Caixa de Diálogo",
    "courseOfferingInformation" : "Informações de Oferta de Curso",
-   "coursePinButton" : "{curso} está fixado. Desafixar curso",
+   "coursePinButton" : "{course} está fixado. Desafixar curso",
    "courseSearchInputPlaceholder" : "Encontrar um curso",
    "courseSettings" : "Configurações de curso de {course}",
    "courseTile.updates" : "atualizações:",

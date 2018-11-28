@@ -63,7 +63,7 @@ To lint and run unit tests, run:
 ```shell
 npm test
 ```
-
+ 
 ## Performance Timings
 
 For details on the performance profile of my-courses and the various timings which are collected, see [Performance Timings](performance-timing.md).

@@ -128,7 +128,7 @@ describe('d2l-my-courses-content', () => {
 		SetupFetchStub(/\/enrollments\/users\/169.*&.*$/, enrollmentsSearchEntity);
 		SetupFetchStub(/\/enrollments\/users\/169.*bookmark=2/, enrollmentsSearchPageTwoEntity);
 
-		component = fixture('d2l-my-courses-content-fixture');
+		component = fixture('d2lMyCoursesContentFixture');
 		component.enrollmentsUrl = '/enrollments';
 		component.enrollmentsSearchAction = enrollmentsRootEntity.actions[0];
 
@@ -283,7 +283,7 @@ describe('d2l-my-courses-content', () => {
 
 		describe('d2l-tab-panel-selected', () => {
 			beforeEach(() => {
-				var parentComponent = fixture('tab-event-fixture');
+				var parentComponent = fixture('tabEventFixture');
 				component = parentComponent.querySelector('d2l-my-courses-content');
 				component.enrollmentsSearchAction = searchAction;
 				component._hasEnrollments = true;

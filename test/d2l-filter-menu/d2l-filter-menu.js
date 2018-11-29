@@ -23,7 +23,7 @@ beforeEach(function() {
 		}]
 	});
 	sandbox = sinon.sandbox.create();
-	component = fixture('d2l-filter-menu-fixture');
+	component = fixture('d2lFilterMenuFixture');
 });
 
 afterEach(function() {

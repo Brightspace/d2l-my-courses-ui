@@ -5,7 +5,7 @@ describe('d2l-filter-menu-tab', function() {
 
 	beforeEach(function() {
 		sandbox = sinon.sandbox.create();
-		component = fixture('d2l-filter-menu-tab-fixture');
+		component = fixture('d2lFilterMenuTabFixture');
 		component.searchAction = {
 			name: 'search',
 			href: '/'

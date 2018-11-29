@@ -124,7 +124,7 @@ describe('<d2l-course-tile>', function() {
 		server = sinon.fakeServer.create();
 		server.respondImmediately = true;
 
-		widget = fixture('d2l-course-tile-fixture');
+		widget = fixture('d2lCourseTileFixture');
 		window.d2lfetch.fetch = sandbox.stub()
 			.withArgs(sinon.match.has('url', sinon.match('/organizations/1?embedDepth=1')))
 			.returns(Promise.resolve({
@@ -611,7 +611,7 @@ describe('<d2l-course-tile>', function() {
 	describe('pin indicator button', function() {
 
 		beforeEach(function() {
-			widget = fixture('d2l-course-tile-fixture');
+			widget = fixture('d2lCourseTileFixture');
 		});
 
 		it('should show the pin indicator button when a course is pinned', function() {
@@ -633,7 +633,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should unpin the course when pressed', function() {
-			widget = fixture('d2l-course-tile-fixture');
+			widget = fixture('d2lCourseTileFixture');
 			widget._pinClickHandler = sinon.stub();
 			widget.pinned = true;
 			Polymer.dom.flush();

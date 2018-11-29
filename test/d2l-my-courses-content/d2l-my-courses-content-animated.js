@@ -206,7 +206,7 @@ describe('d2l-my-courses-content-animated', function() {
 		enrollmentsSearchEntity = window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse);
 		sandbox = sinon.sandbox.create();
 
-		widget = fixture('d2l-my-courses-content-animated-fixture');
+		widget = fixture('d2lMyCoursesContentAnimatedFixture');
 		widget.fetchSirenEntity = sandbox.stub();
 		widget.fetchSirenEntity.withArgs(rootHref).returns(Promise.resolve(
 			window.D2L.Hypermedia.Siren.Parse(enrollmentsRootResponse)

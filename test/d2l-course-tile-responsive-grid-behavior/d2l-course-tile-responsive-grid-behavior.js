@@ -2,7 +2,7 @@ describe('d2l-course-tile-responsive-grid-behavior', function() {
 	var component;
 
 	beforeEach(function() {
-		component = fixture('default-fixture');
+		component = fixture('defaultFixture');
 	});
 
 	describe('column calculations', function() {

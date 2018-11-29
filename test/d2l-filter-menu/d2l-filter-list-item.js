@@ -26,7 +26,7 @@ describe('d2l-filter-list-item', function() {
 			}]
 		};
 
-		listItem = fixture('d2l-filter-list-item-fixture');
+		listItem = fixture('d2lFilterListItemFixture');
 		listItem.fetchSirenEntity = sandbox.stub().returns(Promise.resolve(
 			window.D2L.Hypermedia.Siren.Parse(organization)
 		));

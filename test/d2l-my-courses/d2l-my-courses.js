@@ -48,7 +48,7 @@ describe('d2l-my-courses', () => {
 
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
-		component = fixture('d2l-my-courses-fixture');
+		component = fixture('d2lMyCoursesFixture');
 		component.fetchSirenEntity = sandbox.stub();
 
 		component.fetchSirenEntity.withArgs(sinon.match(enrollmentsHref))

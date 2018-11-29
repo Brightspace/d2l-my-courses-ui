@@ -2,7 +2,7 @@ describe('d2l-filter-list-item-role', function() {
 	var listItem;
 
 	beforeEach(function() {
-		listItem = fixture('d2l-filter-list-item-role-fixture');
+		listItem = fixture('d2lFilterListItemRoleFixture');
 	});
 
 	it('should show the unchecked icon when the item is not selected', function() {

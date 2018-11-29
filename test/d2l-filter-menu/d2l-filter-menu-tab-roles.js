@@ -47,7 +47,7 @@ describe('d2l-filter-menu-tab-roles', function() {
 				}]
 			}]
 		});
-		component = fixture('d2l-filter-menu-tab-roles-fixture');
+		component = fixture('d2lFilterMenuTabRolesFixture');
 		component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
 		component.myEnrollmentsEntity = myEnrollmentsEntity;
 	});

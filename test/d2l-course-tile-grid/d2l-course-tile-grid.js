@@ -4,7 +4,7 @@ describe('d2l-course-tile-grid', () => {
 
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
-		component = fixture('d2l-course-tile-grid-fixture');
+		component = fixture('d2lCourseTileGridFixture');
 	});
 
 	afterEach(() => {

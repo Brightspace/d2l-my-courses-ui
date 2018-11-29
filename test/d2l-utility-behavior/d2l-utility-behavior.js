@@ -36,7 +36,7 @@ describe('d2l-utility-behavior', function() {
 	});
 
 	beforeEach(function() {
-		component = fixture('default-fixture');
+		component = fixture('defaultFixture');
 	});
 
 	describe('createActionUrl', function() {

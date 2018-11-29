@@ -71,7 +71,7 @@ describe('d2l-all-courses-segregated-content', function() {
 		});
 
 		sandbox = sinon.sandbox.create();
-		widget = fixture('d2l-all-courses-segregated-content-fixture');
+		widget = fixture('d2lAllCoursesSegregatedContentFixture');
 	});
 
 	afterEach(function() {

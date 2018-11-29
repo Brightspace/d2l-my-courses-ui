@@ -4,7 +4,7 @@ describe('<d2l-touch-menu-item>', function() {
 	var	newDisplayText = 'newDisplayText';
 
 	beforeEach(function() {
-		touchMenuItem = fixture('d2l-touch-menu-item-fixture');
+		touchMenuItem = fixture('d2lTouchMenuItemFixture');
 	});
 
 	it('loads element', function() {

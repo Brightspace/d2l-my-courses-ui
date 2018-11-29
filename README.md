@@ -12,7 +12,7 @@ Install dependencies via NPM:
 npm install
 ```
 
-## Components
+## Components 
 
 `d2l-my-courses` is made up of several web components all working together. The
 intent behind this design is that each component can be used more or less

@@ -55,9 +55,9 @@ describe('d2l-all-courses', function() {
 					value: ''
 				}]
 			};
-	
+
 			widget.updatedSortLogic = false;
-	
+
 			Polymer.dom.flush();
 
 			expect(widget.$$('d2l-loading-spinner:not(#lazyLoadSpinner)').hasAttribute('hidden')).to.be.false;
@@ -81,9 +81,9 @@ describe('d2l-all-courses', function() {
 					value: ''
 				}]
 			};
-	
+
 			widget.updatedSortLogic = false;
-	
+
 			Polymer.dom.flush();
 
 			widget.advancedSearchUrl = null;
@@ -108,9 +108,9 @@ describe('d2l-all-courses', function() {
 					value: ''
 				}]
 			};
-	
+
 			widget.updatedSortLogic = false;
-	
+
 			Polymer.dom.flush();
 
 			widget.advancedSearchUrl = '/test/url';
@@ -642,7 +642,7 @@ describe('d2l-all-courses', function() {
 			widget.updatedSortLogic = false;
 
 			Polymer.dom.flush();
-			
+
 			widget.updatedSortLogic = true;
 			widget.tabSearchActions = [{
 				name: '12345',

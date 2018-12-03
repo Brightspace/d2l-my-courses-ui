@@ -25,31 +25,6 @@ describe('d2l-filter-menu-tab-roles', function() {
 	}
 
 	beforeEach(function() {
-		sandbox = sinon.sandbox.create();
-		myEnrollmentsEntity = {
-			actions: [{
-				name: 'set-role-filters',
-				href: 'http://example.com',
-				fields: [{
-					name: 'include',
-					value: ''
-				}]
-			}]
-		};
-		roleFiltersEntity = parse({
-			entities: [getFilter('foo')],
-			actions: [{
-				name: 'apply-role-filters',
-				href: 'http://example.com',
-				fields: [{
-					name: 'roles',
-					value: '1,2,3,4'
-				}]
-			}]
-		});
-		component = fixture('d2lFilterMenuTabRolesFixture');
-		component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
-		component.myEnrollmentsEntity = myEnrollmentsEntity;
 	});
 
 	afterEach(function() {
@@ -58,10 +33,60 @@ describe('d2l-filter-menu-tab-roles', function() {
 
 	describe('DOM manipulation', function() {
 		it('should show the empty state message initially', function() {
+			sandbox = sinon.sandbox.create();
+			myEnrollmentsEntity = {
+				actions: [{
+					name: 'set-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'include',
+						value: ''
+					}]
+				}]
+			};
+			roleFiltersEntity = parse({
+				entities: [getFilter('foo')],
+				actions: [{
+					name: 'apply-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'roles',
+						value: '1,2,3,4'
+					}]
+				}]
+			});
+			component = fixture('d2lFilterMenuTabRolesFixture');
+			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			expect(component.$$('.no-items-text').getAttribute('hidden')).to.be.null;
 		});
 
 		it('should show the empty state message if there are no role filters', function(done) {
+			sandbox = sinon.sandbox.create();
+			myEnrollmentsEntity = {
+				actions: [{
+					name: 'set-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'include',
+						value: ''
+					}]
+				}]
+			};
+			roleFiltersEntity = parse({
+				entities: [getFilter('foo')],
+				actions: [{
+					name: 'apply-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'roles',
+						value: '1,2,3,4'
+					}]
+				}]
+			});
+			component = fixture('d2lFilterMenuTabRolesFixture');
+			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({
 				entities: []
 			}));
@@ -76,6 +101,31 @@ describe('d2l-filter-menu-tab-roles', function() {
 		});
 
 		it('should show content once the role filters have been fetched', function(done) {
+			sandbox = sinon.sandbox.create();
+			myEnrollmentsEntity = {
+				actions: [{
+					name: 'set-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'include',
+						value: ''
+					}]
+				}]
+			};
+			roleFiltersEntity = parse({
+				entities: [getFilter('foo')],
+				actions: [{
+					name: 'apply-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'roles',
+						value: '1,2,3,4'
+					}]
+				}]
+			});
+			component = fixture('d2lFilterMenuTabRolesFixture');
+			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({
 				entities: [1]
 			}));
@@ -95,6 +145,31 @@ describe('d2l-filter-menu-tab-roles', function() {
 			{ name: 'should remove the filter when de-selected', url: 'http://example.com/remove', selected: false }
 		].forEach(function(testCase) {
 			it(testCase.name, function(done) {
+				sandbox = sinon.sandbox.create();
+				myEnrollmentsEntity = {
+					actions: [{
+						name: 'set-role-filters',
+						href: 'http://example.com',
+						fields: [{
+							name: 'include',
+							value: ''
+						}]
+					}]
+				};
+				roleFiltersEntity = parse({
+					entities: [getFilter('foo')],
+					actions: [{
+						name: 'apply-role-filters',
+						href: 'http://example.com',
+						fields: [{
+							name: 'roles',
+							value: '1,2,3,4'
+						}]
+					}]
+				});
+				component = fixture('d2lFilterMenuTabRolesFixture');
+				component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+				component.myEnrollmentsEntity = myEnrollmentsEntity;
 				component._roleFiltersEntity = roleFiltersEntity;
 				component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve(roleFiltersEntity));
 				var listener = function() {
@@ -112,6 +187,31 @@ describe('d2l-filter-menu-tab-roles', function() {
 		});
 
 		it('should fire a role-filters-changed event with the new URL', function(done) {
+			sandbox = sinon.sandbox.create();
+			myEnrollmentsEntity = {
+				actions: [{
+					name: 'set-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'include',
+						value: ''
+					}]
+				}]
+			};
+			roleFiltersEntity = parse({
+				entities: [getFilter('foo')],
+				actions: [{
+					name: 'apply-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'roles',
+						value: '1,2,3,4'
+					}]
+				}]
+			});
+			component = fixture('d2lFilterMenuTabRolesFixture');
+			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component._roleFiltersEntity = roleFiltersEntity;
 			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve(roleFiltersEntity));
 			var listener = function(e) {
@@ -130,6 +230,31 @@ describe('d2l-filter-menu-tab-roles', function() {
 		it('should work with a filter title that corresponds to more than one filter', function(done) {
 			var filterOn = getFilter('foo', 'on');
 			var filterOff = getFilter('foo', 'off');
+			sandbox = sinon.sandbox.create();
+			myEnrollmentsEntity = {
+				actions: [{
+					name: 'set-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'include',
+						value: ''
+					}]
+				}]
+			};
+			roleFiltersEntity = parse({
+				entities: [getFilter('foo')],
+				actions: [{
+					name: 'apply-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'roles',
+						value: '1,2,3,4'
+					}]
+				}]
+			});
+			component = fixture('d2lFilterMenuTabRolesFixture');
+			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component._roleFiltersEntity = parse({ entities: [filterOff, filterOff] });
 			component.createActionUrl = sinon.stub();
 
@@ -155,6 +280,31 @@ describe('d2l-filter-menu-tab-roles', function() {
 
 	describe('clear', function() {
 		it('should reset the "selected" state to false on all filter items', function() {
+			sandbox = sinon.sandbox.create();
+			myEnrollmentsEntity = {
+				actions: [{
+					name: 'set-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'include',
+						value: ''
+					}]
+				}]
+			};
+			roleFiltersEntity = parse({
+				entities: [getFilter('foo')],
+				actions: [{
+					name: 'apply-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'roles',
+						value: '1,2,3,4'
+					}]
+				}]
+			});
+			component = fixture('d2lFilterMenuTabRolesFixture');
+			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component._filterTitles = [ 'one', 'two', 'three' ];
 			var filters = component.$$('d2l-menu').querySelectorAll('d2l-filter-list-item-role');
 			for (var i = 0; i < filters.length; i++) {
@@ -169,6 +319,31 @@ describe('d2l-filter-menu-tab-roles', function() {
 		});
 
 		it('should re-fetch the role filters with their updated states (all "off")', function() {
+			sandbox = sinon.sandbox.create();
+			myEnrollmentsEntity = {
+				actions: [{
+					name: 'set-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'include',
+						value: ''
+					}]
+				}]
+			};
+			roleFiltersEntity = parse({
+				entities: [getFilter('foo')],
+				actions: [{
+					name: 'apply-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'roles',
+						value: '1,2,3,4'
+					}]
+				}]
+			});
+			component = fixture('d2lFilterMenuTabRolesFixture');
+			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			return component.clear().then(function() {
 				expect(component.fetchSirenEntity).to.have.been.calledWith(sinon.match(/\?include=$/));
 			});
@@ -177,12 +352,62 @@ describe('d2l-filter-menu-tab-roles', function() {
 
 	describe('_parseFilterItems', function() {
 		it('should have separate entries for filters with different title attributes', function() {
+			sandbox = sinon.sandbox.create();
+			myEnrollmentsEntity = {
+				actions: [{
+					name: 'set-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'include',
+						value: ''
+					}]
+				}]
+			};
+			roleFiltersEntity = parse({
+				entities: [getFilter('foo')],
+				actions: [{
+					name: 'apply-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'roles',
+						value: '1,2,3,4'
+					}]
+				}]
+			});
+			component = fixture('d2lFilterMenuTabRolesFixture');
+			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component._parseFilterItems({ entities: [getFilter('foo'), getFilter('bar')] });
 
 			expect(component._filterTitles.length).to.equal(2);
 		});
 
 		it('should combine entries for filters with the same title attribute', function() {
+			sandbox = sinon.sandbox.create();
+			myEnrollmentsEntity = {
+				actions: [{
+					name: 'set-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'include',
+						value: ''
+					}]
+				}]
+			};
+			roleFiltersEntity = parse({
+				entities: [getFilter('foo')],
+				actions: [{
+					name: 'apply-role-filters',
+					href: 'http://example.com',
+					fields: [{
+						name: 'roles',
+						value: '1,2,3,4'
+					}]
+				}]
+			});
+			component = fixture('d2lFilterMenuTabRolesFixture');
+			component.fetchSirenEntity = sandbox.stub().returns(Promise.resolve({}));
+			component.myEnrollmentsEntity = myEnrollmentsEntity;
 			component._parseFilterItems({ entities: [getFilter('foo'), getFilter('foo') ]});
 
 			expect(component._filterTitles.length).to.equal(1);

@@ -29,6 +29,98 @@ describe('d2l-all-courses', function() {
 				href: '/organizations/123'
 			}]
 		});
+	});
+
+	afterEach(function() {
+		if (clock) {
+			clock.restore();
+		}
+		sandbox.restore();
+	});
+
+	describe('loading spinner', function() {
+		it('should show before content has loaded', function() {
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+	
+			widget.updatedSortLogic = false;
+	
+			Polymer.dom.flush();
+
+			expect(widget.$$('d2l-loading-spinner:not(#lazyLoadSpinner)').hasAttribute('hidden')).to.be.false;
+		});
+	});
+
+	describe('advanced search link', function() {
+		it('should not render when advancedSearchUrl is not set', function() {
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+	
+			widget.updatedSortLogic = false;
+	
+			Polymer.dom.flush();
+
+			widget.advancedSearchUrl = null;
+
+			expect(widget._showAdvancedSearchLink).to.be.false;
+			expect(widget.$$('.advanced-search-link').hasAttribute('hidden')).to.be.true;
+		});
+
+		it('should render when advancedSearchUrl is set', function() {
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+	
+			widget.updatedSortLogic = false;
+	
+			Polymer.dom.flush();
+
+			widget.advancedSearchUrl = '/test/url';
+
+			expect(widget._showAdvancedSearchLink).to.be.true;
+			expect(widget.$$('.advanced-search-link').hasAttribute('hidden')).to.be.false;
+		});
+	});
+
+	it('should return the correct value from getCourseTileItemCount (should be maximum of pinned or unpinned course count)', function() {
 
 		sandbox = sinon.sandbox.create();
 
@@ -50,38 +142,6 @@ describe('d2l-all-courses', function() {
 
 		Polymer.dom.flush();
 
-	});
-
-	afterEach(function() {
-		if (clock) {
-			clock.restore();
-		}
-		sandbox.restore();
-	});
-
-	describe('loading spinner', function() {
-		it('should show before content has loaded', function() {
-			expect(widget.$$('d2l-loading-spinner:not(#lazyLoadSpinner)').hasAttribute('hidden')).to.be.false;
-		});
-	});
-
-	describe('advanced search link', function() {
-		it('should not render when advancedSearchUrl is not set', function() {
-			widget.advancedSearchUrl = null;
-
-			expect(widget._showAdvancedSearchLink).to.be.false;
-			expect(widget.$$('.advanced-search-link').hasAttribute('hidden')).to.be.true;
-		});
-
-		it('should render when advancedSearchUrl is set', function() {
-			widget.advancedSearchUrl = '/test/url';
-
-			expect(widget._showAdvancedSearchLink).to.be.true;
-			expect(widget.$$('.advanced-search-link').hasAttribute('hidden')).to.be.false;
-		});
-	});
-
-	it('should return the correct value from getCourseTileItemCount (should be maximum of pinned or unpinned course count)', function() {
 		widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
 		widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
 
@@ -89,6 +149,27 @@ describe('d2l-all-courses', function() {
 	});
 
 	it('should set getCourseTileItemCount on its child course-tile-grids', function() {
+
+		sandbox = sinon.sandbox.create();
+
+		widget = fixture('d2lAllCoursesFixture');
+		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+		widget._enrollmentsSearchAction = {
+			name: 'search-my-enrollments',
+			href: '/enrollments/users/169',
+			fields: [{
+				name: 'parentOrganizations',
+				value: ''
+			}, {
+				name: 'sort',
+				value: ''
+			}]
+		};
+
+		widget.updatedSortLogic = false;
+
+		Polymer.dom.flush();
+
 		widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
 		widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
 		var courseTileGrids;
@@ -106,6 +187,27 @@ describe('d2l-all-courses', function() {
 	});
 
 	it('should load filter menu content when filter menu is opened', function() {
+
+		sandbox = sinon.sandbox.create();
+
+		widget = fixture('d2lAllCoursesFixture');
+		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+		widget._enrollmentsSearchAction = {
+			name: 'search-my-enrollments',
+			href: '/enrollments/users/169',
+			fields: [{
+				name: 'parentOrganizations',
+				value: ''
+			}, {
+				name: 'sort',
+				value: ''
+			}]
+		};
+
+		widget.updatedSortLogic = false;
+
+		Polymer.dom.flush();
+
 		var semestersTabStub = sandbox.stub(widget.$.filterMenu.$.semestersTab, 'load');
 		var departmentsTabStub = sandbox.stub(widget.$.filterMenu.$.departmentsTab, 'load');
 
@@ -117,6 +219,27 @@ describe('d2l-all-courses', function() {
 
 	describe('d2l-filter-menu-change event', function() {
 		it('should set the _searchUrl and filterCounts', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			widget.$.filterMenu.fire('d2l-filter-menu-change', {
 				url: 'http://example.com',
 				filterCounts: {
@@ -133,6 +256,27 @@ describe('d2l-all-courses', function() {
 
 	describe('d2l-menu-item-change event', function() {
 		it('should set the _searchUrl', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			widget.$.sortDropdown.fire('d2l-menu-item-change', {
 				value: 'LastAccessed'
 			});
@@ -144,6 +288,27 @@ describe('d2l-all-courses', function() {
 
 	describe('Filter text', function() {
 		function fireEvents(filterCount) {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			widget.$.filterMenu.fire('d2l-filter-menu-change', {
 				url: 'http://example.com',
 				filterCounts: {
@@ -175,6 +340,27 @@ describe('d2l-all-courses', function() {
 		var setCourseImageFailureAlert = { alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'Sorry, we\'re unable to change your image right now. Please try again later.' };
 
 		it('should remove a setCourseImageFailure alert when the overlay is opened', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			widget._addAlert('warning', 'setCourseImageFailure', 'failed to do that thing it should do');
 			expect(widget._alertsView).to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
 			widget.$$('d2l-simple-overlay')._renderOpened();
@@ -182,12 +368,53 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should remove and course image failure alerts before adding and new ones', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			var removeAlertSpy = sandbox.spy(widget, '_removeAlert');
 			widget.setCourseImage();
 			expect(removeAlertSpy.called);
 		});
 
 		it('should add an alert after setting the course image results in failure (after a timeout)', function() {
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			clock = sinon.useFakeTimers();
 			var setCourseImageEvent = { detail: { status: 'failure'} };
 			widget.setCourseImage(setCourseImageEvent);
@@ -196,12 +423,54 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should not add a setCourseImageFailure warning alert when a request to set the image succeeds', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			var setCourseImageEvent = { detail: { status: 'success'} };
 			widget.setCourseImage(setCourseImageEvent);
 			expect(widget._alertsView).not.to.include(setCourseImageFailureAlert);
 		});
 
 		it('should remove a setCourseImageFailure warning alert when a request to set the image is made', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			clock = sinon.useFakeTimers();
 			var setCourseImageEvent = { detail: { status: 'failure'} };
 			widget.setCourseImage(setCourseImageEvent);
@@ -215,6 +484,27 @@ describe('d2l-all-courses', function() {
 
 	describe('opening the overlay', function() {
 		it('should initially hide content', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			widget.open();
 			expect(widget._showContent).to.be.false;
 		});
@@ -223,6 +513,27 @@ describe('d2l-all-courses', function() {
 	describe('closing the overlay', function() {
 
 		it('should clear search text', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			var spy = sandbox.spy(widget, '_clearSearchWidget');
 			var searchField = widget.$['search-widget'];
 
@@ -233,6 +544,27 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should clear filters', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			var spy = sandbox.spy(widget.$.filterMenu, 'clearFilters');
 
 			widget.$.filterMenu.fire('d2l-filter-menu-change', {
@@ -251,6 +583,27 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should clear sort', function() {
+
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+
 			var spy = sandbox.spy(widget, '_resetSortDropdown');
 
 			var event = {
@@ -270,6 +623,26 @@ describe('d2l-all-courses', function() {
 
 	describe('Tabbed view', function() {
 		beforeEach(function() {
+			sandbox = sinon.sandbox.create();
+
+			widget = fixture('d2lAllCoursesFixture');
+			widget.$['search-widget']._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
+
+			widget.updatedSortLogic = false;
+
+			Polymer.dom.flush();
+			
 			widget.updatedSortLogic = true;
 			widget.tabSearchActions = [{
 				name: '12345',

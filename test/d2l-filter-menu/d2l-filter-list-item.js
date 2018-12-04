@@ -5,7 +5,6 @@ describe('d2l-filter-list-item', function() {
 		organization;
 
 	beforeEach(function() {
-		sandbox = sinon.sandbox.create();
 		enrollment = {
 			rel: ['enrollment'],
 			links: [{
@@ -25,30 +24,41 @@ describe('d2l-filter-list-item', function() {
 				href: 'bar'
 			}]
 		};
+	});
 
+	afterEach(function() {
+	});
+
+	it('should show the unchecked icon when the item is not selected', function() {
+		sandbox = sinon.sandbox.create();
 		listItem = fixture('d2lFilterListItemFixture');
 		listItem.fetchSirenEntity = sandbox.stub().returns(Promise.resolve(
 			window.D2L.Hypermedia.Siren.Parse(organization)
 		));
-	});
-
-	afterEach(function() {
-		sandbox.restore();
-	});
-
-	it('should show the unchecked icon when the item is not selected', function() {
 		listItem.selected = false;
 		expect(listItem.$$('d2l-icon.icon-checked').getComputedStyleValue('display')).to.equal('none');
 		expect(listItem.$$('d2l-icon.icon-unchecked').getComputedStyleValue('display')).to.not.equal('none');
+		sandbox.restore();
 	});
 
 	it('should show the checked icon when the item is selected', function() {
+		sandbox = sinon.sandbox.create();
+		listItem = fixture('d2lFilterListItemFixture');
+		listItem.fetchSirenEntity = sandbox.stub().returns(Promise.resolve(
+			window.D2L.Hypermedia.Siren.Parse(organization)
+		));
 		listItem.selected = true;
 		expect(listItem.$$('d2l-icon.icon-unchecked').getComputedStyleValue('display')).to.equal('none');
 		expect(listItem.$$('d2l-icon.icon-checked').getComputedStyleValue('display')).to.not.equal('none');
+		sandbox.restore();
 	});
 
 	it('should fetch the organization when the enrollment changes', function(done) {
+		sandbox = sinon.sandbox.create();
+		listItem = fixture('d2lFilterListItemFixture');
+		listItem.fetchSirenEntity = sandbox.stub().returns(Promise.resolve(
+			window.D2L.Hypermedia.Siren.Parse(organization)
+		));
 		listItem.set('enrollmentEntity', window.D2L.Hypermedia.Siren.Parse(enrollment));
 
 		setTimeout(function() {
@@ -56,9 +66,15 @@ describe('d2l-filter-list-item', function() {
 			expect(listItem._organizationUrl).to.equal('/organizations/1');
 			done();
 		});
+		sandbox.restore();
 	});
 
 	it('should update text and value based off of organizations response', function(done) {
+		sandbox = sinon.sandbox.create();
+		listItem = fixture('d2lFilterListItemFixture');
+		listItem.fetchSirenEntity = sandbox.stub().returns(Promise.resolve(
+			window.D2L.Hypermedia.Siren.Parse(organization)
+		));
 		listItem.set('enrollmentEntity', window.D2L.Hypermedia.Siren.Parse(enrollment));
 
 		setTimeout(function() {
@@ -66,5 +82,6 @@ describe('d2l-filter-list-item', function() {
 			expect(listItem.value).to.equal('bar');
 			done();
 		});
+		sandbox.restore();
 	});
 });

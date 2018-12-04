@@ -31,9 +31,6 @@ describe('d2l-all-courses', function() {
 		});
 	});
 
-	afterEach(function() {
-	});
-
 	describe('loading spinner', function() {
 		it('should show before content has loaded', function() {
 			sandbox = sinon.sandbox.create();

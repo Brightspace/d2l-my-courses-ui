@@ -227,7 +227,6 @@ describe('d2l-all-courses', function() {
 		var semestersTabStub = sandbox.stub(widget.$.filterMenu.$.semestersTab, 'load');
 		var departmentsTabStub = sandbox.stub(widget.$.filterMenu.$.departmentsTab, 'load');
 
-
 		return widget._onFilterDropdownOpen().then(function() {
 			expect(semestersTabStub.called).to.be.true;
 			expect(departmentsTabStub.called).to.be.true;

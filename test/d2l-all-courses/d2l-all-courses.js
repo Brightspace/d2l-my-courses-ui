@@ -32,10 +32,6 @@ describe('d2l-all-courses', function() {
 	});
 
 	afterEach(function() {
-		if (clock) {
-			clock.restore();
-		}
-		sandbox.restore();
 	});
 
 	describe('loading spinner', function() {
@@ -61,6 +57,10 @@ describe('d2l-all-courses', function() {
 			Polymer.dom.flush();
 
 			expect(widget.$$('d2l-loading-spinner:not(#lazyLoadSpinner)').hasAttribute('hidden')).to.be.false;
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 	});
 
@@ -90,6 +90,10 @@ describe('d2l-all-courses', function() {
 
 			expect(widget._showAdvancedSearchLink).to.be.false;
 			expect(widget.$$('.advanced-search-link').hasAttribute('hidden')).to.be.true;
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should render when advancedSearchUrl is set', function() {
@@ -117,6 +121,10 @@ describe('d2l-all-courses', function() {
 
 			expect(widget._showAdvancedSearchLink).to.be.true;
 			expect(widget.$$('.advanced-search-link').hasAttribute('hidden')).to.be.false;
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 	});
 
@@ -146,6 +154,10 @@ describe('d2l-all-courses', function() {
 		widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
 
 		expect(widget.$$('d2l-all-courses-segregated-content').getCourseTileItemCount()).to.equal(1);
+		if (clock) {
+			clock.restore();
+		}
+		sandbox.restore();
 	});
 
 	it('should set getCourseTileItemCount on its child course-tile-grids', function() {
@@ -184,6 +196,10 @@ describe('d2l-all-courses', function() {
 		for (var i = 0; i < courseTileGrids.length; i++) {
 			expect(courseTileGrids[i].getCourseTileItemCount()).to.equal(1);
 		}
+		if (clock) {
+			clock.restore();
+		}
+		sandbox.restore();
 	});
 
 	it('should load filter menu content when filter menu is opened', function() {
@@ -211,6 +227,10 @@ describe('d2l-all-courses', function() {
 		var semestersTabStub = sandbox.stub(widget.$.filterMenu.$.semestersTab, 'load');
 		var departmentsTabStub = sandbox.stub(widget.$.filterMenu.$.departmentsTab, 'load');
 
+		if (clock) {
+			clock.restore();
+		}
+		sandbox.restore();
 		return widget._onFilterDropdownOpen().then(function() {
 			expect(semestersTabStub.called).to.be.true;
 			expect(departmentsTabStub.called).to.be.true;
@@ -251,6 +271,10 @@ describe('d2l-all-courses', function() {
 
 			expect(widget._searchUrl).to.equal('http://example.com');
 			expect(widget._totalFilterCount).to.equal(12);
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 	});
 
@@ -282,6 +306,10 @@ describe('d2l-all-courses', function() {
 			});
 
 			expect(widget._searchUrl).to.include('/enrollments/users/169?parentOrganizations=&sort=LastAccessed');
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 	});
@@ -323,16 +351,28 @@ describe('d2l-all-courses', function() {
 		it('should read "Filter" when no filters are selected', function() {
 			fireEvents(0);
 			expect(widget._filterText).to.equal('Filter');
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should read "Filter: 1 filter" when any 1 filter is selected', function() {
 			fireEvents(1);
 			expect(widget._filterText).to.equal('Filter: 1 Filter');
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should read "Filter: 2 filters" when any 2 filters are selected', function() {
 			fireEvents(2);
 			expect(widget._filterText).to.equal('Filter: 2 Filters');
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 	});
 
@@ -365,6 +405,10 @@ describe('d2l-all-courses', function() {
 			expect(widget._alertsView).to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
 			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(widget._alertsView).to.not.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'failed to do that thing it should do' });
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should remove and course image failure alerts before adding and new ones', function() {
@@ -392,6 +436,10 @@ describe('d2l-all-courses', function() {
 			var removeAlertSpy = sandbox.spy(widget, '_removeAlert');
 			widget.setCourseImage();
 			expect(removeAlertSpy.called);
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should add an alert after setting the course image results in failure (after a timeout)', function() {
@@ -420,6 +468,10 @@ describe('d2l-all-courses', function() {
 			widget.setCourseImage(setCourseImageEvent);
 			clock.tick(1001);
 			expect(widget._alertsView).to.include(setCourseImageFailureAlert);
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should not add a setCourseImageFailure warning alert when a request to set the image succeeds', function() {
@@ -447,6 +499,10 @@ describe('d2l-all-courses', function() {
 			var setCourseImageEvent = { detail: { status: 'success'} };
 			widget.setCourseImage(setCourseImageEvent);
 			expect(widget._alertsView).not.to.include(setCourseImageFailureAlert);
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should remove a setCourseImageFailure warning alert when a request to set the image is made', function() {
@@ -479,6 +535,10 @@ describe('d2l-all-courses', function() {
 			setCourseImageEvent = { detail: { status: 'set'} };
 			widget.setCourseImage(setCourseImageEvent);
 			expect(widget._alertsView).not.to.include(setCourseImageFailureAlert);
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 	});
 
@@ -507,6 +567,10 @@ describe('d2l-all-courses', function() {
 
 			widget.open();
 			expect(widget._showContent).to.be.false;
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 	});
 
@@ -541,6 +605,10 @@ describe('d2l-all-courses', function() {
 			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(spy.called).to.be.true;
 			expect(searchField._searchInput).to.equal('');
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should clear filters', function() {
@@ -580,6 +648,10 @@ describe('d2l-all-courses', function() {
 			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(spy.called).to.be.true;
 			expect(widget._filterText).to.equal('Filter');
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should clear sort', function() {
@@ -617,6 +689,10 @@ describe('d2l-all-courses', function() {
 
 			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(spy.called).to.be.true;
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 	});
@@ -679,6 +755,10 @@ describe('d2l-all-courses', function() {
 			});
 
 			expect(widget._showTabContent).to.be.false;
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 
 		it('should set the _searchUrl based on the selected tab\'s action', function() {
@@ -690,6 +770,10 @@ describe('d2l-all-courses', function() {
 			});
 
 			expect(widget._searchUrl).to.equal('/example/foo?autoPinCourses=false&embedDepth=0&sort=SortOrder&search=');
+			if (clock) {
+				clock.restore();
+			}
+			sandbox.restore();
 		});
 	});
 

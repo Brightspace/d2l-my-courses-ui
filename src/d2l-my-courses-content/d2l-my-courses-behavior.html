@@ -42,6 +42,7 @@
 			},
 
 			_enrollmentsSearchAction: Object,
+			_pinnedTabAction: Object,
 			_showGroupByTabs: {
 				type: Boolean,
 				computed: '_computeShowGroupByTabs(_tabSearchActions)'
@@ -69,6 +70,10 @@
 
 					if (enrollmentsRootEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyEnrollments)) {
 						this._enrollmentsSearchAction = enrollmentsRootEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+					}
+
+					if (enrollmentsRootEntity.hasActionByName('search-pinned-courses')) {
+						this._pinnedTabAction = enrollmentsRootEntity.getActionByName('search-pinned-courses');
 					}
 
 					if (userSettingsEntity && userSettingsEntity.hasLinkByRel(this.HypermediaRels.widgetSettings)) {
@@ -130,12 +135,23 @@
 					return;
 				}
 
-				this._tabSearchActions = [{
+				var actions = [{
 					name: this._enrollmentsSearchAction.name,
 					title: this.localize('allTab'),
 					selected: false,
 					enrollmentsSearchAction: this._enrollmentsSearchAction
-				}].concat(this._tabSearchActions);
+				}];
+				
+				if (this._pinnedTabAction){
+					actions = actions.concat({
+						name: this._pinnedTabAction.name,
+						title: 'Pinned',
+						selected: false,
+						enrollmentsSearchAction: this._pinnedTabAction
+					});
+				}
+
+				this._tabSearchActions = actions.concat(this._tabSearchActions);
 
 			}.bind(this));
 		}

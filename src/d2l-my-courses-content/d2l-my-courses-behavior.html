@@ -72,8 +72,8 @@
 						this._enrollmentsSearchAction = enrollmentsRootEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
 					}
 
-					if (enrollmentsRootEntity.hasActionByName('search-pinned-courses')) {
-						this._pinnedTabAction = enrollmentsRootEntity.getActionByName('search-pinned-courses');
+					if (enrollmentsRootEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyPinnedEnrollments)) {
+						this._pinnedTabAction = enrollmentsRootEntity.getActionByName(this.HypermediaActions.enrollments.searchMyPinnedEnrollments);
 					}
 
 					if (userSettingsEntity && userSettingsEntity.hasLinkByRel(this.HypermediaRels.widgetSettings)) {
@@ -145,7 +145,7 @@
 				if (this._pinnedTabAction){
 					actions = actions.concat({
 						name: this._pinnedTabAction.name,
-						title: 'Pinned',
+						title: this.localize('pinnedCourses'),
 						selected: false,
 						enrollmentsSearchAction: this._pinnedTabAction
 					});

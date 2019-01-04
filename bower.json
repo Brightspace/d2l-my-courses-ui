@@ -33,7 +33,7 @@
     "d2l-dropdown": "^6.6.1",
     "d2l-enrollments": "BrightspaceHypermediaComponents/enrollments#^0.3.10",
     "d2l-fetch": "Brightspace/d2l-fetch#^1.8.0",
-    "d2l-hm-constants-behavior": "Brightspace/d2l-hm-constants-behavior#^5.16.0",
+    "d2l-hm-constants-behavior": "Brightspace/d2l-hm-constants-behavior#^5.30.0",
     "d2l-icons": "^5.0.0",
     "d2l-image-selector": "git://github.com/Brightspace/image-selector#^3.1.0",
     "d2l-intersection-observer-polyfill-import": "Brightspace/intersection-observer-polyfill-import#^1.0.0",

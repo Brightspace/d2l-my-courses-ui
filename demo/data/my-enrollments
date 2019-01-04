@@ -7,7 +7,7 @@
       "rel": [
         "https://api.brightspace.com/rels/user-enrollment"
       ],
-      "href": "../data/enrollment-00.json"
+      "href": "../data/enrollment-00"
     },
     {
       "class": [
@@ -16,7 +16,7 @@
       "rel": [
         "https://api.brightspace.com/rels/user-enrollment"
       ],
-      "href": "../data/enrollment-01.json"
+      "href": "../data/enrollment-01"
     },
     {
       "class": [
@@ -25,7 +25,7 @@
       "rel": [
         "https://api.brightspace.com/rels/user-enrollment"
       ],
-      "href": "../data/enrollment-02.json"
+      "href": "../data/enrollment-02"
     },
     {
       "class": [
@@ -34,7 +34,7 @@
       "rel": [
         "https://api.brightspace.com/rels/user-enrollment"
       ],
-      "href": "../data/enrollment-10.json"
+      "href": "../data/enrollment-10"
     },
     {
       "class": [
@@ -43,7 +43,7 @@
       "rel": [
         "https://api.brightspace.com/rels/user-enrollment"
       ],
-      "href": "../data/enrollment-11.json"
+      "href": "../data/enrollment-11"
     }
   ]
 }

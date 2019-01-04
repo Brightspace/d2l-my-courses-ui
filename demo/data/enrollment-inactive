@@ -1,0 +1,11 @@
+{
+	"links": [{
+		"rel": [ "self" ],
+		"href": "../data/enrollment-inactive"
+	}, {
+		"rel": [
+			"https://api.brightspace.com/rels/organization"
+		],
+		"href": "../data/organization-inactive-88"
+	}]
+}

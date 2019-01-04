@@ -1,11 +1,11 @@
 {
   "links": [{
     "rel": [ "self" ],
-    "href": "../data/enrollment-01.json"
+    "href": "../data/enrollment-00"
   }, {
     "rel": [
       "https://api.brightspace.com/rels/organization"
     ],
-    "href": "../data/organization-01.json"
+    "href": "../data/organization-00"
   }]
 }

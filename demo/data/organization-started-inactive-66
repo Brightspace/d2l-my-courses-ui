@@ -1,0 +1,11 @@
+{
+  "properties": {
+    "name": "Course 66",
+    "isActive": false,
+    "startDate": 100
+  },
+  "links": [{
+    "rel": ["self"],
+    "href": "../data/organization-started-inactive-66"
+  }]
+}

@@ -18,14 +18,30 @@
 </head>
 <body unresolved class="d2l-typography">
 
-<h3>My Courses</h3>
+<h3>My Courses - No Enrollments</h3>
 <d2l-my-courses
 	class="d2l-my-courses-widget"
-	enrollments-url="../data/enrollments"
-	promoted-searches="../data/searches"
+	enrollments-url="../data/enrollments-none"
 	user-settings-url="../data/user-settings"
 	updated-sort-logic="true">
 </d2l-my-courses>
+
+<h3>My Courses - Hidden Past Courses</h3>
+<d2l-my-courses
+	class="d2l-my-courses-widget"
+	enrollments-url="../data/enrollments-hidden-past"
+	user-settings-url="../data/user-settings"
+	updated-sort-logic="true">
+</d2l-my-courses>
+
+<h3>My Courses - Started Inactive</h3>
+<d2l-my-courses
+	class="d2l-my-courses-widget"
+	enrollments-url="../data/enrollments-started-inactive"
+	user-settings-url="../data/user-settings"
+	updated-sort-logic="true">
+</d2l-my-courses>
+
 
 </body>
 </html>

@@ -1,0 +1,19 @@
+{
+  "entities": [{
+    "class": [
+      "enrollment"
+    ],
+    "rel": [
+      "https://api.brightspace.com/rels/user-enrollment"
+    ],
+    "href": "../data/enrollment-inactive"
+  },{
+    "class": [
+      "enrollment"
+    ],
+    "rel": [
+      "https://api.brightspace.com/rels/user-enrollment"
+    ],
+    "href": "../data/enrollment-started-inactive"
+  }]
+}

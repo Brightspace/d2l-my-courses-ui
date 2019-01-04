@@ -501,8 +501,8 @@ If it is off and the attribute is not added, the `d2l-all-courses-segregated-con
 				this._resetSortDropdown();
 			},
 			_onTabSelected: function(e) {
-				this._selectedTabId = e.target.id;
-				var actionName = e.target.id.replace('all-courses-tab-', '');
+				this._selectedTabId = Polymer.dom(e).rootTarget.id;
+				var actionName = this._selectedTabId.replace('all-courses-tab-', '');
 				var tabAction;
 				for (var i = 0; i < this.tabSearchActions.length; i++) {
 					if (this.tabSearchActions[i].name === actionName) {

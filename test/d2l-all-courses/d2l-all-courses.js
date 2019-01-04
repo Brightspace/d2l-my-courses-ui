@@ -300,10 +300,9 @@ describe('d2l-all-courses', function() {
 		it('should hide tab contents when loading a tab\'s contents', function() {
 			widget._showTabContent = true;
 
-			widget._onTabSelected({
-				target: { id: 'all-courses-tab-12345' },
-				stopPropagation: function() {}
-			});
+			widget.dispatchEvent(new CustomEvent(
+				'd2l-tab-panel-selected', { bubbles: true, composed: true }
+			));
 
 			expect(widget._showTabContent).to.be.false;
 		});
@@ -311,10 +310,9 @@ describe('d2l-all-courses', function() {
 		it('should set the _searchUrl based on the selected tab\'s action', function() {
 			widget._sortParameter = 'SortOrder';
 
-			widget._onTabSelected({
-				target: { id: 'all-courses-tab-12345' },
-				stopPropagation: function() {}
-			});
+			widget.dispatchEvent(new CustomEvent(
+				'd2l-tab-panel-selected', { bubbles: true, composed: true }
+			));
 
 			expect(widget._searchUrl).to.equal('/example/foo?autoPinCourses=false&embedDepth=0&sort=SortOrder&search=');
 		});

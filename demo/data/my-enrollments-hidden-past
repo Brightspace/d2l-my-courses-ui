@@ -1,0 +1,20 @@
+{
+  "entities": [{
+    "class": [
+      "enrollment"
+    ],
+    "rel": [
+      "https://api.brightspace.com/rels/user-enrollment"
+    ],
+    "href": "../data/enrollment-past"
+  }],
+  "actions": [{
+    "name": "search-my-enrollments",
+    "href": "../data/my-enrollments-past",
+    "method": "GET",
+    "fields": [{
+      "name": "sort",
+      "value": "current"
+    }]
+  }]
+}

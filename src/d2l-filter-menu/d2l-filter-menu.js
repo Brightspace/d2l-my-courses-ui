@@ -11,7 +11,7 @@ Polymer-based web component for the filter menu.
 import '@polymer/polymer/polymer-legacy.js';
 
 import 'd2l-colors/d2l-colors.js';
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Actions } from 'd2l-hypermedia-constants';
 import 'd2l-typography/d2l-typography-shared-styles.js';
 import '@polymer/iron-pages/iron-pages.js';
 import '../d2l-utility-behavior.js';
@@ -194,7 +194,6 @@ Polymer({
   },
 
   behaviors: [
-	  window.D2L.Hypermedia.HMConstantsBehavior,
 	  D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 	  D2L.MyCourses.UtilityBehavior
   ],
@@ -302,16 +301,16 @@ Polymer({
   _myEnrollmentsEntityChanged: function(myEnrollmentsEntity) {
 	  myEnrollmentsEntity = this.parseEntity(myEnrollmentsEntity);
 
-	  if (myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMySemesters)) {
-		  this._searchSemestersAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMySemesters);
+	  if (myEnrollmentsEntity.hasActionByName(Actions.enrollments.searchMySemesters)) {
+		  this._searchSemestersAction = myEnrollmentsEntity.getActionByName(Actions.enrollments.searchMySemesters);
 	  }
 
-	  if (myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyDepartments)) {
-		  this._searchDepartmentsAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyDepartments);
+	  if (myEnrollmentsEntity.hasActionByName(Actions.enrollments.searchMyDepartments)) {
+		  this._searchDepartmentsAction = myEnrollmentsEntity.getActionByName(Actions.enrollments.searchMyDepartments);
 	  }
 
-	  if (myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyEnrollments)) {
-		  this._searchMyEnrollmentsAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+	  if (myEnrollmentsEntity.hasActionByName(Actions.enrollments.searchMyEnrollments)) {
+		  this._searchMyEnrollmentsAction = myEnrollmentsEntity.getActionByName(Actions.enrollments.searchMyEnrollments);
 	  }
 
 	  this._hideInvalidSearchTabs();

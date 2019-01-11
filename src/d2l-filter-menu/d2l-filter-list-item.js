@@ -10,7 +10,7 @@ Polymer-based web component for the filter list item.
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Rels } from 'd2l-hypermedia-constants';
 import 'd2l-icons/d2l-icons.js';
 import 'd2l-menu/d2l-menu-item-selectable-behavior.js';
 import '../d2l-utility-behavior.js';
@@ -41,7 +41,6 @@ Polymer({
   },
 
   behaviors: [
-	  window.D2L.Hypermedia.HMConstantsBehavior,
 	  D2L.PolymerBehaviors.MenuItemSelectableBehavior,
 	  D2L.MyCourses.UtilityBehavior
   ],
@@ -57,8 +56,8 @@ Polymer({
 
 	  entity = this.parseEntity(entity);
 
-	  if (entity.getLinkByRel(this.HypermediaRels.organization)) {
-		  this.set('_organizationUrl', entity.getLinkByRel(this.HypermediaRels.organization).href);
+	  if (entity.getLinkByRel(Rels.organization)) {
+		  this.set('_organizationUrl', entity.getLinkByRel(Rels.organization).href);
 	  }
   },
 

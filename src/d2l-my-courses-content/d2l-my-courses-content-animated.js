@@ -26,6 +26,7 @@ import '../d2l-course-tile-grid.js';
 import '../localize-behavior.js';
 import './d2l-my-courses-behavior.js';
 import './d2l-my-courses-content-behavior.js';
+import { Rels } from 'd2l-hypermedia-constants';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 const $_documentContainer = document.createElement('template');
@@ -291,7 +292,7 @@ Polymer({
 				if (this._pinnedEnrollmentsMap.hasOwnProperty(enrollmentId)) delete this._pinnedEnrollmentsMap[enrollmentId];
 			}
 
-			var orgHref = (enrollment.getLinkByRel(this.HypermediaRels.organization) || {}).href;
+			var orgHref = (enrollment.getLinkByRel(Rels.organization) || {}).href;
 			var orgUnitId = this._getOrgUnitIdFromHref(orgHref);
 			if (!this._orgUnitIdMap.hasOwnProperty(orgUnitId)) {
 				this._orgUnitIdMap[orgUnitId] = enrollment;

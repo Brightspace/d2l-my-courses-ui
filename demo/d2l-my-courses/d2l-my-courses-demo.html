@@ -4,28 +4,53 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 	<title>d2l-my-courses demo</title>
-	<script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-	<link rel="import" href="../../../polymer/polymer.html">
-	<link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-	<link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+	<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+	<script type="module" src="../../../@polymer/polymer/polymer-legacy.js"></script>
+	<script type="module" src="../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+	<script type="module" src="../../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
 	<link rel="import" href="../../all-imports.html">
-	<custom-style>
+	<!-- FIXME(polymer-modulizer):
+		These imperative modules that innerHTML your HTML are
+		a hacky way to be sure that any mixins in included style
+		modules are ready before any elements that reference them are
+		instantiated, otherwise the CSS @apply mixin polyfill won't be
+		able to expand the underlying CSS custom properties.
+		See: https://github.com/Polymer/polymer-modulizer/issues/154
+		-->
+	<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
 		<style is="custom-style" include="demo-pages-shared-styles"></style>
-	</custom-style>
-	<custom-style include="d2l-typography">
+	</custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
+	<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style include="d2l-typography">
 		<style is="custom-style" include="d2l-typography"></style>
-	</custom-style>
+	</custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body unresolved class="d2l-typography">
 
-<h3>My Courses</h3>
-<d2l-my-courses
-	class="d2l-my-courses-widget"
-	enrollments-url="../data/enrollments"
-	promoted-searches="../data/searches"
-	user-settings-url="../data/user-settings"
-	updated-sort-logic="true">
-</d2l-my-courses>
+<script type="module">
+const $_documentContainer = document.createElement('template');
+$_documentContainer.innerHTML = `<h3>My Courses</h3>`;
+document.body.appendChild($_documentContainer.content);
+</script>
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<d2l-my-courses class="d2l-my-courses-widget" enrollments-url="../data/enrollments" promoted-searches="../data/searches" user-settings-url="../data/user-settings" updated-sort-logic="true">
+</d2l-my-courses>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 
 </body>
 </html>

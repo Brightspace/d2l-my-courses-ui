@@ -1,0 +1,122 @@
+import '@polymer/polymer/polymer-legacy.js';
+import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+window.D2L = window.D2L || {};
+window.D2L.MyCourses = window.D2L.MyCourses || {};
+
+/*
+* Behavior for responsive course tile grids
+*
+* This contains the majority of the layout design logic, based on the number of courses in the course tile
+* grid.
+*
+* @polymerBehavior D2L.MyCourses.CourseTileResponsiveGridBehavior
+*/
+D2L.MyCourses.CourseTileResponsiveGridBehavior = {
+	attached: function() {
+		window.addEventListener('recalculate-columns', this._rescaleCourseTileRegions.bind(this));
+
+		// Set up a throttled event listener (every 100ms) to rescale on resize
+		var timeout = false,
+			delay = 100;
+
+		var self = this;
+		window.addEventListener('resize', function() {
+			clearTimeout(timeout);
+			timeout = setTimeout(self.fire.bind(self, 'recalculate-columns'), delay);
+		});
+	},
+	// Count of `d2l-course-tile` elements in grid. Must be implemented by behavior consumer.
+	getCourseTileItemCount: function() {
+		throw 'Must implement getCourseTileItemCount in behavior consumer';
+	},
+	_numCols: 0,
+	// Tile in the course overlay will render at 100% width
+	_numColsOverlay: 0,
+	_calcNumColumns: function(width, itemCount) {
+		var numCols = 1;
+
+		if (width < 768) {
+			if (itemCount >= 2) {
+				numCols = 2;
+			}
+		} else if (width < 992) {
+			if (itemCount === 1 || itemCount === 2 || itemCount === 4) {
+				numCols = 2;
+			} else {
+				numCols = 3;
+			}
+		} else {
+			if (itemCount === 1 || itemCount === 2) {
+				numCols = 2;
+			} else if (itemCount === 3 || itemCount === 5 || itemCount === 6) {
+				numCols = 3;
+			} else {
+				numCols = 4;
+			}
+		}
+
+		return numCols;
+	},
+	/*
+	* This method will try to get the width of the passed in DOM node, or the first visible ancestor.
+	* If an ancestor node is used for the width, it may not be entirely accurate, but it should be
+	* fine for the purpose of creating a decent layout for a hidden widget.
+	*/
+	_getAvailableWidth: function(node) {
+		if (!node) {
+			return 0;
+		}
+
+		// document fragment
+		if (node.nodeType === 11) {
+			return this._getAvailableWidth(node.host);
+		}
+		// not an "element" type or it's hidden
+		if (node.nodeType !== 1 || node.offsetParent === null) {
+			return this._getAvailableWidth(node.parentNode);
+		}
+
+		var width = node.getBoundingClientRect().width;
+		return width;
+
+	},
+	_rescaleCourseTileRegions: function() {
+		var itemCount = this.getCourseTileItemCount();
+		var containers = dom(this.root).querySelectorAll('.course-tile-container');
+		var colClasses = ['columns-2', 'columns-3', 'columns-4'];
+		var currentColClass = function(domNode) {
+			var foundClass = '';
+			colClasses.forEach(function(item) {
+				if (!foundClass && domNode.classList.contains(item)) {
+					foundClass = item;
+				}
+			});
+			return foundClass;
+		};
+		this._numColsOverlay = this._calcNumColumns(window.innerWidth, itemCount);
+
+		containers.forEach(function(container) {
+			var width = this._getAvailableWidth(container);
+			this._numCols = this._calcNumColumns(width, itemCount);
+
+			var domNode = dom(container);
+			var oldClassName = currentColClass(domNode);
+			if (this._numCols > 1) {
+				var newClassName = 'columns-' + this._numCols;
+
+				if (oldClassName !== newClassName) {
+					if (oldClassName) {
+						domNode.classList.remove(oldClassName);
+					}
+					domNode.classList.add(newClassName);
+				}
+			} else {
+				if (oldClassName) {
+					domNode.classList.remove(oldClassName);
+				}
+			}
+
+			this._containerWidth = width;
+		}, this);
+	}
+};

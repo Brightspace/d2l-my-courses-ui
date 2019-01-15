@@ -1,0 +1,123 @@
+import 'd2l-colors/d2l-colors.js';
+import 'd2l-typography/d2l-typography-shared-styles.js';
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<dom-module id="d2l-touch-menu-item-styles">
+	<template>
+		<style>
+		:host {
+			z-index: 1000;
+			position: relative;
+			-webkit-user-select: none;
+			-webkit-touch-callout: none;
+			-webkit-tap-highlight-color: transparent;
+			-moz-tap-highlight-color: transparent;
+			tap-highlight-color: transparent;
+			-webkit-backface-visibility: hidden;
+			--translate-x-coefficient: 0;
+			--translate-y-coefficient: 1;
+		}
+
+		.longpress-menu-item {
+			text-align: center;
+			position: relative;
+			visibility: inherit;
+			-webkit-transform: scale(0.1);
+			transform: scale(0.1);
+			-webkit-transition: 0.2s ease-in-out;
+			transition: 0.2s ease-in-out;
+		}
+
+		.longpress-menu-item.visible {
+			transition: 0.2s ease-in-out;
+			opacity: 1.0;
+			-webkit-transform: scale(1.0);
+			transform: scale(1.0);
+		}
+
+		.longpress-menu-item.visible.longpress-menu-item-hover {
+			-webkit-transform: translateX(calc(var(--translate-x-coefficient) * 100%)) translateY(calc(var(--translate-y-coefficient) * 100%));
+			transform: translateX(calc(var(--translate-x-coefficient) * 100%)) translateY(calc(var(--translate-y-coefficient) * 100%));
+			-webkit-transition: 0.3s ease-in-out;
+			transition: 0.3s ease-in-out;
+		}
+
+		.longpress-menu-item.visible.selected {
+			-webkit-transform: translateX(calc(var(--translate-x-coefficient) * 100%)) translateY(calc(var(--translate-y-coefficient) * 100%)) scale(1.5);
+			transform: translateX(calc(var(--translate-x-coefficient) * 100%)) translateY(calc(var(--translate-y-coefficient) * 100%)) scale(1.5);
+			-webkit-transition: 0.3s ease-in-out;
+			transition: 0.3s ease-in-out;
+			opacity: 0;
+		}
+		.longpress-menu-item.visible.selected .longpress-menu-item-text {
+			opacity: 0;
+		}
+
+		.longpress-menu-item-image {
+			--d2l-icon-width: 0.58em;
+			--d2l-icon-height: 0.58em;
+			fill: var(--d2l-color-ferrite);
+			-webkit-backface-visibility: hidden;
+			-webkit-transition: fill 0.3s ease-in-out;
+			transition: fill 0.3s ease-in-out;
+			transform: rotate(0.0001deg);
+			width: 65%;
+			height: 65%;
+			margin: auto;
+		}
+
+		.longpress-menu-item-image-background {
+			background-color: var(--d2l-color-white);
+			border-radius: 50%;
+			box-sizing: border-box;
+			height: 1em;
+			width: 1em;
+			position: relative;
+			box-shadow: 0px 1px 1px 0px rgba(86,89,92,0.20);
+			display: flex;
+			-webkit-transition: background-color 0.3s ease-in-out;
+			transition: background-color 0.3s ease-in-out;
+			transform: rotate(0.0001deg);
+		}
+
+		.longpress-menu-item-text {
+			@apply --d2l-body-small-text;
+			/* d2l-body-small-text overrides */
+			color: var(--d2l-color-white);
+			/* end overrides */
+			background-color: var(--d2l-color-pressicus);
+			border-radius: 0.25em;
+			box-sizing: border-box;
+			display: inline-block;
+			width: 100%;
+			left: 0%;
+			right: 100%;
+			top: -55%;
+			padding-top: 0.1em;
+			padding-bottom: 0.1em;
+			opacity: 0;
+			text-align: center;
+			-webkit-backface-visibility: hidden;
+			position: absolute;
+			box-shadow: 0px 1px 2px 0px rgba(86,89,92,0.20);
+			transition: 0.3s ease-in-out;
+		}
+
+		.visible.longpress-menu-item-hover .longpress-menu-item-image-background,
+		.visible.longpress-menu-item-hover .longpress-menu-item-text {
+			background-color: var(--d2l-color-celestine);
+			opacity: 1.0;
+			-webkit-transition: 0.3s ease-in-out;
+			transition: 0.3s ease-in-out;
+		}
+
+		.longpress-menu-item-hover .longpress-menu-item-image {
+			fill: var(--d2l-color-white);
+			-webkit-transition: fill 0.3s ease-in-out;
+			transition: fill 0.3s ease-in-out;
+		}
+		</style>
+	</template>
+</dom-module>`;
+
+document.head.appendChild($_documentContainer.content);

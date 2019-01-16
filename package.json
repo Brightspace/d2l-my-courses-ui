@@ -14,7 +14,7 @@
   "scripts": {
     "build": "gulp build",
     "lint": "npm run lint:wc && npm run lint:js",
-    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+    "lint:js": "eslint . --ext .js,.html src/**/*.js test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
     "lint:wc": "polymer lint",
     "test": "npm run lint && polymer test --skip-plugin sauce"
   },

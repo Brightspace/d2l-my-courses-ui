@@ -603,12 +603,12 @@ describe('d2l-my-courses-content-animated', function() {
 			widget._enrollmentsSearchUrl = '';
 
 			widget.$$('#viewAllCourses').click();
-			Polymer.dom.flush();
-			var allCoursesRescaleSpy = sandbox.spy(widget.$$('d2l-all-courses').$$('d2l-all-courses-segregated-content'), '_rescaleCourseTileRegions');
-
-			clock.tick(100);
-			expect(allCoursesRescaleSpy.called);
-			widget.$$('d2l-all-courses').$$('d2l-all-courses-segregated-content')._rescaleCourseTileRegions.restore();
+			flush(() => {
+				var allCoursesRescaleSpy = sandbox.spy(widget.$$('d2l-all-courses').$$('d2l-all-courses-segregated-content'), '_rescaleCourseTileRegions');
+				clock.tick(100);
+				expect(allCoursesRescaleSpy.called);
+				widget.$$('d2l-all-courses').$$('d2l-all-courses-segregated-content')._rescaleCourseTileRegions.restore();
+			});
 		});
 
 		it('should remove a setCourseImageFailure alert when the all-courses overlay is closed', function() {

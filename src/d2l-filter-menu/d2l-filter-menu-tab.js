@@ -10,7 +10,7 @@ Polymer-based web component for the filter menu tabs.
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Rels } from 'd2l-hypermedia-constants';
 import 'd2l-menu/d2l-menu.js';
 import 'd2l-search-widget/d2l-search-widget.js';
 import 'd2l-typography/d2l-typography-shared-styles.js';
@@ -85,7 +85,6 @@ Polymer({
 		}
 	},
 	behaviors: [
-		window.D2L.Hypermedia.HMConstantsBehavior,
 		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 		D2L.MyCourses.UtilityBehavior
 	],
@@ -132,7 +131,7 @@ Polymer({
 
 	_checkSelected: function(entity) {
 		// Checks if the given entity should be "selected" - used when search results change
-		var id = entity.href || entity.getLinkByRel(this.HypermediaRels.organization).href;
+		var id = entity.href || entity.getLinkByRel(Rels.organization).href;
 		return this.selectedFilters.indexOf(id) > -1;
 	},
 	_computeHasSearchResults: function(allFiltersLength) {

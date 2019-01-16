@@ -472,7 +472,7 @@ Polymer({
 
 		this.pinned = this.enrollment.hasClass(Classes.enrollments.pinned);
 
-		if (!this.enrollment.hasLinkByRel(this.HypermediaRels.organization)) {
+		if (!this.enrollment.hasLinkByRel(Rels.organization)) {
 			return;
 		}
 

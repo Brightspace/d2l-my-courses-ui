@@ -66,7 +66,6 @@ Polymer({
 		}
 	},
 	behaviors: [
-		window.D2L.Hypermedia.HMConstantsBehavior,
 		D2L.MyCourses.UtilityBehavior
 	],
 	listeners: {

@@ -1,5 +1,6 @@
 import '@polymer/polymer/polymer-legacy.js';
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Rels } from 'd2l-hypermedia-constants';
+import { Actions } from 'd2l-hypermedia-constants';
 import '../d2l-all-courses.js';
 import '../d2l-css-grid-view/d2l-css-grid-view-behavior.js';
 import '../d2l-alert-behavior.js';
@@ -351,8 +352,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			orgUnitId = e.detail.orgUnitId;
 		} else if (e.detail.organization) {
 			orgUnitId = this._getOrgUnitIdFromHref(this.getEntityIdentifier(this.parseEntity(e.detail.organization)));
-		} else if (e.detail.enrollment && e.detail.enrollment.hasLinkByRel(this.HypermediaRels.organization)) {
-			orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(this.HypermediaRels.organization).href);
+		} else if (e.detail.enrollment && e.detail.enrollment.hasLinkByRel(Rels.organization)) {
+			orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(Rels.organization).href);
 		}
 
 		// Only want to move pinned/unpinned enrollment if it exists in the panel
@@ -513,10 +514,10 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		}
 	},
 	_computeIsAllTab: function(actionName) {
-		return actionName === this.HypermediaActions.enrollments.searchMyEnrollments;
+		return actionName === Actions.enrollments.searchMyEnrollments;
 	},
 	_computeIsPinnedTab: function(actionName) {
-		return actionName === this.HypermediaActions.enrollments.searchMyPinnedEnrollments;
+		return actionName === Actions.enrollments.searchMyPinnedEnrollments;
 	},
 	/*
 	* Utility/helper functions
@@ -648,7 +649,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this._nextEnrollmentEntityUrl = hasMoreEnrollments ? enrollmentsEntity.getLinkByRel('next').href : null;
 		var newEnrollments = [];
 
-		var searchAction = enrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+		var searchAction = enrollmentsEntity.getActionByName(Actions.enrollments.searchMyEnrollments);
+
 		if (searchAction
 			&& searchAction.hasFieldByName('sort')
 			&& searchAction.getFieldByName('sort').value.toLowerCase() === 'current'
@@ -714,7 +716,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 */
 D2L.MyCourses.MyCoursesContentBehavior = [
 	D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
-	window.D2L.Hypermedia.HMConstantsBehavior,
 	D2L.MyCourses.CourseTileResponsiveGridBehavior,
 	D2L.MyCourses.InteractionDetectionBehavior,
 	D2L.MyCourses.AlertBehavior,

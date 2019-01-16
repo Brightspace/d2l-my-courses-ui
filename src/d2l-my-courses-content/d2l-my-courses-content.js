@@ -15,7 +15,7 @@ import '@polymer/polymer/polymer-legacy.js';
 
 import '@polymer/iron-scroll-threshold/iron-scroll-threshold.js';
 import 'd2l-alert/d2l-alert.js';
-import 'd2l-enrollments/d2l-enrollment-card.js';
+import 'd2l-enrollments/components/d2l-enrollment-card/d2l-enrollment-card.js';
 import 'd2l-link/d2l-link.js';
 import 'd2l-loading-spinner/d2l-loading-spinner.js';
 import 'd2l-simple-overlay/d2l-simple-overlay.js';

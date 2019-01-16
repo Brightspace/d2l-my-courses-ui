@@ -10,7 +10,7 @@ Polymer-based web component for the filter menu tab roles.
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Actions } from 'd2l-hypermedia-constants';
 import 'd2l-menu/d2l-menu.js';
 import 'd2l-typography/d2l-typography-shared-styles.js';
 import '../d2l-utility-behavior.js';
@@ -82,7 +82,7 @@ Polymer({
 		// This should instead use a `clear-role-filters` action from the API
 		// (which would do effectively the same thing), but it doesn't exist yet
 		var myEnrollmentsEntity = this.parseEntity(this.myEnrollmentsEntity);
-		var actionName = this.HypermediaActions.enrollments.setRoleFilters;
+		var actionName = Actions.enrollments.setRoleFilters;
 		if (!myEnrollmentsEntity.hasActionByName(actionName)) {
 			return;
 		}
@@ -107,7 +107,7 @@ Polymer({
 	},
 	_myEnrollmentsEntityChanged: function(myEnrollmentsEntity) {
 		myEnrollmentsEntity = this.parseEntity(myEnrollmentsEntity);
-		var actionName = this.HypermediaActions.enrollments.setRoleFilters;
+		var actionName = Actions.enrollments.setRoleFilters;
 		if (!myEnrollmentsEntity.hasActionByName(actionName)) {
 			return;
 		}
@@ -120,9 +120,9 @@ Polymer({
 	_onMenuItemChange: function(e) {
 		var actionName;
 		if (e.detail.selected) {
-			actionName = this.HypermediaActions.enrollments.roleFilters.addFilter;
+			actionName = Actions.enrollments.roleFilters.addFilter;
 		} else {
-			actionName = this.HypermediaActions.enrollments.roleFilters.removeFilter;
+			actionName = Actions.enrollments.roleFilters.removeFilter;
 		}
 
 		var filterTitle = e.detail.value;
@@ -163,7 +163,7 @@ Polymer({
 	_applyRoleFilters: function() {
 		// Use the apply-role-filters action to create the new searchUrl
 		var applyAction = this._roleFiltersEntity.getActionByName(
-			this.HypermediaActions.enrollments.roleFilters.applyRoleFilters
+			Actions.enrollments.roleFilters.applyRoleFilters
 		);
 		var searchUrl = this.createActionUrl(applyAction);
 		this.fire('role-filters-changed', {

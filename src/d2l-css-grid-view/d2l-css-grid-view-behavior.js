@@ -22,7 +22,7 @@ D2L.MyCourses.CssGridBehavior = {
 				// Sets initial number of columns
 				this._onResize();
 			}
-		});
+		}.bind(this));
 	},
 
 	detached: function() {

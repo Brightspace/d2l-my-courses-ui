@@ -2,7 +2,6 @@
 `d2l-course-tile`
 Polymer-based web component for the course tile, used in `d2l-course-tile-grid`.
 
-
 An important distinction to make in understanding the functionality of the course tile is the difference between an
 enrollment and an organization. An organization is what some might call a "course" - it has a name, an image, etc.,
 but it is largely static and doesn't speak to a user's relationship to it. An enrollment, on the other hand, represents
@@ -299,7 +298,7 @@ Polymer({
 
 			var observer = new IntersectionObserver(observerCallback);
 			observer.observe(tileContainerEl);
-		});
+		}.bind(this));
 	},
 	detached: function() {
 		var tileContainerEl = this.$$('.tile-container');

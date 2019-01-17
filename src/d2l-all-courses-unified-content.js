@@ -94,7 +94,7 @@ Polymer({
 	attached: function() {
 		afterNextRender(this, function() {
 			this._onResize();
-		});
+		}.bind(this));
 	},
 
 	getCourseTileItemCount: function() {

@@ -254,7 +254,7 @@ describe('d2l-my-courses', () => {
 		it('should call d2l-my-courses-content-animated.getLastOrgUnitId', done => {
 			component.updatedSortLogic = false;
 			flush(() => {
-				var stub = sandbox.stub(component.$$('d2l-my-courses-content-animated'), 'getLastOrgUnitId')
+				var stub = sandbox.stub(component.$$('d2l-my-courses-content-animated'), 'getLastOrgUnitId');
 				component.getLastOrgUnitId();
 				expect(stub).to.have.been.called;
 				done();

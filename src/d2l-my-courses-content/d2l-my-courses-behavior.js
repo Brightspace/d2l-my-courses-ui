@@ -2,6 +2,7 @@ import '@polymer/polymer/polymer-legacy.js';
 import { Rels } from 'd2l-hypermedia-constants';
 import { Actions } from 'd2l-hypermedia-constants';
 import '../d2l-utility-behavior.js';
+import '../localize-behavior.js';
 window.D2L = window.D2L || {};
 window.D2L.MyCourses = window.D2L.MyCourses || {};
 
@@ -194,7 +195,6 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 * @polymerBehavior D2L.MyCourses.MyCoursesBehavior
 */
 D2L.MyCourses.MyCoursesBehavior = [
-	D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 	D2L.MyCourses.UtilityBehavior,
 	D2L.MyCourses.MyCoursesBehaviorImpl
 ];

@@ -144,7 +144,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			if (!this.cssGridView) {
 				this.$$('d2l-course-tile-grid').addEventListener('startedInactiveAlert', this._onStartedInactiveAlert.bind(this));
 			}
-		});
+		}.bind(this));
 	},
 	detached: function() {
 		document.body.removeEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
@@ -715,7 +715,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 * @polymerBehavior D2L.MyCourses.MyCoursesContentBehavior
 */
 D2L.MyCourses.MyCoursesContentBehavior = [
-	D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 	D2L.MyCourses.CourseTileResponsiveGridBehavior,
 	D2L.MyCourses.InteractionDetectionBehavior,
 	D2L.MyCourses.AlertBehavior,

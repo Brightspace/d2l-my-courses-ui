@@ -23,8 +23,6 @@ import 'd2l-image-selector/d2l-basic-image-selector.js';
 import 'd2l-typography/d2l-typography-shared-styles.js';
 import '../d2l-all-courses.js';
 import '../d2l-course-tile-grid.js';
-import '../localize-behavior.js';
-import './d2l-my-courses-behavior.js';
 import './d2l-my-courses-content-behavior.js';
 import { Rels } from 'd2l-hypermedia-constants';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
@@ -138,8 +136,6 @@ Polymer({
 		}
 	},
 	behaviors: [
-		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
-		D2L.MyCourses.MyCoursesBehavior,
 		D2L.MyCourses.MyCoursesContentBehavior
 	],
 	listeners: {

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+	<title>d2l-my-courses Segregated View demo</title>
+	<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+	<script type="module" src="../../../@polymer/polymer/polymer-legacy.js"></script>
+	<script type="module" src="../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+	<script type="module" src="../../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
+	<script type="module" src="../../d2l-my-courses.js"></script>
+	<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
+		<style is="custom-style" include="demo-pages-shared-styles"></style>
+		<style is="custom-style" include="d2l-typography"></style>
+	</custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
+</head>
+
+<body unresolved class="d2l-typography">
+
+<h3>My Courses</h3>
+<d2l-my-courses
+	class="d2l-my-courses-widget"
+	enrollments-url="../data/enrollments-segregated"
+	user-settings-url="../data/user-settings">
+</d2l-my-courses>
+
+</body>
+</html>

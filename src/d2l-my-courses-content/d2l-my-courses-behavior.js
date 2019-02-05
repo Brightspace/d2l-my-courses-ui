@@ -1,5 +1,8 @@
 import '@polymer/polymer/polymer-legacy.js';
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Rels } from 'd2l-hypermedia-constants';
+import { Actions } from 'd2l-hypermedia-constants';
+import '../d2l-utility-behavior.js';
+import '../localize-behavior.js';
 window.D2L = window.D2L || {};
 window.D2L.MyCourses = window.D2L.MyCourses || {};
 
@@ -71,16 +74,16 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 				var enrollmentsRootEntity = values[0];
 				var userSettingsEntity = values[1];
 
-				if (enrollmentsRootEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyEnrollments)) {
-					this._enrollmentsSearchAction = enrollmentsRootEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+				if (enrollmentsRootEntity.hasActionByName(Actions.enrollments.searchMyEnrollments)) {
+					this._enrollmentsSearchAction = enrollmentsRootEntity.getActionByName(Actions.enrollments.searchMyEnrollments);
 				}
 
-				if (enrollmentsRootEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyPinnedEnrollments)) {
-					this._pinnedTabAction = enrollmentsRootEntity.getActionByName(this.HypermediaActions.enrollments.searchMyPinnedEnrollments);
+				if (enrollmentsRootEntity.hasActionByName(Actions.enrollments.searchMyPinnedEnrollments)) {
+					this._pinnedTabAction = enrollmentsRootEntity.getActionByName(Actions.enrollments.searchMyPinnedEnrollments);
 				}
 
-				if (userSettingsEntity && userSettingsEntity.hasLinkByRel(this.HypermediaRels.widgetSettings)) {
-					this.presentationUrl = userSettingsEntity.getLinkByRel(this.HypermediaRels.widgetSettings).href;
+				if (userSettingsEntity && userSettingsEntity.hasLinkByRel(Rels.widgetSettings)) {
+					this.presentationUrl = userSettingsEntity.getLinkByRel(Rels.widgetSettings).href;
 				}
 			}.bind(this))
 			.then(this._fetchTabSearchActions.bind(this));
@@ -192,7 +195,6 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 * @polymerBehavior D2L.MyCourses.MyCoursesBehavior
 */
 D2L.MyCourses.MyCoursesBehavior = [
-	window.D2L.Hypermedia.HMConstantsBehavior,
 	D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 	D2L.MyCourses.UtilityBehavior,
 	D2L.MyCourses.MyCoursesBehaviorImpl

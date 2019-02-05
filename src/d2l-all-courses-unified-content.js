@@ -13,7 +13,7 @@ This is only used if the `US90527-my-courses-updates` LD flag is ON
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'd2l-enrollments/d2l-enrollment-card.js';
+import 'd2l-enrollments/components/d2l-enrollment-card/d2l-enrollment-card.js';
 import './d2l-css-grid-view/d2l-css-grid-view-behavior.js';
 import './d2l-css-grid-view/d2l-css-grid-view-styles.js';
 import './d2l-all-courses-styles.js';
@@ -94,7 +94,7 @@ Polymer({
 	attached: function() {
 		afterNextRender(this, function() {
 			this._onResize();
-		});
+		}.bind(this));
 	},
 
 	getCourseTileItemCount: function() {

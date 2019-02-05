@@ -559,7 +559,7 @@ describe('d2l-my-courses-content', () => {
 						enrollment: null
 					}
 				};
-				Polymer.dom(event).rootTarget = 'notthis';
+
 				component._orgUnitIdMap = {
 					1: enrollmentEntity
 				};

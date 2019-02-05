@@ -18,13 +18,15 @@ import 'd2l-alert/d2l-alert.js';
 import 'd2l-dropdown/d2l-dropdown.js';
 import 'd2l-dropdown/d2l-dropdown-content.js';
 import 'd2l-dropdown/d2l-dropdown-menu.js';
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Classes } from 'd2l-hypermedia-constants';
+import { Actions } from 'd2l-hypermedia-constants';
 import 'd2l-icons/d2l-icons.js';
 import 'd2l-link/d2l-link.js';
 import 'd2l-loading-spinner/d2l-loading-spinner.js';
 import 'd2l-menu/d2l-menu-item-radio.js';
 import 'd2l-organization-hm-behavior/d2l-organization-hm-behavior.js';
 import 'd2l-simple-overlay/d2l-simple-overlay.js';
+import SirenParse from 'siren-parser';
 import 'd2l-tabs/d2l-tabs.js';
 import './d2l-alert-behavior.js';
 import './d2l-all-courses-styles.js';
@@ -256,7 +258,6 @@ Polymer({
 		_isSearched: Boolean
 	},
 	behaviors: [
-		window.D2L.Hypermedia.HMConstantsBehavior,
 		D2L.PolymerBehaviors.Hypermedia.OrganizationHMBehavior,
 		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 		D2L.MyCourses.AlertBehavior,
@@ -355,7 +356,7 @@ Polymer({
 
 	_onAllCoursesLowerThreshold: function() {
 		if (this.$['all-courses'].opened && this.lastEnrollmentsSearchResponse) {
-			var lastResponseEntity = this.parseEntity(this.lastEnrollmentsSearchResponse);
+			var lastResponseEntity = SirenParse(this.lastEnrollmentsSearchResponse);
 
 			if (lastResponseEntity && lastResponseEntity.hasLinkByRel('next')) {
 				this._enrollmentsSearchUrl = lastResponseEntity.getLinkByRel('next').href;
@@ -500,12 +501,12 @@ Polymer({
 		this.$['all-courses-scroll-threshold'].clearTriggers();
 	},
 	_myEnrollmentsEntityChanged: function(entity) {
-		var myEnrollmentsEntity = this.parseEntity(entity);
-		if (!myEnrollmentsEntity.hasActionByName(this.HypermediaActions.enrollments.searchMyEnrollments)) {
+		var myEnrollmentsEntity = SirenParse(entity);
+		if (!myEnrollmentsEntity.hasActionByName(Actions.enrollments.searchMyEnrollments)) {
 			return;
 		}
 
-		var searchAction = myEnrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+		var searchAction = myEnrollmentsEntity.getActionByName(Actions.enrollments.searchMyEnrollments);
 		this._enrollmentsSearchAction = searchAction;
 
 		if (searchAction && searchAction.hasFieldByName('sort')) {
@@ -583,7 +584,7 @@ Polymer({
 			return false;
 		}
 
-		lastResponse = this.parseEntity(lastResponse);
+		lastResponse = SirenParse(lastResponse);
 		return lastResponse.hasLinkByRel('next');
 	},
 	_computeShowAdvancedSearchLink: function(link) {
@@ -609,7 +610,7 @@ Polymer({
 		this.$.sortDropdownMenu.querySelector('d2l-menu-item-radio[value=' + sortName + ']').selected = true;
 	},
 	_updateFilteredEnrollments: function(enrollments, append) {
-		var enrollmentEntities = enrollments.getSubEntitiesByClass(this.HypermediaClasses.enrollments.enrollment);
+		var enrollmentEntities = enrollments.getSubEntitiesByClass(Classes.enrollments.enrollment);
 
 		if (this.updatedSortLogic) {
 			var gridEntities = enrollmentEntities.map(function(value) {
@@ -629,7 +630,7 @@ Polymer({
 			enrollmentEntities.forEach(function(enrollment) {
 				var enrollmentId = this.getEntityIdentifier(enrollment);
 
-				if (enrollment.hasClass(this.HypermediaClasses.enrollments.pinned)) {
+				if (enrollment.hasClass(Classes.enrollments.pinned)) {
 					if (!this._pinnedCoursesMap.hasOwnProperty(enrollmentId)) {
 						newPinnedEnrollments.push(enrollment);
 						this._pinnedCoursesMap[enrollmentId] = true;
@@ -670,4 +671,5 @@ Polymer({
 			this._updatedSortLogicInitallyObserved = true;
 		}
 	}
+
 });

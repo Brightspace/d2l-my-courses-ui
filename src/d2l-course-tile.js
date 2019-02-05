@@ -2,7 +2,6 @@
 `d2l-course-tile`
 Polymer-based web component for the course tile, used in `d2l-course-tile-grid`.
 
-
 An important distinction to make in understanding the functionality of the course tile is the difference between an
 enrollment and an organization. An organization is what some might call a "course" - it has a name, an image, etc.,
 but it is largely static and doesn't speak to a user's relationship to it. An enrollment, on the other hand, represents
@@ -19,7 +18,9 @@ import '@polymer/polymer/polymer-legacy.js';
 import 'd2l-course-image/d2l-course-image.js';
 import 'd2l-dropdown/d2l-dropdown.js';
 import 'd2l-dropdown/d2l-dropdown-menu.js';
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Classes } from 'd2l-hypermedia-constants';
+import { Rels } from 'd2l-hypermedia-constants';
+import { Actions } from 'd2l-hypermedia-constants';
 import 'd2l-loading-spinner/d2l-loading-spinner.js';
 import 'd2l-icons/d2l-icons.js';
 import 'd2l-organization-hm-behavior/d2l-organization-hm-behavior.js';
@@ -249,7 +250,6 @@ Polymer({
 		_load: Boolean
 	},
 	behaviors: [
-		window.D2L.Hypermedia.HMConstantsBehavior,
 		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 		D2L.MyCourses.UtilityBehavior,
 		D2L.PolymerBehaviors.Hypermedia.OrganizationHMBehavior
@@ -298,7 +298,7 @@ Polymer({
 
 			var observer = new IntersectionObserver(observerCallback);
 			observer.observe(tileContainerEl);
-		});
+		}.bind(this));
 	},
 	detached: function() {
 		var tileContainerEl = this.$$('.tile-container');
@@ -319,8 +319,8 @@ Polymer({
 	// Handler that triggers the API call to change an enrollment's pin state when the user says DO IT
 	pinClickHandler: function(isTouch) {
 		var pinAction = this.pinned
-			? this.enrollment.getActionByName(this.HypermediaActions.enrollments.unpinCourse)
-			: this.enrollment.getActionByName(this.HypermediaActions.enrollments.pinCourse);
+			? this.enrollment.getActionByName(Actions.enrollments.unpinCourse)
+			: this.enrollment.getActionByName(Actions.enrollments.pinCourse);
 
 		// This value is purely for UI responsiveness - if the request fails, this value will be set back to
 		// the previous value in the error handler; if the request succeeds, we also set it in the response
@@ -347,12 +347,12 @@ Polymer({
 				// The pin action returns the updated enrollment, so update
 				// this.enrollment with the modified one
 				this.enrollment = enrollment;
-				this.pinned = this.enrollment.hasClass(this.HypermediaClasses.enrollments.pinned);
+				this.pinned = this.enrollment.hasClass(Classes.enrollments.pinned);
 				if (!this.animate) this.fire('tile-remove-complete', {enrollment: this.enrollment, pinned: this.pinned});
 			}.bind(this))
 			.catch(function() {
 				// Just revert back to whatever pin state we already had stored
-				this.pinned = this.enrollment.hasClass(this.HypermediaClasses.enrollments.pinned);
+				this.pinned = this.enrollment.hasClass(Classes.enrollments.pinned);
 			}.bind(this));
 
 		var eventName = this.pinned ? 'enrollment-pinned' : 'enrollment-unpinned';
@@ -469,13 +469,13 @@ Polymer({
 			return;
 		}
 
-		this.pinned = this.enrollment.hasClass(this.HypermediaClasses.enrollments.pinned);
+		this.pinned = this.enrollment.hasClass(Classes.enrollments.pinned);
 
-		if (!this.enrollment.hasLinkByRel(this.HypermediaRels.organization)) {
+		if (!this.enrollment.hasLinkByRel(Rels.organization)) {
 			return;
 		}
 
-		var organizationLink = this.enrollment.getLinkByRel(this.HypermediaRels.organization);
+		var organizationLink = this.enrollment.getLinkByRel(Rels.organization);
 		if (!this._organizationUrl || this._organizationUrl.indexOf(organizationLink.href) !== 0) {
 			this._organizationUrl = organizationLink.href + '?embedDepth=1';
 		}
@@ -568,7 +568,7 @@ Polymer({
 			this.fire('course-tile-organization');
 		}.bind(this));
 
-		var courseInfoUrl = organization && organization.getLinkByRel(this.HypermediaRels.courseOfferingInfoPage);
+		var courseInfoUrl = organization && organization.getLinkByRel(Rels.courseOfferingInfoPage);
 		this._courseInfoUrl = courseInfoUrl ? courseInfoUrl.href : null;
 		if (this._courseInfoUrl) {
 			this.hasCourseInfoUrl = true;
@@ -576,12 +576,12 @@ Polymer({
 
 		this._checkDateBounds(organization);
 
-		var semesterUrl = organization && organization.getLinkByRel(this.HypermediaRels.parentSemester);
+		var semesterUrl = organization && organization.getLinkByRel(Rels.parentSemester);
 		this._semesterUrl = semesterUrl ? semesterUrl.href : null;
 
 		this._setCourseImageSrc();
 
-		var homepageEntity = organization.getSubEntityByRel(this.HypermediaRels.organizationHomepage);
+		var homepageEntity = organization.getSubEntityByRel(Rels.organizationHomepage);
 		if (homepageEntity) {
 			this._organizationHomepageUrl = homepageEntity.properties.path;
 		} else {
@@ -596,7 +596,7 @@ Polymer({
 		this._courseSettingsLabel = this.localize('courseSettings', 'course', this._organization.properties.name);
 		this._coursePinButtonLabel = this.localize('coursePinButton', 'course', this._organization.properties.name);
 
-		var notificationsLink = organization && organization.getLinkByRel(this.HypermediaRels.Notifications.organizationNotifications);
+		var notificationsLink = organization && organization.getLinkByRel(Rels.Notifications.organizationNotifications);
 		this._notificationsUrl = notificationsLink ? notificationsLink.href : null;
 
 		return Promise.resolve();
@@ -738,14 +738,14 @@ Polymer({
 		this._onUnpinHover({detail: {hoverState: false}});
 	},
 	_getCanChangeCourseImage: function(organization) {
-		return organization && organization.getActionByName(this.HypermediaActions.organizations.setCatalogImage);
+		return organization && organization.getActionByName(Actions.organizations.setCatalogImage);
 	},
 	_setCourseImageSrc: function() {
-		if (!this._organization.hasSubEntityByClass(this.HypermediaClasses.courseImage.courseImage)) {
+		if (!this._organization.hasSubEntityByClass(Classes.courseImage.courseImage)) {
 			return;
 		}
 
-		var image = this._organization.getSubEntityByClass(this.HypermediaClasses.courseImage.courseImage);
+		var image = this._organization.getSubEntityByClass(Classes.courseImage.courseImage);
 		image.forceImageRefresh = this._forceImageRefresh;
 		this._image = image;
 	},

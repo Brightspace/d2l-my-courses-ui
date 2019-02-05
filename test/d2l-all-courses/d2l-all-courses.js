@@ -5,7 +5,7 @@ describe('d2l-all-courses', function() {
 		clock,
 		sandbox;
 
-	beforeEach(function() {
+	beforeEach(function(done) {
 
 		pinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
 			class: ['pinned', 'enrollment'],
@@ -48,7 +48,7 @@ describe('d2l-all-courses', function() {
 
 		widget.updatedSortLogic = false;
 
-		Polymer.dom.flush();
+		flush(() => { done(); });
 
 	});
 
@@ -269,7 +269,7 @@ describe('d2l-all-courses', function() {
 	});
 
 	describe('Tabbed view', function() {
-		beforeEach(function() {
+		beforeEach(function(done) {
 			widget.updatedSortLogic = true;
 			widget.tabSearchActions = [{
 				name: '12345',
@@ -294,7 +294,7 @@ describe('d2l-all-courses', function() {
 				}
 			}];
 			widget._enrollmentsSearchAction.getFieldByName = sandbox.stub();
-			Polymer.dom.flush();
+			flush(() => { done(); });
 		});
 
 		it('should hide tab contents when loading a tab\'s contents', function() {

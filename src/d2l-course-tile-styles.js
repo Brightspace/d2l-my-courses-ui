@@ -136,7 +136,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-course-tile-styles">
 				display: inline-flex;
 				margin-top: 0.25rem;
 				align-items: center;
-				  justify-content: center;
+				justify-content: center;
 			}
 			.tile-container:not(.d2l-no-access) > a:focus .course-text,
 			.tile-container:not(.d2l-no-access) > a:hover .course-text{

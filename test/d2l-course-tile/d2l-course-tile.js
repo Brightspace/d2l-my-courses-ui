@@ -1,3 +1,5 @@
+import { Rels } from 'd2l-hypermedia-constants';
+
 describe('<d2l-course-tile>', function() {
 
 	var sandbox,
@@ -158,7 +160,7 @@ describe('<d2l-course-tile>', function() {
 
 		it('should have the correct href', function() {
 			var anchor = widget.$$('a');
-			var homepageLink = organizationEntity.getSubEntityByRel(widget.HypermediaRels.organizationHomepage);
+			var homepageLink = organizationEntity.getSubEntityByRel(Rels.organizationHomepage);
 			expect(anchor.href).to.equal(homepageLink.properties.path);
 		});
 
@@ -614,33 +616,37 @@ describe('<d2l-course-tile>', function() {
 			widget = fixture('d2l-course-tile-fixture');
 		});
 
-		it('should show the pin indicator button when a course is pinned', function() {
+		it('should show the pin indicator button when a course is pinned', function(done) {
 			widget.pinned = true;
-			Polymer.dom.flush();
-
-			expect(widget.pinned).to.be.true;
-			var pinIndicatorButton = widget.$$('#pin-indicator-button');
-			expect(pinIndicatorButton).to.exist;
+			flush(() => {
+				expect(widget.pinned).to.be.true;
+				var pinIndicatorButton = widget.$$('#pin-indicator-button');
+				expect(pinIndicatorButton).to.exist;
+				done();
+			});
 		});
 
-		it('should not show the pin indicator button when a course is not pinned', function() {
+		it('should not show the pin indicator button when a course is not pinned', function(done) {
 			widget.pinned = false;
-			Polymer.dom.flush();
 
-			expect(widget.pinned).to.be.false;
-			var pinIndicatorButton = widget.$$('#pin-indicator-button');
-			expect(window.getComputedStyle(pinIndicatorButton).visibility).to.equal('hidden');
+			flush(() => {
+				expect(widget.pinned).to.be.false;
+				var pinIndicatorButton = widget.$$('#pin-indicator-button');
+				expect(window.getComputedStyle(pinIndicatorButton).visibility).to.equal('hidden');
+				done();
+			});
 		});
 
-		it('should unpin the course when pressed', function() {
+		it('should unpin the course when pressed', function(done) {
 			widget = fixture('d2l-course-tile-fixture');
 			widget._pinClickHandler = sinon.stub();
 			widget.pinned = true;
-			Polymer.dom.flush();
-
-			var pinIndicatorButton = widget.$$('#pin-indicator-button');
-			pinIndicatorButton.click();
-			expect(widget._pinClickHandler).to.have.been.calledOnce;
+			flush(() => {
+				var pinIndicatorButton = widget.$$('#pin-indicator-button');
+				pinIndicatorButton.click();
+				expect(widget._pinClickHandler).to.have.been.calledOnce;
+				done();
+			});
 		});
 	});
 
@@ -816,11 +822,13 @@ describe('<d2l-course-tile>', function() {
 				expect(widget.$$('.alert-color-circle').classList.contains('warning-circle')).to.be.true;
 			});
 
-			it('should not add warning circle when course is inactive but started, and instructor cant access course info link', () => {
-				Polymer.dom.flush();
-				widget.hasCourseInfoUrl = false;
-				widget._setOverlayStartedInactive();
-				expect(widget.$$('.alert-color-circle').classList.contains('warning-circle')).to.be.false;
+			it('should not add warning circle when course is inactive but started, and instructor cant access course info link', done => {
+				flush(() => {
+					widget.hasCourseInfoUrl = false;
+					widget._setOverlayStartedInactive();
+					expect(widget.$$('.alert-color-circle').classList.contains('warning-circle')).to.be.false;
+					done();
+				});
 			});
 		});
 	});

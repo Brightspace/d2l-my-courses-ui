@@ -232,40 +232,44 @@ describe('d2l-my-courses', () => {
 	describe('Public API', () => {
 		it('should call d2l-my-courses-content-animated.courseImageUploadCompleted', done => {
 			component.updatedSortLogic = false;
-			Polymer.dom.flush();
-			var stub = sandbox.stub(component.$$('d2l-my-courses-content-animated'), 'courseImageUploadCompleted');
-			component.courseImageUploadCompleted();
-			expect(stub).to.have.been.called;
-			done();
+			flush(() => {
+				var stub = sandbox.stub(component.$$('d2l-my-courses-content-animated'), 'courseImageUploadCompleted');
+				component.courseImageUploadCompleted();
+				expect(stub).to.have.been.called;
+				done();
+			});
 		});
 
 		it('should call d2l-my-courses-content.courseImageUploadCompleted', done => {
 			component.updatedSortLogic = true;
 			component._tabSearchActions = [{'name': 'testName', 'title': 'testTitle', 'selected': false, 'enrollmentsSearchAction': {}}];
-			Polymer.dom.flush();
-			var stub = sandbox.stub(component.$$('d2l-my-courses-content'), 'courseImageUploadCompleted');
-			component.courseImageUploadCompleted();
-			expect(stub).to.have.been.called;
-			done();
+			flush(() => {
+				var stub = sandbox.stub(component.$$('d2l-my-courses-content'), 'courseImageUploadCompleted');
+				component.courseImageUploadCompleted();
+				expect(stub).to.have.been.called;
+				done();
+			});
 		});
 
 		it('should call d2l-my-courses-content-animated.getLastOrgUnitId', done => {
 			component.updatedSortLogic = false;
-			Polymer.dom.flush();
-			var stub = sandbox.stub(component.$$('d2l-my-courses-content-animated'), 'getLastOrgUnitId');
-			component.getLastOrgUnitId();
-			expect(stub).to.have.been.called;
-			done();
+			flush(() => {
+				var stub = sandbox.stub(component.$$('d2l-my-courses-content-animated'), 'getLastOrgUnitId');
+				component.getLastOrgUnitId();
+				expect(stub).to.have.been.called;
+				done();
+			});
 		});
 
 		it('should call d2l-my-courses-content.getLastOrgUnitId', done => {
 			component.updatedSortLogic = true;
 			component._tabSearchActions = [{'name': 'testName', 'title': 'testTitle', 'selected': false, 'enrollmentsSearchAction': {}}];
-			Polymer.dom.flush();
-			var stub = sandbox.stub(component.$$('d2l-my-courses-content'), 'getLastOrgUnitId');
-			component.getLastOrgUnitId();
-			expect(stub).to.have.been.called;
-			done();
+			flush(() => {
+				var stub = sandbox.stub(component.$$('d2l-my-courses-content'), 'getLastOrgUnitId');
+				component.getLastOrgUnitId();
+				expect(stub).to.have.been.called;
+				done();
+			});
 		});
 	});
 });

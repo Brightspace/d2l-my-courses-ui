@@ -1,5 +1,7 @@
 language: node_js
 node_js: 9
+addons:
+  chrome: stable
 before_script:
 - npm run lint
 - cp test/index.all.html test/index.html

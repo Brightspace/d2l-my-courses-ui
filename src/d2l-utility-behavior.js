@@ -1,5 +1,5 @@
 import '@polymer/polymer/polymer-legacy.js';
-import 'siren-parser/siren-parser.js';
+import SirenParse from 'siren-parser';
 import 'd2l-fetch/d2l-fetch.js';
 window.D2L = window.D2L || {};
 window.D2L.MyCourses = window.D2L.MyCourses || {};
@@ -45,7 +45,7 @@ D2L.MyCourses.UtilityBehavior = {
 		return selfLink.href;
 	},
 	parseEntity: function(entity) {
-		return window.D2L.Hypermedia.Siren.Parse(entity);
+		return SirenParse(entity);
 	},
 	fetchSirenEntity: function(url, clearCache) {
 		if (!url) {
@@ -105,7 +105,7 @@ D2L.MyCourses.UtilityBehavior = {
 			return response
 				.json()
 				.then(function(json) {
-					return window.D2L.Hypermedia.Siren.Parse(json);
+					return SirenParse(json);
 				});
 		}
 		return Promise.reject(response.status + ' ' + response.statusText);

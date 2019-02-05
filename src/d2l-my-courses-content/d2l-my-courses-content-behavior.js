@@ -1,12 +1,13 @@
 import '@polymer/polymer/polymer-legacy.js';
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Rels } from 'd2l-hypermedia-constants';
+import { Actions } from 'd2l-hypermedia-constants';
 import '../d2l-all-courses.js';
 import '../d2l-css-grid-view/d2l-css-grid-view-behavior.js';
 import '../d2l-alert-behavior.js';
 import '../d2l-course-tile-responsive-grid-behavior.js';
 import '../d2l-interaction-detection-behavior.js';
 import '../d2l-utility-behavior.js';
-import '../localize-behavior.js';
+import './d2l-my-courses-behavior.js';
 import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 window.D2L = window.D2L || {};
@@ -143,7 +144,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			if (!this.cssGridView) {
 				this.$$('d2l-course-tile-grid').addEventListener('startedInactiveAlert', this._onStartedInactiveAlert.bind(this));
 			}
-		});
+		}.bind(this));
 	},
 	detached: function() {
 		document.body.removeEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
@@ -201,9 +202,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 	_enrollmentsChanged: function(viewAbleLength, totalLength) {
 		this._removeAlert('noCourses');
-		if (this._isRefetchNeeded) {
-			return;
-		}
 		if (viewAbleLength <= 0) {
 			this._clearAlerts();
 		}
@@ -354,8 +352,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			orgUnitId = e.detail.orgUnitId;
 		} else if (e.detail.organization) {
 			orgUnitId = this._getOrgUnitIdFromHref(this.getEntityIdentifier(this.parseEntity(e.detail.organization)));
-		} else if (e.detail.enrollment && e.detail.enrollment.hasLinkByRel(this.HypermediaRels.organization)) {
-			orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(this.HypermediaRels.organization).href);
+		} else if (e.detail.enrollment && e.detail.enrollment.hasLinkByRel(Rels.organization)) {
+			orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(Rels.organization).href);
 		}
 
 		// Only want to move pinned/unpinned enrollment if it exists in the panel
@@ -429,7 +427,12 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		// Only listen to pin updates for the current tab
 		document.body.addEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 
-		if (this._isRefetchNeeded) {
+		if (this._numberOfEnrollments === 0) {
+			this._fetchRoot()
+				.then(function() {
+					window.dispatchEvent(new Event('resize'));
+				});
+		} else if (this._isRefetchNeeded) {
 			this._showContent = false;
 			this._isRefetchNeeded = false;
 			this._resetEnrollments();
@@ -442,11 +445,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 				window.dispatchEvent(new Event('resize'));
 				setTimeout(completeFetch, 1000);
 			}.bind(this)).catch(completeFetch);
-		} else if (this._numberOfEnrollments === 0) {
-			this._fetchRoot()
-				.then(function() {
-					window.dispatchEvent(new Event('resize'));
-				});
 		} else {
 			setTimeout(function() {
 				// Force redraw of course tiles.
@@ -516,10 +514,10 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		}
 	},
 	_computeIsAllTab: function(actionName) {
-		return actionName === this.HypermediaActions.enrollments.searchMyEnrollments;
+		return actionName === Actions.enrollments.searchMyEnrollments;
 	},
 	_computeIsPinnedTab: function(actionName) {
-		return actionName === this.HypermediaActions.enrollments.searchMyPinnedEnrollments;
+		return actionName === Actions.enrollments.searchMyPinnedEnrollments;
 	},
 	/*
 	* Utility/helper functions
@@ -651,7 +649,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this._nextEnrollmentEntityUrl = hasMoreEnrollments ? enrollmentsEntity.getLinkByRel('next').href : null;
 		var newEnrollments = [];
 
-		var searchAction = enrollmentsEntity.getActionByName(this.HypermediaActions.enrollments.searchMyEnrollments);
+		var searchAction = enrollmentsEntity.getActionByName(Actions.enrollments.searchMyEnrollments);
+
 		if (searchAction
 			&& searchAction.hasFieldByName('sort')
 			&& searchAction.getFieldByName('sort').value.toLowerCase() === 'current'
@@ -716,8 +715,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 * @polymerBehavior D2L.MyCourses.MyCoursesContentBehavior
 */
 D2L.MyCourses.MyCoursesContentBehavior = [
-	D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
-	window.D2L.Hypermedia.HMConstantsBehavior,
+	D2L.MyCourses.MyCoursesBehavior,
 	D2L.MyCourses.CourseTileResponsiveGridBehavior,
 	D2L.MyCourses.InteractionDetectionBehavior,
 	D2L.MyCourses.AlertBehavior,

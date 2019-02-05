@@ -14,7 +14,7 @@ import '@polymer/iron-input/iron-input.js';
 import '@polymer/iron-pages/iron-pages.js';
 import 'd2l-dropdown/d2l-dropdown.js';
 import 'd2l-dropdown/d2l-dropdown-content.js';
-import 'd2l-hypermedia-constants/d2l-hm-constants-behavior.js';
+import { Rels } from 'd2l-hypermedia-constants';
 import 'd2l-icons/d2l-icons.js';
 import 'd2l-search-widget/d2l-search-widget-behavior.js';
 import 'd2l-search-widget/d2l-search-widget-styles.js';
@@ -148,7 +148,6 @@ Polymer({
 	},
 
 	behaviors: [
-		window.D2L.Hypermedia.HMConstantsBehavior,
 		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 		D2L.MyCourses.UtilityBehavior,
 		D2L.PolymerBehaviors.SearchWidgetBehavior
@@ -350,7 +349,7 @@ Polymer({
 		this._liveSearchResults = [];
 		var fetches = [];
 		for (var i = 0; i < enrollmentEntities.length; i++) {
-			var url = enrollmentEntities[i].getLinkByRel(this.HypermediaRels.organization).href;
+			var url = enrollmentEntities[i].getLinkByRel(Rels.organization).href;
 			// Fetch each search result's organization's information
 			var result = this.fetchSirenEntity(url)
 				.then(function(organizationEntity) {

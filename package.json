@@ -1,31 +1,34 @@
 {
-  "name": "d2l-my-courses",
   "description": "Brightspace My Courses homepage widget",
-  "private": true,
-  "scripts": {
-    "postinstall": "polymer install --variants",
-    "build": "gulp build",
-    "lint": "npm run lint:js && npm run lint:wc",
-    "lint:js": "eslint --ext .js,.html .",
-    "lint:wc": "polymer lint -i *.html ./src/* ./demo/* ./lang/* ./test/*",
-    "test": "npm run lint && polymer test --skip-plugin sauce"
-  },
-  "homepage": "https://github.com/Brightspace/d2l-my-courses-ui",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Brightspace/d2l-my-courses-ui.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Brightspace/d2l-my-courses-ui/issues"
-  },
   "keywords": [
     "d2l",
     "homepage",
     "widget"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Brightspace/d2l-my-courses-ui.git"
+  },
+  "homepage": "https://github.com/Brightspace/d2l-my-courses-ui",
+  "name": "d2l-my-courses",
+  "scripts": {
+    "build": "gulp build",
+    "lint": "npm run lint:wc && npm run lint:js",
+    "lint:js": "eslint . --ext .js,.html test/**/*.js test/**/*.html demo/**/*.js demo/**/*.html",
+    "lint:wc": "polymer lint",
+    "test": "npm run lint && polymer test --skip-plugin sauce"
+  },
+  "bugs": {
+    "url": "https://github.com/Brightspace/d2l-my-courses-ui/issues"
+  },
   "author": "D2L Corporation",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@polymer/iron-component-page": "^4.0.0",
+    "@polymer/iron-demo-helpers": "^3.0.0",
+    "@polymer/iron-test-helpers": "^3.0.0",
+    "@webcomponents/webcomponentsjs": "^2.2.6",
+    "babel-eslint": "^10.0.1",
     "eslint": "^4.17.0",
     "eslint-config-brightspace": "^0.4.0",
     "eslint-plugin-html": "^4.0.2",
@@ -34,7 +37,47 @@
     "gulp-ejs": "^3.1.3",
     "gulp-rename": "^1.2.3",
     "merge-stream": "^1.0.1",
-    "polymer-cli": "~1.6.0",
-    "require-dir": "^1.0.0"
+    "polymer-cli": "^1.9.5",
+    "require-dir": "^1.0.0",
+    "wct-browser-legacy": "^1.0.1"
+  },
+  "version": "",
+  "resolutions": {
+    "inherits": "2.0.3",
+    "samsam": "1.1.3",
+    "supports-color": "3.1.2",
+    "type-detect": "1.0.0"
+  },
+  "main": "d2l-my-courses.js",
+  "dependencies": {
+    "d2l-alert": "BrightspaceUI/alert#semver:^4",
+    "d2l-colors": "BrightspaceUI/colors#semver:^4",
+    "d2l-course-image": "Brightspace/course-image#semver:^3",
+    "d2l-dropdown": "BrightspaceUI/dropdown#semver:^7",
+    "d2l-enrollments": "BrightspaceHypermediaComponents/enrollments#semver:^1",
+    "d2l-fetch": "Brightspace/d2l-fetch.git#semver:^2",
+    "d2l-hypermedia-constants": "^6",
+    "d2l-icons": "BrightspaceUI/icons#semver:^6",
+    "d2l-image-selector": "Brightspace/image-selector#semver:^4",
+    "intersection-observer": "^0.5.1",
+    "d2l-link": "BrightspaceUI/link#semver:^5",
+    "d2l-loading-spinner": "BrightspaceUI/loading-spinner#semver:^7",
+    "d2l-localize-behavior": "BrightspaceUI/localize-behavior#semver:^2",
+    "d2l-menu": "BrightspaceUI/menu#semver:^2",
+    "d2l-offscreen": "BrightspaceUI/offscreen#semver:^4",
+    "d2l-organization-hm-behavior": "Brightspace/organization-hm-behavior#semver:^3",
+    "d2l-polymer-behaviors": "Brightspace/d2l-polymer-behaviors-ui#semver:^2",
+    "d2l-search-widget": "Brightspace/d2l-search-widget-ui#semver:^4",
+    "d2l-simple-overlay": "Brightspace/simple-overlay.git#semver:^3",
+    "d2l-tabs": "BrightspaceUI/tabs#semver:^1",
+    "d2l-typography": "BrightspaceUI/typography#semver:^7",
+    "@polymer/iron-a11y-announcer": "^3.0.0",
+    "@polymer/iron-a11y-keys": "^3.0.0",
+    "@polymer/iron-input": "^3.0.0",
+    "@polymer/iron-menu-behavior": "^3.0.0",
+    "@polymer/iron-scroll-threshold": "^3.0.0",
+    "@polymer/iron-pages": "^3.0.0",
+    "@polymer/polymer": "^3.0.0",
+    "siren-parser": "^8.0.0"
   }
 }

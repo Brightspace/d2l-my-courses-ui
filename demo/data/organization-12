@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "name": "Course 12",
+    "isActive": true
+  },
+  "links": [
+    {
+      "rel": [
+        "self"
+      ],
+      "href": "../data/organization-12"
+    }
+  ]
+}

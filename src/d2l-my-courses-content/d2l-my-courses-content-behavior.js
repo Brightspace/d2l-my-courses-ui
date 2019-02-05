@@ -202,6 +202,9 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 	_enrollmentsChanged: function(viewAbleLength, totalLength) {
 		this._removeAlert('noCourses');
+		if (this._isRefetchNeeded) {
+			return;
+		}
 		if (viewAbleLength <= 0) {
 			this._clearAlerts();
 		}
@@ -427,12 +430,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		// Only listen to pin updates for the current tab
 		document.body.addEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 
-		if (this._numberOfEnrollments === 0) {
-			this._fetchRoot()
-				.then(function() {
-					window.dispatchEvent(new Event('resize'));
-				});
-		} else if (this._isRefetchNeeded) {
+		if (this._isRefetchNeeded) {
 			this._showContent = false;
 			this._isRefetchNeeded = false;
 			this._resetEnrollments();
@@ -445,6 +443,11 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 				window.dispatchEvent(new Event('resize'));
 				setTimeout(completeFetch, 1000);
 			}.bind(this)).catch(completeFetch);
+		} else if (this._numberOfEnrollments === 0) {
+			this._fetchRoot()
+				.then(function() {
+					window.dispatchEvent(new Event('resize'));
+				});
 		} else {
 			setTimeout(function() {
 				// Force redraw of course tiles.

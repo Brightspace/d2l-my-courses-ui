@@ -49,10 +49,9 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content">
 				clear: both;
 			}
 
-			.course-tile-grid[hide-past-courses] > d2l-enrollment-card:nth-of-type(n+13):not([pinned]),
-			.course-tile-grid:not([hide-past-courses]) > d2l-enrollment-card:nth-of-type(n+13):not([pinned]),
-			.course-tile-grid[hide-past-courses] > d2l-enrollment-card[completed]:not([pinned]),
-			.course-tile-grid[hide-past-courses] > d2l-enrollment-card[closed]:not([pinned]), {
+			.course-tile-grid d2l-enrollment-card:nth-of-type(n+13):not([pinned]),
+			.course-tile-grid[hide-past-courses] d2l-enrollment-card[completed]:not([pinned]),
+			.course-tile-grid[hide-past-courses] d2l-enrollment-card[closed]:not([pinned]) {
 				display: none;
 			}
 			.d2l-body-standard {

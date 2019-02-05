@@ -34,6 +34,69 @@
       "rel": [
         "https://api.brightspace.com/rels/user-enrollment"
       ],
+      "href": "../data/enrollment-03"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-04"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-05"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-06"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-07"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-08"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-09"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
       "href": "../data/enrollment-10"
     },
     {
@@ -44,6 +107,84 @@
         "https://api.brightspace.com/rels/user-enrollment"
       ],
       "href": "../data/enrollment-11"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-12"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-13"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-14"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-15"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-16"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-17"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-18"
+    },
+    {
+      "class": [
+        "enrollment"
+      ],
+      "rel": [
+        "https://api.brightspace.com/rels/user-enrollment"
+      ],
+      "href": "../data/enrollment-19"
+    }
+  ],
+  "links": [
+    {
+      "rel": ["next"],
+      "href": "../data/my-enrollments-next"
     }
   ]
 }

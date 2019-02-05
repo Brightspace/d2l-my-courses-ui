@@ -598,7 +598,7 @@ describe('d2l-my-courses-content-animated', function() {
 			widget.enrollmentsSearchAction = enrollmentsSearchEntity.actions[0];
 		});
 
-		it('should rescale the all courses view when it is opened', function() {
+		it('should rescale the all courses view when it is opened', function(done) {
 			clock = sinon.useFakeTimers();
 			widget._enrollmentsSearchUrl = '';
 
@@ -608,6 +608,7 @@ describe('d2l-my-courses-content-animated', function() {
 				clock.tick(100);
 				expect(allCoursesRescaleSpy.called);
 				widget.$$('d2l-all-courses').$$('d2l-all-courses-segregated-content')._rescaleCourseTileRegions.restore();
+				done();
 			});
 		});
 

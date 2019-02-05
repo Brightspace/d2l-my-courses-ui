@@ -74,7 +74,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content-animated
 			<d2l-course-tile-grid enrollments="[[_pinnedEnrollments]]" tile-sizes="[[_tileSizes]]" locale="[[locale]]" show-course-code="[[showCourseCode]]" show-semester="[[showSemester]]" course-updates-config="[[courseUpdatesConfig]]">
 			</d2l-course-tile-grid>
 			<d2l-link id="viewAllCourses" hidden$="[[!_hasEnrollments]]" href="javascript:void(0);" on-tap="_openAllCoursesView" on-keypress="_keypressOpenAllCoursesView" on-mouseover="_createAllCourses" on-focus="_createAllCourses" tabindex="0">
-				<h3 class="d2l-body-standard">[[_viewAllCoursesText]]</h3>
+				<h3 class="d2l-body-standard">[[_viewAllCoursesLinkText]]</h3>
 			</d2l-link>
 		</div>
 
@@ -125,11 +125,7 @@ Polymer({
 			type: Boolean,
 			value: false
 		},
-		// Override for MyCoursesContentBehavior._viewAllCoursesText
-		_viewAllCoursesText: {
-			type: String,
-			computed: '_getViewAllCoursesText(_hasMoreEnrollments, _allEnrollments)'
-		},
+		_viewAllCoursesLinkText: String,
 		_pinnedEnrollmentsMap: {
 			type: Object,
 			value: function() { return {}; }
@@ -298,6 +294,8 @@ Polymer({
 
 		this._pinnedEnrollments = this._pinnedEnrollments.concat(newPinnedEnrollments);
 		this._allEnrollments = this._allEnrollments.concat(newEnrollments);
+		this._viewAllCoursesLinkText = this.localize('viewAllCourses');
+		this._hasEnrollments = this._allEnrollments.length > 0;
 
 		var colNum = this._calcNumColumns(this._getAvailableWidth(dom(this.root).node.host), this._pinnedEnrollments.length);
 		this._tileSizes = (colNum === 2) ?
@@ -335,9 +333,5 @@ Polymer({
 				break;
 			}
 		}
-	},
-	// Override for MyCoursesContentBehavior._getViewAllCoursesText
-	_getViewAllCoursesText: function() {
-		return this.localize('viewAllCourses');
 	}
 });

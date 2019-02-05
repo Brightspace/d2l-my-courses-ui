@@ -560,6 +560,8 @@ Polymer({
 		} else if (e.animationName.indexOf('tile-pre-insertion') > -1) {
 			this.toggleClass('animate-insertion', true, this);
 		}
+
+		this.toggleClass('unpin', false, this);
 	},
 	_onOrganizationResponse: function(organization) {
 

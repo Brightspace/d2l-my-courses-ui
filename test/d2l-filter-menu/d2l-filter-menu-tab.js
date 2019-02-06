@@ -4,17 +4,41 @@ describe('d2l-filter-menu-tab', function() {
 		organization;
 
 	beforeEach(function() {
+		organization = {
+			properties: {
+				name: 'Course name',
+				code: 'COURSE100'
+			},
+			class: ['active', 'semester'],
+			links: [{
+				rel: ['self'],
+				href: '/organizations/1'
+			}],
+			rel: ['https://api.brightspace.com/rels/organization'],
+			href: '/organizations/1'
+		};
+
 		sandbox = sinon.sandbox.create();
+
+		window.d2lfetch = window.d2lfetch || { fetch: function() {} };
+		window.d2lfetch.fetch = sandbox.stub();
+
+		window.d2lfetch.fetch.withArgs(sinon.match.has('url', sinon.match(/organizations/))).returns(Promise.resolve({
+			ok: true,
+			json: function() { return Promise.resolve(window.D2L.Hypermedia.Siren.Parse(organization)); }
+		}));
+
+		window.d2lfetch.fetch.returns(Promise.resolve({
+			ok: true,
+			json: function() { return Promise.resolve({}); }
+		}));
+
 		component = fixture('d2l-filter-menu-tab-fixture');
 		component.searchAction = {
 			name: 'search',
 			href: '/'
 		};
-		organization = {
-			class: ['active', 'semester'],
-			rel: ['https://api.brightspace.com/rels/organization'],
-			href: '/organizations/1'
-		};
+
 	});
 
 	afterEach(function() {

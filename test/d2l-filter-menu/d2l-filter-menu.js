@@ -23,6 +23,21 @@ beforeEach(function() {
 		}]
 	});
 	sandbox = sinon.sandbox.create();
+
+	window.d2lfetch = window.d2lfetch || { fetch: function() {} };
+
+	window.d2lfetch.fetch = sandbox.stub();
+
+	window.d2lfetch.fetch.withArgs(sinon.match.has('url', sinon.match('/enrollments/'))).returns(Promise.resolve({
+		ok: true,
+		json: function() { return Promise.resolve(myEnrollmentsEntity); }
+	}));
+
+	window.d2lfetch.fetch.returns(Promise.resolve({
+		ok: true,
+		json: function() { return Promise.resolve({}); }
+	}));
+
 	component = fixture('d2l-filter-menu-fixture');
 });
 

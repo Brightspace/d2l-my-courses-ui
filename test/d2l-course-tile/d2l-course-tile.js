@@ -127,12 +127,20 @@ describe('<d2l-course-tile>', function() {
 		server.respondImmediately = true;
 
 		widget = fixture('d2l-course-tile-fixture');
-		window.d2lfetch.fetch = sandbox.stub()
-			.withArgs(sinon.match.has('url', sinon.match('/organizations/1?embedDepth=1')))
-			.returns(Promise.resolve({
-				ok: true,
-				json: function() { return Promise.resolve(organization); }
-			}));
+
+		window.d2lfetch = window.d2lfetch || { fetch: function() {} };
+
+		window.d2lfetch.fetch = sandbox.stub();
+
+		window.d2lfetch.fetch.withArgs(sinon.match.has('url', sinon.match('/organizations/'))).returns(Promise.resolve({
+			ok: true,
+			json: function() { return Promise.resolve(organization); }
+		}));
+
+		window.d2lfetch.fetch.returns(Promise.resolve({
+			ok: true,
+			json: function() { return Promise.resolve({}); }
+		}));
 	});
 
 	afterEach(function() {
@@ -303,9 +311,8 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should set the update action parameters correctly and call the pinning API', function(done) {
-			window.d2lfetch.fetch = sandbox.stub()
-				.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
-					.and(sinon.match.has('method', 'PUT')))
+			window.d2lfetch.fetch
+				.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1')).and(sinon.match.has('method', 'PUT')))
 				.returns(Promise.resolve({
 					ok: true,
 					json: function() { return Promise.resolve(enrollment); }
@@ -322,9 +329,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should update the local pinned state with the received pin state', function(done) {
-			window.d2lfetch.fetch = sandbox.stub()
-				.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
-					.and(sinon.match.has('method', 'PUT')))
+			window.d2lfetch.fetch.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1')).and(sinon.match.has('method', 'PUT')))
 				.returns(Promise.resolve({
 					ok: true,
 					json: function() { return Promise.resolve(enrollment); }
@@ -336,8 +341,7 @@ describe('<d2l-course-tile>', function() {
 
 			setTimeout(function() {
 				expect(window.d2lfetch.fetch).to.have.been
-					.calledWith(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
-						.and(sinon.match.has('method', 'PUT')));
+					.calledWith(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1')).and(sinon.match.has('method', 'PUT')));
 				// We responded with pinned = true, so it gets set back to true by the response
 				expect(widget.pinned).to.be.true;
 				done();
@@ -345,9 +349,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should update the overflow menu button with the new pinned state', function(done) {
-			window.d2lfetch.fetch = sandbox.stub()
-				.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
-					.and(sinon.match.has('method', 'PUT')))
+			window.d2lfetch.fetch.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1')).and(sinon.match.has('method', 'PUT')))
 				.returns(Promise.resolve({
 					ok: true,
 					json: function() { return Promise.resolve(enrollment); }
@@ -366,9 +368,7 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should aria-announce the change in pin state', function(done) {
-			window.d2lfetch.fetch = sandbox.stub()
-				.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
-					.and(sinon.match.has('method', 'PUT')))
+			window.d2lfetch.fetch.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1')).and(sinon.match.has('method', 'PUT')))
 				.returns(Promise.resolve({
 					ok: true,
 					json: function() { return Promise.resolve(enrollment); }

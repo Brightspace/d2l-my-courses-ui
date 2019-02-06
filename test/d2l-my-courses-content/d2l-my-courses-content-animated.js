@@ -207,6 +207,33 @@ describe('d2l-my-courses-content-animated', function() {
 		sandbox = sinon.sandbox.create();
 
 		widget = fixture('d2l-my-courses-content-animated-fixture');
+
+		sandbox = sinon.sandbox.create();
+
+		window.d2lfetch = window.d2lfetch || { fetch: function() {} };
+
+		window.d2lfetch.fetch = sandbox.stub();
+
+		window.d2lfetch.fetch.withArgs(rootHref).returns(Promise.resolve({
+			ok: true,
+			json: function() { return Promise.resolve(enrollmentsRootResponse); }
+		}));
+
+		window.d2lfetch.fetch.withArgs(sinon.match.has('url', sinon.match(/organizations/))).returns(Promise.resolve({
+			ok: true,
+			json: function() { return Promise.resolve({'properties': {} }); }
+		}));
+
+		window.d2lfetch.fetch.withArgs(sinon.match.has('url', sinon.match(/enrollments\/users\/169/))).returns(Promise.resolve({
+			ok: true,
+			json: function() { return Promise.resolve(enrollmentsSearchResponse); }
+		}));
+
+		window.d2lfetch.fetch.returns(Promise.resolve({
+			ok: true,
+			json: function() { return Promise.resolve({}); }
+		}));
+
 		widget.fetchSirenEntity = sandbox.stub();
 		widget.fetchSirenEntity.withArgs(rootHref).returns(Promise.resolve(
 			window.D2L.Hypermedia.Siren.Parse(enrollmentsRootResponse)

@@ -106,7 +106,7 @@ D2L.MyCourses.CourseTileSlidingGridBehavior = {
 		// dom is about to change. preemptively set current container height
 		// so we can animate it later
 		var container = this._getGridContainerElement();
-		container.style.height = container.scrollHeight + 'px';
+		container.style.height = container.scrollHeight === 0 ? null : container.scrollHeight + 'px';
 	},
 
 	__slide_onDomChange: function slideOnDomChange() {
@@ -200,7 +200,7 @@ D2L.MyCourses.CourseTileSlidingGridBehavior = {
 			targetHeight = container.scrollHeight;
 		}
 
-		if (targetHeight === container.offsetHeight) {
+		if (targetHeight === container.offsetHeight || targetHeight === 0) {
 			container.style.height = '';
 			return;
 		}

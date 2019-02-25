@@ -725,10 +725,9 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 * @polymerBehavior D2L.MyCourses.MyCoursesContentBehavior
 */
 D2L.MyCourses.MyCoursesContentBehavior = [
-	D2L.MyCourses.MyCoursesBehavior,
-	D2L.MyCourses.CourseTileResponsiveGridBehavior,
 	D2L.MyCourses.AlertBehavior,
 	D2L.MyCourses.UtilityBehavior,
 	D2L.MyCourses.CssGridBehavior,
-	D2L.MyCourses.MyCoursesContentBehaviorImpl
+	D2L.MyCourses.MyCoursesContentBehaviorImpl,
+	D2L.PolymerBehaviors.MyCourses.LocalizeBehavior
 ];

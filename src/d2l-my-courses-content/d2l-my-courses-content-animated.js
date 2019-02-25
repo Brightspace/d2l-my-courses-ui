@@ -132,7 +132,8 @@ Polymer({
 		}
 	},
 	behaviors: [
-		D2L.MyCourses.MyCoursesContentBehavior
+		D2L.MyCourses.MyCoursesContentBehavior,
+		D2L.MyCourses.CourseTileResponsiveGridBehavior
 	],
 	listeners: {
 		'tile-remove-complete': '_onTileRemoveComplete'

@@ -114,6 +114,10 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		_isPinnedTab: {
 			type: Boolean,
 			computed: '_computeIsPinnedTab(enrollmentsSearchAction.name)'
+		},
+		_hasEnrollmentsChanged: {
+			type: Boolean,
+			value: false
 		}
 	},
 	listeners: {
@@ -430,18 +434,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		document.body.addEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
 
 		if (this._isRefetchNeeded) {
-			this._showContent = false;
-			this._isRefetchNeeded = false;
-			this._resetEnrollments();
-
-			var completeFetch = function() {
-				this._showContent = true;
-			}.bind(this);
-
-			this._refetchEnrollments().then(function() {
-				window.dispatchEvent(new Event('resize'));
-				setTimeout(completeFetch, 1000);
-			}.bind(this)).catch(completeFetch);
+			this._handleEnrollmentsRefetch();
 		} else if (this._numberOfEnrollments === 0) {
 			this._fetchRoot()
 				.then(function() {
@@ -488,6 +481,13 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this._removeAlert('setCourseImageFailure');
 		// update the startedInactive alert in case the user changed the pinned states in the overlay
 		this._onStartedInactiveAlert();
+
+		if (this._isRefetchNeeded) {
+			this._handleEnrollmentsRefetch();
+		}
+
+		document.body.addEventListener('d2l-course-pinned-change', this._onEnrollmentPinnedMessage, true);
+		this._hasEnrollmentsChanged = false;
 	},
 	_onOpenChangeImageView: function(e) {
 		if (e.detail.organization) {
@@ -521,6 +521,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		if (this._isAllTab || this._isPinnedTab || (newValue.orgUnitId && this._orgUnitIdMap[newValue.orgUnitId])) {
 			this._isRefetchNeeded = true;
+			this._hasEnrollmentsChanged = true;
 		}
 	},
 	_computeIsAllTab: function(actionName) {
@@ -647,6 +648,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		allCourses.showCourseCode = this.showCourseCode;
 		allCourses.showSemester = this.showSemester;
 		allCourses.courseUpdatesConfig = this.courseUpdatesConfig;
+		allCourses.hasEnrollmentsChanged = this._hasEnrollmentsChanged;
 
 		allCourses.open();
 
@@ -701,6 +703,20 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			return this.fetchSirenEntity(this._nextEnrollmentEntityUrl)
 				.then(this._populateEnrollments.bind(this));
 		}
+	},
+	_handleEnrollmentsRefetch: function() {
+		this._showContent = false;
+		this._isRefetchNeeded = false;
+		this._resetEnrollments();
+
+		var completeFetch = function() {
+			this._showContent = true;
+		}.bind(this);
+
+		this._refetchEnrollments().then(function() {
+			window.dispatchEvent(new Event('resize'));
+			setTimeout(completeFetch, 1000);
+		}.bind(this)).catch(completeFetch);
 	},
 	_refetchEnrollments: function() {
 		this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(true);

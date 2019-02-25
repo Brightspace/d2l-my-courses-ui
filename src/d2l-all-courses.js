@@ -20,6 +20,7 @@ import 'd2l-dropdown/d2l-dropdown-content.js';
 import 'd2l-dropdown/d2l-dropdown-menu.js';
 import { Classes } from 'd2l-hypermedia-constants';
 import { Actions } from 'd2l-hypermedia-constants';
+import { Rels } from 'd2l-hypermedia-constants';
 import 'd2l-icons/d2l-icons.js';
 import 'd2l-link/d2l-link.js';
 import 'd2l-loading-spinner/d2l-loading-spinner.js';
@@ -179,6 +180,10 @@ Polymer({
 			type: Boolean,
 			value: false,
 			observer: '_updatedSortLogicChanged'
+		},
+		hasEnrollmentsChanged: {
+			type: Boolean,
+			value: false
 		},
 
 		/*
@@ -466,6 +471,10 @@ Polymer({
 		this.$.filterMenu.clearFilters();
 		this._filterText = this.localize('filtering.filter');
 		this._resetSortDropdown();
+		if (this.hasEnrollmentsChanged) {
+			this._bustCacheToken = Math.random();
+			this._searchUrl = this._appendOrUpdateBustCacheQueryString(this._searchUrl);
+		}
 	},
 	_onTabSelected: function(e) {
 		this._selectedTabId = dom(e).rootTarget.id;
@@ -507,6 +516,24 @@ Polymer({
 		if (!e.detail.isPinned &&  actionName === Actions.enrollments.searchMyPinnedEnrollments) {
 			this._searchUrl = this._appendOrUpdateBustCacheQueryString(this._searchUrl);
 		}
+
+		var orgUnitId;
+		if (e.detail.orgUnitId) {
+			orgUnitId = e.detail.orgUnitId;
+		} else if (e.detail.organization) {
+			orgUnitId = this._getOrgUnitIdFromHref(this.getEntityIdentifier(this.parseEntity(e.detail.organization)));
+		} else if (e.detail.enrollment && e.detail.enrollment.hasLinkByRel(Rels.organization)) {
+			orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.getLinkByRel(Rels.organization).href);
+		}
+
+		this.dispatchEvent(new CustomEvent('d2l-course-enrollment-change', {
+			bubbles: true,
+			composed: true,
+			detail: {
+				orgUnitId: orgUnitId,
+				isPinned: e.detail.isPinned
+			}
+		}));
 	},
 	/*
 	* Observers
@@ -703,6 +730,14 @@ Polymer({
 		} else {
 			this._updatedSortLogicInitallyObserved = true;
 		}
-	}
+	},
+	_getOrgUnitIdFromHref: function(organizationHref) {
+		var match = /[0-9]+$/.exec(organizationHref);
+
+		if (!match) {
+			return;
+		}
+		return match[0];
+	},
 
 });

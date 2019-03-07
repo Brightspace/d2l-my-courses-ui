@@ -20,7 +20,6 @@ import './d2l-course-tile-grid.js';
 import './d2l-course-tile-responsive-grid-behavior.js';
 import './localize-behavior.js';
 import './d2l-utility-behavior.js';
-import './d2l-course-management-behavior.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 const $_documentContainer = document.createElement('template');
@@ -142,8 +141,7 @@ Polymer({
 		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 		D2L.MyCourses.AlertBehavior,
 		D2L.MyCourses.CourseTileResponsiveGridBehavior,
-		D2L.MyCourses.UtilityBehavior,
-		D2L.MyCourses.CourseManagementBehavior
+		D2L.MyCourses.UtilityBehavior
 	],
 	listeners: {
 		'tile-remove-complete': '_onTileRemoveComplete'
@@ -216,6 +214,23 @@ Polymer({
 				this.splice('filteredPinnedEnrollments', index, 1);
 				break;
 			}
+		}
+	},
+	_setEnrollmentPinData: function(entity, isPinned) {
+		// HACK: Because the course tiles are being removed and re-created in the DOM, we have to effectively
+		// manually update them, rather than updating them with the received enrollment from the API call.
+		if (isPinned) {
+			entity.class.splice(entity.class.indexOf('unpinned'));
+			entity.class.push('pinned');
+			entity.actions[0].name = 'unpin-course';
+			entity.actions[0].fields[0].value = false;
+			entity._actionsByName['unpin-course'] = entity.actions[0];
+		} else {
+			entity.class.splice(entity.class.indexOf('pinned'));
+			entity.class.push('unpinned');
+			entity.actions[0].name = 'pin-course';
+			entity.actions[0].fields[0].value = true;
+			entity._actionsByName['pin-course'] = entity.actions[0];
 		}
 	},
 	_updateEnrollmentAlerts: function(hasPinnedEnrollments, hasUnpinnedEnrollments) {

@@ -4,7 +4,6 @@ import { Actions } from 'd2l-hypermedia-constants';
 import '../d2l-all-courses.js';
 import '../d2l-css-grid-view/d2l-css-grid-view-behavior.js';
 import '../d2l-alert-behavior.js';
-import '../d2l-course-tile-responsive-grid-behavior.js';
 import '../d2l-utility-behavior.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 import '../localize-behavior.js';
@@ -159,9 +158,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			return;
 		}
 		this.$.viewAllCourses.focus();
-	},
-	getCourseTileItemCount: function() {
-		return this._enrollments.length;
 	},
 	getLastOrgUnitId: function() {
 		if (!this._setImageOrg.links) {

@@ -370,10 +370,6 @@ describe('d2l-my-courses-content', () => {
 			expect(component.focus).to.be.a('function');
 		});
 
-		it('should implement getCourseTileItemCount', () => {
-			expect(component.getCourseTileItemCount).to.be.a('function');
-		});
-
 		it('should implement getLastOrgUnitId', () => {
 			expect(component.getLastOrgUnitId).to.be.a('function');
 		});
@@ -992,13 +988,6 @@ describe('d2l-my-courses-content', () => {
 	});
 
 	describe('With enrollments', () => {
-
-		it('should return the corret value from getCoursetileItemCount', () => {
-			return component._fetchRoot().then(() => {
-				expect(component.getCourseTileItemCount()).to.equal(2);
-			});
-		});
-
 		it('should correctly evaluate whether it has enrollments', done => {
 			setTimeout(() => {
 				expect(component._numberOfEnrollments).not.to.equal(0);

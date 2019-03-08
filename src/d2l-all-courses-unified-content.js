@@ -87,10 +87,6 @@ Polymer({
 		}.bind(this));
 	},
 
-	getCourseTileItemCount: function() {
-		return this._itemCount;
-	},
-
 	_enrollmentsChanged: function(enrollmentLength) {
 		this._noCoursesInSearch = false;
 		this._noCoursesInSelection = false;

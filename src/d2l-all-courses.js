@@ -31,7 +31,6 @@ import SirenParse from 'siren-parser';
 import 'd2l-tabs/d2l-tabs.js';
 import './d2l-alert-behavior.js';
 import './d2l-all-courses-styles.js';
-import './d2l-course-tile-responsive-grid-behavior.js';
 import './d2l-filter-menu/d2l-filter-menu.js';
 import './d2l-search-widget-custom.js';
 import './d2l-utility-behavior.js';

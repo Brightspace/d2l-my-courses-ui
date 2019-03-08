@@ -107,11 +107,6 @@ Polymer({
 
 	properties: {
 		enrollmentsSearchAction: Object,
-		// Override for CssGridBehavior.cssGridView
-		cssGridView: {
-			type: Boolean,
-			value: false
-		},
 		_allEnrollments: {
 			type: Array,
 			value: function() { return []; }
@@ -250,7 +245,6 @@ Polymer({
 		allCourses.filterStandardSemesterName = this.standardSemesterName;
 		allCourses.filterStandardDepartmentName = this.standardDepartmentName;
 		allCourses.updatedSortLogic = false;
-		allCourses.cssGridView = false;
 		allCourses.showCourseCode = this.showCourseCode;
 		allCourses.showSemester = this.showSemester;
 		allCourses.courseUpdatesConfig = this.courseUpdatesConfig;

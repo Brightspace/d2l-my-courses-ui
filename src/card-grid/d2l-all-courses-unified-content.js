@@ -25,7 +25,7 @@ const $_documentContainer = document.createElement('template');
 $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses-unified-content">
 	<template strip-whitespace="">
 		<style include="d2l-all-courses-styles"></style>
-		<style include="d2l-css-grid-view-styles"></style>
+		<style include="d2l-card-grid-styles"></style>
 
 		<span class="bottom-pad" hidden$="[[!_noCoursesInSearch]]">
 			[[localize('noCoursesInSearch')]]
@@ -43,7 +43,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses-unified-content
 			[[localize('noCoursesInRole')]]
 		</span>
 
-		<div class="course-tile-grid">
+		<div class="course-card-grid">
 			<template is="dom-repeat" items="[[filteredEnrollments]]">
 				<d2l-enrollment-card href="[[item]]" presentation-href="[[presentationUrl]]">
 				</d2l-enrollment-card>
@@ -75,7 +75,7 @@ Polymer({
 	},
 	behaviors: [
 		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
-		D2L.MyCourses.CssGridBehavior
+		D2L.MyCourses.CardGridBehavior
 	],
 	observers: [
 		'_enrollmentsChanged(filteredEnrollments.length)'

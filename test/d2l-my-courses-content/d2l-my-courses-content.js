@@ -185,7 +185,6 @@ describe('d2l-my-courses-content', () => {
 		expect(component.courseImageUploadCompleted).to.be.a('function');
 		expect(component.getLastOrgUnitId).to.be.a('function');
 		expect(component.updatedSortLogic).to.exist;
-		expect(component.cssGridView).to.exist;
 	});
 
 	it('should properly implement d2l-my-courses-content-behavior', () => {
@@ -264,18 +263,18 @@ describe('d2l-my-courses-content', () => {
 		});
 	});
 
-	describe('Tile grid', () => {
+	describe('Card grid', () => {
 		beforeEach((done) => {
 			component._fetchRoot();
 			setTimeout(done, 300);
 		});
 
-		it('should set the columns-"n" class on the correct tile grid on resize', done => {
+		it('should set the columns-"n" class on the correct card grid on resize', done => {
 			var listener = () => {
 				window.removeEventListener('resize', listener);
 
 				setTimeout(() => {
-					var courseTileGrid = component.$$('.course-tile-grid');
+					var courseTileGrid = component.$$('.course-card-grid');
 					expect(courseTileGrid.classList.toString()).to.contain('columns-');
 					done();
 				}, 500);
@@ -286,7 +285,7 @@ describe('d2l-my-courses-content', () => {
 			window.dispatchEvent(new Event('resize'));
 		});
 
-		it('should call refreshImage on each course image tile in courseImageUploadCompleted', () => {
+		it('should call refreshImage on each course image card in courseImageUploadCompleted', () => {
 			var courseTiles;
 			if (component.shadowRoot) {
 				courseTiles = component.shadowRoot.querySelectorAll('d2l-enrollment-card');
@@ -302,8 +301,8 @@ describe('d2l-my-courses-content', () => {
 			expect(stub2).to.have.been.called;
 		});
 
-		it('should call focus on the correct tile grid when focus is called', () => {
-			var courseTileGrid = component.$$('.course-tile-grid');
+		it('should call focus on the correct card grid when focus is called', () => {
+			var courseTileGrid = component.$$('.course-card-grid');
 			var spy = sandbox.spy(courseTileGrid, 'focus');
 
 			component.focus();
@@ -314,7 +313,7 @@ describe('d2l-my-courses-content', () => {
 		it('should correctly determine whether there are started-inactive courses in _onStartedInactiveAlert', () => {
 			var spy = sandbox.spy(component, '_addAlert');
 
-			var firstCourseTile = component.$$('.course-tile-grid d2l-enrollment-card');
+			var firstCourseTile = component.$$('.course-card-grid d2l-enrollment-card');
 			firstCourseTile.setAttribute('started-inactive', '');
 
 			component._onStartedInactiveAlert();
@@ -322,8 +321,8 @@ describe('d2l-my-courses-content', () => {
 			expect(spy).to.have.been.called;
 		});
 
-		it('should add the hide-past-attributes to the correct tile grid in _populateEnrollments', () => {
-			var spy = sandbox.spy(component.$$('.course-tile-grid'), 'setAttribute');
+		it('should add the hide-past-attributes to the correct card grid in _populateEnrollments', () => {
+			var spy = sandbox.spy(component.$$('.course-card-grid'), 'setAttribute');
 			return component._fetchRoot().then(() => {
 				expect(spy).to.have.been.calledWith('hide-past-courses', '');
 			});
@@ -481,7 +480,7 @@ describe('d2l-my-courses-content', () => {
 			});
 
 			it('should focus on course grid when focus called after course interacted with', done => {
-				var tileGridFocusSpy = sandbox.spy(component.$$('.course-tile-grid'), 'focus');
+				var tileGridFocusSpy = sandbox.spy(component.$$('.course-card-grid'), 'focus');
 
 				component.addEventListener('open-change-image-view', function() {
 					expect(tileGridFocusSpy.called);

@@ -29,7 +29,7 @@ const $_documentContainer = document.createElement('template');
 
 $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content">
 	<template strip-whitespace="">
-		<style include="d2l-css-grid-view-styles">
+		<style include="d2l-card-grid-styles">
 			:host {
 				display: block;
 			}
@@ -49,9 +49,9 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content">
 				clear: both;
 			}
 
-			.course-tile-grid d2l-enrollment-card:nth-of-type(n+13):not([pinned]),
-			.course-tile-grid[hide-past-courses] d2l-enrollment-card[completed]:not([pinned]),
-			.course-tile-grid[hide-past-courses] d2l-enrollment-card[closed]:not([pinned]) {
+			.course-card-grid d2l-enrollment-card:nth-of-type(n+13):not([pinned]),
+			.course-card-grid[hide-past-courses] d2l-enrollment-card[completed]:not([pinned]),
+			.course-card-grid[hide-past-courses] d2l-enrollment-card[closed]:not([pinned]) {
 				display: none;
 			}
 			.d2l-body-standard {
@@ -75,7 +75,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content">
 					[[item.alertMessage]]
 				</d2l-alert>
 			</template>
-			<div class="course-tile-grid">
+			<div class="course-card-grid">
 				<template is="dom-repeat" items="[[_enrollments]]">
 					<d2l-enrollment-card href="[[item]]" presentation-href="[[presentationUrl]]">
 					</d2l-enrollment-card>
@@ -125,6 +125,7 @@ Polymer({
 		}
 	},
 	behaviors: [
-		D2L.MyCourses.MyCoursesContentBehavior
+		D2L.MyCourses.MyCoursesContentBehavior,
+		D2L.MyCourses.CardGridBehavior
 	]
 });

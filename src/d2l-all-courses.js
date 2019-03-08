@@ -767,6 +767,6 @@ Polymer({
 			return;
 		}
 		return match[0];
-	},
+	}
 
 });

@@ -198,7 +198,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			&& this._enrollments.length === 0;
 	},
 	_getTileGrid: function() {
-		return this.$$('.course-tile-grid');
+		return this.$$('.course-card-grid');
 	},
 	_refreshTileGridImages: function() {
 		var courseTiles = this._getTileGrid().querySelectorAll('d2l-enrollment-card');
@@ -397,7 +397,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this._onResize();
 	},
 	_onStartedInactiveAlert: function() {
-		if (this.$$('.course-tile-grid d2l-enrollment-card[started-inactive]')) {
+		if (this.$$('.course-card-grid d2l-enrollment-card[started-inactive]')) {
 			this._addAlert('warning', 'startedInactiveCourses', this.localize('startedInactiveAlert'));
 		}
 	},
@@ -607,7 +607,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		allCourses.filterStandardSemesterName = this.standardSemesterName;
 		allCourses.filterStandardDepartmentName = this.standardDepartmentName;
 		allCourses.updatedSortLogic = true;
-		allCourses.cssGridView = true;
 		allCourses.presentationUrl = this.presentationUrl;
 		allCourses.hasEnrollmentsChanged = this._hasEnrollmentsChanged;
 
@@ -704,6 +703,5 @@ D2L.MyCourses.MyCoursesContentBehavior = [
 	D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 	D2L.MyCourses.AlertBehavior,
 	D2L.MyCourses.UtilityBehavior,
-	D2L.MyCourses.CssGridBehavior,
 	D2L.MyCourses.MyCoursesContentBehaviorImpl
 ];

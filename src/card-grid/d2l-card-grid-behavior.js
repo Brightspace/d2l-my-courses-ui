@@ -5,34 +5,23 @@ window.D2L = window.D2L || {};
 window.D2L.MyCourses = window.D2L.MyCourses || {};
 
 /*
-* @polymerBehavior D2L.MyCourses.CssGridBehavior
+* @polymerBehavior D2L.MyCourses.CardGridBehavior
 */
-D2L.MyCourses.CssGridBehavior = {
-	properties: {
-		cssGridView: {
-			type: Boolean,
-			value: true
-		}
-	},
-
+D2L.MyCourses.CardGridBehavior = {
 	attached: function() {
 		afterNextRender(this, function() {
-			if (this.cssGridView) {
-				window.addEventListener('resize', this._onResize.bind(this));
-				// Sets initial number of columns
-				this._onResize();
-			}
+			window.addEventListener('resize', this._onResize.bind(this));
+			// Sets initial number of columns
+			this._onResize();
 		}.bind(this));
 	},
 
 	detached: function() {
-		if (this.cssGridView) {
-			window.removeEventListener('resize', this._onResize.bind(this));
-		}
+		window.removeEventListener('resize', this._onResize.bind(this));
 	},
 
 	_onResize: function(ie11retryCount) {
-		var courseTileGrid = this.$$('.course-tile-grid');
+		var courseTileGrid = this.$$('.course-card-grid');
 		if (!courseTileGrid) {
 			return;
 		}
@@ -62,7 +51,7 @@ D2L.MyCourses.CssGridBehavior = {
 			return;
 		}
 
-		var courseTileDivs = dom(this.root).querySelectorAll('.course-tile-grid > d2l-enrollment-card');
+		var courseTileDivs = dom(this.root).querySelectorAll('.course-card-grid d2l-enrollment-card');
 		ie11retryCount = ie11retryCount || 0;
 		if (
 			ie11retryCount < 20
@@ -76,10 +65,6 @@ D2L.MyCourses.CssGridBehavior = {
 
 		for (var i = 0, position = 0; i < courseTileDivs.length; i++, position++) {
 			var div = courseTileDivs[i];
-			if (this.__hideElement(div)) {
-				position--;
-				continue;
-			}
 
 			// The (* 2 - 1) accounts for the grid-gap-esque columns
 			var column = (position % numColumns + 1) * 2 - 1;
@@ -89,9 +74,4 @@ D2L.MyCourses.CssGridBehavior = {
 		}
 	},
 
-	__hideElement: function(div) {
-		return this.is !== 'd2l-all-courses-unified-content'
-			&& (div.hasAttribute('completed') || div.hasAttribute('closed'))
-			&& !div.hasAttribute('pinned');
-	}
 };

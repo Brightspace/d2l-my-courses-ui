@@ -22,8 +22,8 @@ import 'd2l-simple-overlay/d2l-simple-overlay.js';
 import 'd2l-image-selector/d2l-basic-image-selector.js';
 import 'd2l-typography/d2l-typography-shared-styles.js';
 import '../d2l-all-courses.js';
-import '../d2l-css-grid-view/d2l-css-grid-view-styles.js';
-import './d2l-my-courses-content-behavior.js';
+import './d2l-card-grid-styles.js';
+import '../d2l-my-courses-content-behavior.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 const $_documentContainer = document.createElement('template');
 

@@ -14,9 +14,9 @@ If it is off and the attribute is not added, the `d2l-my-courses-content-animate
 import '@polymer/polymer/polymer-legacy.js';
 
 import 'd2l-tabs/d2l-tabs.js';
-import './src/d2l-my-courses-content/d2l-my-courses-content.js';
-import './src/d2l-my-courses-content/d2l-my-courses-content-animated.js';
-import './src/d2l-my-courses-content/d2l-my-courses-behavior.js';
+import './src/card-grid/d2l-my-courses-content.js';
+import './src/tile-grid/d2l-my-courses-content-animated.js';
+import './src/d2l-my-courses-behavior.js';
 import './src/d2l-utility-behavior.js';
 import './src/localize-behavior.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';

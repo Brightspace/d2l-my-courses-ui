@@ -14,12 +14,12 @@ This is only used if the `US90527-my-courses-updates` LD flag is OFF
 import '@polymer/polymer/polymer-legacy.js';
 
 import 'd2l-alert/d2l-alert.js';
-import './d2l-alert-behavior.js';
-import './d2l-all-courses-styles.js';
+import '../d2l-alert-behavior.js';
+import '../d2l-all-courses-styles.js';
 import './d2l-course-tile-grid.js';
 import './d2l-course-tile-responsive-grid-behavior.js';
-import './localize-behavior.js';
-import './d2l-utility-behavior.js';
+import '../localize-behavior.js';
+import '../d2l-utility-behavior.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 const $_documentContainer = document.createElement('template');

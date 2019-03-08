@@ -1,12 +1,12 @@
 import '@polymer/polymer/polymer-legacy.js';
 import { Rels } from 'd2l-hypermedia-constants';
 import { Actions } from 'd2l-hypermedia-constants';
-import '../d2l-all-courses.js';
-import '../d2l-css-grid-view/d2l-css-grid-view-behavior.js';
-import '../d2l-alert-behavior.js';
-import '../d2l-utility-behavior.js';
+import './d2l-all-courses.js';
+import './card-grid/d2l-card-grid-behavior.js';
+import './d2l-alert-behavior.js';
+import './d2l-utility-behavior.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
-import '../localize-behavior.js';
+import './localize-behavior.js';
 window.D2L = window.D2L || {};
 window.D2L.MyCourses = window.D2L.MyCourses || {};
 

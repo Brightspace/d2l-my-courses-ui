@@ -1,4 +1,4 @@
-import '../../src/d2l-course-tile-sliding-grid-behavior.js';
+import '../../src/tile-grid/d2l-course-tile-sliding-grid-behavior.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 Polymer({

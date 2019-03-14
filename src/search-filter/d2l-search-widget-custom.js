@@ -75,16 +75,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-search-widget-custom">
 							</d2l-search-listbox>
 						</div>
 
-						<div class="search-results-listbox-page" data-page-name="search-results-page">
-							<d2l-search-listbox>
-								<template id="courseSearchResultsTemplate" is="dom-repeat" items="[[_liveSearchResults]]">
-									<div class="d2l-search-widget-custom-item" selectable="" data-text$="[[item.name]]" role="option">
-										[[item.name]]
-									</div>
-								</template>
-							</d2l-search-listbox>
-						</div>
-
 						<div class="search-results-listbox-page" data-page-name="no-results-page">
 							<d2l-search-listbox>
 								<div disabled="">{{localize('noSearchResults')}}</div>
@@ -115,19 +105,6 @@ Polymer({
 			value: function() {
 				return [];
 			}
-		},
-
-		// An array of objects containing the results of the search-my-enrollments action
-		_liveSearchResults: {
-			type: Array,
-			value: function() {
-				return [];
-			}
-		},
-
-		_liveSearchUrl: {
-			type: String,
-			observer: '_onLiveSearchUrlChanged'
 		},
 
 		// List of strings containing previously searched terms/selected courses
@@ -179,7 +156,7 @@ Polymer({
 	},
 
 	_searchPageSize: 20,
-	_liveSearchPageSize: 5,
+	_liveSearchPageSize: 20,
 	_keyCodes: {
 		DOWN: 40,
 		UP: 38,
@@ -234,7 +211,7 @@ Polymer({
 		// If the search input has changed programmatically (e.g. via
 		// searchAction changing), the input won't be focused, and we
 		// don't want to open the dropdown or live search
-		if (document.activeElement === this.$$('input')) {
+		if (D2L.Dom.Focus.getComposedActiveElement() === this.$$('input')) {
 			if (!this.$.dropdown.opened) {
 				// If a user enters a new key after having searched, re-open dropdown
 				this.$.dropdown.open();
@@ -325,54 +302,9 @@ Polymer({
 
 	_liveSearch: function() {
 		if (this._searchInput.trim().length > 0) {
-			this._setSearchUrl(this._liveSearchPageSize, '_liveSearchUrl');
+			this._setSearchUrl(this._liveSearchPageSize, 'searchUrl');
+			this.$.dropdown.close();
 		}
-	},
-	_onLiveSearchUrlChanged: function() {
-		this._organizationRequests.forEach(function(req) {
-			if (req.abort) {
-				req.abort();
-			}
-		});
-		this.set('_organizationRequests', []);
-
-		return this.fetchSirenEntity(this._liveSearchUrl)
-			.then(this._onLiveSearchResponse.bind(this));
-	},
-	_onLiveSearchResponse: function(enrollmentsEntity) {
-		if (!this._searchInput) {
-			return;
-		}
-
-		var enrollmentEntities = enrollmentsEntity.entities || [];
-		this.$$('iron-pages').select(enrollmentEntities.length > 0 ? 'search-results-page' : 'no-results-page');
-
-		this._liveSearchResults = [];
-		var fetches = [];
-		for (var i = 0; i < enrollmentEntities.length; i++) {
-			var url = enrollmentEntities[i].getLinkByRel(Rels.organization).href;
-			// Fetch each search result's organization's information
-			var result = this.fetchSirenEntity(url)
-				.then(function(organizationEntity) {
-					// Polymer's splice method causes empty results to show up for an
-					// unknown reason, so use a normal Array.prototype.splice
-					this._liveSearchResults.splice(i, 0, {
-						name: organizationEntity.properties.name
-					});
-				}.bind(this));
-			fetches.push(result);
-		}
-
-		return Promise.all(fetches)
-			.then(function() {
-				// Once all fetches have completed, manually call notifySplices with the changes
-				this.notifySplices('_liveSearchResults', [{
-					index: 0,
-					removed: [],
-					addedCount: enrollmentEntities.length,
-					type: 'splice'
-				}]);
-			}.bind(this));
 	},
 
 	/*

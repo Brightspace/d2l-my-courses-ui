@@ -14,7 +14,6 @@ import '@polymer/iron-input/iron-input.js';
 import '@polymer/iron-pages/iron-pages.js';
 import 'd2l-dropdown/d2l-dropdown.js';
 import 'd2l-dropdown/d2l-dropdown-content.js';
-import { Rels } from 'd2l-hypermedia-constants';
 import 'd2l-icons/d2l-icons.js';
 import 'd2l-search-widget/d2l-search-widget-behavior.js';
 import 'd2l-search-widget/d2l-search-widget-styles.js';

@@ -400,8 +400,6 @@ Polymer({
 
 				return window.D2L.Siren.EntityStore.fetch(this._enrollmentsSearchUrl, this.token)
 					.then(function(enrollmentsEntity) {
-						console.log(enrollmentsEntity);
-						console.log(enrollmentsEntity.entity);
 						this._updateFilteredEnrollments(enrollmentsEntity.entity, true);
 					}.bind(this));
 			}

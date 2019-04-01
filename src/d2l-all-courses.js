@@ -398,9 +398,11 @@ Polymer({
 				this._enrollmentsSearchUrl = lastResponseEntity.getLinkByRel('next').href;
 				this.$.lazyLoadSpinner.scrollIntoView();
 
-				return this.fetchSirenEntity(this._enrollmentsSearchUrl)
+				return window.D2L.Siren.EntityStore.fetch(this._enrollmentsSearchUrl, this.token)
 					.then(function(enrollmentsEntity) {
-						this._updateFilteredEnrollments(enrollmentsEntity, true);
+						console.log(enrollmentsEntity);
+						console.log(enrollmentsEntity.entity);
+						this._updateFilteredEnrollments(enrollmentsEntity.entity, true);
 					}.bind(this));
 			}
 		}

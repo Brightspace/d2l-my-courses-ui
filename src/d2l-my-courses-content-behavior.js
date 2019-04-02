@@ -638,7 +638,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			return Promise.resolve();
 		}
 		return window.D2L.Siren.EntityStore.fetch(this.presentationUrl, this.token)
-			.then(function(presentationEntity) {
+			.then(function(entity) {
+				var presentationEntity = entity.entity;
 				this._hideCourseStartDate = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.HideCourseStartDate;

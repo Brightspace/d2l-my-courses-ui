@@ -1,9 +1,35 @@
 {
   "properties": {
     "name": "Course 20",
+    "code":"MTE320",
     "isActive": true
   },
+  "entities":[
+     {
+        "class":[
+           "course-image"
+        ],
+        "rel":[
+           "https://api.brightspace.com/rels/organization-image"
+        ],
+        "href":"../data/images/image"
+     },
+     {
+        "rel":[
+          "https://api.brightspace.com/rels/organization-homepage"
+        ],
+        "properties": {
+          "path": "http://example.com"
+        }
+     }
+  ],
   "links": [
+    {
+      "rel":[
+          "https://api.brightspace.com/rels/parent-semester"
+      ],
+      "href":"../data/semester-00"
+    },
     {
       "rel": [
         "self"

@@ -595,40 +595,40 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		return enrollmentsLength > 0 ? viewAllCourses + ' (' + count + ')' : viewAllCourses;
 	},
 
-	_getPresentationAttributes: function(allCourses){
+	_getPresentationAttributes: function(allCourses) {
 		if (!this.presentationUrl) {
 			return Promise.resolve();
 		}
 		return window.D2L.Siren.EntityStore.fetch(this.presentationUrl, this.token)
-		.then(function(presentationEntity) {
-			allCourses.hideCourseStartDate = presentationEntity
+			.then(function(presentationEntity) {
+				allCourses.hideCourseStartDate = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.HideCourseStartDate;
-			allCourses.hideCourseEndDate = presentationEntity
+				allCourses.hideCourseEndDate = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.HideCourseEndDate;
-			allCourses.showOrganizationCode = presentationEntity
+				allCourses.showOrganizationCode = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowCourseCode;
-			allCourses.showSemesterName = presentationEntity
+				allCourses.showSemesterName = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowSemester;
-			allCoursess.showDropboxUnreadFeedback = presentationEntity
+				allCourses.showDropboxUnreadFeedback = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowDropboxUnreadFeedback;
-			allCourses.showUnattemptedQuizzes = presentationEntity
+				allCourses.showUnattemptedQuizzes = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowUnattemptedQuizzes;
-			allCourses.showUngradedQuizAttempts = presentationEntity
+				allCourses.showUngradedQuizAttempts = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowUngradedQuizAttempts;
-			allCourses.showUnreadDiscussionMessages = presentationEntity
+				allCourses.showUnreadDiscussionMessages = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowUnreadDiscussionMessages;
-			allCoursess.showUnreadDropboxSubmissions = presentationEntity
+				allCourses.showUnreadDropboxSubmissions = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowUnreadDropboxSubmissions;
-		}.bind(this));
+			}.bind(this));
 	},
 
 	_openAllCoursesView: function(e) {

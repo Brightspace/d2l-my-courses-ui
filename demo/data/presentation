@@ -1,0 +1,17 @@
+{
+  "properties": {
+    "ShowCourseCode": true,
+    "ShowSemester": true,
+    "ShowUnattemptedQuizzes":true,
+    "ShowDropboxUnreadFeedback":true,
+    "ShowUngradedQuizAttempts":true,
+    "ShowUnreadDiscussionMessages":true,
+    "ShowUnreadDropboxSubmissions":true,
+    "HideCourseStartDate":false,
+    "HideCourseEndDate":false
+  },
+  "links": [{
+    "rel": ["self"],
+    "href": "data/presentation"
+  }]
+}

@@ -594,6 +594,43 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		return enrollmentsLength > 0 ? viewAllCourses + ' (' + count + ')' : viewAllCourses;
 	},
+
+	_getPresentationAttributes: function(allCourses){
+		if (!this.presentationUrl) {
+			return Promise.resolve();
+		}
+		return window.D2L.Siren.EntityStore.fetch(this.presentationUrl, this.token)
+		.then(function(presentationEntity) {
+			allCourses.hideCourseStartDate = presentationEntity
+				&& presentationEntity.properties
+				&& presentationEntity.properties.HideCourseStartDate;
+			allCourses.hideCourseEndDate = presentationEntity
+				&& presentationEntity.properties
+				&& presentationEntity.properties.HideCourseEndDate;
+			allCourses.showOrganizationCode = presentationEntity
+				&& presentationEntity.properties
+				&& presentationEntity.properties.ShowCourseCode;
+			allCourses.showSemesterName = presentationEntity
+				&& presentationEntity.properties
+				&& presentationEntity.properties.ShowSemester;
+			allCoursess.showDropboxUnreadFeedback = presentationEntity
+				&& presentationEntity.properties
+				&& presentationEntity.properties.ShowDropboxUnreadFeedback;
+			allCourses.showUnattemptedQuizzes = presentationEntity
+				&& presentationEntity.properties
+				&& presentationEntity.properties.ShowUnattemptedQuizzes;
+			allCourses.showUngradedQuizAttempts = presentationEntity
+				&& presentationEntity.properties
+				&& presentationEntity.properties.ShowUngradedQuizAttempts;
+			allCourses.showUnreadDiscussionMessages = presentationEntity
+				&& presentationEntity.properties
+				&& presentationEntity.properties.ShowUnreadDiscussionMessages;
+			allCoursess.showUnreadDropboxSubmissions = presentationEntity
+				&& presentationEntity.properties
+				&& presentationEntity.properties.ShowUnreadDropboxSubmissions;
+		}.bind(this));
+	},
+
 	_openAllCoursesView: function(e) {
 		this._createAllCourses();
 
@@ -607,8 +644,9 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		allCourses.filterStandardSemesterName = this.standardSemesterName;
 		allCourses.filterStandardDepartmentName = this.standardDepartmentName;
 		allCourses.updatedSortLogic = true;
-		allCourses.presentationUrl = this.presentationUrl;
 		allCourses.hasEnrollmentsChanged = this._hasEnrollmentsChanged;
+
+		this._getPresentationAttributes(allCourses);
 
 		allCourses.open();
 

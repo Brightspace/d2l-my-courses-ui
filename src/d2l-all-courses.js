@@ -139,7 +139,17 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses">
 							presentation-url="[[presentationUrl]]"
 							total-filter-count="[[_totalFilterCount]]"
 							filter-counts="[[_filterCounts]]"
-							is-searched="[[_isSearched]]">
+							is-searched="[[_isSearched]]"
+							token="[[token]]"
+							show-organization-code="[[showOrganizationCode]]"
+							show-semester-name="[[showSemesterName]]"
+							show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
+							show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
+							show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
+							show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
+							show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
+							hide-course-start-date="[[hideCourseStartDate]]"
+							hide-course-end-date="[[hideCourseEndDate]]">
 						</d2l-all-courses-unified-content>
 					</template>
 				</template>
@@ -172,8 +182,42 @@ Polymer({
 		/*
 		* Public Polymer properties
 		*/
-		// URL to fetch widget settings
-		presentationUrl: String,
+		showOrganizationCode: {
+			type: Boolean,
+			value: false
+		},
+		showSemesterName: {
+			type: Boolean,
+			value: false
+		},
+		hideCourseStartDate: {
+			type: Boolean,
+			value: false
+		},
+		hideCourseEndDate: {
+			type: Boolean,
+			value: false
+		},
+		showDropboxUnreadFeedback: {
+			type: Boolean,
+			value: false
+		},
+		showUnattemptedQuizzes: {
+			type: Boolean,
+			value: false
+		},
+		showUngradedQuizAttempts: {
+			type: Boolean,
+			value: false
+		},
+		showUnreadDiscussionMessages: {
+			type: Boolean,
+			value: false
+		},
+		showUnreadDropboxSubmissions: {
+			type: Boolean,
+			value: false
+		},
 		// URL that directs to the advanced search page
 		advancedSearchUrl: String,
 		// Types of notifications to include in update count in course tile
@@ -397,7 +441,6 @@ Polymer({
 			if (lastResponseEntity && lastResponseEntity.hasLinkByRel('next')) {
 				this._enrollmentsSearchUrl = lastResponseEntity.getLinkByRel('next').href;
 				this.$.lazyLoadSpinner.scrollIntoView();
-
 				return window.D2L.Siren.EntityStore.fetch(this._enrollmentsSearchUrl, this.token)
 					.then(function(enrollmentsEntity) {
 						this._updateFilteredEnrollments(enrollmentsEntity.entity, true);

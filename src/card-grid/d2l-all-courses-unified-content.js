@@ -45,7 +45,18 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses-unified-content
 
 		<div class="course-card-grid">
 			<template is="dom-repeat" items="[[filteredEnrollments]]">
-				<d2l-enrollment-card href="[[item]]" presentation-href="[[presentationUrl]]">
+				<d2l-enrollment-card
+					href="[[item]]"
+					token="[[token]]"
+					show-organization-code="[[showOrganizationCode]]"
+					show-semester-name="[[showSemesterName]]"
+					show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
+					show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
+					show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
+					show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
+					show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
+					hide-course-start-date="[[hideCourseStartDate]]"
+					hide-course-end-date="[[hideCourseEndDate]]">
 				</d2l-enrollment-card>
 			</template>
 		</div>
@@ -61,8 +72,42 @@ Polymer({
 		filterCounts: Object,
 		isSearched: Boolean,
 		filteredEnrollments: Array,
-		presentationUrl: String,
-
+		showOrganizationCode: {
+			type: Boolean,
+			value: false
+		},
+		showSemesterName: {
+			type: Boolean,
+			value: false
+		},
+		hideCourseStartDate: {
+			type: Boolean,
+			value: false
+		},
+		hideCourseEndDate: {
+			type: Boolean,
+			value: false
+		},
+		showDropboxUnreadFeedback: {
+			type: Boolean,
+			value: false
+		},
+		showUnattemptedQuizzes: {
+			type: Boolean,
+			value: false
+		},
+		showUngradedQuizAttempts: {
+			type: Boolean,
+			value: false
+		},
+		showUnreadDiscussionMessages: {
+			type: Boolean,
+			value: false
+		},
+		showUnreadDropboxSubmissions: {
+			type: Boolean,
+			value: false
+		},
 		_noCoursesInSearch: Boolean,
 		_noCoursesInSelection: Boolean,
 		_noCoursesInDepartment: Boolean,

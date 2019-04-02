@@ -42,6 +42,7 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 			value: false
 		},
 		currentTabId: String,
+		token: String,
 		_enrollmentsSearchAction: Object,
 		_pinnedTabAction: Object,
 		_showGroupByTabs: {

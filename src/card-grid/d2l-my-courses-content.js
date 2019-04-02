@@ -77,7 +77,18 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content">
 			</template>
 			<div class="course-card-grid">
 				<template is="dom-repeat" items="[[_enrollments]]">
-					<d2l-enrollment-card href="[[item]]" presentation-href="[[presentationUrl]]">
+					<d2l-enrollment-card
+						href="[[item]]"
+						token="[[token]]"
+						show-organization-code="[[_showOrganizationCode]]"
+						show-semester-name="[[_showSemesterName]]"
+						show-dropbox-unread-feedback="[[_showDropboxUnreadFeedback]]"
+						show-unattempted-quizzes="[[_showUnattemptedQuizzes]]"
+						show-ungraded-quiz-attempts="[[_showUngradedQuizAttempts]]"
+						show-unread-discussion-messages="[[_showUnreadDiscussionMessages]]"
+						show-unread-dropbox-submissions="[[_showUnreadDropboxSubmissions]]"
+						hide-course-start-date="[[_hideCourseStartDate]]"
+						hide-course-end-date="[[_hideCourseEndDate]]">
 					</d2l-enrollment-card>
 				</template>
 			</div>

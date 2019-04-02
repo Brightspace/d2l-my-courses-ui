@@ -122,10 +122,19 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses">
 								<d2l-tab-panel id="all-courses-tab-[[item.name]]" text="[[item.title]]" selected="[[item.selected]]">
 									<div hidden$="[[!_showTabContent]]">
 										<d2l-all-courses-unified-content
-											presentation-url="[[presentationUrl]]"
 											total-filter-count="[[_totalFilterCount]]"
 											filter-counts="[[_filterCounts]]"
-											is-searched="[[_isSearched]]">
+											is-searched="[[_isSearched]]"
+											token="[[token]]"
+											show-organization-code="[[showOrganizationCode]]"
+											show-semester-name="[[showSemesterName]]"
+											show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
+											show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
+											show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
+											show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
+											show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
+											hide-course-start-date="[[hideCourseStartDate]]"
+											hide-course-end-date="[[hideCourseEndDate]]">
 										</d2l-all-courses-unified-content>
 									</div>
 									<d2l-loading-spinner hidden$="[[_showTabContent]]" size="100">
@@ -136,7 +145,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses">
 					</template>
 					<template is="dom-if" if="[[!_showGroupByTabs]]">
 						<d2l-all-courses-unified-content
-							presentation-url="[[presentationUrl]]"
 							total-filter-count="[[_totalFilterCount]]"
 							filter-counts="[[_filterCounts]]"
 							is-searched="[[_isSearched]]"

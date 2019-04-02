@@ -80,15 +80,15 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content">
 					<d2l-enrollment-card
 						href="[[item]]"
 						token="[[token]]"
-						show-organization-code="[[showOrganizationCode]]"
-						show-semester-name="[[showSemesterName]]"
-						show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
-						show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
-						show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
-						show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
-						show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
-						hide-course-start-date="[[hideCourseStartDate]]"
-						hide-course-end-date="[[hideCourseEndDate]]">
+						show-organization-code="[[_showOrganizationCode]]"
+						show-semester-name="[[_showSemesterName]]"
+						show-dropbox-unread-feedback="[[_showDropboxUnreadFeedback]]"
+						show-unattempted-quizzes="[[_showUnattemptedQuizzes]]"
+						show-ungraded-quiz-attempts="[[_showUngradedQuizAttempts]]"
+						show-unread-discussion-messages="[[_showUnreadDiscussionMessages]]"
+						show-unread-dropbox-submissions="[[_showUnreadDropboxSubmissions]]"
+						hide-course-start-date="[[_hideCourseStartDate]]"
+						hide-course-end-date="[[_hideCourseEndDate]]">
 					</d2l-enrollment-card>
 				</template>
 			</div>

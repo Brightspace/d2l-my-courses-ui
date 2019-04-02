@@ -32,7 +32,45 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			observer: '_onPresentationUrlChange'
 		},
 		changedCourseEnrollment: Object,
-
+		/*
+		* Presentation Attributes
+		*/
+		_showOrganizationCode: {
+			type: Boolean,
+			value: false
+		},
+		_showSemesterName: {
+			type: Boolean,
+			value: false
+		},
+		_hideCourseStartDate: {
+			type: Boolean,
+			value: false
+		},
+		_hideCourseEndDate: {
+			type: Boolean,
+			value: false
+		},
+		_showDropboxUnreadFeedback: {
+			type: Boolean,
+			value: false
+		},
+		_showUnattemptedQuizzes: {
+			type: Boolean,
+			value: false
+		},
+		_showUngradedQuizAttempts: {
+			type: Boolean,
+			value: false
+		},
+		_showUnreadDiscussionMessages: {
+			type: Boolean,
+			value: false
+		},
+		_showUnreadDropboxSubmissions: {
+			type: Boolean,
+			value: false
+		},
 		// Alerts to display in widget, above course tiles
 		_alertsView: {
 			type: Array,
@@ -595,37 +633,37 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		return enrollmentsLength > 0 ? viewAllCourses + ' (' + count + ')' : viewAllCourses;
 	},
 
-	_getPresentationAttributes: function(allCourses) {
+	_getPresentationAttributes: function() {
 		if (!this.presentationUrl) {
 			return Promise.resolve();
 		}
 		return window.D2L.Siren.EntityStore.fetch(this.presentationUrl, this.token)
 			.then(function(presentationEntity) {
-				allCourses.hideCourseStartDate = presentationEntity
+				this._hideCourseStartDate = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.HideCourseStartDate;
-				allCourses.hideCourseEndDate = presentationEntity
+				this._hideCourseEndDate = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.HideCourseEndDate;
-				allCourses.showOrganizationCode = presentationEntity
+				this._showOrganizationCode = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowCourseCode;
-				allCourses.showSemesterName = presentationEntity
+				this._showSemesterName = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowSemester;
-				allCourses.showDropboxUnreadFeedback = presentationEntity
+				this._showDropboxUnreadFeedback = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowDropboxUnreadFeedback;
-				allCourses.showUnattemptedQuizzes = presentationEntity
+				this._showUnattemptedQuizzes = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowUnattemptedQuizzes;
-				allCourses.showUngradedQuizAttempts = presentationEntity
+				this._showUngradedQuizAttempts = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowUngradedQuizAttempts;
-				allCourses.showUnreadDiscussionMessages = presentationEntity
+				this._showUnreadDiscussionMessages = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowUnreadDiscussionMessages;
-				allCourses.showUnreadDropboxSubmissions = presentationEntity
+				this._showUnreadDropboxSubmissions = presentationEntity
 				&& presentationEntity.properties
 				&& presentationEntity.properties.ShowUnreadDropboxSubmissions;
 			}.bind(this));
@@ -646,7 +684,16 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		allCourses.updatedSortLogic = true;
 		allCourses.hasEnrollmentsChanged = this._hasEnrollmentsChanged;
 
-		this._getPresentationAttributes(allCourses);
+		allCourses.token = this.token;
+		allCourses.hideCourseStartDate = this._hideCourseStartDate;
+		allCourses.hideCourseEndDate = this._hideCourseEndDate;
+		allCourses.showOrganizationCode = this._showOrganizationCode;
+		allCourses.showSemesterName = this._showSemesterName;
+		allCourses.showDropboxUnreadFeedback = this._showDropboxUnreadFeedback;
+		allCourses.showUnattemptedQuizzes = this._showUnattemptedQuizzes;
+		allCourses.showUngradedQuizAttempts = this._showUngradedQuizAttempts;
+		allCourses.showUnreadDiscussionMessages = this._showUnreadDiscussionMessages;
+		allCourses.showUnreadDropboxSubmissions = this._showUnreadDropboxSubmissions;
 
 		allCourses.open();
 
@@ -658,6 +705,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		var hasMoreEnrollments = enrollmentsEntity.hasLinkByRel('next');
 		this._nextEnrollmentEntityUrl = hasMoreEnrollments ? enrollmentsEntity.getLinkByRel('next').href : null;
 		var newEnrollments = [];
+
+		this._getPresentationAttributes();
 
 		var searchAction = enrollmentsEntity.getActionByName(Actions.enrollments.searchMyEnrollments);
 

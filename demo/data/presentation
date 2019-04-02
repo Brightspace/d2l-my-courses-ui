@@ -12,6 +12,6 @@
   },
   "links": [{
     "rel": ["self"],
-    "href": "data/presentation.json"
+    "href": "data/presentation"
   }]
 }

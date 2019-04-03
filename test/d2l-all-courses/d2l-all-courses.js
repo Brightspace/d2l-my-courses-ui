@@ -33,7 +33,7 @@ describe('d2l-all-courses', function() {
 		sandbox = sinon.sandbox.create();
 
 		widget = fixture('d2l-all-courses-fixture');
-		requestAnimationFrame(function() {
+		setTimeout(function() {
 			console.log('widget', widget); /*eslint no-console: 0*/
 			widget.shadowRoot.querySelector('#search-widget')._setSearchUrl = sandbox.stub();
 			widget._enrollmentsSearchAction = {
@@ -51,7 +51,7 @@ describe('d2l-all-courses', function() {
 			widget.updatedSortLogic = false;
 
 			flush(() => { done(); });
-		});
+		}, 200);
 
 	});
 

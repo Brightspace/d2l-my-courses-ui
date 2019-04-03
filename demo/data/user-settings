@@ -1,12 +1,27 @@
 {
-  "properties": {
-    "MostRecentEnrollmentsSearchType": "None",
-    "MostRecentEnrollmentsSearchName": "search-my-enrollments"
-  },
-  "links": [{
-      "rel": [
-        "https://api.brightspace.com/rels/widget-settings"
-      ],
-      "href": "../data/presentation"
-    }]
+    "properties": {
+        "MostRecentEnrollmentsSearchType": "None",
+        "MostRecentEnrollmentsSearchName": "search-my-enrollments"
+    },
+    "links": [
+        {
+            "rel": [
+                "https://api.brightspace.com/rels/widget-settings"
+            ],
+        	"href": "../data/presentation"
+        },
+        {
+            "rel": [
+                "self"
+            ],
+            "href": "../data/user-settings"
+        }
+    ],
+    "actions": [
+        {
+            "href": "../data/user-settings",
+            "name": "update-user-settings",
+            "method": "PUT"
+        }
+    ]
 }

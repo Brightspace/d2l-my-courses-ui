@@ -54,7 +54,8 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 			value: []
 		},
 		_tabSearchType: String,
-		_changedCourseEnrollment: Object
+		_changedCourseEnrollment: Object,
+		_updateUserSettingsAction: Object
 	},
 	_computeShowGroupByTabs: function(groups) {
 		return groups.length >= 2 || (groups.length > 0 && !this._enrollmentsSearchAction);
@@ -87,6 +88,8 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 				if (userSettingsEntity && userSettingsEntity.hasLinkByRel(Rels.widgetSettings)) {
 					this.presentationUrl = userSettingsEntity.getLinkByRel(Rels.widgetSettings).href;
 				}
+
+				this._updateUserSettingsAction = userSettingsEntity.getActionByName('update-user-settings');
 			}.bind(this))
 			.then(this._fetchTabSearchActions.bind(this));
 	},

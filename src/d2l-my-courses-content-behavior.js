@@ -1,6 +1,8 @@
 import '@polymer/polymer/polymer-legacy.js';
 import { Rels } from 'd2l-hypermedia-constants';
 import { Actions } from 'd2l-hypermedia-constants';
+import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
+import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
 import './d2l-all-courses.js';
 import './card-grid/d2l-card-grid-behavior.js';
 import './d2l-alert-behavior.js';
@@ -25,12 +27,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			value: function() { return []; }
 		},
 		tabSearchType: String,
-		userSettingsUrl: String,
-		// URL to fetch widget settings
-		presentationUrl: {
-			type: String,
-			observer: '_onPresentationUrlChange'
-		},
+		updateUserSettingsAction: Object,
 		changedCourseEnrollment: Object,
 		/*
 		* Presentation Attributes
@@ -178,7 +175,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 	observers: [
 		'_enrollmentsChanged(_enrollments.length, _numberOfEnrollments)',
 		'_enrollmentSearchActionChanged(enrollmentsSearchAction)',
-		'_onCourseEnrollmentChange(changedCourseEnrollment)'
+		'_onCourseEnrollmentChange(changedCourseEnrollment)',
+		'_onPresentationEntityChange(entity)'
 	],
 
 	/*
@@ -274,7 +272,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		}
 
 		if (this._enrollments.length < this._widgetMaxCardVisible && this._nextEnrollmentEntityUrl) {
-			this.fetchSirenEntity(this._nextEnrollmentEntityUrl)
+			this._entityStoreFetch(this._nextEnrollmentEntityUrl)
 				.then(this._populateEnrollments.bind(this));
 		}
 
@@ -514,8 +512,25 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			}
 		}
 	},
-	_onPresentationUrlChange: function(newValue) {
-		this.fetchSirenEntity(newValue, true);
+	_onPresentationEntityChange: function(entity) {
+		this._hideCourseStartDate = entity && entity.properties
+			&& entity.properties.HideCourseStartDate;
+		this._hideCourseEndDate = entity && entity.properties
+			&& entity.properties.HideCourseEndDate;
+		this._showOrganizationCode = entity && entity.properties
+			&& entity.properties.ShowCourseCode;
+		this._showSemesterName = entity && entity.properties
+			&& entity.properties.ShowSemester;
+		this._showDropboxUnreadFeedback = entity && entity.properties
+			&& entity.properties.ShowDropboxUnreadFeedback;
+		this._showUnattemptedQuizzes = entity && entity.properties
+			&& entity.properties.ShowUnattemptedQuizzes;
+		this._showUngradedQuizAttempts = entity && entity.properties
+			&& entity.properties.ShowUngradedQuizAttempts;
+		this._showUnreadDiscussionMessages = entity && entity.properties
+			&& entity.properties.ShowUnreadDiscussionMessages;
+		this._showUnreadDropboxSubmissions = entity && entity.properties
+			&& entity.properties.ShowUnreadDropboxSubmissions;
 	},
 	_onCourseEnrollmentChange: function(newValue) {
 		if (!newValue) {
@@ -537,6 +552,9 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 	* Utility/helper functions
 	*/
 
+	_entityStoreFetch: function(url) {
+		return window.D2L.Siren.EntityStore.fetch(url, this.token);
+	},
 	_createFetchEnrollmentsUrl: function(bustCache) {
 		var query = {
 			pageSize: 20,
@@ -593,7 +611,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl();
 		this.performanceMark('d2l.my-courses.search-enrollments.request');
-		return this.fetchSirenEntity(this._enrollmentsSearchUrl)
+		return this._entityStoreFetch(this._enrollmentsSearchUrl)
 			.then(this._enrollmentsResponsePerfMeasures.bind(this))
 			.then(this._populateEnrollments.bind(this));
 	},
@@ -633,42 +651,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		return enrollmentsLength > 0 ? viewAllCourses + ' (' + count + ')' : viewAllCourses;
 	},
-	_getPresentationAttributes: function() {
-		if (!this.presentationUrl) {
-			return Promise.resolve();
-		}
-		return window.D2L.Siren.EntityStore.fetch(this.presentationUrl, this.token)
-			.then(function(entity) {
-				var presentationEntity = entity.entity;
-				this._hideCourseStartDate = presentationEntity
-				&& presentationEntity.properties
-				&& presentationEntity.properties.HideCourseStartDate;
-				this._hideCourseEndDate = presentationEntity
-				&& presentationEntity.properties
-				&& presentationEntity.properties.HideCourseEndDate;
-				this._showOrganizationCode = presentationEntity
-				&& presentationEntity.properties
-				&& presentationEntity.properties.ShowCourseCode;
-				this._showSemesterName = presentationEntity
-				&& presentationEntity.properties
-				&& presentationEntity.properties.ShowSemester;
-				this._showDropboxUnreadFeedback = presentationEntity
-				&& presentationEntity.properties
-				&& presentationEntity.properties.ShowDropboxUnreadFeedback;
-				this._showUnattemptedQuizzes = presentationEntity
-				&& presentationEntity.properties
-				&& presentationEntity.properties.ShowUnattemptedQuizzes;
-				this._showUngradedQuizAttempts = presentationEntity
-				&& presentationEntity.properties
-				&& presentationEntity.properties.ShowUngradedQuizAttempts;
-				this._showUnreadDiscussionMessages = presentationEntity
-				&& presentationEntity.properties
-				&& presentationEntity.properties.ShowUnreadDiscussionMessages;
-				this._showUnreadDropboxSubmissions = presentationEntity
-				&& presentationEntity.properties
-				&& presentationEntity.properties.ShowUnreadDropboxSubmissions;
-			}.bind(this));
-	},
 	_openAllCoursesView: function(e) {
 		this._createAllCourses();
 
@@ -702,12 +684,12 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		e.stopPropagation();
 	},
 	_populateEnrollments: function(enrollmentsEntity) {
+		enrollmentsEntity = enrollmentsEntity && enrollmentsEntity.entity;
 		var enrollmentEntities = enrollmentsEntity.getSubEntitiesByClass('enrollment');
 		var hasMoreEnrollments = enrollmentsEntity.hasLinkByRel('next');
 		this._nextEnrollmentEntityUrl = hasMoreEnrollments ? enrollmentsEntity.getLinkByRel('next').href : null;
 		var newEnrollments = [];
 
-		this._getPresentationAttributes();
 		var searchAction = enrollmentsEntity.getActionByName(Actions.enrollments.searchMyEnrollments);
 
 		if (searchAction
@@ -746,7 +728,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		var lastEnrollment = enrollmentEntities[enrollmentEntities.length - 1];
 		if (lastEnrollment && lastEnrollment.hasClass('pinned') && this._nextEnrollmentEntityUrl) {
-			return this.fetchSirenEntity(this._nextEnrollmentEntityUrl)
+			return this._entityStoreFetch(this._nextEnrollmentEntityUrl)
 				.then(this._populateEnrollments.bind(this));
 		}
 	},
@@ -766,7 +748,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 	},
 	_refetchEnrollments: function() {
 		this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(true);
-		return this.fetchSirenEntity(this._enrollmentsSearchUrl)
+		return this._entityStoreFetch(this._enrollmentsSearchUrl)
 			.then(this._populateEnrollments.bind(this));
 	},
 	_resetEnrollments: function() {
@@ -776,10 +758,18 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this._numberOfEnrollments = 0;
 	},
 	_setLastSearchName: function(id) {
-		this.submitForm(this.userSettingsUrl, {
-			'mostRecentEnrollmentsSearchType': '0',
-			'mostRecentEnrollmentsSearchName': id
-		});
+		this.performSirenAction(this.updateUserSettingsAction, [
+			{
+				"type":"hidden",
+				"name": "mostRecentEnrollmentsSearchType",
+				"value": "None"
+			},
+			{
+				"type":"hidden",
+				"name": "mostRecentEnrollmentsSearchName",
+				"value": id
+			}
+		]);
 	}
 };
 
@@ -790,5 +780,7 @@ D2L.MyCourses.MyCoursesContentBehavior = [
 	D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 	D2L.MyCourses.AlertBehavior,
 	D2L.MyCourses.UtilityBehavior,
+	D2L.PolymerBehaviors.Siren.EntityBehavior,
+	D2L.PolymerBehaviors.Siren.SirenActionBehavior,
 	D2L.MyCourses.MyCoursesContentBehaviorImpl
 ];

@@ -45,17 +45,17 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses">
 						<!-- item.name is an OrgUnitId, and querySelector does not work with components with ids that start with a number -->
 						<d2l-tab-panel id="panel-[[item.name]]" text="[[item.title]]" selected="[[item.selected]]">
 							<d2l-my-courses-content
+								href="[[presentationUrl]]"
 								token="[[token]]"
 								advanced-search-url="[[advancedSearchUrl]]"
 								course-image-upload-cb="[[courseImageUploadCb]]"
 								enrollments-search-action="[[item.enrollmentsSearchAction]]"
 								image-catalog-location="[[imageCatalogLocation]]"
-								presentation-url="[[presentationUrl]]"
 								standard-department-name="[[standardDepartmentName]]"
 								standard-semester-name="[[standardSemesterName]]"
 								tab-search-actions="[[_tabSearchActions]]"
 								tab-search-type="[[_tabSearchType]]"
-								user-settings-url="[[userSettingsUrl]]"
+								update-user-settings-action="[[_updateUserSettingsAction]]"
 								changed-course-enrollment="[[_changedCourseEnrollment]]">
 							</d2l-my-courses-content>
 						</d2l-tab-panel>

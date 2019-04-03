@@ -35,7 +35,7 @@ describe('d2l-all-courses', function() {
 		widget = fixture('d2l-all-courses-fixture');
 		setTimeout(function() {
 			console.log('widget', widget); /*eslint no-console: 0*/
-			widget.shadowRoot.querySelector('#search-widget')._setSearchUrl = sandbox.stub();
+			//widget.shadowRoot.querySelector('#search-widget')._setSearchUrl = sandbox.stub();
 			widget._enrollmentsSearchAction = {
 				name: 'search-my-enrollments',
 				href: '/enrollments/users/169',

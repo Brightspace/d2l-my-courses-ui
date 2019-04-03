@@ -211,9 +211,9 @@ describe('d2l-my-courses-content-animated', function() {
 		widget.fetchSirenEntity.withArgs(rootHref).returns(Promise.resolve(
 			window.D2L.Hypermedia.Siren.Parse(enrollmentsRootResponse)
 		));
-		widget.fetchSirenEntity.withArgs(searchHref).returns(Promise.resolve({
-			entity: enrollmentsSearchEntity
-		}));
+		widget.fetchSirenEntity.withArgs(searchHref).returns(Promise.resolve(
+			enrollmentsSearchEntity
+		));
 		setTimeout(() => {
 			done();
 		});

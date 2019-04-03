@@ -168,7 +168,6 @@ describe('d2l-all-courses', function() {
 		});
 	});
 
-
 	describe('d2l-filter-menu-change event', function() {
 		it('should set the _searchUrl with one query string and filterCounts', function() {
 			widget.$.filterMenu.fire('d2l-filter-menu-change', {
@@ -193,7 +192,7 @@ describe('d2l-all-courses', function() {
 					roles: 0
 				}
 			});
-			console.log();
+
 			expect(widget._searchUrl.indexOf('http://example.com?search=&pageSize=20&bustCache=') !== -1).to.be.true;
 			expect(widget._totalFilterCount).to.equal(15);
 		});

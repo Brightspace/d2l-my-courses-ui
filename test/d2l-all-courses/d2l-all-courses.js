@@ -81,107 +81,48 @@ describe('d2l-all-courses', function() {
 		});
 	});
 
-	it('should return the correct value from getCourseTileItemCount (should be maximum of pinned or unpinned course count)', function() {
-		widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
-		widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
+	describe('getCourseTileItemCount', function() {
+		it('should return the correct value from getCourseTileItemCount (should be maximum of pinned or unpinned course count)', function() {
+			widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
+			widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
 
-		expect(widget.$$('d2l-all-courses-segregated-content').getCourseTileItemCount()).to.equal(1);
-	});
+			expect(widget.$$('d2l-all-courses-segregated-content').getCourseTileItemCount()).to.equal(1);
+		});
 
-	it('should set getCourseTileItemCount on its child course-tile-grids', function() {
-		widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
-		widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
-		var courseTileGrids;
-		var segregatedContent = widget.$$('d2l-all-courses-segregated-content');
-		if (segregatedContent.shadowRoot) {
-			courseTileGrids = segregatedContent.shadowRoot.querySelectorAll('d2l-course-tile-grid');
-		} else {
-			courseTileGrids = segregatedContent.querySelectorAll('d2l-course-tile-grid');
-		}
-		expect(courseTileGrids.length).to.equal(2);
+		it('should set getCourseTileItemCount on its child course-tile-grids', function() {
+			widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
+			widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
+			var courseTileGrids;
+			var segregatedContent = widget.$$('d2l-all-courses-segregated-content');
+			if (segregatedContent.shadowRoot) {
+				courseTileGrids = segregatedContent.shadowRoot.querySelectorAll('d2l-course-tile-grid');
+			} else {
+				courseTileGrids = segregatedContent.querySelectorAll('d2l-course-tile-grid');
+			}
+			expect(courseTileGrids.length).to.equal(2);
 
-		for (var i = 0; i < courseTileGrids.length; i++) {
-			expect(courseTileGrids[i].getCourseTileItemCount()).to.equal(1);
-		}
-	});
-
-	it('should load filter menu content when filter menu is opened', function() {
-		var semestersTabStub = sandbox.stub(widget.$.filterMenu.$.semestersTab, 'load');
-		var departmentsTabStub = sandbox.stub(widget.$.filterMenu.$.departmentsTab, 'load');
-
-		return widget._onFilterDropdownOpen().then(function() {
-			expect(semestersTabStub.called).to.be.true;
-			expect(departmentsTabStub.called).to.be.true;
+			for (var i = 0; i < courseTileGrids.length; i++) {
+				expect(courseTileGrids[i].getCourseTileItemCount()).to.equal(1);
+			}
 		});
 	});
 
-	describe('d2l-filter-menu-change event', function() {
-		it('should set the _searchUrl with one query string and filterCounts', function() {
-			widget.$.filterMenu.fire('d2l-filter-menu-change', {
-				url: 'http://example.com',
-				filterCounts: {
-					departments: 12,
-					semesters: 0,
-					roles: 0
-				}
+	describe('filter menu', function() {
+		it('should load filter menu content when filter menu is opened', function() {
+			var semestersTabStub = sandbox.stub(widget.$.filterMenu.$.semestersTab, 'load');
+			var departmentsTabStub = sandbox.stub(widget.$.filterMenu.$.departmentsTab, 'load');
+
+			return widget._onFilterDropdownOpen().then(function() {
+				expect(semestersTabStub.called).to.be.true;
+				expect(departmentsTabStub.called).to.be.true;
 			});
-
-			expect(widget._searchUrl.indexOf('http://example.com?bustCache') !== -1).to.be.true;
-			expect(widget._totalFilterCount).to.equal(12);
-		});
-
-		it('should set the _searchUrl with multiple query strings and filterCounts', function() {
-			widget.$.filterMenu.fire('d2l-filter-menu-change', {
-				url: 'http://example.com?search=&pageSize=20',
-				filterCounts: {
-					departments: 15,
-					semesters: 0,
-					roles: 0
-				}
-			});
-
-			expect(widget._searchUrl.indexOf('http://example.com?search=&pageSize=20&bustCache=') !== -1).to.be.true;
-			expect(widget._totalFilterCount).to.equal(15);
 		});
 	});
 
-	describe('d2l-menu-item-change event', function() {
-		it('should set the _searchUrl', function() {
-			widget.$.sortDropdown.fire('d2l-menu-item-change', {
-				value: 'LastAccessed'
-			});
-
-			expect(widget._searchUrl).to.include('/enrollments/users/169?parentOrganizations=&sort=LastAccessed');
-		});
-
-	});
-
-	describe('Filter text', function() {
-		function fireEvents(filterCount) {
-			widget.$.filterMenu.fire('d2l-filter-menu-change', {
-				url: 'http://example.com',
-				filterCounts: {
-					departments: filterCount,
-					semesters: 0,
-					roles: 0
-				}
-			});
-			widget.$.filterDropdownContent.fire('d2l-dropdown-close', {});
-		}
-
-		it('should read "Filter" when no filters are selected', function() {
-			fireEvents(0);
-			expect(widget._filterText).to.equal('Filter');
-		});
-
-		it('should read "Filter: 1 filter" when any 1 filter is selected', function() {
-			fireEvents(1);
-			expect(widget._filterText).to.equal('Filter: 1 Filter');
-		});
-
-		it('should read "Filter: 2 filters" when any 2 filters are selected', function() {
-			fireEvents(2);
-			expect(widget._filterText).to.equal('Filter: 2 Filters');
+	describe('opening the overlay', function() {
+		it('should initially hide content', function() {
+			widget.open();
+			expect(widget._showContent).to.be.false;
 		});
 	});
 
@@ -227,10 +168,74 @@ describe('d2l-all-courses', function() {
 		});
 	});
 
-	describe('opening the overlay', function() {
-		it('should initially hide content', function() {
-			widget.open();
-			expect(widget._showContent).to.be.false;
+
+	describe('d2l-filter-menu-change event', function() {
+		it('should set the _searchUrl with one query string and filterCounts', function() {
+			widget.$.filterMenu.fire('d2l-filter-menu-change', {
+				url: 'http://example.com',
+				filterCounts: {
+					departments: 12,
+					semesters: 0,
+					roles: 0
+				}
+			});
+
+			expect(widget._searchUrl.indexOf('http://example.com?bustCache') !== -1).to.be.true;
+			expect(widget._totalFilterCount).to.equal(12);
+		});
+
+		it('should set the _searchUrl with multiple query strings and filterCounts', function() {
+			widget.$.filterMenu.fire('d2l-filter-menu-change', {
+				url: 'http://example.com?search=&pageSize=20',
+				filterCounts: {
+					departments: 15,
+					semesters: 0,
+					roles: 0
+				}
+			});
+			console.log();
+			expect(widget._searchUrl.indexOf('http://example.com?search=&pageSize=20&bustCache=') !== -1).to.be.true;
+			expect(widget._totalFilterCount).to.equal(15);
+		});
+	});
+
+	describe('d2l-menu-item-change event', function() {
+		it('should set the _searchUrl', function() {
+			widget.$.sortDropdown.fire('d2l-menu-item-change', {
+				value: 'LastAccessed'
+			});
+
+			expect(widget._searchUrl).to.include('/enrollments/users/169?parentOrganizations=&sort=LastAccessed');
+		});
+
+	});
+
+	describe('Filter text', function() {
+		function fireEvents(filterCount) {
+			widget.$.filterMenu.fire('d2l-filter-menu-change', {
+				url: 'http://example.com',
+				filterCounts: {
+					departments: filterCount,
+					semesters: 0,
+					roles: 0
+				}
+			});
+			widget.$.filterDropdownContent.fire('d2l-dropdown-close', {});
+		}
+
+		it('should read "Filter" when no filters are selected', function() {
+			fireEvents(0);
+			expect(widget._filterText).to.equal('Filter');
+		});
+
+		it('should read "Filter: 1 filter" when any 1 filter is selected', function() {
+			fireEvents(1);
+			expect(widget._filterText).to.equal('Filter: 1 Filter');
+		});
+
+		it('should read "Filter: 2 filters" when any 2 filters are selected', function() {
+			fireEvents(2);
+			expect(widget._filterText).to.equal('Filter: 2 Filters');
 		});
 	});
 

@@ -1,0 +1,25 @@
+{
+  "class":[
+     "course-image"
+  ],
+  "links":[
+     {
+        "rel":[
+           "self"
+        ],
+        "href":"../data/images/image"
+     },
+     {
+        "class":[
+           "tile",
+           "low-density",
+           "max"
+        ],
+        "rel":[
+           "alternate"
+        ],
+        "type":"image/jpeg",
+        "href":"../data/images/3635-fruit-photo.jpg"
+     }
+  ]
+}

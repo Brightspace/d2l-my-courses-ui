@@ -1,1 +1,12 @@
-{}
+{
+  "properties": {
+    "MostRecentEnrollmentsSearchType": "None",
+    "MostRecentEnrollmentsSearchName": "search-my-enrollments"
+  },
+  "links": [{
+      "rel": [
+        "https://api.brightspace.com/rels/widget-settings"
+      ],
+      "href": "../data/presentation"
+    }]
+}

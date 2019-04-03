@@ -1,9 +1,16 @@
 {
   "properties": {
     "name": "Course 19",
+    "code":"MTE320",
     "isActive": true
   },
   "links": [
+    {
+      "rel":[
+          "https://api.brightspace.com/rels/parent-semester"
+      ],
+      "href":"../data/semester-00"
+    },
     {
       "rel": [
         "self"

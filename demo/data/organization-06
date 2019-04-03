@@ -1,9 +1,18 @@
 {
   "properties": {
     "name": "Course 06",
+    "code":"MTE320",
+    "startDate":"1995-01-02T10:00:00.000Z",
+    "endDate":"2040-01-02T10:00:00.000Z",
     "isActive": true
   },
   "links": [
+    {
+      "rel":[
+          "https://api.brightspace.com/rels/parent-semester"
+      ],
+      "href":"../data/semester-00"
+    },
     {
       "rel": [
         "self"

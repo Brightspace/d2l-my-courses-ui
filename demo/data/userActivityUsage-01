@@ -1,0 +1,22 @@
+{
+    "class": [
+        "activity",
+        "user-course-offering-activity-usage",
+        "attended"
+    ],
+    "entities": [
+        {
+            "class": [
+                "date",
+                "due-date"
+            ],
+            "rel": [
+                "https://api.brightspace.com/rels/date"
+            ],
+            "properties": {
+                "date": "2010-08-25T04:00:00.000Z"
+            }
+        }
+    ],
+    "links": []
+}

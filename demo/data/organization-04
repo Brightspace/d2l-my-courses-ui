@@ -1,14 +1,57 @@
 {
-  "properties": {
-    "name": "Course 04",
-    "isActive": true
+  "class":[
+     "active",
+     "course-offering"
+  ],
+  "properties":{
+     "name":"Course 4",
+     "code":"MTE320",
+     "startDate":null,
+     "endDate":null,
+     "isActive":true,
+     "description": "Financial Planning & Analysis: Building a Company's Budget from Scratch guides you through the core principles of Financial Planning and helps..."
   },
-  "links": [
-    {
-      "rel": [
-        "self"
-      ],
-      "href": "../data/organization-04"
-    }
+  "entities":[
+     {
+        "class":[
+           "course-image"
+        ],
+        "rel":[
+           "https://api.brightspace.com/rels/organization-image"
+        ],
+        "href":"../data/images/image"
+     },
+     {
+        "rel":[
+          "https://api.brightspace.com/rels/organization-homepage"
+        ],
+        "properties": {
+          "path": "http://example.com"
+        }
+     }
+  ],
+  "links":[
+     {
+        "rel":[
+           "https://notifications.api.brightspace.com/rels/organization-notifications"
+        ],
+        "href":"../data/notification"
+     },
+     {
+        "rel":[
+           "https://api.brightspace.com/rels/parent-semester"
+        ],
+        "href":"../data/semester-00"
+     },
+     {
+        "rel":[
+           "self"
+        ],
+        "href": "../data/organization-04"
+     },
+     {
+        "href": "../data/base/top-level-activity-sequence.json",
+        "rel": ["https://api.brightspace.com/rels/sequence"]
+     }
   ]
 }

@@ -1,17 +1,12 @@
 describe('d2l-all-courses-unified-content', function() {
-	var widget, sandbox;
+	var widget;
 
 	beforeEach(function(done) {
-		sandbox = sinon.sandbox.create();
 		widget = fixture('d2l-all-courses-unified-content-fixture');
 
 		setTimeout(function() {
 			done();
 		});
-	});
-
-	afterEach(function() {
-		sandbox.restore();
 	});
 
 	describe('changing enrollment entities', function() {

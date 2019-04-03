@@ -33,7 +33,7 @@ describe('d2l-all-courses', function() {
 		sandbox = sinon.sandbox.create();
 
 		widget = fixture('d2l-all-courses-fixture');
-		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+		widget.shadowRoot.querySelector('#search-widget')._setSearchUrl = sandbox.stub();
 		widget._enrollmentsSearchAction = {
 			name: 'search-my-enrollments',
 			href: '/enrollments/users/169',

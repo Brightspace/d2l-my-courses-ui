@@ -307,7 +307,7 @@ Polymer({
 		}
 		return enrollmentsSearchUrl;
 	},
-	_populateNextPinnedEnrollments: function(enrollmentsEntity){
+	_populateNextPinnedEnrollments: function(enrollmentsEntity) {
 		return this._populateEnrollments(enrollmentsEntity);
 	},
 	// Override for MyCoursesContentBehavior._populateEnrollments

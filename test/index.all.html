@@ -8,16 +8,9 @@
 	</head>
 	<body>
 		<script>
-			var testVariants = [], tests = [
+			WCT.loadSuites([
 				'./d2l-all-courses-unified-content/d2l-all-courses-unified-content.html'
-			];
-
-			for (var i = 0; i < tests.length; i++) {
-				testVariants.push(tests[i] + '?wc-shadydom=true');
-				testVariants.push(tests[i] + '?dom=shadow');
-			}
-
-			WCT.loadSuites(testVariants);
+			]);
 		</script>
 	</body>
 </html>

@@ -37,11 +37,5 @@
           ],
           "href": "../data/organization-started-inactive-66"
       }]
-  }],
-  "links":[
-   {
-      "rel":["next"],
-      "href":"../data/enrollment-00"
-    }
-  ]
+  }]
 }

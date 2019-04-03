@@ -309,6 +309,10 @@ Polymer({
 	},
 	// Override for MyCoursesContentBehavior._populateEnrollments
 	_populateEnrollments: function(enrollmentsEntity) {
+		if (enrollmentsEntity.entity) {
+			enrollmentsEntity = enrollmentsEntity.entity;
+		}
+
 		var enrollmentEntities = enrollmentsEntity.getSubEntitiesByClass('enrollment');
 		this._hasMoreEnrollments = enrollmentsEntity.hasLinkByRel('next');
 		var newEnrollments = [];
@@ -349,7 +353,7 @@ Polymer({
 		var lastEnrollment = enrollmentEntities[enrollmentEntities.length - 1];
 		if (lastEnrollment.hasClass('pinned') && this._hasMoreEnrollments) {
 			var url = enrollmentsEntity.getLinkByRel('next').href;
-			return this.fetchSirenEntity(url)
+			return window.D2L.Siren.EntityStore.fetch(url, this.token)
 				.then(this._populateEnrollments.bind(this));
 		}
 	},

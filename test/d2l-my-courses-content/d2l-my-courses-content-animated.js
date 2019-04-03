@@ -207,13 +207,13 @@ describe('d2l-my-courses-content-animated', function() {
 		sandbox = sinon.sandbox.create();
 
 		widget = fixture('d2l-my-courses-content-animated-fixture');
-		widget.fetchSirenEntity = sandbox.stub();
+		widget.fetchSirenEntity = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch');
 		widget.fetchSirenEntity.withArgs(rootHref).returns(Promise.resolve(
 			window.D2L.Hypermedia.Siren.Parse(enrollmentsRootResponse)
 		));
-		widget.fetchSirenEntity.withArgs(searchHref).returns(Promise.resolve(
-			enrollmentsSearchEntity
-		));
+		widget.fetchSirenEntity.withArgs(searchHref).returns(Promise.resolve({
+			entity: enrollmentsSearchEntity
+		}));
 		setTimeout(() => {
 			done();
 		});
@@ -624,7 +624,6 @@ describe('d2l-my-courses-content-animated', function() {
 
 	describe('Pinning and unpinning enrollments', () => {
 		it('should populate the _pinnedEnrollmentsMap when populating enrollments', () => {
-			widget.fetchSirenEntity = sandbox.stub();
 			widget.fetchSirenEntity.returns(Promise.resolve());
 			widget._populateEnrollments(window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse));
 			expect(widget._pinnedEnrollmentsMap.hasOwnProperty('/enrollments/users/169/organizations/1')).to.be.true;
@@ -632,7 +631,6 @@ describe('d2l-my-courses-content-animated', function() {
 		});
 
 		it('should remove unpinned enrollments from the _pinnedEnrollmentsMap when populating enrollments', () => {
-			widget.fetchSirenEntity = sandbox.stub();
 			widget.fetchSirenEntity.returns(Promise.resolve());
 			widget._populateEnrollments(window.D2L.Hypermedia.Siren.Parse(enrollmentsSearchResponse));
 			expect(widget._pinnedEnrollmentsMap.hasOwnProperty('/enrollments/users/169/organizations/1')).to.be.true;

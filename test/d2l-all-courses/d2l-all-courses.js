@@ -33,23 +33,25 @@ describe('d2l-all-courses', function() {
 		sandbox = sinon.sandbox.create();
 
 		widget = fixture('d2l-all-courses-fixture');
-		console.log('widget', widget); /*eslint no-console: 0*/
-		widget.querySelector('#search-widget')._setSearchUrl = sandbox.stub();
-		widget._enrollmentsSearchAction = {
-			name: 'search-my-enrollments',
-			href: '/enrollments/users/169',
-			fields: [{
-				name: 'parentOrganizations',
-				value: ''
-			}, {
-				name: 'sort',
-				value: ''
-			}]
-		};
+		requestAnimationFrame(function() {
+			console.log('widget', widget); /*eslint no-console: 0*/
+			widget.shadowRoot.querySelector('#search-widget')._setSearchUrl = sandbox.stub();
+			widget._enrollmentsSearchAction = {
+				name: 'search-my-enrollments',
+				href: '/enrollments/users/169',
+				fields: [{
+					name: 'parentOrganizations',
+					value: ''
+				}, {
+					name: 'sort',
+					value: ''
+				}]
+			};
 
-		widget.updatedSortLogic = false;
+			widget.updatedSortLogic = false;
 
-		flush(() => { done(); });
+			flush(() => { done(); });
+		});
 
 	});
 

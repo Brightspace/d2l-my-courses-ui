@@ -452,6 +452,9 @@ Polymer({
 
 				return window.D2L.Siren.EntityStore.fetch(this._enrollmentsSearchUrl, this.token)
 					.then(function(enrollmentsEntity) {
+						if (!enrollmentsEntity || !enrollmentsEntity.entity) {
+							return Promise.resolve();
+						}
 						this._updateFilteredEnrollments(enrollmentsEntity.entity, true);
 					}.bind(this));
 			}

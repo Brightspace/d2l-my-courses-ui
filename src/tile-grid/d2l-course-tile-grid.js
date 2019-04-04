@@ -39,7 +39,8 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-course-tile-grid">
 						show-course-code="[[showCourseCode]]"
 						show-semester="[[showSemester]]"
 						course-updates-config="[[courseUpdatesConfig]]"
-						animate="[[animate]]">
+						animate="[[animate]]"
+						token="[[token]]">
 					</d2l-course-tile>
 				</div>
 			</template>

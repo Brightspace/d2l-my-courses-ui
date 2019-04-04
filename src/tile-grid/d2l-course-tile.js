@@ -315,17 +315,12 @@ Polymer({
 			body = body + encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value) + '&';
 		});
 
-		var promise = window.d2lfetch
-			.fetch(new Request(pinAction.href, {
-				method: pinAction.method,
-				body: body,
-				headers: {
-					'accept':'application/vnd.siren+json',
-					'content-type':'application/x-www-form-urlencoded'
-				}
-			}))
-			.then(this.responseToSirenEntity.bind(this))
+		var promise = window.D2L.Siren.EntityStore.fetch(pinAction.href, this.token)
 			.then(function(enrollment) {
+				if (!enrollment || !enrollment.entity) {
+					return Promise.resolve();
+				}
+				enrollment = enrollment.entity;
 				// The pin action returns the updated enrollment, so update
 				// this.enrollment with the modified one
 				this.enrollment = enrollment;
@@ -410,16 +405,7 @@ Polymer({
 			return;
 		}
 
-		return window.d2lfetch
-			.fetch(new Request(this._organizationUrl, {
-				headers: {
-					'accept': 'application/vnd.siren+json',
-					// Needs no-cache so that images refresh if the users here using the back button
-					'cache-control': 'no-cache',
-					'pragma': 'no-cache'
-				}
-			}))
-			.then(this.responseToSirenEntity.bind(this));
+		return window.D2L.Siren.EntityStore.fetch(this._organizationUrl, this.token);
 	},
 	_fetchNotifications: function() {
 		if (!this._notificationsUrl || !this.courseUpdatesConfig) {
@@ -434,11 +420,11 @@ Polymer({
 			return Promise.resolve();
 		}
 
-		return this.fetchSirenEntity(this._notificationsUrl);
+		return window.D2L.Siren.EntityStore.fetch(this._notificationsUrl, this.token);
 	},
 	_fetchSemester: function() {
 		if (this._semesterUrl && this.showSemester) {
-			return this.fetchSirenEntity(this._semesterUrl)
+			return window.D2L.Siren.EntityStore.fetch(this._semesterUrl, this.token)
 				.then(this._onSemesterResponse.bind(this));
 		}
 		return Promise.resolve();
@@ -543,7 +529,11 @@ Polymer({
 		this._unhoverCourseTile();
 	},
 	_onOrganizationResponse: function(organization) {
+		if (!organization || !organization.entity) {
+			return Promise.resolve();
+		}
 
+		organization = organization.entity;
 		this._organization = organization;
 		afterNextRender(this, function() {
 			this.fire('course-tile-organization');
@@ -586,30 +576,30 @@ Polymer({
 		return Promise.resolve();
 	},
 	_onNotificationsResponse: function(notifications) {
-		if (!this.courseUpdatesConfig || !notifications) {
+		if (!this.courseUpdatesConfig || !notifications || !notifications.entity) {
 			return Promise.resolve();
 		}
 
 		var total = 0;
 		if (this.courseUpdatesConfig.showUnattemptedQuizzes) {
-			total += notifications.properties.UnattemptedQuizzes;
+			total += notifications.entity.properties.UnattemptedQuizzes;
 		}
 		if (this.courseUpdatesConfig.showDropboxUnreadFeedback) {
-			total += notifications.properties.UnreadAssignmentFeedback;
+			total += notifications.entity.properties.UnreadAssignmentFeedback;
 		}
 		if (this.courseUpdatesConfig.showUngradedQuizAttempts) {
-			total += notifications.properties.UngradedQuizzes;
+			total += notifications.entity.properties.UngradedQuizzes;
 		}
 		if (this.courseUpdatesConfig.showUnreadDiscussionMessages) {
-			total += notifications.properties.UnreadDiscussions + notifications.properties.UnapprovedDiscussions;
+			total += notifications.entity.properties.UnreadDiscussions + notifications.entity.properties.UnapprovedDiscussions;
 		}
 		if (this.courseUpdatesConfig.showUnreadDropboxSubmissions) {
-			total += notifications.properties.UnreadAssignmentSubmissions;
+			total += notifications.entity.properties.UnreadAssignmentSubmissions;
 		}
 		this._setCourseUpdates(total);
 	},
 	_onSemesterResponse: function(semester) {
-		this._semesterName = (semester.properties || {}).name;
+		this._semesterName = (semester.entity.properties || {}).name;
 		return Promise.resolve();
 	},
 	_setCourseUpdates: function(updates) {

@@ -77,7 +77,8 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content-animated
 				locale="[[locale]]"
 				show-course-code="[[showCourseCode]]"
 				show-semester="[[showSemester]]"
-				course-updates-config="[[courseUpdatesConfig]]">
+				course-updates-config="[[courseUpdatesConfig]]"
+				token=[[token]]>
 			</d2l-course-tile-grid>
 			<d2l-link id="viewAllCourses" hidden$="[[!_hasEnrollments]]" href="javascript:void(0);" on-tap="_openAllCoursesView" on-keypress="_keypressOpenAllCoursesView" on-mouseover="_createAllCourses" on-focus="_createAllCourses" tabindex="0">
 				<h3 class="d2l-body-standard">[[_viewAllCoursesLinkText]]</h3>

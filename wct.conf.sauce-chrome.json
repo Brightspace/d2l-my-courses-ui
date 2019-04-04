@@ -1,6 +1,7 @@
 {
   "plugins": {
     "sauce": {
+      "idleTimeout": 360,
       "browsers": [
         {
           "browserName": "chrome",

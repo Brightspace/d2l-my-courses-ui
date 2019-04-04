@@ -42,26 +42,8 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses-unified-content
 		<span class="bottom-pad" hidden$="[[!_noCoursesInRole]]">
 			[[localize('noCoursesInRole')]]
 		</span>
-
-		<div class="course-card-grid">
-			<template is="dom-repeat" items="[[filteredEnrollments]]">
-				<d2l-enrollment-card
-					href="[[item]]"
-					token="[[token]]"
-					show-organization-code="[[showOrganizationCode]]"
-					show-semester-name="[[showSemesterName]]"
-					show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
-					show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
-					show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
-					show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
-					show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
-					hide-course-start-date="[[hideCourseStartDate]]"
-					hide-course-end-date="[[hideCourseEndDate]]">
-				</d2l-enrollment-card>
-			</template>
-		</div>
 	</template>
-	
+
 </dom-module>`;
 
 document.head.appendChild($_documentContainer.content);

@@ -12,7 +12,6 @@ import './d2l-card-grid-styles.js';
 import '../d2l-all-courses-styles.js';
 import '../localize-behavior.js';
 import {mixinBehaviors} from '@polymer/polymer/lib/legacy/class.js';
-import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
 
 class D2LAllCoursesUnifiedContent extends mixinBehaviors([D2L.PolymerBehaviors.MyCourses.LocalizeBehavior, D2L.MyCourses.CardGridBehavior], PolymerElement) {
 	static get template() {
@@ -97,7 +96,7 @@ class D2LAllCoursesUnifiedContent extends mixinBehaviors([D2L.PolymerBehaviors.M
 	}
 
 	attached() {
-		afterNextRender(this, function() {
+		requestAnimationFrame(this, function() {
 			this._onResize();
 		}.bind(this));
 	}

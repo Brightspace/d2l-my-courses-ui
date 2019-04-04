@@ -13,7 +13,6 @@ This is only used if the `US90527-my-courses-updates` LD flag is ON
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'd2l-enrollments/components/d2l-enrollment-card/d2l-enrollment-card.js';
 import './d2l-card-grid-behavior.js';
 import './d2l-card-grid-styles.js';
 import '../d2l-all-courses-styles.js';

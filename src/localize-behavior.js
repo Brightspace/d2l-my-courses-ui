@@ -1,7 +1,7 @@
 import 'd2l-localize-behavior/d2l-localize-behavior.js';
 //import '../build/lang/ar.js';
 //import '../build/lang/de.js';
-import { en } from './en.js';
+import './en.js';
 /*import '../build/lang/es.js';
 import '../build/lang/fi.js';
 import '../build/lang/fr.js';
@@ -33,7 +33,7 @@ D2L.PolymerBehaviors.MyCourses.LocalizeBehaviorImpl = {
 		resources: {
 			value: function() {
 				return {
-					'en': en,
+					'en': this.en,
 					'ar': this.ar,
 					'de': this.de,
 					'es': this.es,
@@ -59,10 +59,10 @@ D2L.PolymerBehaviors.MyCourses.LocalizeBehaviorImpl = {
 */
 D2L.PolymerBehaviors.MyCourses.LocalizeBehavior = [
 	D2L.PolymerBehaviors.LocalizeBehavior,
-	D2L.PolymerBehaviors.MyCourses.LocalizeBehaviorImpl
+	D2L.PolymerBehaviors.MyCourses.LocalizeBehaviorImpl,
 	//D2L.PolymerBehaviors.MyCourses.LangArBehavior,
 	//D2L.PolymerBehaviors.MyCourses.LangDeBehavior,
-	//D2L.PolymerBehaviors.MyCourses.LangEnBehavior,
+	D2L.PolymerBehaviors.MyCourses.LangEnBehavior
 	/*D2L.PolymerBehaviors.MyCourses.LangEsBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangFiBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangFrBehavior,

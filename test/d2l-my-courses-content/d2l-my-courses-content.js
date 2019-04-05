@@ -12,14 +12,12 @@ describe('d2l-my-courses-content', () => {
 		enrollmentsSearchPageTwoEntity,
 		organizationEntity,
 		oneEnrollmentSearchEntity,
-		organizationEntityHydrated;
+		organizationEntityHydrated,
+		updateUserSettingsAction
 
 	function SetupFetchStub(url, entity) {
-		fetchStub.withArgs(sinon.match.has('url', sinon.match(url)))
-			.returns(Promise.resolve({
-				ok: true,
-				json: () => { return Promise.resolve(entity); }
-			}));
+		fetchStub.withArgs(sinon.match(url), sinon.match.string)
+			.returns(Promise.resolve({entity: entity}));
 	}
 
 	beforeEach(done => {
@@ -149,7 +147,14 @@ describe('d2l-my-courses-content', () => {
 			}]
 		});
 
-		fetchStub = sandbox.stub(window.d2lfetch, 'fetch');
+		updateUserSettingsAction = {
+			"href": "/user-settings",
+			"name": "update-user-settings",
+			"method": "PUT",
+			"type": "static"
+		};
+
+		fetchStub = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch');
 		SetupFetchStub(/\/enrollments$/, enrollmentsRootEntity);
 		SetupFetchStub(/\/enrollment$/, miniEnrollmentsRootEntity);
 		SetupFetchStub(/\/enrollments\/users\/169\/organizations\/1/, enrollmentEntity);
@@ -166,8 +171,9 @@ describe('d2l-my-courses-content', () => {
 		SetupFetchStub(/\/enrollments\/users\/169.*bookmark=2/, enrollmentsSearchPageTwoEntity);
 
 		component = fixture('d2l-my-courses-content-fixture');
-		component.enrollmentsUrl = '/enrollments';
+		component.token = 'fake';
 		component.enrollmentsSearchAction = enrollmentsRootEntity.actions[0];
+		component.updateUserSettingsAction = updateUserSettingsAction;
 
 		setTimeout(() => {
 			done();
@@ -383,9 +389,12 @@ describe('d2l-my-courses-content', () => {
 			beforeEach(() => {
 				parentComponent = fixture('tab-event-fixture');
 				component = parentComponent.querySelector('d2l-my-courses-content');
+				component.token = "fake";
+				component.updateUserSettingsAction = updateUserSettingsAction;
 				component.enrollmentsSearchAction = searchAction;
 				component._numberOfEnrollments = 1;
 				component.tabSearchActions = [];
+				sandbox.stub(component, 'performSirenAction');
 			});
 
 			[true, false].forEach(hasEnrollments => {
@@ -808,7 +817,6 @@ describe('d2l-my-courses-content', () => {
 			});
 
 		});
-
 	});
 
 	describe('Performance measures', () => {
@@ -851,7 +859,6 @@ describe('d2l-my-courses-content', () => {
 			sandbox.stub(component, 'fetchSirenEntity')
 				.onFirstCall().returns(Promise.resolve(enrollmentsRootEntity))
 				.onSecondCall().returns(Promise.resolve({}));
-			component._createFetchEnrollmentsUrl = () => {};
 
 			return component._fetchRoot().then(() => {
 				expect(stub).to.have.been.calledWith(
@@ -868,7 +875,7 @@ describe('d2l-my-courses-content', () => {
 
 		it('should not fetch enrollments if the root request fails', () => {
 			fetchStub.restore();
-			fetchStub = sandbox.stub(window.d2lfetch, 'fetch').returns(Promise.reject());
+			fetchStub = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch').returns(Promise.reject());
 			var spy = sandbox.spy(component, '_fetchEnrollments');
 
 			return component._fetchRoot().catch(() => {
@@ -878,7 +885,7 @@ describe('d2l-my-courses-content', () => {
 
 		it('should hide the loading spinner if loading fails', () => {
 			fetchStub.restore();
-			fetchStub = sandbox.stub(window.d2lfetch, 'fetch').returns(Promise.reject());
+			fetchStub = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch').returns(Promise.reject());
 
 			return component._fetchRoot().catch(() => {
 				expect(component._showContent).to.be.true;
@@ -905,11 +912,11 @@ describe('d2l-my-courses-content', () => {
 
 		it('should fetch enrollments using the constructed enrollmentsSearchUrl', () => {
 			return component._fetchRoot().then(() => {
-				expect(fetchStub).to.have.been.calledWith(sinon.match.has('url', sinon.match('autoPinCourses=false')));
-				expect(fetchStub).to.have.been.calledWith(sinon.match.has('url', sinon.match('pageSize=20')));
-				expect(fetchStub).to.have.been.calledWith(sinon.match.has('url', sinon.match('embedDepth=0')));
-				expect(fetchStub).to.have.been.calledWith(sinon.match.has('url', sinon.match('sort=current')));
-				expect(fetchStub).to.have.been.calledWith(sinon.match.has('url', sinon.match('promotePins=true')));
+				expect(fetchStub).to.have.been.calledWith(sinon.match('autoPinCourses=false'));
+				expect(fetchStub).to.have.been.calledWith(sinon.match('pageSize=20'));
+				expect(fetchStub).to.have.been.calledWith(sinon.match('embedDepth=0'));
+				expect(fetchStub).to.have.been.calledWith(sinon.match('sort=current'));
+				expect(fetchStub).to.have.been.calledWith(sinon.match('promotePins=true'));
 			});
 		});
 
@@ -917,7 +924,7 @@ describe('d2l-my-courses-content', () => {
 			return component._fetchRoot()
 				.then(() => {
 					expect(fetchStub).to.have.been.calledWith(
-						sinon.match.has('url', sinon.match('/enrollments/users/169?bookmark=2'))
+						sinon.match('/enrollments/users/169?bookmark=2')
 					);
 				});
 		});
@@ -1040,8 +1047,9 @@ describe('d2l-my-courses-content', () => {
 		describe('Only Past Courses alert', () => {
 			beforeEach((done) => {
 				component = fixture('d2l-my-courses-content-fixture');
-				component.enrollmentsUrl = '/enrollment';
+				component.token = 'fake';
 				component.enrollmentsSearchAction = miniSearchAction;
+
 				setTimeout(() => {
 					done();
 				});

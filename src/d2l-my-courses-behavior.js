@@ -89,7 +89,7 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 					this.presentationUrl = userSettingsEntity.getLinkByRel(Rels.widgetSettings).href;
 				}
 
-				this._updateUserSettingsAction = userSettingsEntity.getActionByName('update-user-settings');
+				this._updateUserSettingsAction = userSettingsEntity.getActionByName(Actions.enrollments.updateUserSettings);
 			}.bind(this))
 			.then(this._fetchTabSearchActions.bind(this));
 	},

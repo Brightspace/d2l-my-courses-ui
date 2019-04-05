@@ -14,9 +14,7 @@ import '../build/lang/sv.js';
 import '../build/lang/tr.js';
 import '../build/lang/zh-tw.js';*/
 //import '../build/lang/zh.js';
-window.D2L = window.D2L || {};
-window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
-window.D2L.PolymerBehaviors.MyCourses = window.D2L.PolymerBehaviors.MyCourses || {};
+
 /*
 * @polymerBehavior D2L.PolymerBehaviors.MyCourses.LocalizeBehavior
 */

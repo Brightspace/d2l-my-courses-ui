@@ -13,7 +13,7 @@ This is only used if the `US90527-my-courses-updates` LD flag is ON
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'd2l-enrollments/components/d2l-enrollment-card/d2l-enrollment-card.js';
+//import 'd2l-enrollments/components/d2l-enrollment-card/d2l-enrollment-card.js';
 import './d2l-card-grid-behavior.js';
 import './d2l-card-grid-styles.js';
 import '../d2l-all-courses-styles.js';
@@ -44,21 +44,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses-unified-content
 		</span>
 
 		<div class="course-card-grid">
-			<template is="dom-repeat" items="[[filteredEnrollments]]">
-				<d2l-enrollment-card
-					href="[[item]]"
-					token="[[token]]"
-					show-organization-code="[[showOrganizationCode]]"
-					show-semester-name="[[showSemesterName]]"
-					show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
-					show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
-					show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
-					show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
-					show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
-					hide-course-start-date="[[hideCourseStartDate]]"
-					hide-course-end-date="[[hideCourseEndDate]]">
-				</d2l-enrollment-card>
-			</template>
 		</div>
 	</template>
 

@@ -599,6 +599,9 @@ Polymer({
 		this._setCourseUpdates(total);
 	},
 	_onSemesterResponse: function(semester) {
+		if (!semester || !semester.entity) {
+			return Promise.resolve();
+		}
 		this._semesterName = (semester.entity.properties || {}).name;
 		return Promise.resolve();
 	},

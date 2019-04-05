@@ -760,14 +760,14 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 	_setLastSearchName: function(id) {
 		this.performSirenAction(this.updateUserSettingsAction, [
 			{
-				"type":"hidden",
-				"name": "mostRecentEnrollmentsSearchType",
-				"value": "None"
+				'type':'hidden',
+				'name': 'mostRecentEnrollmentsSearchType',
+				'value': 'None'
 			},
 			{
-				"type":"hidden",
-				"name": "mostRecentEnrollmentsSearchName",
-				"value": id
+				'type':'hidden',
+				'name': 'mostRecentEnrollmentsSearchName',
+				'value': id
 			}
 		]);
 	}

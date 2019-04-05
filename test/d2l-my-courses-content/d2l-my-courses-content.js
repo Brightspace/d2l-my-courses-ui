@@ -13,7 +13,7 @@ describe('d2l-my-courses-content', () => {
 		organizationEntity,
 		oneEnrollmentSearchEntity,
 		organizationEntityHydrated,
-		updateUserSettingsAction
+		updateUserSettingsAction;
 
 	function SetupFetchStub(url, entity) {
 		fetchStub.withArgs(sinon.match(url), sinon.match.string)
@@ -148,10 +148,10 @@ describe('d2l-my-courses-content', () => {
 		});
 
 		updateUserSettingsAction = {
-			"href": "/user-settings",
-			"name": "update-user-settings",
-			"method": "PUT",
-			"type": "static"
+			'href': '/user-settings',
+			'name': 'update-user-settings',
+			'method': 'PUT',
+			'type': 'static'
 		};
 
 		fetchStub = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch');
@@ -389,7 +389,7 @@ describe('d2l-my-courses-content', () => {
 			beforeEach(() => {
 				parentComponent = fixture('tab-event-fixture');
 				component = parentComponent.querySelector('d2l-my-courses-content');
-				component.token = "fake";
+				component.token = 'fake';
 				component.updateUserSettingsAction = updateUserSettingsAction;
 				component.enrollmentsSearchAction = searchAction;
 				component._numberOfEnrollments = 1;

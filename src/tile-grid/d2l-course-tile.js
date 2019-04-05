@@ -18,6 +18,7 @@ import '@polymer/polymer/polymer-legacy.js';
 import 'd2l-course-image/d2l-course-image.js';
 import 'd2l-dropdown/d2l-dropdown.js';
 import 'd2l-dropdown/d2l-dropdown-menu.js';
+import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
 import { Classes } from 'd2l-hypermedia-constants';
 import { Rels } from 'd2l-hypermedia-constants';
 import { Actions } from 'd2l-hypermedia-constants';

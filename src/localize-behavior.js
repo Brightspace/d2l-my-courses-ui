@@ -63,7 +63,7 @@ D2L.PolymerBehaviors.MyCourses.LocalizeBehavior = [
 	D2L.PolymerBehaviors.MyCourses.LangArBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangDeBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangEnBehavior,
-	D2L.PolymerBehaviors.MyCourses.LangEsBehavior,
+	/*D2L.PolymerBehaviors.MyCourses.LangEsBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangFiBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangFrBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangJaBehavior,
@@ -73,6 +73,6 @@ D2L.PolymerBehaviors.MyCourses.LocalizeBehavior = [
 	D2L.PolymerBehaviors.MyCourses.LangPtBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangSvBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangTrBehavior,
-	D2L.PolymerBehaviors.MyCourses.LangZhtwBehavior,
+	D2L.PolymerBehaviors.MyCourses.LangZhtwBehavior,*/
 	D2L.PolymerBehaviors.MyCourses.LangZhBehavior
 ];

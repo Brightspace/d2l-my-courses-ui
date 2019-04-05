@@ -6,16 +6,25 @@ This is only used if the `US90527-my-courses-updates` LD flag is ON
 (meaning the `updated-sort-logic` attribute was added to the `d2l-my-courses` component).
 
 */
-import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
+/*
+  FIXME(polymer-modulizer): the above comments were extracted
+  from HTML and may be out of place here. Review them and
+  then delete this comment!
+*/
+import '@polymer/polymer/polymer-legacy.js';
+
+import 'd2l-enrollments/components/d2l-enrollment-card/d2l-enrollment-card.js';
 import './d2l-card-grid-behavior.js';
 import './d2l-card-grid-styles.js';
 import '../d2l-all-courses-styles.js';
 import '../localize-behavior.js';
-import {mixinBehaviors} from '@polymer/polymer/lib/legacy/class.js';
+import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
+const $_documentContainer = document.createElement('template');
 
-class D2LAllCoursesUnifiedContent extends mixinBehaviors([D2L.PolymerBehaviors.MyCourses.LocalizeBehavior, D2L.MyCourses.CardGridBehavior], PolymerElement) {
-	static get template() {
-		return html`<style include="d2l-all-courses-styles"></style>
+$_documentContainer.innerHTML = `<dom-module id="d2l-all-courses-unified-content">
+	<template strip-whitespace="">
+		<style include="d2l-all-courses-styles"></style>
 		<style include="d2l-card-grid-styles"></style>
 
 		<span class="bottom-pad" hidden$="[[!_noCoursesInSearch]]">
@@ -32,76 +41,99 @@ class D2LAllCoursesUnifiedContent extends mixinBehaviors([D2L.PolymerBehaviors.M
 		</span>
 		<span class="bottom-pad" hidden$="[[!_noCoursesInRole]]">
 			[[localize('noCoursesInRole')]]
-		</span>`;
-	}
-	static get is() { return 'd2l-all-courses-unified-content'; }
-	static get properties() {
-		return {
-			totalFilterCount: Number,
-			filterCounts: Object,
-			isSearched: Boolean,
-			filteredEnrollments: Array,
-			showOrganizationCode: {
-				type: Boolean,
-				value: false
-			},
-			showSemesterName: {
-				type: Boolean,
-				value: false
-			},
-			hideCourseStartDate: {
-				type: Boolean,
-				value: false
-			},
-			hideCourseEndDate: {
-				type: Boolean,
-				value: false
-			},
-			showDropboxUnreadFeedback: {
-				type: Boolean,
-				value: false
-			},
-			showUnattemptedQuizzes: {
-				type: Boolean,
-				value: false
-			},
-			showUngradedQuizAttempts: {
-				type: Boolean,
-				value: false
-			},
-			showUnreadDiscussionMessages: {
-				type: Boolean,
-				value: false
-			},
-			showUnreadDropboxSubmissions: {
-				type: Boolean,
-				value: false
-			},
+		</span>
 
-			_noCoursesInSearch: Boolean,
-			_noCoursesInSelection: Boolean,
-			_noCoursesInDepartment: Boolean,
-			_noCoursesInSemester: Boolean,
-			_noCoursesInRole: Boolean,
-			_itemCount: {
-				type: Number,
-				value: 0
-			}
-		};
-	}
-	static get observers() {
-		return [
-			'_enrollmentsChanged(filteredEnrollments.length)'
-		];
-	}
+		<div class="course-card-grid">
+			<template is="dom-repeat" items="[[filteredEnrollments]]">
+				<d2l-enrollment-card
+					href="[[item]]"
+					token="[[token]]"
+					show-organization-code="[[showOrganizationCode]]"
+					show-semester-name="[[showSemesterName]]"
+					show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
+					show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
+					show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
+					show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
+					show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
+					hide-course-start-date="[[hideCourseStartDate]]"
+					hide-course-end-date="[[hideCourseEndDate]]">
+				</d2l-enrollment-card>
+			</template>
+		</div>
+	</template>
 
-	attached() {
-		requestAnimationFrame(this, function() {
+</dom-module>`;
+
+document.head.appendChild($_documentContainer.content);
+Polymer({
+	is: 'd2l-all-courses-unified-content',
+	properties: {
+		totalFilterCount: Number,
+		filterCounts: Object,
+		isSearched: Boolean,
+		filteredEnrollments: Array,
+		showOrganizationCode: {
+			type: Boolean,
+			value: false
+		},
+		showSemesterName: {
+			type: Boolean,
+			value: false
+		},
+		hideCourseStartDate: {
+			type: Boolean,
+			value: false
+		},
+		hideCourseEndDate: {
+			type: Boolean,
+			value: false
+		},
+		showDropboxUnreadFeedback: {
+			type: Boolean,
+			value: false
+		},
+		showUnattemptedQuizzes: {
+			type: Boolean,
+			value: false
+		},
+		showUngradedQuizAttempts: {
+			type: Boolean,
+			value: false
+		},
+		showUnreadDiscussionMessages: {
+			type: Boolean,
+			value: false
+		},
+		showUnreadDropboxSubmissions: {
+			type: Boolean,
+			value: false
+		},
+
+		_noCoursesInSearch: Boolean,
+		_noCoursesInSelection: Boolean,
+		_noCoursesInDepartment: Boolean,
+		_noCoursesInSemester: Boolean,
+		_noCoursesInRole: Boolean,
+		_itemCount: {
+			type: Number,
+			value: 0
+		}
+	},
+	behaviors: [
+		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
+		D2L.MyCourses.CardGridBehavior
+	],
+	observers: [
+		'_enrollmentsChanged(filteredEnrollments.length)'
+	],
+
+	attached: function() {
+		afterNextRender(this, function() {
 			this._onResize();
 		}.bind(this));
-	}
+	},
 
-	_enrollmentsChanged(enrollmentLength) {
+	_enrollmentsChanged: function(enrollmentLength) {
 		this._noCoursesInSearch = false;
 		this._noCoursesInSelection = false;
 		this._noCoursesInDepartment = false;
@@ -127,6 +159,4 @@ class D2LAllCoursesUnifiedContent extends mixinBehaviors([D2L.PolymerBehaviors.M
 			}
 		}
 	}
-}
-
-window.customElements.define(D2LAllCoursesUnifiedContent.is, D2LAllCoursesUnifiedContent);
+});

@@ -3,7 +3,10 @@
 window.D2L = window.D2L || {};
 window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};
 window.D2L.PolymerBehaviors.MyCourses = window.D2L.PolymerBehaviors.MyCourses || {};
-
+/**
+ * This file is auto-generated. Do not modify.
+ * @polymerBehavior D2L.PolymerBehaviors.MyCourses.LangEnBehavior
+ */
 D2L.PolymerBehaviors.MyCourses.LangEnBehavior = {
 	'en': {
 		"advancedSearch": "Advanced Search",

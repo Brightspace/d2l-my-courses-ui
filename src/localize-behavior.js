@@ -1,19 +1,19 @@
 import 'd2l-localize-behavior/d2l-localize-behavior.js';
-import '../build/lang/ar.js';
-import '../build/lang/de.js';
-import '../build/lang/en.js';
-import '../build/lang/es.js';
-import '../build/lang/fi.js';
-import '../build/lang/fr.js';
-import '../build/lang/ja.js';
-import '../build/lang/ko.js';
-import '../build/lang/nb.js';
-import '../build/lang/nl.js';
-import '../build/lang/pt.js';
-import '../build/lang/sv.js';
-import '../build/lang/tr.js';
-import '../build/lang/zh-tw.js';
-import '../build/lang/zh.js';
+import './build/lang/ar.js';
+import './build/lang/de.js';
+import './build/lang/en.js';
+import './build/lang/es.js';
+import './build/lang/fi.js';
+import './build/lang/fr.js';
+import './build/lang/ja.js';
+import './build/lang/ko.js';
+import './build/lang/nb.js';
+import './build/lang/nl.js';
+import './build/lang/pt.js';
+import './build/lang/sv.js';
+import './build/lang/tr.js';
+import './build/lang/zh-tw.js';
+import './build/lang/zh.js';
 
 window.D2L.PolymerBehaviors.MyCourses = window.D2L.PolymerBehaviors.MyCourses || {};
 

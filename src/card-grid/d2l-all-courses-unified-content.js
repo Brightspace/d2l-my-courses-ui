@@ -105,6 +105,7 @@ Polymer({
 		}
 	},
 	behaviors: [
+		//D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 		D2L.MyCourses.CardGridBehavior
 	],
 	observers: [

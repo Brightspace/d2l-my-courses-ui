@@ -27,10 +27,8 @@
     "@polymer/iron-component-page": "^4.0.0",
     "@polymer/iron-demo-helpers": "^3.0.0",
     "@polymer/iron-test-helpers": "^3.0.0",
-    "@polymer/test-fixture": "latest",
     "@webcomponents/webcomponentsjs": "^2.2.3",
     "babel-eslint": "^10.0.1",
-    "chai": "latest",
     "chromedriver": "^2.40.0",
     "eslint": "^4.17.0",
     "eslint-config-brightspace": "^0.4.1",
@@ -40,10 +38,9 @@
     "gulp-ejs": "^3.1.3",
     "gulp-rename": "^1.2.3",
     "merge-stream": "^1.0.1",
-    "mocha": "^5.0.0",
     "polymer-cli": "^1.9.5",
     "require-dir": "^1.0.0",
-    "wct-mocha": "latest"
+    "wct-browser-legacy": "^1.0.1"
   },
   "version": "",
   "resolutions": {

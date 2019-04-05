@@ -13,11 +13,11 @@ This is only used if the `US90527-my-courses-updates` LD flag is ON
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-//import 'd2l-enrollments/components/d2l-enrollment-card/d2l-enrollment-card.js';
+import 'd2l-enrollments/components/d2l-enrollment-card/d2l-enrollment-card.js';
 import './d2l-card-grid-behavior.js';
 import './d2l-card-grid-styles.js';
 import '../d2l-all-courses-styles.js';
-//import '../localize-behavior.js';
+import '../localize-behavior.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
 const $_documentContainer = document.createElement('template');
@@ -105,7 +105,7 @@ Polymer({
 		}
 	},
 	behaviors: [
-		//D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
+		D2L.PolymerBehaviors.MyCourses.LocalizeBehavior,
 		D2L.MyCourses.CardGridBehavior
 	],
 	observers: [

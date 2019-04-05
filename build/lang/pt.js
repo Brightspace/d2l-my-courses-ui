@@ -1,4 +1,4 @@
-import '@polymer/polymer/polymer-legacy.js';
+
 /* eslint-disable quotes, indent */
 window.D2L = window.D2L || {};
 window.D2L.PolymerBehaviors = window.D2L.PolymerBehaviors || {};

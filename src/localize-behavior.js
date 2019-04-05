@@ -47,7 +47,7 @@ D2L.PolymerBehaviors.MyCourses.LocalizeBehaviorImpl = {
 					'sv': this.sv,
 					'tr': this.tr,
 					'zh': this.zh,
-					'zh-tw': this['zh-tw']
+					'zh-tw': this.zhTw
 				};
 			}
 		}

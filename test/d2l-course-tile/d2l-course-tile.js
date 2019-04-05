@@ -300,9 +300,34 @@ describe('<d2l-course-tile>', function() {
 
 	});
 
-	/*describe('changing the pinned state', function() {
+	describe('changing the pinned state', function() {
 
 		var event = { preventDefault: function() {} };
+		var pinnedEnrollment = {
+			entity : {
+				class: ['pinned', 'enrollment'],
+				rel: ['https://api.brightspace.com/rels/user-enrollment'],
+				actions: [{
+					name: 'unpin-course',
+					method: 'PUT',
+					href: '/enrollments/users/169/organizations/1',
+					fields: [{
+						name: 'pinned',
+						type: 'hidden',
+						value: false
+					}]
+				}],
+				links: [{
+					rel: ['https://api.brightspace.com/rels/organization'],
+					href: '/organizations/1'
+				}, {
+					rel: ['self'],
+					href: '/enrollments/users/169/organizations/1'
+				}]
+			}
+		};
+
+		var pinnedEnrollmentEntity = pinnedEnrollment;
 
 		beforeEach(function(done) {
 			var spy = sandbox.spy(widget, '_onOrganizationResponse');
@@ -310,62 +335,55 @@ describe('<d2l-course-tile>', function() {
 			widget._load = true;
 			widget.enrollment = enrollmentEntity;
 
+			pinnedEnrollmentEntity.entity = window.D2L.Hypermedia.Siren.Parse(pinnedEnrollment.entity);
+
 			setTimeout(function() {
 				expect(spy).to.have.been.calledOnce;
 				done();
 			});
 		});
 
-		it('should set the update action parameters correctly and call the pinning API', function(done) {
-			window.d2lfetch.fetch = sandbox.stub()
+		/*it('should set the update action parameters correctly and call the pinning API', function(done) {
+			window.D2L.Siren.EntityStore.fetch = sandbox.stub()
 				.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
 					.and(sinon.match.has('method', 'PUT')))
-				.returns(Promise.resolve({
-					ok: true,
-					json: function() { return Promise.resolve(enrollment); }
-				}));
+				.returns(Promise.resolve(pinnedEnrollmentEntity));
 
 			widget._pinClickHandler(event);
 
 			setTimeout(function() {
-				expect(window.d2lfetch.fetch).to.have.been
-					.calledWith(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
+				expect(window.D2L.Siren.EntityStore.fetch).to.have.been
+					.calledWithMatch(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
 						.and(sinon.match.has('method', 'PUT')));
 				done();
 			});
 		});
 
-		/*it('should update the local pinned state with the received pin state', function(done) {
-			window.d2lfetch.fetch = sandbox.stub()
+		it('should update the local pinned state with the received pin state', function(done) {
+			window.D2L.Siren.EntityStore.fetch = sandbox.stub()
 				.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
 					.and(sinon.match.has('method', 'PUT')))
-				.returns(Promise.resolve({
-					ok: true,
-					json: function() { return Promise.resolve(enrollment); }
-				}));
+				.returns(Promise.resolve(pinnedEnrollmentEntity));
 
 			expect(widget.pinned).to.be.true;
 			widget._pinClickHandler(event);
 			expect(widget.pinned).to.be.false;
 
 			setTimeout(function() {
-				expect(window.d2lfetch.fetch).to.have.been
+				expect(window.D2L.Siren.EntityStore.fetch).to.have.been
 					.calledWith(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
 						.and(sinon.match.has('method', 'PUT')));
 				// We responded with pinned = true, so it gets set back to true by the response
 				expect(widget.pinned).to.be.true;
 				done();
 			});
-		});
+		});*/
 
 		it('should update the overflow menu button with the new pinned state', function(done) {
-			window.d2lfetch.fetch = sandbox.stub()
+			window.D2L.Siren.EntityStore.fetch = sandbox.stub()
 				.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
 					.and(sinon.match.has('method', 'PUT')))
-				.returns(Promise.resolve({
-					ok: true,
-					json: function() { return Promise.resolve(enrollment); }
-				}));
+				.returns(Promise.resolve(pinnedEnrollmentEntity));
 
 			widget._showHoverMenu = true;
 
@@ -380,13 +398,10 @@ describe('<d2l-course-tile>', function() {
 		});
 
 		it('should aria-announce the change in pin state', function(done) {
-			window.d2lfetch.fetch = sandbox.stub()
+			window.D2L.Siren.EntityStore.fetch = sandbox.stub()
 				.withArgs(sinon.match.has('url', sinon.match('/enrollments/users/169/organizations/1'))
 					.and(sinon.match.has('method', 'PUT')))
-				.returns(Promise.resolve({
-					ok: true,
-					json: function() { return Promise.resolve(enrollment); }
-				}));
+				.returns(Promise.resolve(pinnedEnrollmentEntity));
 
 			widget.addEventListener('iron-announce', function(e) {
 				expect(widget.pinned).to.be.false;
@@ -397,7 +412,7 @@ describe('<d2l-course-tile>', function() {
 			widget._pinClickHandler(event);
 		});
 
-	});*/
+	});
 
 	describe('setCourseImage', function() {
 

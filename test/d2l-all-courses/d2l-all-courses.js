@@ -5,53 +5,50 @@ describe('d2l-all-courses', function() {
 		clock,
 		sandbox;
 
-	pinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
-		class: ['pinned', 'enrollment'],
-		rel: ['https://api.brightspace.com/rels/user-enrollment'],
-		links: [{
-			rel: ['self'],
-			href: '/enrollments/users/169/organizations/1'
-		}, {
-			rel: ['https://api.brightspace.com/rels/organization'],
-			href: '/organizations/123'
-		}]
-	});
-	unpinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
-		class: ['unpinned', 'enrollment'],
-		rel: ['https://api.brightspace.com/rels/user-enrollment'],
-		links: [{
-			rel: ['self'],
-			href: '/enrollments/users/169/organizations/1'
-		}, {
-			rel: ['https://api.brightspace.com/rels/organization'],
-			href: '/organizations/123'
-		}]
-	});
-
 	beforeEach(function(done) {
+
+		pinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
+			class: ['pinned', 'enrollment'],
+			rel: ['https://api.brightspace.com/rels/user-enrollment'],
+			links: [{
+				rel: ['self'],
+				href: '/enrollments/users/169/organizations/1'
+			}, {
+				rel: ['https://api.brightspace.com/rels/organization'],
+				href: '/organizations/123'
+			}]
+		});
+		unpinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
+			class: ['unpinned', 'enrollment'],
+			rel: ['https://api.brightspace.com/rels/user-enrollment'],
+			links: [{
+				rel: ['self'],
+				href: '/enrollments/users/169/organizations/1'
+			}, {
+				rel: ['https://api.brightspace.com/rels/organization'],
+				href: '/organizations/123'
+			}]
+		});
 
 		sandbox = sinon.sandbox.create();
 
 		widget = fixture('d2l-all-courses-fixture');
-		setTimeout(function() {
-			console.log('widget', widget); /*eslint no-console: 0*/
-			//widget.shadowRoot.querySelector('#search-widget')._setSearchUrl = sandbox.stub();
-			widget._enrollmentsSearchAction = {
-				name: 'search-my-enrollments',
-				href: '/enrollments/users/169',
-				fields: [{
-					name: 'parentOrganizations',
-					value: ''
-				}, {
-					name: 'sort',
-					value: ''
-				}]
-			};
+		widget.$['search-widget']._setSearchUrl = sandbox.stub();
+		widget._enrollmentsSearchAction = {
+			name: 'search-my-enrollments',
+			href: '/enrollments/users/169',
+			fields: [{
+				name: 'parentOrganizations',
+				value: ''
+			}, {
+				name: 'sort',
+				value: ''
+			}]
+		};
 
-			widget.updatedSortLogic = false;
+		widget.updatedSortLogic = false;
 
-			flush(() => { done(); });
-		}, 200);
+		flush(() => { done(); });
 
 	});
 

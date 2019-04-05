@@ -6,330 +6,118 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 		<script src="../../../wct-browser-legacy/browser.js"></script>
-		<script type="module" src="../../../@polymer/iron-test-helpers/iron-test-helpers.js"></script>
-		<script type="module" src="../../../d2l-dropdown/d2l-dropdown.js"></script>
-		<script type="module" src="../../../d2l-dropdown/d2l-dropdown-content.js"></script>
+
 		<script type="module" src="../../src/card-grid/d2l-all-courses-unified-content.js"></script>
 	</head>
-	<body tabindex="-1">
-
-		<test-fixture id="Dropdown">
+	<body>
+		<test-fixture id="d2l-all-courses-unified-content-fixture">
 			<template>
-				<div>
-					<div id="optionallyFocusable">
-						<d2l-dropdown>
-							<button class="d2l-dropdown-opener"></button>
-							<d2l-dropdown-content>
-								<p id="non_focusable_inside">a</p>
-								<a id="focusable_inside" href="http://www.desire2learn.com">b</a>
-							</d2l-dropdown-content>
-						</d2l-dropdown>
-						<p id="non_focusable_outside">c</p>
-						<button id="focusable_outside">out here</button>
+				<d2l-all-courses-unified-content
+					filtered-enrollments='[]'>
+				</d2l-all-courses-unified-content>
+			</template>
+		</test-fixture>
+
+		<test-fixture id="event-test-fixture">
+			<template>
+				<div id="foo">
+					<div>
+						<d2l-all-courses-unified-content
+							filtered-enrollments='[]'>
+						</d2l-all-courses-unified-content>
 					</div>
 				</div>
 			</template>
 		</test-fixture>
 
 		<script type="module">
-import '@polymer/iron-test-helpers/iron-test-helpers.js';
-import 'd2l-dropdown/d2l-dropdown.js';
-import 'd2l-dropdown/d2l-dropdown-content.js';
-import '../../src/card-grid/d2l-all-courses-unified-content.js';
-import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
-import { flush } from '@polymer/polymer/lib/legacy/polymer.dom.js';
-describe('<d2l-dropdown-content>', function() {
+		describe('d2l-all-courses-unified-content', function() {
+			var widget, sandbox;
 
-	var dropdownFixture, opener, content;
+			beforeEach(function(done) {
+				sandbox = sinon.sandbox.create();
+				widget = fixture('d2l-all-courses-unified-content-fixture');
 
-	beforeEach(function() {
-		dropdownFixture = fixture('Dropdown');
-		opener = dropdownFixture.querySelector('.d2l-dropdown-opener');
-		content = dropdownFixture.querySelector('d2l-dropdown-content');
-	});
-
-	describe('events', function() {
-
-		it('fires open event when open attribute is added', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				expect(content.opened).to.be.true;
-				done();
-			});
-			content.setAttribute('opened', true);
-		});
-
-		it('fires close event when open attribute is removed', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				content.removeAttribute('opened');
-			});
-			content.addEventListener('d2l-dropdown-close', function() {
-				expect(content.opened).to.be.false;
-				done();
-			});
-			content.setAttribute('opened', true);
-		});
-
-	});
-
-	describe('width', function() {
-
-		it('has default min-width 70px', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				var contentRect = content.__getWidthContainer().getBoundingClientRect();
-				expect(contentRect.width).to.equal(70);
-				done();
-			});
-			content.setAttribute('opened', true);
-		});
-
-		it('overrides default min-width if provided', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				var contentRect = content.__getWidthContainer().getBoundingClientRect();
-				expect(contentRect.width).to.equal(170); // +20px for scrollbar
-				done();
-			});
-			content.setAttribute('min-width', '150');
-			content.setAttribute('opened', true);
-		});
-
-		it('has default max-width 370px', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				var contentRect = content.__getWidthContainer().getBoundingClientRect();
-				expect(contentRect.width).to.equal(370);
-				done();
-			});
-			var style = document.createElement('style');
-			style.innerHTML = '#non_focusable_inside { width: 1000px; }';
-			dropdownFixture.appendChild(style);
-			content.setAttribute('opened', true);
-		});
-
-		it('overrides default max-width if provided', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				var contentRect = content.__getWidthContainer().getBoundingClientRect();
-				expect(contentRect.width).to.equal(200);
-				done();
-			});
-			var style = document.createElement('style');
-			style.innerHTML = '#non_focusable_inside { width: 1000px; }';
-			dropdownFixture.appendChild(style);
-			content.setAttribute('max-width', '200');
-			content.setAttribute('opened', true);
-		});
-
-	});
-
-	describe('toggleOpen', function() {
-
-		it('opens dropdown when closed', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				expect(content.opened).to.be.true;
-				done();
-			});
-			content.toggleOpen();
-		});
-
-		it('closes dropdown when open', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				content.toggleOpen();
-			});
-			content.addEventListener('d2l-dropdown-close', function() {
-				expect(content.opened).to.be.false;
-				done();
-			});
-			content.toggleOpen();
-		});
-
-	});
-
-	describe('scrollTo', function() {
-		it('sets scrollTop to specified value', function(done) {
-			content.addEventListener('d2l-dropdown-position', function() {
-				expect(content.__content.scrollTop).to.equal(0);
-				content.scrollTo(1);
-				expect(content.__content.scrollTop).to.equal(1);
-				done();
-			});
-			afterNextRender(content, function() {
-
-				content.boundary = {
-					below: 1,
-					above: 1
-				};
-				content.opened = true;
-			});
-		});
-	});
-
-	describe('auto-focus', function() {
-
-		it('focuses on descendant when opened', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				requestAnimationFrame(function() {
-					expect(document.activeElement).to.equal(content.querySelector('#focusable_inside'));
+				setTimeout(function() {
 					done();
 				});
 			});
-			content.setAttribute('opened', true);
-		});
 
-		it('does not focus on descendant when opened and no-auto-focus attribute is specified', function(done) {
-			var activeElement = document.activeElement;
-			content.addEventListener('d2l-dropdown-open', function() {
-				requestAnimationFrame(function() {
-					expect(document.activeElement).to.equal(activeElement);
-					done();
+			afterEach(function() {
+				sandbox.restore();
+			});
+
+			describe('changing enrollment entities', function() {
+				[
+					{ isSearched: true, totalFilterCount: 0, enrollmentsChanged: 0, noCoursesInSearch: true, noCoursesInSelection: false },
+					{ isSearched: true, totalFilterCount: 0, enrollmentsChanged: 3, noCoursesInSearch: false, noCoursesInSelection: false },
+					{ isSearched: false, totalFilterCount: 2, enrollmentsChanged: 0, noCoursesInSearch: false, noCoursesInSelection: true }
+				].forEach(testCase => {
+					it(`should set noCoursesInSearch to ${testCase.noCoursesInSearch} and noCoursesInSelection to ${testCase.noCoursesInSelection} when enrollments change to ${testCase.enrollmentsChanged}, isSearched is ${testCase.isSearched} and totalFilterCount is ${testCase.totalFilterCount}`, () => {
+						widget.isSearched = testCase.isSearched;
+						widget.totalFilterCount = testCase.totalFilterCount;
+						widget._enrollmentsChanged(testCase.enrollmentsChanged);
+						expect(widget._noCoursesInSearch).to.equal(testCase.noCoursesInSearch);
+						expect(widget._noCoursesInSelection).to.equal(testCase.noCoursesInSelection);
+					});
+				});
+
+				[
+					{ isSearched: false, totalFilterCount: 0, enrollmentsChanged: 3, itemCount: 3 },
+					{ isSearched: true, totalFilterCount: 0, enrollmentsChanged: 2, itemCount: 0 },
+					{ isSearched: false, totalFilterCount: 1, enrollmentsChanged: 2, itemCount: 0 }
+				].forEach(testCase => {
+					it(`should set itemCount to ${testCase.itemCount} when enrollments change to ${testCase.enrollmentsChanged}, isSearched is ${testCase.isSearched} and totalFilterCount is ${testCase.totalFilterCount}`, () => {
+						widget.isSearched = testCase.isSearched;
+						widget.totalFilterCount = testCase.totalFilterCount;
+						widget._enrollmentsChanged(testCase.enrollmentsChanged);
+						expect(widget._itemCount).to.equal(testCase.itemCount);
+					});
 				});
 			});
-			content.setAttribute('no-auto-focus', true);
-			content.setAttribute('opened', true);
-		});
 
-	});
+			describe('filtering when there are no courses', () => {
+				[
+					{ target: '_noCoursesInDepartment', filter: 'departments' },
+					{ target: '_noCoursesInSemester', filter: 'semesters' },
+					{ target: '_noCoursesInRole', filter: 'roles' }
+				].forEach(testCase => {
+					it(`should set ${testCase.target} when there are no enrollments and one ${testCase.filter} is filtered`, () => {
+						widget.isSearched = false;
+						widget.totalFilterCount = 1;
+						widget.filterCounts = {};
+						widget.filterCounts[testCase.filter] = 1;
+						widget._enrollmentsChanged(0);
+						expect(widget[testCase.target]).to.be.true;
+					});
+				});
 
-	describe('auto-close', function() {
+				[
+					{ target: '_noCoursesInDepartment', filter: 'departments' },
+					{ target: '_noCoursesInSemester', filter: 'semesters' },
+					{ target: '_noCoursesInRole', filter: 'roles' }
+				].forEach(testCase => {
+					it(`should not set ${testCase.target} when there are no enrollments and more than one ${testCase.filter} are filtered`, () => {
+						widget.isSearched = false;
+						widget.totalFilterCount = 1;
+						widget.filterCounts = {};
+						widget.filterCounts[testCase.filter] = 3;
+						widget._enrollmentsChanged(0);
+						expect(widget[testCase.target]).to.be.false;
+					});
+				});
 
-		it('should close when focus element outside receives focus', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				afterNextRender(content, function() {
-					MockInteractions.tap(dropdownFixture.querySelector('#focusable_outside'));
+				it('should not set empty filter messages when there are more than one filters', () => {
+					widget.isSearched = false;
+					widget.totalFilterCount = 4;
+					widget.filterCounts = {};
+					widget._enrollmentsChanged(0);
+					expect(widget._noCoursesInDepartment).to.be.false;
+					expect(widget._noCoursesInSemester).to.be.false;
+					expect(widget._noCoursesInRole).to.be.false;
 				});
 			});
-			content.addEventListener('d2l-dropdown-close', function() {
-				expect(content.opened).to.be.false;
-				done();
-			});
-			content.setAttribute('opened', true);
 		});
-
-		it('should close when element outside is clicked', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				afterNextRender(content, function() {
-					MockInteractions.tap(dropdownFixture.querySelector('#non_focusable_outside'));
-				});
-			});
-			content.addEventListener('d2l-dropdown-close', function() {
-				done();
-			});
-			content.setAttribute('opened', true);
-		});
-
-		it('should not close when element outside receives focus and no-auto-close is set', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				dropdownFixture.querySelector('#focusable_outside').focus();
-				setTimeout(function() {
-					expect(content.opened).to.be.true;
-					done();
-				}, 100);
-			});
-			content.setAttribute('no-auto-close', true);
-			content.setAttribute('opened', true);
-		});
-
-		it('should not close when element inside receives focus', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				content.querySelector('#focusable_inside').focus();
-				setTimeout(function() {
-					expect(content.opened).to.be.true;
-					done();
-				}, 100);
-			});
-			content.setAttribute('opened', true);
-		});
-
-		it('should not close when activeElement becomes body', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				// this simulates a click on an element inside the dropdown,
-				// which causes focus to be lost and activeElement to become
-				// document.body
-				document.body.focus();
-				setTimeout(function() {
-					expect(content.opened).to.be.true;
-					done();
-				}, 100);
-			});
-			content.setAttribute('opened', true);
-		});
-
-		it('should not close when activeElement becomes focusable ancestor', function(done) {
-			var focusableAncestor = dropdownFixture.querySelector('#optionallyFocusable');
-			focusableAncestor.setAttribute('tabindex', '-1');
-
-			content.addEventListener('d2l-dropdown-open', function() {
-				// this simulates a click on an element inside the dropdown,
-				// which causes focus to be lost and activeElement to become
-				// the focusable ancestor of the dropdown
-				focusableAncestor.focus();
-				setTimeout(function() {
-					expect(content.opened).to.be.true;
-					done();
-				}, 100);
-			});
-			content.setAttribute('opened', true);
-		});
-
-		it('should not close when element inside is clicked', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				MockInteractions.tap(content.querySelector('#non_focusable_inside'));
-				setTimeout(function() {
-					expect(content.opened).to.be.true;
-					done();
-				}, 100);
-			});
-			content.setAttribute('opened', true);
-		});
-
-		it('should not close when element outside is clicked and no-auto-close is set', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				MockInteractions.tap(dropdownFixture.querySelector('#non_focusable_outside'));
-				setTimeout(function() {
-					expect(content.opened).to.be.true;
-					done();
-				}, 100);
-			});
-			content.setAttribute('no-auto-close', true);
-			content.setAttribute('opened', true);
-		});
-
-		it('should focus on container when opened and no focusable light descendant exists', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				var contentContainer = content.__getContentContainer();
-				expect(contentContainer.getAttribute('tabindex')).to.equal('-1');
-				if (content.shadowRoot) {
-					expect(document.activeElement).to.equal(content);
-					expect(content.shadowRoot.activeElement).to.equal(contentContainer);
-				} else {
-					expect(document.activeElement).to.equal(contentContainer);
-				}
-				done();
-			});
-			content.renderContent = true;
-			flush();
-			content.querySelector('#focusable_inside').setAttribute('tabindex', '-1');
-			content.setAttribute('opened', true);
-		});
-
-	});
-
-	describe('aria-expanded', function() {
-		it('should set aria-expanded on the opener', function(done) {
-			content.addEventListener('d2l-dropdown-open', function() {
-				afterNextRender(opener, function() {
-					expect(opener.getAttribute('aria-expanded')).to.equal('true');
-					content.opened = false;
-				});
-			});
-			content.addEventListener('d2l-dropdown-close', function() {
-				afterNextRender(opener, function() {
-					expect(opener.getAttribute('aria-expanded')).to.equal('false');
-					done();
-				});
-			});
-			content.setAttribute('opened', 'opened');
-		});
-	});
-
-});
 </script>
 	</body>
 </html>

@@ -68,7 +68,7 @@ D2L.MyCourses.UtilityBehavior = {
 	},
 	sirenEntityStoreFetch: function(url, token, clearCache) {
 		if (!url) {
-			return Promise.resolve();
+			return;
 		}
 		return window.D2L.Siren.EntityStore.fetch(url, token, clearCache);
 	},

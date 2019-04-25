@@ -66,6 +66,12 @@ D2L.MyCourses.UtilityBehavior = {
 			}))
 			.then(this.responseToSirenEntity.bind(this));
 	},
+	sirenEntityStoreFetch: function(url, token, clearCache) {
+		if (!url) {
+			return Promise.resolve();
+		}
+		return window.D2L.Siren.EntityStore.fetch(url, token, clearCache);
+	},
 	performanceMark: function(name) {
 		if (window.performance && window.performance.mark) {
 			window.performance.mark(name);

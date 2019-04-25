@@ -140,7 +140,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-course-tile">
 
 		</div>
 	</template>
-	
+
 </dom-module>`;
 
 document.head.appendChild($_documentContainer.content);
@@ -398,7 +398,7 @@ Polymer({
 	_pendingPinAction: false,
 	_pinAnimationInProgress: false,
 	_fetchEntityStore: function(url, no_caches) {
-		return window.D2L.Siren.EntityStore.fetch(url, this.token, no_caches);
+		return this.sirenEntityStoreFetch(url, this.token, no_caches);
 	},
 	_fetchOrganization: function() {
 		if (!this._organizationUrl) {

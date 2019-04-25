@@ -142,8 +142,8 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 		}
 
 		return Promise.all([
-			this._entityStoreFetch(this.promotedSearches),
-			this._entityStoreFetch(this.userSettingsUrl)
+			this.sirenEntityStoreFetch(this.promotedSearches, this.token),
+			this.sirenEntityStoreFetch(this.userSettingsUrl, this.token)
 		]).then(function(values) {
 			var promotedSearchesEntity = values[0] && values[0].entity;
 			var userSettingsEntity = values[1] && values[1].entity;
@@ -200,9 +200,6 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 			this._tabSearchActions = actions.concat(this._tabSearchActions);
 
 		}.bind(this));
-	},
-	_entityStoreFetch: function(url) {
-		return window.D2L.Siren.EntityStore.fetch(url, this.token);
 	},
 };
 

@@ -180,7 +180,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses">
 			</d2l-loading-spinner>
 		</d2l-simple-overlay>
 	</template>
-	
+
 </dom-module>`;
 
 document.head.appendChild($_documentContainer.content);
@@ -450,7 +450,7 @@ Polymer({
 				this._enrollmentsSearchUrl = lastResponseEntity.getLinkByRel('next').href;
 				this.$.lazyLoadSpinner.scrollIntoView();
 
-				return window.D2L.Siren.EntityStore.fetch(this._enrollmentsSearchUrl, this.token)
+				return this.sirenEntityStoreFetch(this._enrollmentsSearchUrl, this.token)
 					.then(function(enrollmentsEntity) {
 						if (!enrollmentsEntity || !enrollmentsEntity.entity) {
 							return Promise.resolve();

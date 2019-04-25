@@ -99,7 +99,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content-animated
 		</d2l-simple-overlay>
 
 	</template>
-	
+
 </dom-module>`;
 
 document.head.appendChild($_documentContainer.content);
@@ -355,7 +355,7 @@ Polymer({
 		var lastEnrollment = enrollmentEntities[enrollmentEntities.length - 1];
 		if (lastEnrollment.hasClass('pinned') && this._hasMoreEnrollments) {
 			var url = enrollmentsEntity.getLinkByRel('next').href;
-			return window.D2L.Siren.EntityStore.fetch(url, this.token)
+			return this.sirenEntityStoreFetch(url, this.token)
 				.then(this._populateEnrollments.bind(this));
 		}
 	},

@@ -188,7 +188,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this.$.viewAllCourses.focus();
 	},
 	getCourseTileItemCount: function() {
-		return this._enrollments.length;
+		const lengthOfHidden = Object.values(this._hiddenCourses).filter((e) => e).length;
+		return this._enrollments.length - lengthOfHidden;
 	},
 	getLastOrgUnitId: function() {
 		if (!this._setImageOrg.links) {
@@ -255,15 +256,17 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		var index = this._enrollments.indexOf(e.detail.enrollmentUrl);
 
 		if (hide && index !== -1 && index > this._lastPinnedIndex) {
-			const repeater = dom(this.root).querySelector('d2l-enrollment-card[href="' + e.detail.enrollmentUrl + '"]');
-			this._hiddenCourses[e.detail.enrollmentUrl] = hide;
-			let outerHtml = '';
-			fastdom.measure(function() {
-				outerHtml = repeater.outerHTML;
-			});
-			fastdom.mutate(function() {
-				repeater.outerHTML = '<div hidden>' + outerHtml + '</div>';
-			});
+			const enrollmentToHide = dom(this.root).querySelector('d2l-enrollment-card[href="' + e.detail.enrollmentUrl + '"]');
+			if (enrollmentToHide) {
+				this._hiddenCourses[e.detail.enrollmentUrl] = hide;
+				let outerHtml = '';
+				fastdom.measure(function() {
+					outerHtml = enrollmentToHide.outerHTML;
+				});
+				fastdom.mutate(function() {
+					enrollmentToHide.outerHTML = '<div hidden>' + outerHtml + '</div>';
+				});
+			}
 		}
 		const lengthOfHidden = Object.values(this._hiddenCourses).filter((e) => e).length;
 		if (this._enrollments.length - lengthOfHidden < this._widgetMaxCardVisible && this._nextEnrollmentEntityUrl) {

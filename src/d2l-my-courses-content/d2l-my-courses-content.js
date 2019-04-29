@@ -77,7 +77,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content">
 			</template>
 			<div class="course-tile-grid">
 				<template is="dom-repeat" items="[[_enrollments]]">
-					<d2l-enrollment-card href="[[item]]" presentation-href="[[presentationUrl]]">
+					<d2l-enrollment-card href$="[[item]]" presentation-href="[[presentationUrl]]">
 					</d2l-enrollment-card>
 				</template>
 			</div>
@@ -111,7 +111,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content">
 			</d2l-basic-image-selector>
 		</d2l-simple-overlay>
 	</template>
-	
+
 </dom-module>`;
 
 document.head.appendChild($_documentContainer.content);

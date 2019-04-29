@@ -264,7 +264,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 				repeater.outerHTML = '<div hidden>' + outerHtml + '</div>';
 			});
 		}
-		const lengthOfHidden = this._hiddenCourses.values().filter((e) => e).length;
+		const lengthOfHidden = Object.values(this._hiddenCourses).filter((e) => e).length;
 		if (this._enrollments.length - lengthOfHidden < this._widgetMaxCardVisible && this._nextEnrollmentEntityUrl) {
 			this.fetchSirenEntity(this._nextEnrollmentEntityUrl)
 				.then(this._populateEnrollments.bind(this));

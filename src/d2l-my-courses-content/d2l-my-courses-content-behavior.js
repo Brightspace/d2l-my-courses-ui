@@ -68,7 +68,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		_hasOnlyPastCourses: {
 			type: Boolean,
 			value: false,
-			computed: '_computeHasOnlyPastCourses(_courseTileOrganizationEventCount, _enrollments.length)'
+			computed: '_computeHasOnlyPastCourses(_courseTileOrganizationEventCount, _enrollments.length, _hiddenEnrollmentCount)'
 		},
 		// Lookup table of org unit ID -> enrollment, to avoid having to re-fetch enrollments
 		_orgUnitIdMap: {
@@ -192,7 +192,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this.$.viewAllCourses.focus();
 	},
 	getCourseTileItemCount: function() {
-		const lengthOfHidden = Object.values(this._hiddenCourses).filter((e) => e).length;
+		const lengthOfHidden = Object.values(this._hiddenEnrollments).filter((e) => e).length;
 		return this._enrollments.length - lengthOfHidden;
 	},
 	getLastOrgUnitId: function() {
@@ -208,7 +208,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 	_enrollmentsSearchUrl: null,
 	_widgetMaxCardVisible: 12,
 	_hidePastCourses: false,
-	_hiddenCourses: {},
+	_hiddenEnrollments: {},
 
 	_enrollmentsChanged: function(viewAbleLength, totalLength) {
 		this._removeAlert('noCourses');
@@ -230,7 +230,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		}
 	},
 	_computeHasOnlyPastCourses: function() {
-		const lengthOfHidden = Object.values(this._hiddenCourses).filter((e) => e).length;
+		const lengthOfHidden = Object.values(this._hiddenEnrollments).filter((e) => e).length;
 		return this._hidePastCourses
 			&& this._numberOfEnrollments !== 0
 			&& this._enrollments.length - lengthOfHidden === 0;
@@ -261,8 +261,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		if (hide && index !== -1 && index > this._lastPinnedIndex) {
 			const enrollmentToHide = dom(this.root).querySelector('d2l-enrollment-card[href="' + e.detail.enrollmentUrl + '"]');
+			this._hiddenEnrollments[e.detail.enrollmentUrl] = hide;
 			if (enrollmentToHide) {
-				this._hiddenCourses[e.detail.enrollmentUrl] = hide;
 				let outerHtml = '';
 				fastdom.measure(function() {
 					outerHtml = enrollmentToHide.outerHTML;
@@ -272,7 +272,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 				});
 			}
 		}
-		this._hiddenEnrollmentCount = Object.values(this._hiddenCourses).filter((e) => e).length;
+		this._hiddenEnrollmentCount = Object.values(this._hiddenEnrollments).filter((e) => e).length;
 		if (this._enrollments.length - this._hiddenEnrollmentCount < this._widgetMaxCardVisible && this._nextEnrollmentEntityUrl) {
 			this.fetchSirenEntity(this._nextEnrollmentEntityUrl)
 				.then(this._populateEnrollments.bind(this));

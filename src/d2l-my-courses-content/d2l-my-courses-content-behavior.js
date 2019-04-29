@@ -101,7 +101,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		// Text to render for "View All Courses" link (includes enrollment count approximation)
 		_viewAllCoursesText: {
 			type: String,
-			computed: '_getViewAllCoursesText(_nextEnrollmentEntityUrl, _numberOfEnrollments)'
+			computed: '_getViewAllCoursesText(_nextEnrollmentEntityUrl, _numberOfEnrollments, _hiddenEnrollmentCount)'
 		},
 		// Whether or not to refetch the courses data
 		_isRefetchNeeded: {
@@ -119,6 +119,10 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		_hasEnrollmentsChanged: {
 			type: Boolean,
 			value: false
+		},
+		_hiddenEnrollmentCount: {
+			type: Number,
+			value: 0
 		}
 	},
 	listeners: {
@@ -268,8 +272,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 				});
 			}
 		}
-		const lengthOfHidden = Object.values(this._hiddenCourses).filter((e) => e).length;
-		if (this._enrollments.length - lengthOfHidden < this._widgetMaxCardVisible && this._nextEnrollmentEntityUrl) {
+		this._hiddenEnrollmentCount = Object.values(this._hiddenCourses).filter((e) => e).length;
+		if (this._enrollments.length - this._hiddenEnrollmentCount < this._widgetMaxCardVisible && this._nextEnrollmentEntityUrl) {
 			this.fetchSirenEntity(this._nextEnrollmentEntityUrl)
 				.then(this._populateEnrollments.bind(this));
 		}

@@ -225,9 +225,10 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		}
 	},
 	_computeHasOnlyPastCourses: function() {
+		const lengthOfHidden = Object.values(this._hiddenCourses).filter((e) => e).length;
 		return this._hidePastCourses
 			&& this._numberOfEnrollments !== 0
-			&& this._enrollments.length === 0;
+			&& this._enrollments.length - lengthOfHidden === 0;
 	},
 
 	/*

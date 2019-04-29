@@ -79,6 +79,7 @@
     "@polymer/iron-scroll-threshold": "^3.0.0",
     "@polymer/iron-pages": "^3.0.0",
     "@polymer/polymer": "^3.0.0",
+    "fastdom": "^1.0.8",
     "siren-parser": "^8.0.0"
   }
 }

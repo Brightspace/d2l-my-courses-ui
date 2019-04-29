@@ -8,6 +8,7 @@ import '../d2l-course-tile-responsive-grid-behavior.js';
 import '../d2l-utility-behavior.js';
 import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+import 'fastdom/fastdom.js';
 import '../localize-behavior.js';
 window.D2L = window.D2L || {};
 window.D2L.MyCourses = window.D2L.MyCourses || {};
@@ -202,6 +203,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 	_enrollmentsSearchUrl: null,
 	_widgetMaxCardVisible: 12,
 	_hidePastCourses: false,
+	_hiddenCourses: {},
 
 	_enrollmentsChanged: function(viewAbleLength, totalLength) {
 		this._removeAlert('noCourses');
@@ -252,14 +254,18 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		var index = this._enrollments.indexOf(e.detail.enrollmentUrl);
 
 		if (hide && index !== -1 && index > this._lastPinnedIndex) {
-			this.splice('_enrollments', index, 1);
+			const repeater = dom(this.root).querySelector('d2l-enrollment-card[href="' + e.detail.enrollmentUrl + '"]');
+			this._hiddenCourses[e.detail.enrollmentUrl] = hide;
+			let outerHtml = '';
+			fastdom.measure(function() {
+				outerHtml = repeater.outerHTML;
+			});
+			fastdom.mutate(function() {
+				repeater.outerHTML = '<div hidden>' + outerHtml + '</div>';
+			});
 		}
-		//This is to force updating the urls
-		const temp = this._enrollments;
-		this._enrollments = [];
-		this._enrollments = temp;
-
-		if (this._enrollments.length < this._widgetMaxCardVisible && this._nextEnrollmentEntityUrl) {
+		const lengthOfHidden = this._hiddenCourses.filter((e) => e).length;
+		if (this._enrollments.length - lengthOfHidden < this._widgetMaxCardVisible && this._nextEnrollmentEntityUrl) {
 			this.fetchSirenEntity(this._nextEnrollmentEntityUrl)
 				.then(this._populateEnrollments.bind(this));
 		}

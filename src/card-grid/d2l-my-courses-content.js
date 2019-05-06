@@ -50,7 +50,6 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses-content">
 			}
 
 			.course-card-grid d2l-enrollment-card:nth-of-type(n+13):not([pinned]),
-			.course-card-grid[hide-past-courses] d2l-enrollment-card[completed]:not([pinned]),
 			.course-card-grid[hide-past-courses] d2l-enrollment-card[closed]:not([pinned]) {
 				display: none;
 			}

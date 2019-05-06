@@ -223,20 +223,16 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this._orgUnitIdMap[orgUnitId] = e.detail.enrollmentUrl;
 	},
 	_onD2lEnrollmentCardStatus: function(e) {
-		if (!e.detail || !e.detail.status || !e.detail.enrollmentUrl) {
+		if (!e.detail || !e.detail.status || !e.detail.enrollmentUrl || e.detail.status.completed) {
 			return;
 		}
 
-		var hide = this._hidePastCourses && (e.detail.status.completed || e.detail.status.closed);
+		var hide = this._hidePastCourses && (e.detail.status.closed);
 		var index = this._enrollments.indexOf(e.detail.enrollmentUrl);
 
 		if (hide && index !== -1 && index > this._lastPinnedIndex) {
 			this.splice('_enrollments', index, 1);
 		}
-		//This is to force updating the urls
-		const temp = this._enrollments;
-		this._enrollments = [];
-		this._enrollments = temp;
 
 		if (this._enrollments.length < this._widgetMaxCardVisible && this._nextEnrollmentEntityUrl) {
 			this.fetchSirenEntity(this._nextEnrollmentEntityUrl)

@@ -138,6 +138,7 @@ Polymer({
 		return allFiltersLength > 0;
 	},
 	_onMenuItemChange: function(e) {
+		console.log("here");
 		if (e.detail.selected) {
 			this.push('selectedFilters', e.detail.value);
 		} else {

@@ -557,6 +557,7 @@ class AllCourses extends mixinBehaviors([
 			this._pinnedCoursesMap = {};
 			this._unpinnedCoursesMap = {};
 		}
+		console.log(e.detail);
 		this._updateFilteredEnrollments(e.detail, false);
 		this.myEnrollmentsEntity = e.detail;
 		this.fire('recalculate-columns');
@@ -797,12 +798,13 @@ class AllCourses extends mixinBehaviors([
 	}
 
 	_updateFilteredEnrollments(enrollments, append) {
+		var gridEntities, unifiedContent;
 		if (!enrollments._entity) {
 			var enrollmentEntities = enrollments.getSubEntitiesByClass(Classes.enrollments.enrollment);
-			var gridEntities = enrollmentEntities.map(function(value) {
+			gridEntities = enrollmentEntities.map(function(value) {
 				return value.href;
 			}.bind(this));
-			var unifiedContent = this._showGroupByTabs
+			unifiedContent = this._showGroupByTabs
 				? this.$$('#' + this._selectedTabId + ' d2l-all-courses-unified-content')
 				: this.$$('d2l-all-courses-unified-content');
 			if (append) {
@@ -812,9 +814,8 @@ class AllCourses extends mixinBehaviors([
 			}
 		}
 		else {
-			var enrollmentEntities = enrollments.enrollmentsHref();
-			var gridEntities = enrollmentEntities;
-			var unifiedContent = this._showGroupByTabs
+			gridEntities = enrollments.enrollmentsHref();
+			unifiedContent = this._showGroupByTabs
 				? this.$$('#' + this._selectedTabId + ' d2l-all-courses-unified-content')
 				: this.$$('d2l-all-courses-unified-content');
 			if (append) {
@@ -855,6 +856,6 @@ class AllCourses extends mixinBehaviors([
 		return match[0];
 	}
 
-};
+}
 
 window.customElements.define(AllCourses.is, AllCourses);

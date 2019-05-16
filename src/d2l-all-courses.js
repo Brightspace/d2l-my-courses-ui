@@ -557,7 +557,6 @@ class AllCourses extends mixinBehaviors([
 			this._pinnedCoursesMap = {};
 			this._unpinnedCoursesMap = {};
 		}
-		console.log(e.detail);
 		this._updateFilteredEnrollments(e.detail, false);
 		this.myEnrollmentsEntity = e.detail;
 		this.fire('recalculate-columns');

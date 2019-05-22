@@ -40,6 +40,9 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-all-courses-styles">
 				margin-top: 3px;
 				flex: 1;
 			}
+			.advanced-search-link[hidden] {
+				display: none;
+			}
 			d2l-search-widget-custom {
 				flex: 1;
 			}

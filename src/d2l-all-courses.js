@@ -28,7 +28,7 @@ import './search-filter/d2l-filter-menu.js';
 import './search-filter/d2l-search-widget-custom.js';
 import './d2l-utility-behavior.js';
 import './localize-behavior.js';
-import '../legacy/tile-grid/d2l-all-courses-segregated-content.js';
+import '../legacy/tile-grid/d2l-all-courses-segregated-content.js'; // TODO: remove this dependency, since updated-sort-logic will always be true
 import './card-grid/d2l-all-courses-unified-content.js';
 import { EnrollmentCollectionEntity } from 'd2l-enrollments/EnrollmentCollectionEntity.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';

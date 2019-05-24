@@ -59,7 +59,11 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 		},
 		_tabSearchType: String,
 		_changedCourseEnrollment: Object,
-		_updateUserSettingsAction: Object
+		_updateUserSettingsAction: Object,
+		_bustPresentationCache: {
+			type: Boolean,
+			value: true
+		}
 	},
 	_computeShowGroupByTabs: function(groups) {
 		return groups.length >= 2 || (groups.length > 0 && !this._enrollmentsSearchAction);
@@ -68,6 +72,9 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 		'd2l-course-enrollment-change': '_onCourseEnrollmentChange',
 		'd2l-tab-changed': '_tabSelectedChanged'
 	},
+	observers: [
+		'_onPresentationUrlChange(presentationUrl)'
+	],
 	attached: function() {
 		if (!this.enrollmentsUrl || !this.userSettingsUrl) {
 			return;
@@ -205,6 +212,12 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 
 		}.bind(this));
 	},
+	_onPresentationUrlChange: function(url) {
+		if (url && this._bustPresentationCache) {
+			this._bustPresentationCache = false;
+			this.presentationUrl += '?bustCache=' + Math.random();
+		}
+	}
 };
 
 /*

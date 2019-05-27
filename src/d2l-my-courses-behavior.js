@@ -1,9 +1,10 @@
 import '@polymer/polymer/polymer-legacy.js';
-import { Rels } from 'd2l-hypermedia-constants';
-import { Actions } from 'd2l-hypermedia-constants';
 import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
 import './d2l-utility-behavior.js';
 import './localize-behavior.js';
+import { UserSettingsEntity } from 'siren-sdk/src/userSettings/UserSettingsEntity';
+import { PromotedSearchEntity } from 'siren-sdk/src/promotedSearch/PromotedSearchEntity.js';
+import { EnrollmentCollectionEntity } from 'siren-sdk/src/enrollments/EnrollmentCollectionEntity.js';
 window.D2L = window.D2L || {};
 window.D2L.MyCourses = window.D2L.MyCourses || {};
 
@@ -41,11 +42,6 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 		userSettingsUrl: String,
 		// URL to fetch widget settings
 		presentationUrl: String,
-		// Feature flag (switch) for using the updated sort logic and related fetaures
-		updatedSortLogic: {
-			type: Boolean,
-			value: false
-		},
 		currentTabId: String,
 		_enrollmentsSearchAction: Object,
 		_pinnedTabAction: Object,
@@ -59,7 +55,10 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 		},
 		_tabSearchType: String,
 		_changedCourseEnrollment: Object,
-		_updateUserSettingsAction: Object
+		_updateUserSettingsAction: Object,
+		_enrollmentCollectionEntity: Object,
+		_userSettingsEntity: Object,
+		_promotedSearch: Object,
 	},
 	_computeShowGroupByTabs: function(groups) {
 		return groups.length >= 2 || (groups.length > 0 && !this._enrollmentsSearchAction);
@@ -68,34 +67,67 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 		'd2l-course-enrollment-change': '_onCourseEnrollmentChange',
 		'd2l-tab-changed': '_tabSelectedChanged'
 	},
+	observers: [
+		'_onEntityChange(_entity)',
+	],
 	attached: function() {
 		if (!this.enrollmentsUrl || !this.userSettingsUrl) {
 			return;
 		}
 
-		Promise.all([
-			this.sirenEntityStoreFetch(this.enrollmentsUrl),
-			this.sirenEntityStoreFetch(this.userSettingsUrl)
-		])
-			.then(function(values) {
-				var enrollmentsRootEntity = values[0] && values[0].entity;
-				var userSettingsEntity = values[1] && values[1].entity;
+		this._setEnrollmentCollectionEntity(this.enrollmentsUrl);
+		this._setUserSettingsEntity(this.userSettingsUrl);
 
-				if (enrollmentsRootEntity.hasActionByName(Actions.enrollments.searchMyEnrollments)) {
-					this._enrollmentsSearchAction = enrollmentsRootEntity.getActionByName(Actions.enrollments.searchMyEnrollments);
-				}
+		setTimeout(function() {
+			var enrollmentsRootEntity = this._enrollmentCollectionEntity;
+			var userSettingsEntity = this._userSettingsEntity;
 
-				if (enrollmentsRootEntity.hasActionByName(Actions.enrollments.searchMyPinnedEnrollments)) {
-					this._pinnedTabAction = enrollmentsRootEntity.getActionByName(Actions.enrollments.searchMyPinnedEnrollments);
-				}
+			if (enrollmentsRootEntity.searchMyEnrollmentsAction()) {
+				this._enrollmentsSearchAction = enrollmentsRootEntity.searchMyEnrollmentsAction();
+			}
 
-				if (userSettingsEntity && userSettingsEntity.hasLinkByRel(Rels.widgetSettings)) {
-					this.presentationUrl = userSettingsEntity.getLinkByRel(Rels.widgetSettings).href;
-				}
+			if (enrollmentsRootEntity.searchMyPinnedEnrollmentsAction()) {
+				this._pinnedTabAction = enrollmentsRootEntity.searchMyPinnedEnrollmentsAction();
+			}
 
-				this._updateUserSettingsAction = userSettingsEntity.getActionByName(Actions.enrollments.updateUserSettings);
-			}.bind(this))
-			.then(this._fetchTabSearchActions.bind(this));
+			if (userSettingsEntity.userSettingsHref()) {
+				this.presentationUrl = userSettingsEntity.userSettingsHref();
+			}
+
+			this._updateUserSettingsAction = userSettingsEntity.userSettingsAction();
+			this._fetchTabSearchActions();
+		}.bind(this), 600);
+	},
+	_onEntityChange: function() {
+		var entity = this._entity;
+
+		if (!entity) {
+			return Promise.resolve();
+		}
+
+		if (entity instanceof EnrollmentCollectionEntity) {
+			this._enrollmentCollectionEntity= entity;
+		}
+
+		if (entity instanceof UserSettingsEntity) {
+			this._userSettingsEntity = entity;
+		}
+
+		if (entity instanceof PromotedSearchEntity) {
+			this._promotedSearchEntity = entity;
+		}
+	},
+	_setEnrollmentCollectionEntity: function(url) {
+		this._setEntityType(EnrollmentCollectionEntity);
+		this.href = url;
+	},
+	_setUserSettingsEntity: function(url) {
+		this._setEntityType(UserSettingsEntity);
+		this.href = url;
+	},
+	_setPromotedSearchEntity: function(url) {
+		this._setEntityType(PromotedSearchEntity);
+		this.href = url;
 	},
 	_onCourseEnrollmentChange: function(e) {
 		this._changedCourseEnrollment = {
@@ -113,11 +145,9 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 		return this._fetchContentComponent().getLastOrgUnitId();
 	},
 	_fetchContentComponent: function() {
-		return this.updatedSortLogic
-			? (this._showGroupByTabs === false || !this.currentTabId
-				? this.$$('d2l-my-courses-content')
-				: this.$$(`#${this.currentTabId} d2l-my-courses-content`))
-			: this.$$('d2l-my-courses-content-animated');
+		return this._showGroupByTabs === false || !this.currentTabId
+			? this.$$('d2l-my-courses-content')
+			: this.$$(`#${this.currentTabId} d2l-my-courses-content`)
 	},
 	_fetchTabSearchActions: function() {
 		if (!this.userSettingsUrl) {
@@ -125,11 +155,8 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 		}
 
 		if (!this.promotedSearches && this._enrollmentsSearchAction && this._pinnedTabAction) {
-			return this.sirenEntityStoreFetch(this.userSettingsUrl).then(function(value) {
-				var entity = value && value.entity;
-				var lastEnrollmentsSearchName = entity
-						&& entity.properties
-						&& entity.properties.MostRecentEnrollmentsSearchName;
+			return new Promise(function() {
+				var lastEnrollmentsSearchName = this._userSettingsEntity.mostRecentEnrollmentsSearchName();
 
 				this._tabSearchActions = [{
 					name: this._enrollmentsSearchAction.name,
@@ -142,67 +169,65 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 					selected: this._pinnedTabAction.name === lastEnrollmentsSearchName,
 					enrollmentsSearchAction: this._pinnedTabAction
 				}];
-			}.bind(this));
+			});
 		}
 
-		return Promise.all([
-			this.sirenEntityStoreFetch(this.promotedSearches, this.token),
-			this.sirenEntityStoreFetch(this.userSettingsUrl, this.token)
-		]).then(function(values) {
-			var promotedSearchesEntity = values[0] && values[0].entity;
-			var userSettingsEntity = values[1] && values[1].entity;
+		return new Promise(function() {
+			this._setPromotedSearchEntity(this.promotedSearches);
 
-			this._tabSearchActions = [];
+			setTimeout(function() {
+				var promotedSearchesEntity = this._promotedSearchEntity;
+				var userSettingsEntity = this._userSettingsEntity;
 
-			if (!promotedSearchesEntity) {
-				return;
-			}
+				this._tabSearchActions = [];
 
-			if (promotedSearchesEntity.properties) {
-				this._tabSearchType = promotedSearchesEntity.properties.UserEnrollmentsSearchType;
-			}
+				if (!promotedSearchesEntity) {
+					return;
+				}
 
-			if (!promotedSearchesEntity.actions) {
-				return;
-			}
+				if (promotedSearchesEntity.userEnrollmentsSearchType()) {
+					this._tabSearchType = promotedSearchesEntity.userEnrollmentsSearchType();
+				}
 
-			var lastEnrollmentsSearchName = userSettingsEntity
-						&& userSettingsEntity.properties
-						&& userSettingsEntity.properties.MostRecentEnrollmentsSearchName;
+				if (!promotedSearchesEntity.actions()) {
+					return;
+				}
 
-			if (promotedSearchesEntity.actions.length > 1) {
-				this._tabSearchActions = promotedSearchesEntity.actions.map(function(action) {
-					return {
-						name: action.name,
-						title: action.title,
-						selected: action.name === lastEnrollmentsSearchName,
-						enrollmentsSearchAction: action
-					};
-				});
-			}
+				var lastEnrollmentsSearchName = userSettingsEntity.mostRecentEnrollmentsSearchName();
 
-			if (!this._enrollmentsSearchAction) {
-				return;
-			}
+				if (promotedSearchesEntity.actions().length > 1) {
+					this._tabSearchActions = promotedSearchesEntity.actions().map(function(action) {
+						return {
+							name: action.name,
+							title: action.title,
+							selected: action.name === lastEnrollmentsSearchName,
+							enrollmentsSearchAction: action
+						};
+					});
+				}
 
-			var actions = [{
-				name: this._enrollmentsSearchAction.name,
-				title: this.localize('allTab'),
-				selected: this._enrollmentsSearchAction.name === lastEnrollmentsSearchName,
-				enrollmentsSearchAction: this._enrollmentsSearchAction
-			}];
+				if (!this._enrollmentsSearchAction) {
+					return;
+				}
 
-			if (this._pinnedTabAction) {
-				actions = actions.concat({
-					name: this._pinnedTabAction.name,
-					title: this.localize('pinnedCourses'),
-					selected: this._pinnedTabAction.name === lastEnrollmentsSearchName,
-					enrollmentsSearchAction: this._pinnedTabAction
-				});
-			}
+				var actions = [{
+					name: this._enrollmentsSearchAction.name,
+					title: this.localize('allTab'),
+					selected: this._enrollmentsSearchAction.name === lastEnrollmentsSearchName,
+					enrollmentsSearchAction: this._enrollmentsSearchAction
+				}];
 
-			this._tabSearchActions = actions.concat(this._tabSearchActions);
+				if (this._pinnedTabAction) {
+					actions = actions.concat({
+						name: this._pinnedTabAction.name,
+						title: this.localize('pinnedCourses'),
+						selected: this._pinnedTabAction.name === lastEnrollmentsSearchName,
+						enrollmentsSearchAction: this._pinnedTabAction
+					});
+				}
 
+				this._tabSearchActions = actions.concat(this._tabSearchActions);
+			}.bind(this), 300);
 		}.bind(this));
 	},
 };

@@ -30,10 +30,10 @@ import './d2l-utility-behavior.js';
 import './localize-behavior.js';
 import '../legacy/tile-grid/d2l-all-courses-segregated-content.js'; // TODO: remove this dependency, since updated-sort-logic will always be true
 import './card-grid/d2l-all-courses-unified-content.js';
-import { EnrollmentCollectionEntity } from 'd2l-enrollments/EnrollmentCollectionEntity.js';
+import { EnrollmentCollectionEntity } from 'siren-sdk/src/enrollments/EnrollmentCollectionEntity.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
-import { EntityMixin } from 'siren-sdk/mixin/entity-mixin.js';
+import { EntityMixin } from 'siren-sdk/src/mixin/entity-mixin.js';
 import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
 
 /**

@@ -35,6 +35,7 @@ class MyCoursesContainer extends mixinBehaviors([
 							<d2l-my-courses-content
 								href="[[presentationUrl]]"
 								token="[[token]]"
+								disable-entity-cache
 								advanced-search-url="[[advancedSearchUrl]]"
 								course-image-upload-cb="[[courseImageUploadCb]]"
 								enrollments-search-action="[[item.enrollmentsSearchAction]]"
@@ -55,6 +56,7 @@ class MyCoursesContainer extends mixinBehaviors([
 				<d2l-my-courses-content
 					href="[[presentationUrl]]"
 					token="[[token]]"
+					disable-entity-cache
 					advanced-search-url="[[advancedSearchUrl]]"
 					org-unit-type-ids="[[orgUnitTypeIds]]"
 					course-image-upload-cb="[[courseImageUploadCb]]"

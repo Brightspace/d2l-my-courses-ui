@@ -1,10 +1,12 @@
+import { UserSettingsEntity } from 'siren-sdk/src/userSettings/UserSettingsEntity';
+import { PromotedSearchEntity } from 'siren-sdk/src/promotedSearch/PromotedSearchEntity.js';
+import { EnrollmentCollectionEntity } from 'siren-sdk/src/enrollments/EnrollmentCollectionEntity.js';
+
 describe('d2l-my-courses', () => {
 	var component,
 		sandbox,
-		fetchStub,
 		enrollmentsHref = '/enrollments/users/169',
 		promotedSearchHref = '/promoted-search-url',
-		promotedSearchHrefMultiple = '/promoted-search-multiple-url',
 		lastSearchHref = 'homepages/components/1/user-settings/169',
 		searchAction,
 		searchPinnedEnrollmentsAction,
@@ -107,22 +109,15 @@ describe('d2l-my-courses', () => {
 
 		component = fixture('d2l-my-courses-container-fixture');
 
-		fetchStub = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch');
-		SetupFetchStub(enrollmentsHref, enrollmentsSearchResponse);
-		SetupFetchStub(lastSearchHref, lastSearchResponse);
-		SetupFetchStub(promotedSearchHref, promotedSearchResponse);
-		SetupFetchStub(promotedSearchHrefMultiple, promotedSearchMultipleResponse);
-
 		component.enrollmentsUrl = enrollmentsHref;
 		component.promotedSearches = promotedSearchHref;
 		component.userSettingsUrl = lastSearchHref;
 		component.token = 'fake';
-	});
 
-	function SetupFetchStub(url, entity) {
-		fetchStub.withArgs(sinon.match(url), sinon.match.string)
-			.returns(Promise.resolve({entity: entity}));
-	}
+		component._userSettingsEntity = new UserSettingsEntity(lastSearchResponse);
+		component._promotedSearchEntity = new PromotedSearchEntity(promotedSearchResponse);
+		component._enrollmentCollectionEntity = new EnrollmentCollectionEntity(enrollmentsSearchResponse);
+	});
 
 	afterEach(() => {
 		sandbox.restore();
@@ -131,67 +126,48 @@ describe('d2l-my-courses', () => {
 	it('should properly implement the d2l-my-courses-behavior', () => {
 		expect(component.courseImageUploadCompleted).to.be.a('function');
 		expect(component.getLastOrgUnitId).to.be.a('function');
-		expect(component.updatedSortLogic).to.equal(false);
 	});
 
 	it('should hide the only saved search action', () => {
-		return component._fetchTabSearchActions()
-			.then(function() {
-				expect(fetchStub).to.be.called;
-				expect(component._tabSearchActions.length).to.equal(0);
-			});
+		component._onPromotedSeachEntityChange();
+		expect(component._tabSearchActions.length).to.equal(0);
 	});
 
 	it('should properly fetch default search data and hide the only saved search action', () => {
 		component._enrollmentsSearchAction = searchAction;
-		return component._fetchTabSearchActions()
-			.then(function() {
-				expect(fetchStub).to.be.called;
-				expect(component._tabSearchActions.length).to.equal(1);
-			});
+		component._onPromotedSeachEntityChange();
+		expect(component._tabSearchActions.length).to.equal(1);
 	});
 
 	it('should properly fetch saved search data with two saved search actions', () => {
-		component.promotedSearches = promotedSearchHrefMultiple;
-		return component._fetchTabSearchActions()
-			.then(function() {
-				expect(fetchStub).to.be.called;
-				expect(component._tabSearchActions.length).to.equal(2);
-				expect(component._tabSearchActions[0].selected).to.be.true;
-			});
+		component._promotedSearchEntity = new PromotedSearchEntity(promotedSearchMultipleResponse);
+		component._onPromotedSeachEntityChange();
+		expect(component._tabSearchActions.length).to.equal(2);
+		expect(component._tabSearchActions[0].selected).to.be.true;
 	});
 
 	it('should properly fetch default search data when set with two saved search actions', () => {
-		component.promotedSearches = promotedSearchHrefMultiple;
+		component._promotedSearchEntity = new PromotedSearchEntity(promotedSearchMultipleResponse);
 		component._enrollmentsSearchAction = searchAction;
-		return component._fetchTabSearchActions()
-			.then(function() {
-				expect(fetchStub).to.be.called;
-				expect(component._tabSearchActions.length).to.equal(3);
-				expect(component._tabSearchActions[1].selected).to.be.true;
-			});
+		component._onPromotedSeachEntityChange();
+		expect(component._tabSearchActions.length).to.equal(3);
+		expect(component._tabSearchActions[1].selected).to.be.true;
 	});
 
 	it('should have search pinned enrollments action and hide the only saved search action', () => {
 		component._enrollmentsSearchAction = searchAction;
 		component._pinnedTabAction = searchPinnedEnrollmentsAction;
-		return component._fetchTabSearchActions()
-			.then(function() {
-				expect(fetchStub).to.be.called;
-				expect(component._tabSearchActions.length).to.equal(2);
-			});
+		component._onPromotedSeachEntityChange();
+		expect(component._tabSearchActions.length).to.equal(2);
 	});
 
 	it('should have search pinned enrollments action with two saved search actions', () => {
-		component.promotedSearches = promotedSearchHrefMultiple;
+		component._promotedSearchEntity = new PromotedSearchEntity(promotedSearchMultipleResponse);
 		component._enrollmentsSearchAction = searchAction;
 		component._pinnedTabAction = searchPinnedEnrollmentsAction;
-		return component._fetchTabSearchActions()
-			.then(function() {
-				expect(fetchStub).to.be.called;
-				expect(component._tabSearchActions.length).to.equal(4);
-				expect(component._tabSearchActions[2].selected).to.be.true;
-			});
+		component._onPromotedSeachEntityChange();
+		expect(component._tabSearchActions.length).to.equal(4);
+		expect(component._tabSearchActions[2].selected).to.be.true;
 	});
 
 	describe('Listener setup', () => {

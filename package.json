@@ -80,6 +80,7 @@
     "@polymer/iron-scroll-threshold": "^3.0.0",
     "@polymer/iron-pages": "^3.0.0",
     "@polymer/polymer": "^3.0.0",
-    "siren-parser": "^8.0.0"
+    "siren-parser": "^8.0.0",
+    "siren-sdk": "BrightspaceHypermediaComponents/siren-sdk#semver:^1"
   }
 }

@@ -100,7 +100,7 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 
 		this._fetchTabSearchActions();
 	},
-	_onPromotedSeachEntityChange: function() {
+	_onPromotedSearchEntityChange: function() {
 		if (!this._promotedSearchEntity || !this._userSettingsEntity) {
 			return;
 		}
@@ -171,7 +171,7 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 	_setPromotedSearchEntity: function(url) {
 		return entityFactory(PromotedSearchEntity, url, this.token, entity => {
 			this._promotedSearchEntity = entity;
-			return this._onPromotedSeachEntityChange();
+			return this._onPromotedSearchEntityChange();
 		});
 	},
 	_onCourseEnrollmentChange: function(e) {

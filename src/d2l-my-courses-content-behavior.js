@@ -465,7 +465,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			this._handleEnrollmentsRefetch();
 		} else if (this._numberOfEnrollments === 0) {
 			this._rootTabSelected = true;
-			this._fetchRoot()
+			this._fetchRoot();
 		} else {
 			setTimeout(function() {
 				// Force redraw of course tiles.

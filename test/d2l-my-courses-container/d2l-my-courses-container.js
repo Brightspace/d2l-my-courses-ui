@@ -129,19 +129,19 @@ describe('d2l-my-courses', () => {
 	});
 
 	it('should hide the only saved search action', () => {
-		component._onPromotedSeachEntityChange();
+		component._onPromotedSearchEntityChange();
 		expect(component._tabSearchActions.length).to.equal(0);
 	});
 
 	it('should properly fetch default search data and hide the only saved search action', () => {
 		component._enrollmentsSearchAction = searchAction;
-		component._onPromotedSeachEntityChange();
+		component._onPromotedSearchEntityChange();
 		expect(component._tabSearchActions.length).to.equal(1);
 	});
 
 	it('should properly fetch saved search data with two saved search actions', () => {
 		component._promotedSearchEntity = new PromotedSearchEntity(promotedSearchMultipleResponse);
-		component._onPromotedSeachEntityChange();
+		component._onPromotedSearchEntityChange();
 		expect(component._tabSearchActions.length).to.equal(2);
 		expect(component._tabSearchActions[0].selected).to.be.true;
 	});
@@ -149,7 +149,7 @@ describe('d2l-my-courses', () => {
 	it('should properly fetch default search data when set with two saved search actions', () => {
 		component._promotedSearchEntity = new PromotedSearchEntity(promotedSearchMultipleResponse);
 		component._enrollmentsSearchAction = searchAction;
-		component._onPromotedSeachEntityChange();
+		component._onPromotedSearchEntityChange();
 		expect(component._tabSearchActions.length).to.equal(3);
 		expect(component._tabSearchActions[1].selected).to.be.true;
 	});
@@ -157,7 +157,7 @@ describe('d2l-my-courses', () => {
 	it('should have search pinned enrollments action and hide the only saved search action', () => {
 		component._enrollmentsSearchAction = searchAction;
 		component._pinnedTabAction = searchPinnedEnrollmentsAction;
-		component._onPromotedSeachEntityChange();
+		component._onPromotedSearchEntityChange();
 		expect(component._tabSearchActions.length).to.equal(2);
 	});
 
@@ -165,7 +165,7 @@ describe('d2l-my-courses', () => {
 		component._promotedSearchEntity = new PromotedSearchEntity(promotedSearchMultipleResponse);
 		component._enrollmentsSearchAction = searchAction;
 		component._pinnedTabAction = searchPinnedEnrollmentsAction;
-		component._onPromotedSeachEntityChange();
+		component._onPromotedSearchEntityChange();
 		expect(component._tabSearchActions.length).to.equal(4);
 		expect(component._tabSearchActions[2].selected).to.be.true;
 	});

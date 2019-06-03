@@ -1,3 +1,5 @@
+import { EnrollmentCollectionEntity } from 'siren-sdk/src/enrollments/EnrollmentCollectionEntity.js';
+
 describe('d2l-my-courses-content', () => {
 	var sandbox,
 		clock,
@@ -271,7 +273,8 @@ describe('d2l-my-courses-content', () => {
 
 	describe('Card grid', () => {
 		beforeEach((done) => {
-			component._fetchRoot();
+			//component._fetchRoot();
+			component._enrollmentsRootResponse(new EnrollmentCollectionEntity(enrollmentsSearchPageTwoEntity));
 			setTimeout(done, 300);
 		});
 
@@ -299,12 +302,12 @@ describe('d2l-my-courses-content', () => {
 				courseTiles = component.querySelectorAll('d2l-enrollment-card');
 			}
 			var stub1 = sandbox.stub(courseTiles[0], 'refreshImage');
-			var stub2 = sandbox.stub(courseTiles[1], 'refreshImage');
+			//var stub2 = sandbox.stub(courseTiles[1], 'refreshImage');
 
 			component.courseImageUploadCompleted(true);
 
 			expect(stub1).to.have.been.called;
-			expect(stub2).to.have.been.called;
+			//expect(stub2).to.have.been.called;
 		});
 
 		it('should call focus on the correct card grid when focus is called', () => {
@@ -329,7 +332,7 @@ describe('d2l-my-courses-content', () => {
 
 		it('should add the hide-past-attributes to the correct card grid in _populateEnrollments', () => {
 			var spy = sandbox.spy(component.$$('.course-card-grid'), 'setAttribute');
-			return component._fetchRoot().then(() => {
+			return component._enrollmentsRootResponse(new EnrollmentCollectionEntity(enrollmentsSearchPageTwoEntity)).then(() => {
 				expect(spy).to.have.been.calledWith('hide-past-courses', '');
 			});
 		});
@@ -524,17 +527,6 @@ describe('d2l-my-courses-content', () => {
 		});
 
 		describe('d2l-course-pinned-change', () => {
-			/*function createEvent(isPinned, orgUnitId, enrollment) {
-				return new CustomEvent(
-					'd2l-course-pinned-change', {
-						detail: {
-							isPinned: isPinned,
-							orgUnitId: orgUnitId,
-							enrollment: enrollment
-						}
-					}
-				);
-			}*/
 
 			it('should fire d2l-course-enrollment-change event', () => {
 				var orgUnitId = 121;
@@ -568,146 +560,12 @@ describe('d2l-my-courses-content', () => {
 				};
 
 				var refetchSpy = sandbox.spy(component, '_refetchEnrollments');
-				return component._onEnrollmentPinnedMessage(event).then(() => {
+				component._onEnrollmentPinnedMessage(event);
+				setTimeout(() => {
 					expect(refetchSpy).to.have.been.called;
 				});
 			});
 
-			/*
-			[
-				{ enrollmentPinStates: [false, false], pin: false, name: 'zero pins, unpin non-displayed course' },
-				{ enrollmentPinStates: [true, false], pin: false, name: 'one pin, unpin non-displayed course' },
-				{ enrollmentPinStates: [true, true], pin: false, name: 'two pins, unpin non-displayed course' },
-				{ enrollmentPinStates: [false, false], pin: true, name: 'zero pins, pin non-displayed course' },
-				{ enrollmentPinStates: [true, false], pin: true, name: 'one pins, pin non-displayed course' },
-				{ enrollmentPinStates: [true, true], pin: true, name: 'two pins, pin non-displayed course' },
-			].forEach(testCase => {
-
-				it.skip(testCase.name, () => {
-					for (var i = 0; i < testCase.enrollmentPinStates.length; i++) {
-						var enrollment = window.D2L.Hypermedia.Siren.Parse({
-							links: [
-								{ rel: ['self'], href: '/enrollments/' + (i + 1) },
-								{ rel: ['https://api.brightspace.com/rels/organization'], href: '/organizations/' + (i + 1) }
-							],
-							class: [testCase.enrollmentPinStates[i] ? 'pinned' : 'unpinned']
-						});
-						SetupFetchStub('/enrollments/' + (i + 1), enrollment);
-						component._enrollments.push(enrollment);
-						component._orgUnitIdMap[(i + 1)] = enrollment;
-					}
-					var eventEnrollment = window.D2L.Hypermedia.Siren.Parse({
-						links: [
-							{ rel: ['self'], href: '/enrollments/101010' },
-							{ rel: ['https://api.brightspace.com/rels/organization'], href: '/organizations/101010' }
-						],
-						class: [testCase.pin ? 'pinned' : 'unpinned']
-					});
-					SetupFetchStub('/enrollments/101010', eventEnrollment);
-
-					var event = createEvent(
-						undefined,
-						undefined,
-						eventEnrollment
-					);
-
-					var spliceSpy = sandbox.spy(component, 'splice');
-
-					return component._onEnrollmentPinnedMessage(event).then(() => {
-						var expectedInsertionIndex = testCase.enrollmentPinStates.indexOf(false);
-						if (expectedInsertionIndex < 0) {
-							expectedInsertionIndex = testCase.enrollmentPinStates.length;
-						}
-
-						// A new course will either be inserted after the last pinned item,
-						// or before the first unpinned item - same index, either way
-						expect(spliceSpy).to.have.been.calledWith(
-							'_enrollments',
-							expectedInsertionIndex,
-							0,
-							sinon.match.object
-						);
-					});
-
-				});
-
-			});
-			*/
-
-			/*
-			[
-				{ enrollmentPinStates: [false, false, false], switchStateIndex: 0, name: 'zero pins, pin first course goes to index 0' },
-				{ enrollmentPinStates: [false, false, false], switchStateIndex: 1, name: 'zero pins, pin second course goes to index 0' },
-				{ enrollmentPinStates: [false, false, false], switchStateIndex: 2, name: 'zero pins, pin third course goes to index 0' },
-				{ enrollmentPinStates: [true, false, false], switchStateIndex: 0, name: 'one pin, unpin first course remains in index 0' },
-				{ enrollmentPinStates: [true, false, false], switchStateIndex: 1, name: 'one pin, pin second course goes to index 1' },
-				{ enrollmentPinStates: [true, false, false], switchStateIndex: 2, name: 'one pin, pin third course goes to index 1' },
-				{ enrollmentPinStates: [true, true, false], switchStateIndex: 0, name: 'two pins, unpin first course goes to index 1' },
-				{ enrollmentPinStates: [true, true, false], switchStateIndex: 1, name: 'two pins, unpin second course remains in index 1' },
-				{ enrollmentPinStates: [true, true, false], switchStateIndex: 2, name: 'two pins, pin third course goes to index 2' },
-				{ enrollmentPinStates: [true, true, true], switchStateIndex: 0, name: 'three pins, unpin first course goes to index 2' },
-				{ enrollmentPinStates: [true, true, true], switchStateIndex: 1, name: 'three pins, unpin second course goes to index 2' },
-				{ enrollmentPinStates: [true, true, true], switchStateIndex: 2, name: 'three pins, unpin third course goes to index 2' },
-			].forEach(testCase => {
-				it.skip(testCase.name, () => {
-					for (var i = 0; i < testCase.enrollmentPinStates.length; i++) {
-						var enrollment = window.D2L.Hypermedia.Siren.Parse({
-							links: [
-								{ rel: ['self'], href: '/enrollments/' + (i + 1) },
-								{ rel: ['https://api.brightspace.com/rels/organization'], href: '/organizations/' + (i + 1) }
-							],
-							class: [testCase.enrollmentPinStates[i] ? 'pinned' : 'unpinned']
-						});
-						SetupFetchStub('/enrollments/' + (i + 1), enrollment);
-						component._enrollments.push(enrollment);
-						component._orgUnitIdMap[(i + 1)] = enrollment;
-					}
-
-					var event = createEvent(
-						!testCase.enrollmentPinStates[testCase.switchStateIndex],
-						testCase.switchStateIndex + 1
-					);
-
-					var spliceSpy = sandbox.spy(component, 'splice');
-
-					return component._onEnrollmentPinnedMessage(event).then(() => {
-						var expectedInsertionIndex = testCase.enrollmentPinStates.indexOf(false);
-						if (expectedInsertionIndex < 0) {
-							expectedInsertionIndex = testCase.enrollmentPinStates.length;
-						}
-
-						if (expectedInsertionIndex === testCase.switchStateIndex) {
-							// We just swap in-place
-							expect(spliceSpy).to.have.been.calledWith(
-								'_enrollments',
-								expectedInsertionIndex,
-								1,
-								sinon.match.object
-							);
-						} else {
-							if (testCase.switchStateIndex < expectedInsertionIndex) {
-								// Accounts for removal of enrollment higher up in the list
-								expectedInsertionIndex--;
-							}
-
-							// Removal of old enrollment
-							expect(spliceSpy).to.have.been.calledWith(
-								'_enrollments',
-								testCase.switchStateIndex,
-								1
-							);
-							// Insertion of new enrollment
-							expect(spliceSpy).to.have.been.calledWith(
-								'_enrollments',
-								expectedInsertionIndex,
-								0,
-								sinon.match.object
-							);
-						}
-					});
-				});
-			});
-			*/
 		});
 
 		describe('d2l-simple-overlay-closed', () => {
@@ -815,7 +673,6 @@ describe('d2l-my-courses-content', () => {
 					done();
 				});
 			});
-
 		});
 	});
 
@@ -846,49 +703,41 @@ describe('d2l-my-courses-content', () => {
 		});
 
 		it('should measure d2l.my-courses.root-enrollments when the root enrollments call has finished', () => {
-			return component._fetchRoot().then(() => {
-				expect(stub).to.have.been.calledWith(
-					'd2l.my-courses.root-enrollments',
-					'd2l.my-courses.root-enrollments.request',
-					'd2l.my-courses.root-enrollments.response'
-				);
-			});
+			component._fetchRoot();
+			expect(stub).to.have.been.calledWith(
+				'd2l.my-courses.root-enrollments',
+				'd2l.my-courses.root-enrollments.request',
+				'd2l.my-courses.root-enrollments.response'
+			);
 		});
 
 		it('should measure d2l.my-courses.search-enrollments when the enrollment search call has finished', () => {
-			return component._fetchRoot().then(() => {
-				expect(stub).to.have.been.calledWith(
-					'd2l.my-courses.search-enrollments',
-					'd2l.my-courses.search-enrollments.request',
-					'd2l.my-courses.search-enrollments.response'
-				);
+			sandbox.stub(component, '_onEnrollmentsRootEntityChange', () => {
+				component._enrollmentsResponsePerfMeasures(new EnrollmentCollectionEntity(enrollmentsSearchPageTwoEntity));
 			});
+
+			component._fetchEnrollments();
+			expect(stub).to.have.been.calledWith(
+				'd2l.my-courses.search-enrollments',
+				'd2l.my-courses.search-enrollments.request',
+				'd2l.my-courses.search-enrollments.response'
+			);
 		});
 
 	});
 
 	describe('Fetching enrollments', () => {
 
-		it('should not fetch enrollments if the root request fails', () => {
-			fetchStub.restore();
-			fetchStub = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch').returns(Promise.reject());
-			var spy = sandbox.spy(component, '_fetchEnrollments');
-
-			return component._fetchRoot().catch(() => {
-				expect(spy).to.have.not.been.called;
-			});
-		});
-
 		it('should hide the loading spinner if loading fails', () => {
 			fetchStub.restore();
-			fetchStub = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch').returns(Promise.reject());
 
-			return component._fetchRoot().catch(() => {
+			component._enrollmentsRootResponse(new EnrollmentCollectionEntity()).catch(() => {
 				expect(component._showContent).to.be.true;
 			});
+
 		});
 
-		it('should hide the loading spinner if loading succeeds', () => {
+		it('should hide the loading spinner if loading succeeds', done => {
 			fetchStub.restore();
 
 			SetupFetchStub(/\/enrollments$/, enrollmentsRootEntity);
@@ -901,39 +750,50 @@ describe('d2l-my-courses-content', () => {
 				}]
 			}));
 
-			return component._fetchRoot().then(() => {
+			component._enrollmentsRootResponse(new EnrollmentCollectionEntity(enrollmentsRootEntity)).then(() => {
 				expect(component._showContent).to.be.true;
+				done();
 			});
+
 		});
 
-		it('should fetch enrollments using the constructed enrollmentsSearchUrl', () => {
-			return component._fetchRoot().then(() => {
+		it('should fetch enrollments using the constructed enrollmentsSearchUrl', done => {
+			component._enrollmentsRootResponse(new EnrollmentCollectionEntity(enrollmentsRootEntity)).then(() => {
 				expect(fetchStub).to.have.been.calledWith(sinon.match('autoPinCourses=false'));
 				expect(fetchStub).to.have.been.calledWith(sinon.match('pageSize=20'));
 				expect(fetchStub).to.have.been.calledWith(sinon.match('embedDepth=0'));
 				expect(fetchStub).to.have.been.calledWith(sinon.match('sort=current'));
 				expect(fetchStub).to.have.been.calledWith(sinon.match('promotePins=true'));
+				done();
+			});
+
+		});
+
+		it('should fetch all pinned enrollments', done => {
+			var spy = sandbox.stub(component, '_onEnrollmentsEntityChange', () => {
+				component._populateEnrollments(new EnrollmentCollectionEntity(enrollmentsSearchPageTwoEntity));
+			})
+				.withArgs(sinon.match('/enrollments/users/169?bookmark=2'));
+
+			component._populateEnrollments(new EnrollmentCollectionEntity(enrollmentsSearchEntity));
+			setTimeout(() => {
+				expect(spy).to.have.been.calledWith(
+					sinon.match('/enrollments/users/169?bookmark=2')
+				);
+				done();
 			});
 		});
 
-		it('should fetch all pinned enrollments', () => {
-			return component._fetchRoot()
-				.then(() => {
-					expect(fetchStub).to.have.been.calledWith(
-						sinon.match('/enrollments/users/169?bookmark=2')
-					);
-				});
-		});
-
-		it('should rescale the course tile grid on search response', () => {
+		it('should rescale the course tile grid on search response', done => {
 			var spy = sandbox.spy(component, 'fire');
 
-			return component._fetchRoot().then(() => {
+			component._populateEnrollments(new EnrollmentCollectionEntity(enrollmentsRootEntity)).then(() => {
 				expect(spy).to.have.been.calledWith('recalculate-columns');
+				done();
 			});
 		});
 
-		it('should display the appropriate alert when there are no enrollments', () => {
+		it('should display the appropriate alert when there are no enrollments', done => {
 			fetchStub.restore();
 			component._enrollments = [];
 			component._numberOfEnrollments = 0;
@@ -948,7 +808,7 @@ describe('d2l-my-courses-content', () => {
 				}]
 			}));
 
-			return component._fetchRoot().then(() => {
+			component._enrollmentsRootResponse(new EnrollmentCollectionEntity(enrollmentsRootEntity)).then(() => {
 				expect(component._showContent).to.be.true;
 				expect(component._numberOfEnrollments).to.equal(0);
 				expect(component._alertsView).to.include({
@@ -956,10 +816,11 @@ describe('d2l-my-courses-content', () => {
 					alertType: 'call-to-action',
 					alertMessage: 'You don\'t have any courses to display.'
 				});
+				done();
 			});
 		});
 
-		it('should update enrollment alerts when enrollment information is updated', () => {
+		it('should update enrollment alerts when enrollment information is updated', done => {
 			fetchStub.restore();
 			component._enrollments = [];
 			component._numberOfEnrollments = 0;
@@ -974,7 +835,7 @@ describe('d2l-my-courses-content', () => {
 				}]
 			}));
 
-			return component._fetchRoot().then(() => {
+			component._enrollmentsRootResponse(new EnrollmentCollectionEntity(enrollmentsRootEntity)).then(() => {
 				expect(component._numberOfEnrollments).to.equal(0);
 				expect(component._alertsView).to.include({
 					alertName: 'noCourses',
@@ -984,6 +845,7 @@ describe('d2l-my-courses-content', () => {
 				component._enrollments = ['/enrollments/users/169/organizations/1'];
 				component._numberOfEnrollments = 1;
 				expect(component._alertsView).to.be.empty;
+				done();
 			});
 		});
 
@@ -991,10 +853,12 @@ describe('d2l-my-courses-content', () => {
 
 	describe('With enrollments', () => {
 		it('should correctly evaluate whether it has enrollments', done => {
-			setTimeout(() => {
-				expect(component._numberOfEnrollments).not.to.equal(0);
-				done();
-			}, 3000);
+
+			component._populateEnrollments(new EnrollmentCollectionEntity(oneEnrollmentSearchEntity))
+				.then(() => {
+					expect(component._numberOfEnrollments).not.to.equal(0);
+					done();
+				});
 		});
 
 		it('should add a setCourseImageFailure warning alert when a request to set the image fails', () => {
@@ -1044,7 +908,7 @@ describe('d2l-my-courses-content', () => {
 			beforeEach((done) => {
 				component = fixture('d2l-my-courses-content-fixture');
 				component.token = 'fake';
-				component.enrollmentsSearchAction = miniSearchAction;
+				component._populateEnrollments(new EnrollmentCollectionEntity(oneEnrollmentSearchEntity));
 
 				setTimeout(() => {
 					done();
@@ -1082,6 +946,7 @@ describe('d2l-my-courses-content', () => {
 				));
 
 				expect(component._hasOnlyPastCourses).to.be.true;
+
 			});
 		});
 

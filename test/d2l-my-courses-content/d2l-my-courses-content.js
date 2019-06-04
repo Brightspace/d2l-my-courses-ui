@@ -190,14 +190,11 @@ describe('d2l-my-courses-content', () => {
 	});
 
 	it('should properly implement d2l-my-courses-behavior', () => {
-		var tester = new EnrollmentCollectionEntity(enrollmentsRootEntity);
-		expect(typeof tester).to.equal('object');
-		expect(true).to.be.true;
-		//expect(component.getLastOrgUnitId).to.be.a('function');
-		//expect(component.updatedSortLogic).to.exist;
+		expect(component.getLastOrgUnitId).to.be.a('function');
+		expect(component.updatedSortLogic).to.exist;
 	});
 
-	/*.it('should properly implement d2l-my-courses-content-behavior', () => {
+	it('should properly implement d2l-my-courses-content-behavior', () => {
 		expect(component).to.exist;
 		expect(component._alertsView).to.be.an.instanceof(Array);
 		expect(component._existingEnrollmentsMap).to.be.an('object');
@@ -678,7 +675,7 @@ describe('d2l-my-courses-content', () => {
 		});
 	});
 
-	describe('Performance measures', () => {
+	/*describe('Performance measures', () => {
 		var stub;
 
 		beforeEach(() => {

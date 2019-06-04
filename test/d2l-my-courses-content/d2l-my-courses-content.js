@@ -1,4 +1,4 @@
-//import { EnrollmentCollectionEntity } from 'siren-sdk/src/enrollments/EnrollmentCollectionEntity.js';
+import { EnrollmentCollectionEntity } from 'siren-sdk/src/enrollments/EnrollmentCollectionEntity.js';
 
 describe('d2l-my-courses-content', () => {
 	var sandbox,
@@ -190,6 +190,8 @@ describe('d2l-my-courses-content', () => {
 	});
 
 	it('should properly implement d2l-my-courses-behavior', () => {
+		var tester = new EnrollmentCollectionEntity(enrollmentsRootEntity);
+		expect(typeof tester).to.equal('object');
 		expect(true).to.be.true;
 		//expect(component.getLastOrgUnitId).to.be.a('function');
 		//expect(component.updatedSortLogic).to.exist;

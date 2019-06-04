@@ -903,7 +903,7 @@ describe('d2l-my-courses-content', () => {
 			expect(component._viewAllCoursesText).to.equal('View All Courses (20+)');
 		});
 
-		/*describe('Only Past Courses alert', () => {
+		describe('Only Past Courses alert', () => {
 			beforeEach((done) => {
 				component = fixture('d2l-my-courses-content-fixture');
 				component.token = 'fake';
@@ -931,7 +931,7 @@ describe('d2l-my-courses-content', () => {
 
 			});
 
-			it('should add the alert if hiding past courses', () => {
+			/*it('should add the alert if hiding past courses', () => {
 				component._hidePastCourses = true;
 				component.dispatchEvent(new CustomEvent(
 					'd2l-enrollment-card-status', {
@@ -946,8 +946,8 @@ describe('d2l-my-courses-content', () => {
 
 				expect(component._hasOnlyPastCourses).to.be.true;
 
-			});
-		});*/
+			});*/
+		});
 
 	});
 

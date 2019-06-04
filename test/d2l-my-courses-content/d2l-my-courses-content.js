@@ -675,7 +675,7 @@ describe('d2l-my-courses-content', () => {
 		});
 	});
 
-	/*describe('Performance measures', () => {
+	describe('Performance measures', () => {
 		var stub;
 
 		beforeEach(() => {
@@ -850,7 +850,7 @@ describe('d2l-my-courses-content', () => {
 
 	});
 
-	describe('With enrollments', () => {
+	/*describe('With enrollments', () => {
 		it('should correctly evaluate whether it has enrollments', done => {
 
 			component._populateEnrollments(new EnrollmentCollectionEntity(oneEnrollmentSearchEntity))

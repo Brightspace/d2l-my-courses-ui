@@ -931,7 +931,7 @@ describe('d2l-my-courses-content', () => {
 
 			});
 
-			/*it('should add the alert if hiding past courses', () => {
+			it('should add the alert if hiding past courses', () => {
 				component._hidePastCourses = true;
 				component.dispatchEvent(new CustomEvent(
 					'd2l-enrollment-card-status', {
@@ -946,7 +946,7 @@ describe('d2l-my-courses-content', () => {
 
 				expect(component._hasOnlyPastCourses).to.be.true;
 
-			});*/
+			});
 		});
 
 	});

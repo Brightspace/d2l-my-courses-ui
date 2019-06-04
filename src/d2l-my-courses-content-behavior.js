@@ -274,7 +274,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this._orgUnitIdMap[orgUnitId] = e.detail.enrollmentUrl;
 	},
 	_onD2lEnrollmentCardStatus: function(e) {
-		console.log(e);
 		if (!e.detail || !e.detail.status || !e.detail.enrollmentUrl || e.detail.status.completed) {
 			return;
 		}

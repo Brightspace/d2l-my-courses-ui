@@ -850,7 +850,7 @@ describe('d2l-my-courses-content', () => {
 
 	});
 
-	/*describe('With enrollments', () => {
+	describe('With enrollments', () => {
 		it('should correctly evaluate whether it has enrollments', done => {
 
 			component._populateEnrollments(new EnrollmentCollectionEntity(oneEnrollmentSearchEntity))
@@ -903,7 +903,7 @@ describe('d2l-my-courses-content', () => {
 			expect(component._viewAllCoursesText).to.equal('View All Courses (20+)');
 		});
 
-		describe('Only Past Courses alert', () => {
+		/*describe('Only Past Courses alert', () => {
 			beforeEach((done) => {
 				component = fixture('d2l-my-courses-content-fixture');
 				component.token = 'fake';
@@ -947,8 +947,8 @@ describe('d2l-my-courses-content', () => {
 				expect(component._hasOnlyPastCourses).to.be.true;
 
 			});
-		});
+		});*/
 
-	});*/
+	});
 
 });

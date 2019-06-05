@@ -55,7 +55,7 @@
     "d2l-colors": "BrightspaceUI/colors#semver:^4",
     "d2l-course-image": "Brightspace/course-image#semver:^3",
     "d2l-dropdown": "BrightspaceUI/dropdown#semver:^7",
-    "d2l-enrollments": "BrightspaceHypermediaComponents/enrollments#semver:^2",
+    "d2l-enrollments": "BrightspaceHypermediaComponents/enrollments#semver:2.0.0-add-perf",
     "d2l-fetch": "Brightspace/d2l-fetch.git#semver:^2",
     "d2l-hypermedia-constants": "^6",
     "d2l-icons": "BrightspaceUI/icons#semver:^6",

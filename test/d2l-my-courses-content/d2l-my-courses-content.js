@@ -191,7 +191,6 @@ describe('d2l-my-courses-content', () => {
 
 	it('should properly implement d2l-my-courses-behavior', () => {
 		expect(component.getLastOrgUnitId).to.be.a('function');
-		expect(component.updatedSortLogic).to.exist;
 	});
 
 	it('should properly implement d2l-my-courses-content-behavior', () => {
@@ -343,13 +342,9 @@ describe('d2l-my-courses-content', () => {
 			{ eventName: 'open-change-image-view', handler: '_onOpenChangeImageView' },
 			{ eventName: 'clear-image-scroll-threshold', handler: '_onClearImageScrollThreshold' },
 			{ eventName: 'd2l-simple-overlay-closed', handler: '_onSimpleOverlayClosed' },
-			{ eventName: 'enrollment-pinned', handler: '_onEnrollmentPinAction' },
-			{ eventName: 'enrollment-unpinned', handler: '_onEnrollmentPinAction' },
 			{ eventName: 'course-tile-organization', handler: '_onCourseTileOrganization' },
 			{ eventName: 'course-image-loaded', handler: '_onCourseImageLoaded' },
 			{ eventName: 'initially-visible-course-tile', handler: '_onInitiallyVisibleCourseTile' },
-			{ eventName: 'd2l-enrollment-card-fetched', handler: '_onD2lEnrollmentCardFetched' },
-			{ eventName: 'd2l-enrollment-card-status', handler: '_onD2lEnrollmentCardStatus' },
 		].forEach(testCase => {
 
 			it('should listen for ' + testCase.eventName + ' events', done => {
@@ -527,30 +522,16 @@ describe('d2l-my-courses-content', () => {
 
 		describe('d2l-course-pinned-change', () => {
 
-			it('should fire d2l-course-enrollment-change event', () => {
-				var orgUnitId = 121;
-				var isPinned = false;
-				var event = {
-					detail: {
-						isPinned: isPinned,
-						orgUnitId: orgUnitId
-					}
+			it('should refetch enrollments if the new pinned enrollment has not previously been fetched', () => {
+				var _enrollmentEntity = {
+					_entity: {},
+					organizationHref: function() { return 'organizationHref'; },
 				};
 
-				component.addEventListener('d2l-course-enrollment-change', function(event) {
-					expect(event.detail.orgUnitId).to.equal(orgUnitId);
-					expect(event.detail.isPinned).to.equal(isPinned);
-				});
-
-				return component._onEnrollmentPinnedMessage(event);
-			});
-
-			it('should refetch enrollments if the new pinned enrollment has not previously been fetched', () => {
 				var event = {
 					detail: {
 						isPinned: true,
-						orgUnitId: 2,
-						enrollment: null
+						enrollment: _enrollmentEntity
 					}
 				};
 
@@ -581,50 +562,6 @@ describe('d2l-my-courses-content', () => {
 				});
 			});
 
-		});
-
-		['enrollment-pinned', 'enrollment-unpinned'].forEach(eventName => {
-			describe(eventName, () => {
-
-				it('should not fire a d2l-course-pinned-change event', done => {
-					var spy = sandbox.spy(component, 'fire');
-
-					organizationEntity.links[0].href = 'not-a-parseable-organization-link';
-					var event = new CustomEvent(eventName, {
-						detail: {
-							organization: organizationEntity
-						}
-					});
-					component.dispatchEvent(event);
-
-					setTimeout(() => {
-						expect(spy).to.have.not.been.calledWith('d2l-course-pinned-change');
-						done();
-					});
-				});
-
-				it('should fire a d2l-course-pinned-change event', done => {
-					var spy = sandbox.spy(component, 'fire');
-
-					var event = new CustomEvent(eventName, {
-						detail: {
-							organization: organizationEntity
-						}
-					});
-					component.dispatchEvent(event);
-
-					setTimeout(() => {
-						expect(spy).to.have.been.calledWith(
-							'd2l-course-pinned-change',
-							sinon.match.has('orgUnitId', '1')
-								.and(sinon.match.has('isPinned', eventName === 'enrollment-pinned'))
-						);
-						done();
-					});
-
-				});
-
-			});
 		});
 
 		describe('course-image-loaded', () => {
@@ -931,22 +868,122 @@ describe('d2l-my-courses-content', () => {
 
 			});
 
-			it('should add the alert if hiding past courses', () => {
-				component._hidePastCourses = true;
-				component.dispatchEvent(new CustomEvent(
-					'd2l-enrollment-card-status', {
-						bubbles: true,
-						composed: true,
-						detail: {
-							status: { closed: true },
-							enrollmentUrl: '/enrollments/users/1/organizations/1'
-						}
+		});
+
+	});
+
+	describe('Get Enrollment Card Status and Card Fetched', () => {
+		var _enrollmentCollectionEntity;
+		beforeEach((done) => {
+			_enrollmentCollectionEntity = {
+				_entity: oneEnrollmentSearchEntity,
+				getEnrollmentEntities: function() { return [
+					{
+						href: null,
+						hasClass: function() { return null; }
 					}
-				));
-
-				expect(component._hasOnlyPastCourses).to.be.true;
-
+				]; },
+				hasMoreEnrollments: function() { return false; },
+				getSearchEnrollmentsActions: function() { return null; },
+			};
+			component = fixture('d2l-my-courses-content-fixture');
+			component.token = 'fake';
+			setTimeout(() => {
+				done();
 			});
+		});
+
+		it('Should call _onEnrollmentCardFetched', () => {
+			var spy = sandbox.spy(component, '_onEnrollmentCardFetched');
+			component._populateEnrollments(_enrollmentCollectionEntity);
+			expect(spy).to.have.been.called;
+		});
+
+		it('Should call _onEnrollmentCardStatusChange', () => {
+			var spy = sandbox.spy(component, '_onEnrollmentCardStatusChange');
+			component._populateEnrollments(_enrollmentCollectionEntity);
+			expect(spy).to.have.been.called;
+		});
+
+	});
+
+	describe('EnrollmentCollectionOnChange', () => {
+		var _enrollmentCollectionEntity, _enrollmentEntity;
+		beforeEach((done) => {
+			var onUserActivityUsageChangeStub = sinon.stub();
+			var onEnrollmentEntityChangeStub = sinon.stub();
+			var onOrganizationChangeStub = sinon.stub();
+			var processedDateStub = sinon.stub();
+			_enrollmentCollectionEntity = {
+				_entity: oneEnrollmentSearchEntity,
+				getEnrollmentEntities: function() { return [
+					{
+						href: null,
+						hasClass: function() { return null;}
+					}
+				]; },
+				hasMoreEnrollments: function() { return false; },
+				getSearchEnrollmentsActions: function() { return null; },
+				onEnrollmentEntityChange: onEnrollmentEntityChangeStub,
+			};
+
+			_enrollmentEntity = {
+				organizationHref: function() { return '/organizations/1'; },
+				onOrganizationChange: onOrganizationChangeStub,
+				onUserActivityUsageChange: onUserActivityUsageChangeStub
+			};
+
+			var userActivityUsageEntity = {
+				isCompletionDate: function() { return true; },
+				date: function() { return '1969-08-11T04:00:00.000Z'; }
+			};
+
+			var organizationEntity = {
+				_entity: {},
+				processedDate: processedDateStub
+			};
+
+			onEnrollmentEntityChangeStub.callsArgWith(1, _enrollmentEntity);
+			onUserActivityUsageChangeStub.callsArgWith(0, userActivityUsageEntity);
+			onOrganizationChangeStub.callsArgWith(0, organizationEntity);
+			processedDateStub.returns({
+				afterEndDate: false
+			});
+
+			component = fixture('d2l-my-courses-content-fixture');
+			component.token = 'fake';
+
+			setTimeout(() => {
+				done();
+			});
+		});
+
+		it ('Should call _onEnrollmentCardStatus when _enrollmentCardStatusDetails is set', () => {
+			var spy = sandbox.spy(component, '_onEnrollmentCardStatus');
+			component._enrollmentCardStatusDetails = {
+				status: {
+					completed: true
+				},
+				enrollmentUrl: 'url'
+			};
+			expect(spy).to.have.been.called;
+		});
+
+		it('Should call _onEnrollmentCardStatus', () => {
+			var spy = sandbox.spy(component, '_onEnrollmentCardStatus');
+			component._onEnrollmentCardStatusChange(1, _enrollmentCollectionEntity);
+			expect(spy).to.have.been.calledTwice;
+		});
+
+		it('Should set _enrollmentCardStatusDetails proprely', () => {
+			component._onEnrollmentCardStatusChange(1, _enrollmentCollectionEntity);
+			expect(component._enrollmentCardStatusDetails.enrollmentUrl).to.equal(1);
+			expect(component._enrollmentCardStatusDetails.status.closed).to.be.false;
+		});
+
+		it('Should get _org proprely', () => {
+			component._onEnrollmentCardFetched(1, _enrollmentCollectionEntity);
+			expect(component._orgUnitIdMap['1']).to.equal(1);
 		});
 
 	});

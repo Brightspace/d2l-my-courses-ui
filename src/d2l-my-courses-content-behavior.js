@@ -562,10 +562,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 	/*
 	* Utility/helper functions
 	*/
-
-	_entityStoreFetch: function(url) {
-		return window.D2L.Siren.EntityStore.fetch(url, this.token);
-	},
 	_createFetchEnrollmentsUrl: function(bustCache) {
 
 		var query = {
@@ -694,6 +690,23 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			this._enrollmentsResponsePerfMeasures(entity);
 		});
 	},
+	_onRefetchEnrollmentsEntityChange: function(url) {
+		return entityFactory(EnrollmentCollectionEntity, url, this.token, entity => {
+			this._enrollmentRefetchResponse(entity);
+		});
+	},
+	_enrollmentRefetchResponse: function(entity) {
+		var completeFetch = function() {
+			this._showContent = true;
+		}.bind(this);
+
+		return this._populateEnrollments(entity)
+			.then(function() {
+				window.dispatchEvent(new Event('resize'));
+				setTimeout(completeFetch, 1000);
+			}.bind(this))
+			.catch(completeFetch);
+	},
 	_enrollmentsRootResponse: function(entity) {
 		var showContent = function() {
 			this._showContent = true;
@@ -774,18 +787,11 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this._isRefetchNeeded = false;
 		this._resetEnrollments();
 
-		var completeFetch = function() {
-			this._showContent = true;
-		}.bind(this);
-
-		this._refetchEnrollments().then(function() {
-			window.dispatchEvent(new Event('resize'));
-			setTimeout(completeFetch, 1000);
-		}.bind(this)).catch(completeFetch);
+		this._refetchEnrollments();
 	},
 	_refetchEnrollments: function() {
 		this._enrollmentsSearchUrl = this._createFetchEnrollmentsUrl(true);
-		return this._onEnrollmentsEntityChange(this._enrollmentsSearchUrl);
+		return this._onRefetchEnrollmentsEntityChange(this._enrollmentsSearchUrl);
 	},
 	_resetEnrollments: function() {
 		this._lastPinnedIndex = -1;

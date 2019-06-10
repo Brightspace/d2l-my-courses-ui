@@ -26,7 +26,6 @@ import './d2l-card-grid-styles.js';
 import '../d2l-my-courses-content-behavior.js';
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { EntityMixin } from 'siren-sdk/src/mixin/entity-mixin.js';
-import { PresentationEntity } from 'siren-sdk/src/presentation/PresentationEntity.js';
 import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
 import { DateTextAndStatusMixin } from 'd2l-enrollments/components/date-text-status-mixin.js';
 

@@ -40,7 +40,6 @@ class MyCoursesContent extends mixinBehaviors([
 ], DateTextAndStatusMixin(EntityMixin(PolymerElement))) {
 	constructor() {
 		super();
-		this._setEntityType(PresentationEntity);
 	}
 
 	static get template() {

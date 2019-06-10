@@ -27,7 +27,7 @@ import '../d2l-my-courses-content-behavior.js';
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { EntityMixin } from 'siren-sdk/src/mixin/entity-mixin.js';
 import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
-import { DateTextAndStatusMixin } from 'd2l-enrollments/components/date-text-status-mixin.js';
+//import { DateTextAndStatusMixin } from 'd2l-enrollments/components/date-text-status-mixin.js';
 
 /**
  * @customElement
@@ -36,7 +36,7 @@ import { DateTextAndStatusMixin } from 'd2l-enrollments/components/date-text-sta
 class MyCoursesContent extends mixinBehaviors([
 	D2L.MyCourses.MyCoursesContentBehavior,
 	D2L.MyCourses.CardGridBehavior
-], DateTextAndStatusMixin(EntityMixin(PolymerElement))) {
+], EntityMixin(PolymerElement)) {
 	constructor() {
 		super();
 	}

@@ -257,10 +257,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			courseTiles[i].refreshImage(this._setImageOrg);
 		}
 	},
-
-	/*
-	* Listeners
-	*/
 	_loadEnrollmentCard: function(url, enrollmentCollectionEntity) {
 		if (!url || !enrollmentCollectionEntity) {
 			return;
@@ -316,6 +312,10 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			});
 		});
 	},
+
+	/*
+	* Listeners
+	*/
 	_onD2lEnrollmentNew: function() {
 		if (this._hasAlert('newEnrollmentMultiple')) {
 			return;
@@ -391,8 +391,13 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		if (dom(e).rootTarget === this) return;
 
 		var isPinned = e.detail.isPinned;
-		var orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.organizationHref());
+		var orgUnitId;
 
+		if (e.detail.orgUnitId) {
+			orgUnitId = e.detail.orgUnitId;
+		} else {
+			orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.organizationHref());
+		}
 		// Only want to move pinned/unpinned enrollment if it exists in the panel
 		var changedEnrollmentId = orgUnitId && this._orgUnitIdMap[orgUnitId];
 		if (!changedEnrollmentId) {

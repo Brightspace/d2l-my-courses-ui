@@ -150,8 +150,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		},
 		_enrollmentDate: {
 			type: Object
-		},
-		_enrollmentCardStatusDetails: Object
+		}
 
 	},
 	listeners: {
@@ -191,7 +190,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		'_enrollmentsChanged(_enrollments.length, _numberOfEnrollments)',
 		'_enrollmentSearchActionChanged(enrollmentsSearchAction)',
 		'_onCourseEnrollmentChange(changedCourseEnrollment)',
-		'_onEnrollmentCardStatus(_enrollmentCardStatusDetails)',
 		'_onPresentationEntityChange(presentationUrl)'
 	],
 
@@ -263,7 +261,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 	/*
 	* Listeners
 	*/
-	_onEnrollmentCardFetched: function(url, enrollmentCollectionEntity) {
+	_loadEnrollmentCard: function(url, enrollmentCollectionEntity) {
 		if (!url || !enrollmentCollectionEntity) {
 			return;
 		}
@@ -272,7 +270,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			this._orgUnitIdMap[orgUnitId] = url;
 		});
 	},
-	_onEnrollmentCardStatus: function(enrollmentCardStatusDetails) {
+	_loadEnrollmentCardStatus: function(enrollmentCardStatusDetails) {
 		if (!enrollmentCardStatusDetails || !enrollmentCardStatusDetails.status
 			|| !enrollmentCardStatusDetails.enrollmentUrl || enrollmentCardStatusDetails.status.completed) {
 			return;
@@ -291,7 +289,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		this._onResize();
 	},
-	_onEnrollmentCardStatusChange: function(url, enrollmentCollectionEntity) {
+	_fetchEnrollmentCardStatus: function(url, enrollmentCollectionEntity) {
 		if (!url || !enrollmentCollectionEntity) {
 			return;
 		}
@@ -299,20 +297,22 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		enrollmentCollectionEntity.onEnrollmentEntityChange(url, (enrollmentEntity) => {
 			enrollmentEntity.onUserActivityUsageChange((userActivityUsage) => {
 				const dateTextAndStatus = this._dateTextAndStatus(userActivityUsage.isCompletionDate(), userActivityUsage.date());
-				this._enrollmentCardStatusDetails = {
+				var enrollmentCardStatusDetails = {
 					status: {
 						completed: dateTextAndStatus && dateTextAndStatus.status === 'completed' ? true : false
 					},
 					enrollmentUrl: url
 				};
+				this._loadEnrollmentCardStatus(enrollmentCardStatusDetails);
 			});
 
 			enrollmentEntity.onOrganizationChange((org) => {
 				var enrollmentDate = org.processedDate(this._hideCourseStartDate, this._hideCourseEndDate);
-				this._enrollmentCardStatusDetails = {
+				var enrollmentCardStatusDetails = {
 					status: {closed: enrollmentDate && enrollmentDate.afterEndDate},
 					enrollmentUrl: url
 				};
+				this._loadEnrollmentCardStatus(enrollmentCardStatusDetails);
 			});
 		});
 	},
@@ -759,8 +759,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 				this._existingEnrollmentsMap[enrollmentId] = true;
 				if (enrollment.hasClass('pinned')) this._lastPinnedIndex++;
 			}
-			this._onEnrollmentCardFetched(enrollmentId, enrollmentsEntity);
-			this._onEnrollmentCardStatusChange(enrollmentId, enrollmentsEntity);
+			this._loadEnrollmentCard(enrollmentId, enrollmentsEntity);
+			this._fetchEnrollmentCardStatus(enrollmentId, enrollmentsEntity);
 		}, this);
 
 		this._enrollments = this._enrollments.concat(newEnrollments);

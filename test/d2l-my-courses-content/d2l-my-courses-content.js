@@ -893,14 +893,14 @@ describe('d2l-my-courses-content', () => {
 			});
 		});
 
-		it('Should call _onEnrollmentCardFetched', () => {
-			var spy = sandbox.spy(component, '_onEnrollmentCardFetched');
+		it('Should call _loadEnrollmentCard', () => {
+			var spy = sandbox.spy(component, '_loadEnrollmentCard');
 			component._populateEnrollments(_enrollmentCollectionEntity);
 			expect(spy).to.have.been.called;
 		});
 
-		it('Should call _onEnrollmentCardStatusChange', () => {
-			var spy = sandbox.spy(component, '_onEnrollmentCardStatusChange');
+		it('Should call _fetchEnrollmentCardStatus', () => {
+			var spy = sandbox.spy(component, '_fetchEnrollmentCardStatus');
 			component._populateEnrollments(_enrollmentCollectionEntity);
 			expect(spy).to.have.been.called;
 		});
@@ -958,31 +958,14 @@ describe('d2l-my-courses-content', () => {
 			});
 		});
 
-		it ('Should call _onEnrollmentCardStatus when _enrollmentCardStatusDetails is set', () => {
-			var spy = sandbox.spy(component, '_onEnrollmentCardStatus');
-			component._enrollmentCardStatusDetails = {
-				status: {
-					completed: true
-				},
-				enrollmentUrl: 'url'
-			};
-			expect(spy).to.have.been.called;
-		});
-
-		it('Should call _onEnrollmentCardStatus', () => {
-			var spy = sandbox.spy(component, '_onEnrollmentCardStatus');
-			component._onEnrollmentCardStatusChange(1, _enrollmentCollectionEntity);
+		it('Should call _loadEnrollmentCardStatus', () => {
+			var spy = sandbox.spy(component, '_loadEnrollmentCardStatus');
+			component._fetchEnrollmentCardStatus(1, _enrollmentCollectionEntity);
 			expect(spy).to.have.been.calledTwice;
 		});
 
-		it('Should set _enrollmentCardStatusDetails proprely', () => {
-			component._onEnrollmentCardStatusChange(1, _enrollmentCollectionEntity);
-			expect(component._enrollmentCardStatusDetails.enrollmentUrl).to.equal(1);
-			expect(component._enrollmentCardStatusDetails.status.closed).to.be.false;
-		});
-
 		it('Should get _org proprely', () => {
-			component._onEnrollmentCardFetched(1, _enrollmentCollectionEntity);
+			component._loadEnrollmentCard(1, _enrollmentCollectionEntity);
 			expect(component._orgUnitIdMap['1']).to.equal(1);
 		});
 

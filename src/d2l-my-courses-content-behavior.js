@@ -292,7 +292,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		enrollmentCollectionEntity.onEnrollmentEntityChange(url, (enrollmentEntity) => {
 			enrollmentEntity.onUserActivityUsageChange((userActivityUsage) => {
-				const dateTextAndStatus = this._dateTextAndStatus(userActivityUsage.isCompletionDate(), userActivityUsage.date());
+				const dateTextAndStatus = this.enrollmentStatus(userActivityUsage.isCompletionDate(), userActivityUsage.date());
 				var enrollmentCardStatusDetails = {
 					status: {
 						completed: dateTextAndStatus && dateTextAndStatus.status === 'completed' ? true : false
@@ -816,39 +816,6 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 				'value': id
 			}
 		]);
-	},
-	_dateTextAndStatus: function(isCompletionDate, date) {
-		if (!date || typeof isCompletionDate !== 'boolean') {
-			return null;
-		}
-
-		var msInDay = 86400000;
-		var msInAWeek = 604800000;
-		var nowDate = new Date(Date.now());
-		nowDate.setHours(0, 0, 0, 0);
-
-		var tomorrowDate = new Date(Date.now() + msInDay);
-		tomorrowDate.setHours(0, 0, 0, 0);
-
-		var yesterdayDate = new Date(Date.now() - msInDay);
-		yesterdayDate.setHours(0, 0, 0, 0);
-
-		var pastWeekFromNow = new Date(Date.now() - msInAWeek);
-		pastWeekFromNow.setHours(0, 0, 0, 0);
-
-		var parsedDate = new Date(Date.parse(date));
-
-		var status = null;
-		if (isCompletionDate && parsedDate < tomorrowDate) {
-			status = 'completed';
-		} else if (parsedDate < nowDate) {
-			status = 'overdue';
-		}
-
-		var dateTextAndStatus = {
-			status: status
-		};
-		return dateTextAndStatus;
 	}
 };
 

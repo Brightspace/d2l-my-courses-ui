@@ -26,6 +26,7 @@ import './d2l-card-grid-styles.js';
 import '../d2l-my-courses-content-behavior.js';
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
+import { StatusMixin } from 'd2l-enrollments/components/date-text-status-mixin';
 
 /**
  * @customElement
@@ -34,7 +35,7 @@ import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
 class MyCoursesContent extends mixinBehaviors([
 	D2L.MyCourses.MyCoursesContentBehavior,
 	D2L.MyCourses.CardGridBehavior
-], PolymerElement) {
+], StatusMixin(PolymerElement)) {
 	constructor() {
 		super();
 	}

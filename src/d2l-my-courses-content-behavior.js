@@ -257,7 +257,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			courseTiles[i].refreshImage(this._setImageOrg);
 		}
 	},
-	_loadEnrollmentCard: function(url, enrollmentCollectionEntity) {
+	_insertToOrgUnitIdMap: function(url, enrollmentCollectionEntity) {
 		if (!url || !enrollmentCollectionEntity) {
 			return;
 		}
@@ -266,7 +266,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			this._orgUnitIdMap[orgUnitId] = url;
 		});
 	},
-	_loadEnrollmentCardStatus: function(enrollmentCardStatusDetails) {
+	_setEnrollmentCardStatus: function(enrollmentCardStatusDetails) {
 		if (!enrollmentCardStatusDetails || !enrollmentCardStatusDetails.status
 			|| !enrollmentCardStatusDetails.enrollmentUrl || enrollmentCardStatusDetails.status.completed) {
 			return;
@@ -299,7 +299,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 					},
 					enrollmentUrl: url
 				};
-				this._loadEnrollmentCardStatus(enrollmentCardStatusDetails);
+				this._setEnrollmentCardStatus(enrollmentCardStatusDetails);
 			});
 
 			enrollmentEntity.onOrganizationChange((org) => {
@@ -308,7 +308,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 					status: {closed: enrollmentDate && enrollmentDate.afterEndDate},
 					enrollmentUrl: url
 				};
-				this._loadEnrollmentCardStatus(enrollmentCardStatusDetails);
+				this._setEnrollmentCardStatus(enrollmentCardStatusDetails);
 			});
 		});
 	},
@@ -415,6 +415,7 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 		this._isRefetchNeeded = false;
 
 		var enrollmentCard = dom(e).event && dom(e).event.srcElement;
+
 		var shouldHide = enrollmentCard && !isPinned && (enrollmentCard.hasAttribute('completed') || (enrollmentCard.hasAttribute('closed')));
 
 		var removalIndex = this._enrollments.indexOf(changedEnrollmentId);
@@ -734,14 +735,14 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 			return Promise.reject();
 		}
 
-		var enrollmentsEntity = entity;
-		var enrollmentEntities = enrollmentsEntity.getEnrollmentEntities();
-		var hasMoreEnrollments = enrollmentsEntity.hasMoreEnrollments();
-		this._nextEnrollmentEntityUrl = hasMoreEnrollments ? enrollmentsEntity.getNextEnrollmentHref() : null;
+		var enrollmentCollectionEntity = entity;
+		var enrollmentEntities = enrollmentCollectionEntity.getEnrollmentEntities();
+		var hasMoreEnrollments = enrollmentCollectionEntity.hasMoreEnrollments();
+		this._nextEnrollmentEntityUrl = hasMoreEnrollments ? enrollmentCollectionEntity.getNextEnrollmentHref() : null;
 
 		var newEnrollments = [];
 
-		var searchAction = enrollmentsEntity.getSearchEnrollmentsActions();
+		var searchAction = enrollmentCollectionEntity.getSearchEnrollmentsActions();
 
 		if (searchAction
 			&& searchAction.hasFieldByName('sort')
@@ -764,8 +765,8 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 				this._existingEnrollmentsMap[enrollmentId] = true;
 				if (enrollment.hasClass('pinned')) this._lastPinnedIndex++;
 			}
-			this._loadEnrollmentCard(enrollmentId, enrollmentsEntity);
-			this._fetchEnrollmentCardStatus(enrollmentId, enrollmentsEntity);
+			this._insertToOrgUnitIdMap(enrollmentId, enrollmentCollectionEntity);
+			this._fetchEnrollmentCardStatus(enrollmentId, enrollmentCollectionEntity);
 		}, this);
 
 		this._enrollments = this._enrollments.concat(newEnrollments);
@@ -860,6 +861,5 @@ D2L.MyCourses.MyCoursesContentBehavior = [
 	D2L.MyCourses.UtilityBehavior,
 	D2L.PolymerBehaviors.Siren.EntityBehavior,
 	D2L.PolymerBehaviors.Siren.SirenActionBehavior,
-	D2L.MyCourses.MyCoursesContentBehaviorImpl,
-
+	D2L.MyCourses.MyCoursesContentBehaviorImpl
 ];

@@ -893,8 +893,8 @@ describe('d2l-my-courses-content', () => {
 			});
 		});
 
-		it('Should call _loadEnrollmentCard', () => {
-			var spy = sandbox.spy(component, '_loadEnrollmentCard');
+		it('Should call _insertToOrgUnitIdMap', () => {
+			var spy = sandbox.spy(component, '_insertToOrgUnitIdMap');
 			component._populateEnrollments(_enrollmentCollectionEntity);
 			expect(spy).to.have.been.called;
 		});
@@ -958,14 +958,14 @@ describe('d2l-my-courses-content', () => {
 			});
 		});
 
-		it('Should call _loadEnrollmentCardStatus', () => {
-			var spy = sandbox.spy(component, '_loadEnrollmentCardStatus');
+		it('Should call _setEnrollmentCardStatus', () => {
+			var spy = sandbox.spy(component, '_setEnrollmentCardStatus');
 			component._fetchEnrollmentCardStatus(1, _enrollmentCollectionEntity);
 			expect(spy).to.have.been.calledTwice;
 		});
 
-		it('Should get _org proprely', () => {
-			component._loadEnrollmentCard(1, _enrollmentCollectionEntity);
+		it('Should get _org properly', () => {
+			component._insertToOrgUnitIdMap(1, _enrollmentCollectionEntity);
 			expect(component._orgUnitIdMap['1']).to.equal(1);
 		});
 

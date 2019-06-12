@@ -54,7 +54,7 @@ class MyCoursesContainer extends mixinBehaviors([
 			</template>
 			<template is="dom-if" if="[[!_showGroupByTabs]]">
 				<d2l-my-courses-content
-					href="[[presentationUrl]]"
+					presentation-url="[[presentationUrl]]"
 					token="[[token]]"
 					disable-entity-cache
 					advanced-search-url="[[advancedSearchUrl]]"

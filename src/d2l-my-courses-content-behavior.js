@@ -292,10 +292,10 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		enrollmentCollectionEntity.onEnrollmentEntityChange(url, (enrollmentEntity) => {
 			enrollmentEntity.onUserActivityUsageChange((userActivityUsage) => {
-				const dateTextAndStatus = this.enrollmentStatus(userActivityUsage.isCompletionDate(), userActivityUsage.date());
+				const cardStatus = this.enrollmentStatus(userActivityUsage.isCompletionDate(), userActivityUsage.date());
 				var enrollmentCardStatusDetails = {
 					status: {
-						completed: dateTextAndStatus && dateTextAndStatus.status === 'completed' ? true : false
+						completed: cardStatus && cardStatus.status === 'completed' ? true : false
 					},
 					enrollmentUrl: url
 				};

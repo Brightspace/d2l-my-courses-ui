@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangArBehaviorLegacy = {
 			"pinActionResult": "تم تثبيت {course}",
 			"pinnedCourses": "تم التثبيت",
 			"recentSearches": "عمليات البحث الحديثة",
-			"search": "بحث",
-			"search.clearSearch": "مسح البحث",
 			"search.searchCourses": "البحث في المقررات التعليمية",
 			"sorting.courseCode": "رمز المقرر التعليمي",
 			"sorting.courseName": "اسم المقرر التعليمي",

@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangNlBehaviorLegacy = {
 			"pinActionResult": "{course} is vastgepind",
 			"pinnedCourses": "Vastgepind",
 			"recentSearches": "Recente zoekopdrachten",
-			"search": "Zoeken",
-			"search.clearSearch": "Zoekopdracht wissen",
 			"search.searchCourses": "Op cursus zoeken",
 			"sorting.courseCode": "Cursuscode",
 			"sorting.courseName": "Cursusnaam",

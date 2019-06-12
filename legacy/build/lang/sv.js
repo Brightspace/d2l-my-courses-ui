@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangSvBehaviorLegacy = {
 			"pinActionResult": "{course} har markerats",
 			"pinnedCourses": "Markerat",
 			"recentSearches": "Senaste sökningar",
-			"search": "Sökning",
-			"search.clearSearch": "Rensa sökning",
 			"search.searchCourses": "Sök kurser",
 			"sorting.courseCode": "Kurskod",
 			"sorting.courseName": "Kursnamn",

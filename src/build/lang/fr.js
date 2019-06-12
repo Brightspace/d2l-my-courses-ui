@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangFrBehavior = {
 			"pinActionResult": "Le cours {course} a été épinglé",
 			"pinnedCourses": "Épinglé",
 			"recentSearches": "Recherches récentes",
-			"search": "Rechercher",
-			"search.clearSearch": "Effacer la recherche",
 			"search.searchCourses": "Rechercher des cours",
 			"sorting.courseCode": "Code de cours",
 			"sorting.courseName": "Nom de cours",

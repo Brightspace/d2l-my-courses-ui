@@ -47,23 +47,9 @@ describe('<d2l-search-widget-custom-legacy>', function() {
 	});
 
 	it('should perform a search when the searchUrl changes', function() {
-		var spy = sandbox.spy(widget, '_onSearchUrlChanged');
+		var spy = sandbox.spy(widget, '_handleSearchUrlChange');
 		widget.searchUrl = '/organizations/1234';
 		clock.tick(501);
 		expect(spy.called).to.be.true;
 	});
-
-	it('only performs one search per debounce period', function() {
-		var spy = sandbox.spy(widget, '_onSearchUrlChanged');
-
-		for (var i = 0; i < 20; i++) {
-			widget.searchUrl = '/organizations/1234';
-			clock.tick(200);
-		}
-
-		clock.tick(501);
-
-		expect(spy.callCount).to.equal(1);
-	});
-
 });

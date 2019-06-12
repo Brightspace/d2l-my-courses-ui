@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangZhtwBehavior = {
 			"pinActionResult": "已將 {course} 置頂",
 			"pinnedCourses": "已置頂",
 			"recentSearches": "近期的搜尋",
-			"search": "搜尋",
-			"search.clearSearch": "清除搜尋",
 			"search.searchCourses": "搜尋課程",
 			"sorting.courseCode": "課程代碼",
 			"sorting.courseName": "課程名稱",

@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangJaBehavior = {
 			"pinActionResult": "{course} は固定されました",
 			"pinnedCourses": "固定",
 			"recentSearches": "最近の検索",
-			"search": "検索",
-			"search.clearSearch": "検索のクリア",
 			"search.searchCourses": "コースの検索",
 			"sorting.courseCode": "コースコード",
 			"sorting.courseName": "コース名",

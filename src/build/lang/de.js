@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangDeBehavior = {
 			"pinActionResult": "{course} wurde angeheftet",
 			"pinnedCourses": "Angeheftet",
 			"recentSearches": "Letzte Suchanfragen",
-			"search": "Suchen",
-			"search.clearSearch": "Suche löschen",
 			"search.searchCourses": "Kurse suchen",
 			"sorting.courseCode": "Kurscode",
 			"sorting.courseName": "Kursname",

@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangEsBehaviorLegacy = {
 			"pinActionResult": "{course} se ancló",
 			"pinnedCourses": "Anclado",
 			"recentSearches": "Búsquedas recientes",
-			"search": "Buscar",
-			"search.clearSearch": "Borrar búsqueda",
 			"search.searchCourses": "Buscar cursos",
 			"sorting.courseCode": "Código de curso",
 			"sorting.courseName": "Nombre del curso",

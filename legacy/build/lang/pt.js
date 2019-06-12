@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangPtBehaviorLegacy = {
 			"pinActionResult": "{course} foi fixado",
 			"pinnedCourses": "Fixado",
 			"recentSearches": "Pesquisas recentes",
-			"search": "Pesquisar",
-			"search.clearSearch": "Limpar Pesquisa",
 			"search.searchCourses": "Pesquisar Cursos",
 			"sorting.courseCode": "Código do Curso",
 			"sorting.courseName": "Nome do Curso",

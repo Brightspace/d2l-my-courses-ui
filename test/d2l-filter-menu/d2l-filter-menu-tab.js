@@ -38,7 +38,9 @@ describe('d2l-filter-menu-tab', function() {
 
 		it('should show the No Results message when there are no search results', function() {
 			component.fire('d2l-search-widget-results-changed', {
-				entities: []
+				searchResponse: {
+					entities: []
+				}
 			});
 
 			expect(component._allFilters.length).to.equal(0);
@@ -48,7 +50,9 @@ describe('d2l-filter-menu-tab', function() {
 
 		it('should not show the No Results message when there are search results', function() {
 			component.fire('d2l-search-widget-results-changed', {
-				entities: [organization]
+				searchResponse: {
+					entities: [organization]
+				}
 			});
 
 			expect(component._allFilters.length).to.equal(1);

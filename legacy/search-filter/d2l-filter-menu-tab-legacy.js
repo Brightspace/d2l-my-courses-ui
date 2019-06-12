@@ -28,7 +28,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-filter-menu-tab-legacy">
 				flex-direction: column;
 			}
 			d2l-search-widget {
-				--d2l-search-widget-height: 45px;
+				display: block;
 				margin: 10px 20px;
 			}
 			.no-items-text {
@@ -38,7 +38,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-filter-menu-tab-legacy">
 		</style>
 
 		<div hidden$="[[!_showContent]]">
-			<d2l-search-widget placeholder-text="[[searchPlaceholderText]]" search-button-label="[[localize('search')]]" clear-button-label="[[localize('search.clearSearch')]]" search-action="[[searchAction]]" search-field-name="search">
+			<d2l-search-widget placeholder-text="[[searchPlaceholderText]]" search-action="[[searchAction]]" search-field-name="search">
 			</d2l-search-widget>
 
 			<d2l-menu label="[[menuLabelText]]">
@@ -147,7 +147,7 @@ Polymer({
 		this.fire('selected-filters-changed');
 	},
 	_onSearchWidgetResultsChanged: function(e) {
-		this.set('_allFilters', e.detail.entities || []);
+		this.set('_allFilters', e.detail.searchResponse.entities || []);
 		this.resize();
 	}
 });

@@ -240,10 +240,10 @@ describe('d2l-all-courses-legacy', function() {
 			var spy = sandbox.spy(widget, '_clearSearchWidget');
 			var searchField = widget.$['search-widget'];
 
-			searchField._searchInput = 'foo';
+			searchField._getSearchWidget()._getSearchInput().value = 'foo';
 			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(spy.called).to.be.true;
-			expect(searchField._searchInput).to.equal('');
+			expect(searchField._getSearchWidget()._getSearchInput().value).to.equal('');
 		});
 
 		it('should clear filters', function() {

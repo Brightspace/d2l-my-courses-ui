@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangKoBehavior = {
 			"pinActionResult": "{course} 고정됨",
 			"pinnedCourses": "고정됨",
 			"recentSearches": "최근 검색",
-			"search": "검색",
-			"search.clearSearch": "검색 지우기",
 			"search.searchCourses": "강의 검색",
 			"sorting.courseCode": "강의 코드",
 			"sorting.courseName": "강의 이름",

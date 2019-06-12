@@ -1,10 +1,12 @@
 import 'd2l-localize-behavior/d2l-localize-behavior.js';
 import './build/lang/ar.js';
+import './build/lang/da-dk.js';
 import './build/lang/de.js';
 import './build/lang/en.js';
 import './build/lang/es.js';
 import './build/lang/fi.js';
 import './build/lang/fr.js';
+import './build/lang/fr-fr.js';
 import './build/lang/ja.js';
 import './build/lang/ko.js';
 import './build/lang/nb.js';
@@ -35,10 +37,12 @@ D2L.PolymerBehaviors.MyCourses.LocalizeBehaviorImpl = {
 				return {
 					'en': this.en,
 					'ar': this.ar,
+					'da-dk': this['da-dk'],
 					'de': this.de,
 					'es': this.es,
 					'fi': this.fi,
 					'fr': this.fr,
+					'fr-fr': this['fr-fr'],
 					'ja': this.ja,
 					'ko': this.ko,
 					'nb': this.nb,
@@ -61,11 +65,13 @@ D2L.PolymerBehaviors.MyCourses.LocalizeBehavior = [
 	D2L.PolymerBehaviors.LocalizeBehavior,
 	D2L.PolymerBehaviors.MyCourses.LocalizeBehaviorImpl,
 	D2L.PolymerBehaviors.MyCourses.LangArBehavior,
+	D2L.PolymerBehaviors.MyCourses.LangDadkBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangDeBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangEnBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangEsBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangFiBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangFrBehavior,
+	D2L.PolymerBehaviors.MyCourses.LangFrfrBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangJaBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangKoBehavior,
 	D2L.PolymerBehaviors.MyCourses.LangNbBehavior,

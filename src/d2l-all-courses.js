@@ -72,8 +72,6 @@ class AllCourses extends mixinBehaviors([
 						<div class="search-and-filter-row">
 							<d2l-search-widget-custom
 								id="search-widget"
-								search-button-label="{{localize('search')}}"
-								clear-button-label="{{localize('search.clearSearch')}}"
 								org-unit-type-ids="[[orgUnitTypeIds]]"
 								search-action="[[_enrollmentsSearchAction]]"
 								search-url="[[_searchUrl]]">
@@ -552,13 +550,13 @@ class AllCourses extends mixinBehaviors([
 	}
 
 	_onSearchResultsChanged(e) {
-		this._isSearched = this.$['search-widget']._showClearIcon;
+		this._isSearched = !!e.detail.searchValue;
 		if (!this.updatedSortLogic) {
 			this._pinnedCoursesMap = {};
 			this._unpinnedCoursesMap = {};
 		}
-		this._updateFilteredEnrollments(e.detail, false);
-		this.myEnrollmentsEntity = e.detail;
+		this._updateFilteredEnrollments(e.detail.searchResponse, false);
+		this.myEnrollmentsEntity = e.detail.searchResponse;
 		this.fire('recalculate-columns');
 
 		this._showContent = true;

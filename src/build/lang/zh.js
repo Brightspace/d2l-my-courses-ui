@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangZhBehavior = {
 			"pinActionResult": "{course} 已锁定",
 			"pinnedCourses": "已锁定",
 			"recentSearches": "最近搜索",
-			"search": "搜索",
-			"search.clearSearch": "清除搜索",
 			"search.searchCourses": "搜索课程",
 			"sorting.courseCode": "课程代码",
 			"sorting.courseName": "课程名称",

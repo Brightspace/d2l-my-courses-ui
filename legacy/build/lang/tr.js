@@ -72,8 +72,6 @@ D2L.PolymerBehaviors.MyCourses.LangTrBehaviorLegacy = {
 			"pinActionResult": "{course} dersi sabitlendi",
 			"pinnedCourses": "Sabitlenmiş",
 			"recentSearches": "En Son Aramalar",
-			"search": "Ara",
-			"search.clearSearch": "Aramayı Temizle",
 			"search.searchCourses": "Dersleri Ara",
 			"sorting.courseCode": "Ders Kodu",
 			"sorting.courseName": "Ders Adı",

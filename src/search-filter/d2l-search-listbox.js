@@ -25,7 +25,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-search-listbox">
 				width: 100%;
 			}
 
-			::slotted(*) {
+			::slotted(div) {
 				box-sizing: border-box;
 				border-top: 1px solid transparent;
 				border-bottom: 1px solid var(--d2l-color-gypsum);
@@ -33,6 +33,7 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-search-listbox">
 				width: calc(100% - 2px);
 				padding: 0.75rem 1.5rem;
 				cursor: pointer;
+				outline: none;
 			}
 
 			::slotted(div:last-of-type) {
@@ -41,10 +42,10 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-search-listbox">
 
 			::slotted(*:not([disabled]):focus),
 			::slotted(*:not([disabled]):hover) {
-				background-color: var(--d2l-color-celestine-light-1);
-				border-top-color: var(--d2l-color-celestine-light-2);
-				border-bottom-color: var(--d2l-color-celestine-light-2);
-				color: var(--d2l-color-celestine);
+				background-color: var(--d2l-color-celestine-plus-2);
+				border-top-color: var(--d2l-color-celestine);
+				border-bottom-color: var(--d2l-color-celestine);
+				color: var(--d2l-color-celestine-minus-1);
 			}
 
 			::slotted([data-list-title]) {

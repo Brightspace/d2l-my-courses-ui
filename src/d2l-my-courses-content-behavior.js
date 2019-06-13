@@ -9,7 +9,7 @@ import './d2l-utility-behavior.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 import './localize-behavior.js';
 import { EnrollmentCollectionEntity } from 'siren-sdk/src/enrollments/EnrollmentCollectionEntity.js';
-import { entityFactory } from 'siren-sdk/src/es6/EntityFactory.js';
+import { entityFactory, updateEntity } from 'siren-sdk/src/es6/EntityFactory.js';
 import { PresentationEntity } from 'siren-sdk/src/presentation/PresentationEntity.js';
 window.D2L = window.D2L || {};
 window.D2L.MyCourses = window.D2L.MyCourses || {};
@@ -395,6 +395,10 @@ D2L.MyCourses.MyCoursesContentBehaviorImpl = {
 
 		if (e.detail.orgUnitId) {
 			orgUnitId = e.detail.orgUnitId;
+			if (this._orgUnitIdMap[orgUnitId]) {
+				var enrollmentHref = this._orgUnitIdMap[orgUnitId];
+				updateEntity(enrollmentHref, this.token);
+			}
 		} else {
 			orgUnitId = this._getOrgUnitIdFromHref(e.detail.enrollment.organizationHref());
 		}

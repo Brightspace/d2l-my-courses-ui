@@ -13,6 +13,7 @@ the user has in that organization - student, teacher, TA, etc.
   from HTML and may be out of place here. Review them and
   then delete this comment!
 */
+import '@brightspace-ui/core/helpers/requestIdleCallback.js';
 import '@polymer/polymer/polymer-legacy.js';
 
 import 'd2l-course-image/d2l-course-image.js';
@@ -265,9 +266,7 @@ Polymer({
 				}
 			}.bind(this);
 
-			// Small shim for Edge/IE/Safari
-			var delayFunction = window.requestIdleCallback || setTimeout;
-			delayFunction(function() {
+			requestIdleCallback(function() {
 				if (this._load) {
 					// The tile already loaded via the IntersectionObserver
 					return;

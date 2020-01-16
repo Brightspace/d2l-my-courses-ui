@@ -6,11 +6,6 @@ This is only used if the `d2l.Tools.MyCoursesWidget.UpdatedSortLogic` config var
 (meaning the `updated-sort-logic` attribute was added to the `d2l-my-courses` component).
 
 */
-/*
-  FIXME(polymer-modulizer): the above comments were extracted
-  from HTML and may be out of place here. Review them and
-  then delete this comment!
-*/
 import '@polymer/polymer/polymer-legacy.js';
 
 import '@polymer/iron-scroll-threshold/iron-scroll-threshold.js';

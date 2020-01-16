@@ -39,14 +39,10 @@ $_documentContainer.innerHTML = `<dom-module id="d2l-my-courses">
 				advanced-search-url="[[advancedSearchUrl]]"
 				standard-semester-name="[[standardSemesterName]]"
 				standard-department-name="[[standardDepartmentName]]"
-				show-course-code="[[showCourseCode]]"
-				course-updates-config="[[courseUpdatesConfig]]"
 				image-catalog-location="[[imageCatalogLocation]]"
 				promoted-searches="[[promotedSearches]]"
 				user-settings-url="[[userSettingsUrl]]"
-				show-semester="[[showSemester]]"
 				org-unit-type-ids="[[orgUnitTypeIds]]"
-				updated-sort-logic="[[updatedSortLogic]]"
 				course-image-upload-cb="[[courseImageUploadCb]]"
 				token="[[token]]">
 			</d2l-my-courses-container>

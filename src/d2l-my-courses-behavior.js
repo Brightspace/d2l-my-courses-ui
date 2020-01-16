@@ -23,18 +23,12 @@ D2L.MyCourses.MyCoursesBehaviorImpl = {
 		enrollmentsUrl: String,
 		// URL that is called by the widget to fetch results from the course image catalog
 		imageCatalogLocation: String,
-		// Configuration value passed in to toggle course code -- passed to animation tile
-		showCourseCode: Boolean,
 		// Configuration value passed in to toggle Learning Paths code
 		orgUnitTypeIds: String,
-		// Configuration value passed in to toggle semester on course tile -- passed to animation tile
-		showSemester: Boolean,
 		// Standard Semester OU Type name to be displayed in the all-courses filter dropdown
 		standardDepartmentName: String,
 		// Standard Department OU Type name to be displayed in the all-courses filter dropdown
 		standardSemesterName: String,
-		// Types of notifications to include in update count in course tile -- passed to animation tile
-		courseUpdatesConfig: Object,
 		// Callback for upload in image-selector
 		courseImageUploadCb: Function,
 		// URL to fetch promoted searches for tabs

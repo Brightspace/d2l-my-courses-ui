@@ -2,8 +2,8 @@
 `d2l-all-courses`
 Polymer-based web component for all courses.
 
-TODO: This component is only rendered if the `d2l.Tools.MyCoursesWidget.UpdatedSortLogic` config variable is on, meaning `updated-sort-logic` is true.
-We can do a lot of cleanup here around `d2l-all-courses-segregated-content` (no longer needed).  Only the `d2l-all-courses-unified-content` component is rendered.
+This is only used if the `d2l.Tools.MyCoursesWidget.UpdatedSortLogic` config variable is on
+(meaning the `updated-sort-logic` attribute was added to the `d2l-my-courses` component).
 
 */
 import '@polymer/iron-scroll-threshold/iron-scroll-threshold.js';
@@ -11,8 +11,7 @@ import 'd2l-alert/d2l-alert.js';
 import 'd2l-dropdown/d2l-dropdown.js';
 import 'd2l-dropdown/d2l-dropdown-content.js';
 import 'd2l-dropdown/d2l-dropdown-menu.js';
-import { Classes } from 'd2l-hypermedia-constants';
-import { Actions } from 'd2l-hypermedia-constants';
+import { Actions, Classes } from 'd2l-hypermedia-constants';
 import 'd2l-icons/d2l-icons.js';
 import 'd2l-link/d2l-link.js';
 import 'd2l-loading-spinner/d2l-loading-spinner.js';
@@ -27,7 +26,6 @@ import './search-filter/d2l-filter-menu.js';
 import './search-filter/d2l-search-widget-custom.js';
 import './d2l-utility-behavior.js';
 import './localize-behavior.js';
-import '../legacy/tile-grid/d2l-all-courses-segregated-content.js'; // TODO: remove this dependency, since updated-sort-logic will always be true
 import './card-grid/d2l-all-courses-unified-content.js';
 import { EnrollmentCollectionEntity } from 'siren-sdk/src/enrollments/EnrollmentCollectionEntity.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
@@ -96,7 +94,7 @@ class AllCourses extends mixinBehaviors([
 
 								<d2l-dropdown id="sortDropdown">
 									<button class="d2l-dropdown-opener dropdown-button" aria-labelledby="sortText">
-										<span id="sortText" class="dropdown-opener-text">{{localize('sorting.sortCourseName')}}</span>
+										<span id="sortText" class="dropdown-opener-text">{{localize('sorting.sortDefault')}}</span>
 										<d2l-icon icon="d2l-tier1:chevron-down" aria-hidden="true"></d2l-icon>
 									</button>
 									<d2l-dropdown-menu no-padding="" min-width="350">
@@ -104,12 +102,12 @@ class AllCourses extends mixinBehaviors([
 											<div class="dropdown-content-header">
 												<span>{{localize('sorting.sortBy')}}</span>
 											</div>
-											<d2l-menu-item-radio hidden$="[[!updatedSortLogic]]" class="dropdown-content-gradient" value="Default" text="{{localize('sorting.sortDefault')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio value="OrgUnitName" class$="[[_showDropdownGradient(updatedSortLogic)]]" text="{{localize('sorting.sortCourseName')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio class="dropdown-content-gradient" value="Default" text="{{localize('sorting.sortDefault')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="OrgUnitName" text="{{localize('sorting.sortCourseName')}}"></d2l-menu-item-radio>
 											<d2l-menu-item-radio value="OrgUnitCode" text="{{localize('sorting.sortCourseCode')}}"></d2l-menu-item-radio>
 											<d2l-menu-item-radio value="PinDate" text="{{localize('sorting.sortDatePinned')}}"></d2l-menu-item-radio>
 											<d2l-menu-item-radio value="LastAccessed" text="{{localize('sorting.sortLastAccessed')}}"></d2l-menu-item-radio>
-											<d2l-menu-item-radio hidden$="[[!updatedSortLogic]]" value="EnrollmentDate" text="{{localize('sorting.sortEnrollmentDate')}}"></d2l-menu-item-radio>
+											<d2l-menu-item-radio value="EnrollmentDate" text="{{localize('sorting.sortEnrollmentDate')}}"></d2l-menu-item-radio>
 										</d2l-menu>
 									</d2l-dropdown-menu>
 								</d2l-dropdown>
@@ -126,65 +124,51 @@ class AllCourses extends mixinBehaviors([
 						</d2l-alert>
 					</template>
 
-					<template is="dom-if" if="[[updatedSortLogic]]">
-						<template is="dom-if" if="[[_showGroupByTabs]]">
-							<d2l-tabs>
-								<template items="[[tabSearchActions]]" is="dom-repeat">
-									<d2l-tab-panel id="all-courses-tab-[[item.name]]" text="[[item.title]]" selected="[[item.selected]]">
-										<div hidden$="[[!_showTabContent]]">
-											<d2l-all-courses-unified-content
-												total-filter-count="[[_totalFilterCount]]"
-												filter-counts="[[_filterCounts]]"
-												is-searched="[[_isSearched]]"
-												token="[[token]]"
-												org-unit-type-ids="[[orgUnitTypeIds]]"
-												show-organization-code="[[showOrganizationCode]]"
-												show-semester-name="[[showSemesterName]]"
-												show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
-												show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
-												show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
-												show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
-												show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
-												hide-course-start-date="[[hideCourseStartDate]]"
-												hide-course-end-date="[[hideCourseEndDate]]">
-											</d2l-all-courses-unified-content>
-										</div>
-										<d2l-loading-spinner hidden$="[[_showTabContent]]" size="100">
-										</d2l-loading-spinner>
-									</d2l-tab-panel>
-								</template>
-							</d2l-tabs>
-						</template>
-						<template is="dom-if" if="[[!_showGroupByTabs]]">
-							<d2l-all-courses-unified-content
-								total-filter-count="[[_totalFilterCount]]"
-								filter-counts="[[_filterCounts]]"
-								is-searched="[[_isSearched]]"
-								token="[[token]]"
-								org-unit-type-ids="[[orgUnitTypeIds]]"
-								show-organization-code="[[showOrganizationCode]]"
-								show-semester-name="[[showSemesterName]]"
-								show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
-								show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
-								show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
-								show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
-								show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
-								hide-course-start-date="[[hideCourseStartDate]]"
-								hide-course-end-date="[[hideCourseEndDate]]">
-							</d2l-all-courses-unified-content>
-						</template>
+					<template is="dom-if" if="[[_showGroupByTabs]]">
+						<d2l-tabs>
+							<template items="[[tabSearchActions]]" is="dom-repeat">
+								<d2l-tab-panel id="all-courses-tab-[[item.name]]" text="[[item.title]]" selected="[[item.selected]]">
+									<div hidden$="[[!_showTabContent]]">
+										<d2l-all-courses-unified-content
+											total-filter-count="[[_totalFilterCount]]"
+											filter-counts="[[_filterCounts]]"
+											is-searched="[[_isSearched]]"
+											token="[[token]]"
+											org-unit-type-ids="[[orgUnitTypeIds]]"
+											show-organization-code="[[showOrganizationCode]]"
+											show-semester-name="[[showSemesterName]]"
+											show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
+											show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
+											show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
+											show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
+											show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
+											hide-course-start-date="[[hideCourseStartDate]]"
+											hide-course-end-date="[[hideCourseEndDate]]">
+										</d2l-all-courses-unified-content>
+									</div>
+									<d2l-loading-spinner hidden$="[[_showTabContent]]" size="100">
+									</d2l-loading-spinner>
+								</d2l-tab-panel>
+							</template>
+						</d2l-tabs>
 					</template>
-					<template is="dom-if" if="[[!updatedSortLogic]]">
-						<d2l-all-courses-segregated-content
-							show-course-code="[[showCourseCode]]"
-							show-semester="[[showSemester]]"
-							course-updates-config="[[courseUpdatesConfig]]"
+					<template is="dom-if" if="[[!_showGroupByTabs]]">
+						<d2l-all-courses-unified-content
 							total-filter-count="[[_totalFilterCount]]"
 							filter-counts="[[_filterCounts]]"
 							is-searched="[[_isSearched]]"
-							filtered-pinned-enrollments="[[_filteredPinnedEnrollments]]"
-							filtered-unpinned-enrollments="[[_filteredUnpinnedEnrollments]]">
-						</d2l-all-courses-segregated-content>
+							token="[[token]]"
+							org-unit-type-ids="[[orgUnitTypeIds]]"
+							show-organization-code="[[showOrganizationCode]]"
+							show-semester-name="[[showSemesterName]]"
+							show-dropbox-unread-feedback="[[showDropboxUnreadFeedback]]"
+							show-unattempted-quizzes="[[showUnattemptedQuizzes]]"
+							show-ungraded-quiz-attempts="[[showUngradedQuizAttempts]]"
+							show-unread-discussion-messages="[[showUnreadDiscussionMessages]]"
+							show-unread-dropbox-submissions="[[showUnreadDropboxSubmissions]]"
+							hide-course-start-date="[[hideCourseStartDate]]"
+							hide-course-end-date="[[hideCourseEndDate]]">
+						</d2l-all-courses-unified-content>
 					</template>
 					<d2l-loading-spinner id="lazyLoadSpinner" hidden$="[[!_hasMoreEnrollments]]" size="100">
 					</d2l-loading-spinner>
@@ -237,12 +221,10 @@ class AllCourses extends mixinBehaviors([
 			},
 			// URL that directs to the advanced search page
 			advancedSearchUrl: String,
-			// Types of notifications to include in update count in course tile
-			courseUpdatesConfig: Object,
 			// Default option in Sort menu
 			defaultSortValue: {
 				type: String,
-				value: 'OrgUnitName'
+				value: 'Default'
 			},
 			// Standard Department OU Type name to be displayed in the filter dropdown
 			filterStandardDepartmentName: String,
@@ -256,8 +238,6 @@ class AllCourses extends mixinBehaviors([
 				value: function() { return {}; },
 				observer: '_myEnrollmentsEntityChanged'
 			},
-			showCourseCode: Boolean,
-			showSemester: Boolean,
 			orgUnitTypeIds: Array,
 			// Siren Actions corresponding to each tab that is displayed
 			tabSearchActions: {
@@ -266,12 +246,6 @@ class AllCourses extends mixinBehaviors([
 			},
 			// Type of tabs being displayed (BySemester, ByDepartment, ByRoleAlias)
 			tabSearchType: String,
-			// Feature flag (switch) for using the updated sort logic and related fetaures
-			updatedSortLogic: {
-				type: Boolean,
-				value: false,
-				observer: '_updatedSortLogicChanged'
-			},
 			hasEnrollmentsChanged: {
 				type: Boolean,
 				value: false
@@ -287,31 +261,12 @@ class AllCourses extends mixinBehaviors([
 			_enrollmentsSearchUrl: String,
 			// Filter dropdown opener text
 			_filterText: String,
-			// filtered pinned enrollment entities
-			_filteredPinnedEnrollments: {
-				type: Array,
-				value: function() { return []; }
-			},
-			_filteredUnpinnedEnrollments: {
-				type: Array,
-				value: function() { return []; }
-			},
 			// True when there are any filtered enrollments (pinned or unpinned)
 			_hasFilteredEnrollments: Boolean,
 			// True when there are more enrollments to fetch (i.e. current page of enrollments has a `next` link)
 			_hasMoreEnrollments: {
 				type: Boolean,
 				computed: '_computeHasMoreEnrollments(lastEnrollmentsSearchResponse, _showTabContent)'
-			},
-			// Object containing the IDs of previously loaded pinned enrollments, to avoid duplicates
-			_pinnedCoursesMap: {
-				type: Object,
-				value: function() { return {}; }
-			},
-			// Object containing the IDs of previously loaded unpinned enrollments, to avoid duplicates
-			_unpinnedCoursesMap: {
-				type: Object,
-				value: function() { return {}; }
 			},
 			// URL passed to search widget, called for searching
 			_searchUrl: String,
@@ -347,10 +302,6 @@ class AllCourses extends mixinBehaviors([
 					};
 				}
 			},
-			_updatedSortLogicInitallyObserved: {
-				type: Boolean,
-				value: false
-			},
 			_isSearched: Boolean,
 			_bustCacheToken: Number,
 			_selectedTabId: String
@@ -359,7 +310,6 @@ class AllCourses extends mixinBehaviors([
 
 	static get observers() {
 		return [
-			'_enrollmentsChanged(_filteredPinnedEnrollments.length, _filteredUnpinnedEnrollments.length)',
 			'_onEnrollmentCollectionEntityChange(_entity)'
 		];
 	}
@@ -398,17 +348,6 @@ class AllCourses extends mixinBehaviors([
 	load() {
 		this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
 		this.$['all-courses-scroll-threshold'].clearTriggers();
-		if (!this.updatedSortLogic) {
-			this._filteredPinnedEnrollments.forEach(function(item) {
-				var identifier = item;
-				this._pinnedCoursesMap[identifier] = true;
-			}, this);
-
-			this._filteredUnpinnedEnrollments.forEach(function(item) {
-				var identifier = item;
-				this._unpinnedCoursesMap[identifier] = true;
-			}, this);
-		}
 		if (this._showGroupByTabs) {
 			return;
 		}
@@ -421,8 +360,8 @@ class AllCourses extends mixinBehaviors([
 			this.createActionUrl(this.enrollmentsSearchAction, {
 				autoPinCourses: false,
 				orgUnitTypeId: this.orgUnitTypeIds,
-				embedDepth: this.updatedSortLogic ? 0 : 1,
-				sort: this._sortParameter || (this.updatedSortLogic ? 'Current' : '-PinDate,OrgUnitName,OrgUnitId')
+				embedDepth: 0,
+				sort: this._sortParameter || 'Current'
 			})
 		);
 	}
@@ -504,20 +443,20 @@ class AllCourses extends mixinBehaviors([
 		switch (e.detail.value) {
 			case 'OrgUnitName':
 				langterm = 'sorting.sortCourseName';
-				sortParameter = this.updatedSortLogic ? 'OrgUnitName,OrgUnitId' : '-PinDate,OrgUnitName,OrgUnitId';
+				sortParameter = 'OrgUnitName,OrgUnitId';
 				break;
 			case 'OrgUnitCode':
 				langterm = 'sorting.sortCourseCode';
-				sortParameter = this.updatedSortLogic ? 'OrgUnitCode,OrgUnitId' : '-PinDate,OrgUnitCode,OrgUnitId';
+				sortParameter = 'OrgUnitCode,OrgUnitId';
 				break;
 			case 'PinDate':
 				langterm = 'sorting.sortDatePinned';
 				sortParameter = '-PinDate,OrgUnitId';
-				promotePins = this.updatedSortLogic;
+				promotePins = true;
 				break;
 			case 'LastAccessed':
 				langterm = 'sorting.sortLastAccessed';
-				sortParameter = this.updatedSortLogic ? 'LastAccessed' : 'LastAccessed';
+				sortParameter = 'LastAccessed';
 				break;
 			case 'EnrollmentDate':
 				langterm = 'sorting.sortEnrollmentDate';
@@ -529,9 +468,9 @@ class AllCourses extends mixinBehaviors([
 				promotePins = true;
 				break;
 			default:
-				langterm = this.updatedSortLogic ? 'sorting.sortDefault' : 'sorting.sortCourseName';
-				sortParameter =  this.updatedSortLogic ? 'Current' : '-PinDate,OrgUnitName,OrgUnitId';
-				promotePins = this.updatedSortLogic;
+				langterm = 'sorting.sortDefault';
+				sortParameter =  'Current';
+				promotePins = true;
 				break;
 		}
 
@@ -550,10 +489,6 @@ class AllCourses extends mixinBehaviors([
 
 	_onSearchResultsChanged(e) {
 		this._isSearched = !!e.detail.searchValue;
-		if (!this.updatedSortLogic) {
-			this._pinnedCoursesMap = {};
-			this._unpinnedCoursesMap = {};
-		}
 		this._updateFilteredEnrollments(e.detail.searchResponse, false);
 		this.myEnrollmentsEntity = e.detail.searchResponse;
 		this.fire('recalculate-columns');
@@ -600,7 +535,7 @@ class AllCourses extends mixinBehaviors([
 			search: search,
 			orgUnitTypeId: this.orgUnitTypeIds,
 			autoPinCourses: false,
-			sort: this._sortParameter || (this.updatedSortLogic ? 'Current' : '-PinDate,OrgUnitName,OrgUnitId'),
+			sort: this._sortParameter || 'Current',
 			embedDepth: 0
 		};
 		if ((this._filterCounts.departments > 0 || this._filterCounts.semesters > 0) && this._enrollmentsSearchAction && this._enrollmentsSearchAction.getFieldByName('parentOrganizations')) {
@@ -647,10 +582,6 @@ class AllCourses extends mixinBehaviors([
 	* Observers
 	*/
 
-	_enrollmentsChanged() {
-		this.$['all-courses-scroll-threshold'].clearTriggers();
-	}
-
 	_onEnrollmentCollectionEntityChange(entity) {
 		if (!entity) {
 			return Promise.resolve();
@@ -678,17 +609,7 @@ class AllCourses extends mixinBehaviors([
 					name: 'OrgUnitName',
 					langterm: 'sorting.sortCourseName'
 				},
-				// Only used if updatedSortLogic = false
-				'-PinDate,OrgUnitName,OrgUnitId': {
-					name: 'OrgUnitName',
-					langterm: 'sorting.sortCourseName'
-				},
 				'OrgUnitCode,OrgUnitId': {
-					name: 'OrgUnitCode',
-					langterm: 'sorting.sortCourseCode'
-				},
-				// Only used if updatedSortLogic = false
-				'-PinDate,OrgUnitCode,OrgUnitId': {
 					name: 'OrgUnitCode',
 					langterm: 'sorting.sortCourseCode'
 				},
@@ -716,8 +637,7 @@ class AllCourses extends mixinBehaviors([
 				this._selectSortOption(sort.name);
 				this._sortParameter = sortParameter;
 			} else {
-				var langterm = this.updatedSortLogic ? 'sorting.sortDefault' : 'sorting.sortCourseName';
-				this.$.sortText.textContent = this.localize(langterm);
+				this.$.sortText.textContent = this.localize('sorting.sortDefault');
 				this._selectSortOption(this.defaultSortValue);
 			}
 		}
@@ -746,16 +666,8 @@ class AllCourses extends mixinBehaviors([
 		return prefix + this._bustCacheToken + suffix;
 	}
 
-	_clearFilteredCourses() {
-		if (!this.updatedSortLogic) {
-			this._pinnedCoursesMap = {};
-			this._unpinnedCoursesMap = {};
-		}
-	}
-
 	_clearSearchWidget() {
 		this.$['search-widget'].clear();
-		this._clearFilteredCourses();
 	}
 
 	_computeHasMoreEnrollments(lastResponse, showTabContent) {
@@ -826,21 +738,6 @@ class AllCourses extends mixinBehaviors([
 			window.dispatchEvent(new Event('resize')); // doing this so ie11 and older edge browser will get ms-grid style assigned
 			this.$['all-courses-scroll-threshold'].clearTriggers();
 		}.bind(this));
-	}
-
-	_showDropdownGradient(updatedSortLogic) {
-		return updatedSortLogic ? '' : 'dropdown-content-gradient';
-	}
-
-	_updatedSortLogicChanged(updatedSortLogic) {
-		if (this._updatedSortLogicInitallyObserved) {
-			this.defaultSortValue = updatedSortLogic ? 'Default' : 'OrgUnitName';
-			this._selectSortOption(this.defaultSortValue);
-			var langterm = updatedSortLogic ? 'sorting.sortDefault' : 'sorting.sortCourseName';
-			this.$.sortText.textContent = this.localize(langterm || '');
-		} else {
-			this._updatedSortLogicInitallyObserved = true;
-		}
 	}
 
 	_getOrgUnitIdFromHref(organizationHref) {

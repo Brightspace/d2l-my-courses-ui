@@ -1,34 +1,9 @@
 describe('d2l-all-courses', function() {
 	var widget,
-		pinnedEnrollmentEntity,
-		unpinnedEnrollmentEntity,
 		clock,
 		sandbox;
 
 	beforeEach(function(done) {
-
-		pinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
-			class: ['pinned', 'enrollment'],
-			rel: ['https://api.brightspace.com/rels/user-enrollment'],
-			links: [{
-				rel: ['self'],
-				href: '/enrollments/users/169/organizations/1'
-			}, {
-				rel: ['https://api.brightspace.com/rels/organization'],
-				href: '/organizations/123'
-			}]
-		});
-		unpinnedEnrollmentEntity = window.D2L.Hypermedia.Siren.Parse({
-			class: ['unpinned', 'enrollment'],
-			rel: ['https://api.brightspace.com/rels/user-enrollment'],
-			links: [{
-				rel: ['self'],
-				href: '/enrollments/users/169/organizations/1'
-			}, {
-				rel: ['https://api.brightspace.com/rels/organization'],
-				href: '/organizations/123'
-			}]
-		});
 
 		sandbox = sinon.sandbox.create();
 

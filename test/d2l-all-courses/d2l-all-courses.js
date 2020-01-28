@@ -81,32 +81,6 @@ describe('d2l-all-courses', function() {
 		});
 	});
 
-	describe('getCourseTileItemCount', function() {
-		it('should return the correct value from getCourseTileItemCount (should be maximum of pinned or unpinned course count)', function() {
-			widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
-			widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
-
-			expect(widget.$$('d2l-all-courses-segregated-content').getCourseTileItemCount()).to.equal(1);
-		});
-
-		it('should set getCourseTileItemCount on its child course-tile-grids', function() {
-			widget._filteredPinnedEnrollments = [pinnedEnrollmentEntity];
-			widget._filteredUnpinnedEnrollments = [unpinnedEnrollmentEntity];
-			var courseTileGrids;
-			var segregatedContent = widget.$$('d2l-all-courses-segregated-content');
-			if (segregatedContent.shadowRoot) {
-				courseTileGrids = segregatedContent.shadowRoot.querySelectorAll('d2l-course-tile-grid');
-			} else {
-				courseTileGrids = segregatedContent.querySelectorAll('d2l-course-tile-grid');
-			}
-			expect(courseTileGrids.length).to.equal(2);
-
-			for (var i = 0; i < courseTileGrids.length; i++) {
-				expect(courseTileGrids[i].getCourseTileItemCount()).to.equal(1);
-			}
-		});
-	});
-
 	describe('filter menu', function() {
 		it('should load filter menu content when filter menu is opened', function() {
 			var semestersTabStub = sandbox.stub(widget.$.filterMenu.$.semestersTab, 'load');
@@ -278,7 +252,7 @@ describe('d2l-all-courses', function() {
 
 			widget.load();
 			widget.$$('d2l-dropdown-menu').fire('d2l-menu-item-change', event);
-			expect(widget._searchUrl).to.contain('-PinDate,OrgUnitCode,OrgUnitId');
+			expect(widget._searchUrl).to.contain('OrgUnitCode,OrgUnitId');
 
 			widget.$$('d2l-simple-overlay')._renderOpened();
 			expect(spy.called).to.be.true;

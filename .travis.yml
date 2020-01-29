@@ -1,30 +1,23 @@
 language: node_js
 node_js:
-- "11"
+- '11'
 addons:
   chrome: stable
 before_script:
 - npm run lint
 - cp test/index.all.html test/index.html
-# `cp` because of https://github.com/Polymer/tools/issues/416#issue-327241592
 - cp wct.conf.local.json wct.conf.json
 - polymer test
 - npm run build
 script:
 - cp test/index.high-priority.html test/index.html
-- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-    cp wct.conf.sauce-chrome.json wct.conf.json;
-    polymer test || travis_terminate 1;
-
-    cp wct.conf.sauce-firefox.json wct.conf.json;
-    polymer test || travis_terminate 1;
-
-    cp wct.conf.sauce-others.json wct.conf.json;
-    polymer test || travis_terminate 1;
-  fi'
+- |-
+  if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then cp wct.conf.sauce-chrome.json wct.conf.json; polymer test || travis_terminate 1;
+  cp wct.conf.sauce-firefox.json wct.conf.json; polymer test || travis_terminate 1;
+  cp wct.conf.sauce-others.json wct.conf.json; polymer test || travis_terminate 1; fi
 env:
   global:
-    # SAUCE_USERNAME
-    - secure: MQI3qkGw7G3R1XSgABqqJt3XbrzzhoBV9xMK6UQ16eAbTi6Cw1QoD6bWa+icz1C6o/OAbU7fc+Iw0RAjITkjjlj5mXUn83Ggu5pZfjoKnC6CgGSPJXTFjz1sj2KEBUuKoURbLPxuZi8bRI4O2QWm5ZSC+6FpG9mVwXj9xPbPnJV2o1Nf2Vg45+Xm8/EuTLRzwRaiT3sDVC/x2p+zFh/C43MTRpAMSbU5wb/LZXw8Txu7DIW7VfGrLPalE4xKhyh/Q2C6tnCtDALtP7mQho63sxFWuIGJAF75OXQj7oPm5VIsaFJ8YAqQC2ymGZMAmlmz+y+X0duXG1zAbZa0gs8/JVaWRY6cE+agxyZZe5EV6xITvc7kMk/PnRrFJdtHsHxZ0BGUgpeI9WkOJ5Td16Z0Y6s2beR+VvvwEeEoAT+jKDoJkIAP1mQCoisvoBUk44BANKVsj4Uef3r8krK+G96PxlWR4Z1iHAGG+O0iIM4SjYfMthUcXDLGD4z/9dbLSIL79ph3SrY0AgD/hDXKBJ7XbsPbUkAPgDZDyG/6sRDs0lQVtuVTwWPLhyKuc3VV8IZD5/3cx8IUJ/wNoRxn33onnpFymlQNOl2fvDhuOOcNSURZ39azlJzXRJpdgvFpfgttn1xu7doTli5eW1IaWmzk5UhJqtu+aoa7H71U9aSG1sA=
-    # SAUCE_ACCESS_KEY
-    - secure: tuxL6PtBCORhxfL+lqD1fSaX46qh7/7iOM1opluDthkStcj90WHQLN9SS7cr7X3o3GKdR2y1hce5pU6zCzvB6UQYlUpn8yL631IJuyFPprKn3Bnss/1BqK5vNidnP92vapUBu8Skfw5twgxulCexpM3Wtbrw62wQU4MsswvbrbUtDlnbxMoAj8wf4gAXUifrpcAea03sdFAi/iwQ3RuV6bZPGyyoG1gtpggPRM4Eepd8U3llrctXOu96hoi8onzeUPgSeGf0OwWfKc8DiKPrkbXPsPnZxRfGiOClM7nw3l34G9RxyXIZo++dQlMHJDl6v5gFMIqNvaWjnQovncc01N5N61gJRbaOcMXFoiNIDi3gC+Z1VzNjLzcyXrQBP3z7wVASGHc0nlcgovfwADsBBce/EpLlBxiNL9US2AGgUo8sPu0D0rf9mzyRvqaNh1KOxan9WSYOCS/JzyarWVQmJ80hFqlefl2N+Jb5D+WawoK4+zDDlbjplZnmuM5LutDERd7gqK2ZI2pjyItkJqyDt8PlMq3SD9qnV8Lrq3Y8bmKuLGDXqCedeUTSjnWCZmcHjB47eKl8Fw3w2Lhh3SCCwYzXU4TyhVxwqr/aBaJSk2Da7lN6Noh3dqYKel0blPuoASw4wUy5Auv1Y/S7jQWjtcZ1O8NKwIc2Ad/IqauygzU=
+  # SAUCE_USERNAME
+  - secure: UniblxNZpjPqb43+ogtl9htJf4M/ityvtdii+d6x3+cKG5gCBzUPASorYnT3RuM/KGp2leeA2a+i9gThEZMZZEr9xy98gazOp9dUM5NR79MCgDKfUTpxD7r/scLKd4kV7wTqtzHWVembQwoVkR9DVu38Fevy6EbsWhAmfKoG2axL8/45vs7llyw+LhI4U9ew4nN9VmWpsdxlvUGtxCummLk0e1rN32nYmiejcoGY4Y/IBIZBK62E2DPZLT3bxbrP3fIHogn7eiOt/1knt89POU9wuOuIpe+vLs57UEKxzZi5SaJqaoAekuvWc5MP2iayJHeRCTkoZXSZ8NYfDavns3GGIYU5MjhVVTwOTVmOkg2c5ai8tSfkAdP5oS7EyHEsqAdOWkuxf8LQYR+dlVmIg604ZoxyPmu6cFQmpUHF0+GwDAKfoKsXlupiRydkipFrCwE8prVQEfL3qiBPVyVfugLZwHQbewMPLJaSqpTzmu2WEnloS933AOruH2GPj664VrCih9HPUd795eitE8jyqNGl9t69cKRLCLUcawaXH5eJYP9W6E6ZdQxGvnycba1KJpLgbtkHNfUhrkbhBh62sUqGEh1ylEsMlAf7cZUenrk2ViSxQm4+swDgfmWPQh2u743DmIcOiIeIbiPOyj/ZU5+ZFR763PQ71/zIr78WQys=
+  # SAUCE_ACCESS_KEY
+  - secure: OONg1ddGCjI+rx4oFrUKBy9pbkPYAU2xS3pm52SfMzW1MWK04grN6u96DXK/uScx+8dfEZltSBIIMTaJuu/OAOo7rd2fFlgSm10FFHIsc4cGTumqeZpFPzDdB0GMcHiERSjZ6BVQpUfHprdkbpWi178G5EPGrXjXJ1tRP+7p70pvk8SBrxm5nq6J2wMs45zW9hKMYUZVmBF/wfddK6PS+xy6eDwraBxku4pEcsm8Lbl/lhkj+B2aLEFXKTCpXEFD5sPLqQVRoPP7Y9Zrl1sUShOMOlVbIuMfoQDgfKWR5HPwYjKg3lSZP2TSj6eJyZtfAgiR9xHoZxABEMQw/Q17FMAYTpf9zc71TehlH7vCxqfYzTt8t+ZnSwwJTH/s9b4aKUSsCc6e7kkBHzvpkKZHfhyPeMfG0nCWn9JvJfNekhkCVrLK0+p18z+hyTiJ1TdWXc/Uvi6gPYhvfwYcnsFoiE9HcADhlt2VWOilADWG0kLWsh8R+D8txzOfKtorYGFzHS0IXR8F1IXlV8P3fQ1HVWrN2VYfxRNSHdG1+3Y5DDjxTD46WkT/OVQHl142mJ4NYRwt5ox9c9Z7gsQEyfRffl2m74oMyYS8tpj+4Rmlr9gPKomP2J0zyMOblxQ5UyKzpgVjU00gTKD4zylD+lilJgaX2jmQsdJr331GAfjyi2Y=

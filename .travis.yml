@@ -15,8 +15,10 @@ script:
 - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
     cp wct.conf.sauce-chrome.json wct.conf.json;
     polymer test || travis_terminate 1;
+
     cp wct.conf.sauce-firefox.json wct.conf.json;
     polymer test || travis_terminate 1;
+
     cp wct.conf.sauce-others.json wct.conf.json;
     polymer test || travis_terminate 1;
   fi'

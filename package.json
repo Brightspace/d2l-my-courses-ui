@@ -57,7 +57,7 @@
     "d2l-dropdown": "BrightspaceUI/dropdown#semver:^7",
     "d2l-enrollments": "BrightspaceHypermediaComponents/enrollments#semver:^4",
     "d2l-fetch": "Brightspace/d2l-fetch.git#semver:^2",
-    "d2l-hypermedia-constants": "Brightspace/d2l-hypermedia-constants#semver:^6",
+    "d2l-hypermedia-constants": "^6",
     "d2l-icons": "BrightspaceUI/icons#semver:^6",
     "d2l-image-selector": "Brightspace/image-selector#semver:^4",
     "intersection-observer": "^0.5.1",

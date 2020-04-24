@@ -100,28 +100,28 @@ Polymer({
 
 		if (this._allFilters.length > 0) {
 			// We've already loaded, don't load again
-			this.$$('d2l-search-widget').clear();
+			this.shadowRoot.querySelector('d2l-search-widget').clear();
 			return Promise.resolve();
 		}
 
 		return this.fetchSirenEntity(this.searchAction.href)
 			.then((resultsEntity) => {
 				this.set('_allFilters', resultsEntity.entities || []);
-				this.$$('d2l-search-widget').search();
+				this.shadowRoot.querySelector('d2l-search-widget').search();
 				this._showContent = this._allFilters.length > 0;
 			});
 	},
 	clear: function() {
-		const items = this.$$('d2l-menu').querySelectorAll('d2l-filter-list-item');
+		const items = this.shadowRoot.querySelector('d2l-menu').querySelectorAll('d2l-filter-list-item');
 		for (let i = 0; i < items.length; i++) {
 			items[i].selected = false;
 		}
 
-		this.$$('d2l-search-widget').clear();
+		this.shadowRoot.querySelector('d2l-search-widget').clear();
 		this.selectedFilters = [];
 	},
 	resize: function() {
-		this.$$('d2l-menu').resize();
+		this.shadowRoot.querySelector('d2l-menu').resize();
 
 		setTimeout(() => {
 			// DE24225 - force dropdown to resize after opening

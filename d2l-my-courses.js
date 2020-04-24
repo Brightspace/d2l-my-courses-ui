@@ -89,13 +89,13 @@ class MyCourses extends PolymerElement {
 
 	courseImageUploadCompleted(success) {
 		return this.updatedSortLogic
-			? this.$$('d2l-my-courses-container').courseImageUploadCompleted(success)
-			: this.$$('d2l-my-courses-legacy').courseImageUploadCompleted(success);
+			? this.shadowRoot.querySelector('d2l-my-courses-container').courseImageUploadCompleted(success)
+			: this.shadowRoot.querySelector('d2l-my-courses-legacy').courseImageUploadCompleted(success);
 	}
 	getLastOrgUnitId() {
 		return this.updatedSortLogic
-			? this.$$('d2l-my-courses-container').getLastOrgUnitId()
-			: this.$$('d2l-my-courses-legacy').getLastOrgUnitId();
+			? this.shadowRoot.querySelector('d2l-my-courses-container').getLastOrgUnitId()
+			: this.shadowRoot.querySelector('d2l-my-courses-legacy').getLastOrgUnitId();
 	}
 }
 

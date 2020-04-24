@@ -230,7 +230,7 @@ class SearchWidgetCustom extends mixinBehaviors([
 			return;
 		}
 
-		this.set('_dropdownWidth', this.$$('d2l-search-widget').offsetWidth);
+		this.set('_dropdownWidth', this.shadowRoot.querySelector('d2l-search-widget').offsetWidth);
 
 		// We want to open the previous searches, but only if there are some
 		if (this._previousSearches.length > 0) {

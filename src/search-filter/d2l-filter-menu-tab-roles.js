@@ -73,7 +73,7 @@ Polymer({
 	},
 
 	clear: function() {
-		const items = this.$$('d2l-menu').querySelectorAll('d2l-filter-list-item-role');
+		const items = this.shadowRoot.querySelector('d2l-menu').querySelectorAll('d2l-filter-list-item-role');
 		for (let i = 0; i < items.length; i++) {
 			items[i].selected = false;
 		}
@@ -93,7 +93,7 @@ Polymer({
 		return this._fetchFilterItems(clearRoleFiltersUrl);
 	},
 	resize: function() {
-		this.$$('d2l-menu').resize();
+		this.shadowRoot.querySelector('d2l-menu').resize();
 
 		setTimeout(() => {
 			// DE24225 - force dropdown to resize after opening

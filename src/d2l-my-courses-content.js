@@ -400,7 +400,7 @@ class MyCoursesContent extends mixinBehaviors([
 			&& this._enrollments.length === 0;
 	}
 	_getTileGrid() {
-		return this.$$('.course-card-grid');
+		return this.shadowRoot.querySelector('.course-card-grid');
 	}
 	_refreshTileGridImages() {
 		const courseTiles = this._getTileGrid().querySelectorAll('d2l-enrollment-card');
@@ -479,7 +479,7 @@ class MyCoursesContent extends mixinBehaviors([
 		this._addAlert('call-to-action', message, this.localize(message));
 	}
 	_onChangeImageLowerThreshold() {
-		this.$$('d2l-basic-image-selector').loadMore(this.$['image-selector-threshold']);
+		this.shadowRoot.querySelector('d2l-basic-image-selector').loadMore(this.$['image-selector-threshold']);
 	}
 	_onClearImageScrollThreshold() {
 		this.$['image-selector-threshold'].clearTriggers();
@@ -603,7 +603,7 @@ class MyCoursesContent extends mixinBehaviors([
 	}
 	//This event handler is removed from handling `started-inactive` event, not referenced anywhere
 	_onStartedInactiveAlert() {
-		if (this.$$('.course-card-grid d2l-enrollment-card[started-inactive]')) {
+		if (this.shadowRoot.querySelector('.course-card-grid d2l-enrollment-card[started-inactive]')) {
 			this._addAlert('warning', 'startedInactiveCourses', this.localize('startedInactiveAlert'));
 		}
 	}
@@ -798,7 +798,7 @@ class MyCoursesContent extends mixinBehaviors([
 	_openAllCoursesView(e) {
 		this._createAllCourses();
 
-		const allCourses = this.$$('d2l-all-courses');
+		const allCourses = this.shadowRoot.querySelector('d2l-all-courses');
 
 		allCourses.enrollmentsSearchAction = this.enrollmentsSearchAction;
 		allCourses.tabSearchActions = this.tabSearchActions;

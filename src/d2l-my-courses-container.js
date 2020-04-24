@@ -249,8 +249,8 @@ class MyCoursesContainer extends mixinBehaviors([
 	}
 	_fetchContentComponent() {
 		return this._showGroupByTabs === false || !this._currentTabId
-			? this.$$('d2l-my-courses-content')
-			: this.$$(`#${this._currentTabId} d2l-my-courses-content`);
+			? this.shadowRoot.querySelector('d2l-my-courses-content')
+			: this.shadowRoot.querySelector(`#${this._currentTabId} d2l-my-courses-content`);
 	}
 	_getPinTabAndAllTabActions(lastEnrollmentsSearchName) {
 		const actions = [];

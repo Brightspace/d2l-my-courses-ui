@@ -21,7 +21,7 @@ D2L.MyCourses.CardGridBehavior = {
 	},
 
 	_onResize: function(ie11retryCount) {
-		const courseTileGrid = this.$$('.course-card-grid');
+		const courseTileGrid = this.shadowRoot.querySelector('.course-card-grid');
 		if (!courseTileGrid) {
 			return;
 		}

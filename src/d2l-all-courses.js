@@ -23,7 +23,6 @@ import './search-filter/d2l-filter-menu.js';
 import './search-filter/d2l-search-widget-custom.js';
 import { Actions, Classes } from 'd2l-hypermedia-constants';
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
-import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
 import { EnrollmentCollectionEntity } from 'siren-sdk/src/enrollments/EnrollmentCollectionEntity.js';
 import { entityFactory } from 'siren-sdk/src/es6/EntityFactory.js';
 import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
@@ -391,17 +390,17 @@ class AllCourses extends mixinBehaviors([
 
 	connectedCallback() {
 		super.connectedCallback();
-		afterNextRender(this, () => {
-			this.addEventListener('d2l-simple-overlay-opening', this._onSimpleOverlayOpening);
-			this.addEventListener('d2l-tab-panel-selected', this._onTabSelected);
-			this.addEventListener('d2l-course-pinned-change', this._onEnrollmentPinned);
 
-			this.shadowRoot.querySelector('#sortDropdown').addEventListener('d2l-menu-item-change', this._onSortOrderChanged);
-			this.shadowRoot.querySelector('#filterDropdownContent').addEventListener('d2l-dropdown-open', this._onFilterDropdownOpen);
-			this.shadowRoot.querySelector('#filterDropdownContent').addEventListener('d2l-dropdown-close', this._onFilterDropdownClose);
-			this.shadowRoot.querySelector('#filterMenu').addEventListener('d2l-filter-menu-change', this._onFilterChanged);
-			this.shadowRoot.querySelector('#search-widget').addEventListener('d2l-search-widget-results-changed', this._onSearchResultsChanged);
-		});
+		this.addEventListener('d2l-simple-overlay-opening', this._onSimpleOverlayOpening);
+		this.addEventListener('d2l-tab-panel-selected', this._onTabSelected);
+		this.addEventListener('d2l-course-pinned-change', this._onEnrollmentPinned);
+
+		this.shadowRoot.querySelector('#sortDropdown').addEventListener('d2l-menu-item-change', this._onSortOrderChanged);
+		this.shadowRoot.querySelector('#filterDropdownContent').addEventListener('d2l-dropdown-open', this._onFilterDropdownOpen);
+		this.shadowRoot.querySelector('#filterDropdownContent').addEventListener('d2l-dropdown-close', this._onFilterDropdownClose);
+		this.shadowRoot.querySelector('#filterMenu').addEventListener('d2l-filter-menu-change', this._onFilterChanged);
+		this.shadowRoot.querySelector('#search-widget').addEventListener('d2l-search-widget-results-changed', this._onSearchResultsChanged);
+
 	}
 
 	/*

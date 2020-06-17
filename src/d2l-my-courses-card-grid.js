@@ -72,6 +72,10 @@ class MyCoursesCardGrid extends PolymerElement {
 			_showUnreadDropboxSubmissions: {
 				type: Boolean,
 				value: false
+			},
+			_showUnapprovedPortfolioEvidence: {
+				type: Boolean,
+				value: false
 			}
 		};
 	}
@@ -144,7 +148,8 @@ class MyCoursesCardGrid extends PolymerElement {
 					show-unattempted-quizzes="[[_showUnattemptedQuizzes]]"
 					show-ungraded-quiz-attempts="[[_showUngradedQuizAttempts]]"
 					show-unread-discussion-messages="[[_showUnreadDiscussionMessages]]"
-					show-unread-dropbox-submissions="[[_showUnreadDropboxSubmissions]]">
+					show-unread-dropbox-submissions="[[_showUnreadDropboxSubmissions]]"
+					show-unapproved-portfolio-evidence="[[_showUnapprovedPortfolioEvidence]]">
 				</d2l-enrollment-card>
 			</template>
 		</div>`;
@@ -245,6 +250,7 @@ class MyCoursesCardGrid extends PolymerElement {
 			this._showUngradedQuizAttempts = entity.showUngradedQuizAttempts();
 			this._showUnreadDiscussionMessages = entity.showUnreadDiscussionMessages();
 			this._showUnreadDropboxSubmissions = entity.showUnreadDropboxSubmissions();
+			this._showUnapprovedPortfolioEvidence = true;
 		});
 	}
 

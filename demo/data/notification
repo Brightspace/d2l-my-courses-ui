@@ -78,6 +78,19 @@
             "href": "http://kdx0-nstonehouse.desire2learn.d2l:44444/d2l/lms/quizzing/user/quizzes_list.d2l?ou=6609"
         }
       ]
+    },{
+      "rel": [ "https://notifications.api.brightspace.com/rels/updates" ],
+      "properties": {
+        "count": 6,
+        "type": "UnapprovedPortfolioEvidence"
+      },
+      "links": [
+        {
+            "rel": [ "https://notifications.api.brightspace.com/rels/updates-source" ],
+            "title": "UnapprovedPortfolioEvidence",
+            "href": "http://kdx0-nstonehouse.desire2learn.d2l:44444/d2l/lms/quizzing/user/quizzes_list.d2l?ou=6609"
+        }
+      ]
     }
   ],
   "links": [

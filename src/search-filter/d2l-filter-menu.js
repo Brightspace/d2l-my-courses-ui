@@ -66,26 +66,6 @@ class FilterMenu extends mixinBehaviors([
 				value: false,
 				computed: '_computeHasFilters(_departmentFilters.length, _semesterFilters.length, _roleFiltersCount)'
 			},
-			_semestersTabText: {
-				type: String,
-				computed: '_computeTabText(filterStandardSemesterName, _semesterFilters.length)'
-			},
-			_departmentsTabText: {
-				type: String,
-				computed: '_computeTabText(filterStandardDepartmentName, _departmentFilters.length)'
-			},
-			_rolesTabText: {
-				type: String,
-				computed: '_computeTabText(filterRolesName, _roleFiltersCount)'
-			},
-			_semestersSearchPlaceholderText: {
-				type: String,
-				computed: '_computeSearchPlaceholderText(filterStandardSemesterName)'
-			},
-			_departmentsSearchPlaceholderText: {
-				type: String,
-				computed: '_computeSearchPlaceholderText(filterStandardDepartmentName)'
-			},
 			_rolesTabHidden: {
 				type: Boolean,
 				value: false
@@ -169,27 +149,56 @@ class FilterMenu extends mixinBehaviors([
 			<div class="dropdown-content-tabs" role="tablist">
 				<div class="dropdown-content-tab" role="tab" aria-controls="semestersTab" hidden$="[[_semestersTabHidden]]">
 					<div class="dropdown-content-tab-highlight" hidden$="[[!_semestersTabSelected]]"></div>
-					<button id="semestersTabButton" class="dropdown-content-tab-button" on-tap="_selectTab" data-tab-name="semesters" aria-pressed="true">[[_semestersTabText]]</button>
+					<button id="semestersTabButton" class="dropdown-content-tab-button" on-tap="_selectTab" data-tab-name="semesters" aria-pressed="true">
+						[[localize('filtering.filterLabel', 'filterLabel', filterStandardSemesterName, 'num', _semesterFilters.length)]]
+					</button>
 				</div>
 				<div class="dropdown-content-tab" role="tab" aria-controls="departmentsTab" hidden$="[[_departmentsTabHidden]]">
 					<div class="dropdown-content-tab-highlight" hidden$="[[!_departmentsTabSelected]]"></div>
-					<button id="departmentsTabButton" class="dropdown-content-tab-button" on-tap="_selectTab" data-tab-name="departments" aria-pressed="false">[[_departmentsTabText]]</button>
+					<button id="departmentsTabButton" class="dropdown-content-tab-button" on-tap="_selectTab" data-tab-name="departments" aria-pressed="false">
+						[[localize('filtering.filterLabel', 'filterLabel', filterStandardDepartmentName, 'num', _departmentFilters.length)]]
+					</button>
 				</div>
 				<div class="dropdown-content-tab" role="tab" aria-controls="rolesTab" hidden$="[[_rolesTabHidden]]">
 					<div class="dropdown-content-tab-highlight" hidden$="[[!_rolesTabSelected]]"></div>
-					<button id="rolesTabButton" class="dropdown-content-tab-button" on-tap="_selectTab" data-tab-name="roles" aria-pressed="false">[[_rolesTabText]]</button>
+					<button id="rolesTabButton" class="dropdown-content-tab-button" on-tap="_selectTab" data-tab-name="roles" aria-pressed="false">
+						[[localize('filtering.filterLabel', 'filterLabel', filterRolesName, 'num', _roleFiltersCount)]]
+					</button>
 				</div>
 			</div>
 		</div>
 
 		<iron-pages attr-for-selected="data-tab-name" selected="semesters" fallback-selection="semesters">
-			<d2l-filter-menu-tab id="semestersTab" data-tab-name="semesters" aria-labelledby="semestersTabButton" menu-label-text="[[filterStandardSemesterName]]" no-filters-text="[[localize('filtering.noSemesters', 'semester', filterStandardSemesterName)]]" search-action="[[_searchSemestersAction]]" search-placeholder-text="[[_semestersSearchPlaceholderText]]" selected-filters="{{_semesterFilters}}" hidden$="[[_semestersTabHidden]]">
+			<d2l-filter-menu-tab
+				id="semestersTab"
+				data-tab-name="semesters"
+				aria-labelledby="semestersTabButton"
+				menu-label-text="[[filterStandardSemesterName]]"
+				no-filters-text="[[localize('filtering.noSemesters', 'semester', filterStandardSemesterName)]]" search-action="[[_searchSemestersAction]]"
+				search-placeholder-text="[[localize('filtering.searchBy', 'filter', filterStandardSemesterName)]]"
+				selected-filters="{{_semesterFilters}}"
+				hidden$="[[_semestersTabHidden]]">
 			</d2l-filter-menu-tab>
 
-			<d2l-filter-menu-tab id="departmentsTab" data-tab-name="departments" aria-labelledby="departmentsTabButton" menu-label-text="[[filterStandardDepartmentName]]" no-filters-text="[[localize('filtering.noDepartments', 'department', filterStandardDepartmentName)]]" search-action="[[_searchDepartmentsAction]]" search-placeholder-text="[[_departmentsSearchPlaceholderText]]" selected-filters="{{_departmentFilters}}" hidden$="[[_departmentsTabHidden]]">
+			<d2l-filter-menu-tab
+				id="departmentsTab"
+				data-tab-name="departments"
+				aria-labelledby="departmentsTabButton"
+				menu-label-text="[[filterStandardDepartmentName]]"
+				no-filters-text="[[localize('filtering.noDepartments', 'department', filterStandardDepartmentName)]]"
+				search-action="[[_searchDepartmentsAction]]"
+				search-placeholder-text="[[localize('filtering.searchBy', 'filter', filterStandardDepartmentName)]]"
+				selected-filters="{{_departmentFilters}}"
+				hidden$="[[_departmentsTabHidden]]">
 			</d2l-filter-menu-tab>
 
-			<d2l-filter-menu-tab-roles id="rolesTab" data-tab-name="roles" aria-labelledby="rolesTabButton" no-filters-text="[[localize('filtering.noRoles')]]" my-enrollments-entity="[[myEnrollmentsEntity]]" hidden$="[[_rolesTabHidden]]">
+			<d2l-filter-menu-tab-roles
+				id="rolesTab"
+				data-tab-name="roles"
+				aria-labelledby="rolesTabButton"
+				no-filters-text="[[localize('filtering.noRoles')]]"
+				my-enrollments-entity="[[myEnrollmentsEntity]]"
+				hidden$="[[_rolesTabHidden]]">
 			</d2l-filter-menu-tab-roles>
 		</iron-pages>`;
 	}
@@ -336,12 +345,6 @@ class FilterMenu extends mixinBehaviors([
 	}
 	_computeHasFilters(departmentFiltersLength, semesterFiltersLength, roleFiltersCount) {
 		return departmentFiltersLength + semesterFiltersLength + roleFiltersCount > 0;
-	}
-	_computeTabText(filterLabel, num) {
-		return this.localize('filtering.filterLabel', 'filterLabel', filterLabel, 'num', num);
-	}
-	_computeSearchPlaceholderText(name) {
-		return this.localize('filtering.searchBy', 'filter', name);
 	}
 }
 

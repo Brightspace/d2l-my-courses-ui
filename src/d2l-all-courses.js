@@ -395,6 +395,7 @@ class AllCourses extends mixinBehaviors([
 		super.connectedCallback();
 
 		this.addEventListener('d2l-tab-panel-selected', this._onTabSelected);
+		this._filterText = this.localize('filtering.filter');
 	}
 
 	/*

@@ -110,13 +110,15 @@ describe('d2l-filter-menu', function() {
 			it('should set the search placeholder text for semesters', function() {
 				component.filterStandardSemesterName = 'foo';
 
-				expect(component._semestersSearchPlaceholderText).to.equal('Search by foo');
+				const search = component.$.semestersTab;
+				expect(search.searchPlaceholderText).to.equal('Search by foo');
 			});
 
 			it('should set the search placeholder text for departments', function() {
 				component.filterStandardDepartmentName = 'foo';
 
-				expect(component._departmentsSearchPlaceholderText).to.equal('Search by foo');
+				const search = component.$.departmentsTab;
+				expect(search.searchPlaceholderText).to.equal('Search by foo');
 			});
 
 		});

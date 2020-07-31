@@ -1,9 +1,11 @@
 import 'd2l-localize-behavior/d2l-localize-behavior.js';
 import ar from './lang/ar.js';
+import cygb from './lang/cy-gb.js';
 import dadk from './lang/da-dk.js';
 import de from './lang/de.js';
 import en from './lang/en.js';
 import es from './lang/es.js';
+import eses from './lang/es-es.js';
 import fi from './lang/fi.js';
 import fr from './lang/fr.js';
 import frfr from './lang/fr-fr.js';
@@ -30,9 +32,11 @@ const MyCoursesLocalizeBehaviorImpl = (superClass) => {
 						return {
 							'en': en,
 							'ar': ar,
+							'cy-gb': cygb,
 							'da-dk': dadk,
 							'de': de,
 							'es': es,
+							'es-es': eses,
 							'fi': fi,
 							'fr': fr,
 							'fr-fr': frfr,

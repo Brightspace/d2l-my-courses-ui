@@ -7,7 +7,7 @@ export default {
 	"changeImage": "Modifier l’image",
 	"closeSimpleOverlayAltText": "Fermer la boîte de dialogue",
 	"courseSearchInputPlaceholder": "Rechercher un cours",
-	"error.settingImage": "Désolé, nous ne pouvons pas modifier votre image pour le moment. Veuillez réessayer ultérieurement.",
+	"error.settingImage": "Désolé, nous ne pouvons pas modifier votre image pour le moment. Réessayez ultérieurement.",
 	"filtering.clear": "Effacer",
 	"filtering.filter": "Filtre",
 	"filtering.filterBy": "Filtrer par",

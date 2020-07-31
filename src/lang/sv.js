@@ -29,7 +29,7 @@ export default {
 	"noCoursesMessage": "Du har inga kurser att visa.",
 	"noSearchResults": "Inga resultat.",
 	"onlyPastCoursesMessage": "Du har inga aktuella eller kommande kurser. Visa alla kurser om du vill bläddra bland dina tidigare kurser.",
-	"pinnedCourses": "Markerat",
+	"pinnedCourses": "Fäst",
 	"recentSearches": "Senaste sökningar",
 	"search.searchCourses": "Sök kurser",
 	"sorting.sortBy": "Sortera efter",

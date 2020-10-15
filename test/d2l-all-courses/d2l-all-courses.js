@@ -230,14 +230,14 @@ describe('d2l-all-courses', function() {
 				{ categoryChanged: 'semesters' },
 				{ categoryChanged: 'roles' }
 			].forEach(testCase => {
-				it(`should not set _searchUrl if the categoryChanged is "${testCase.categoryChanged}" but its selected filters info is missing`, function(done) {
+				it(`should not set _fetchUrl if the categoryChanged is "${testCase.categoryChanged}" but its selected filters info is missing`, function(done) {
 					const spy = sandbox.spy(widget, '_appendOrUpdateBustCacheQueryString');
 					fireEvent(widget.shadowRoot.querySelector('d2l-my-courses-filter'), 'd2l-my-courses-filter-change', {
 						categoryChanged: testCase.categoryChanged,
 						selectedFilters: []
 					});
 					requestAnimationFrame(() => {
-						expect(widget._searchUrl).to.be.null;
+						expect(widget._fetchUrl).to.be.null;
 						expect(spy).to.not.be.called;
 						done();
 					});
@@ -257,7 +257,7 @@ describe('d2l-all-courses', function() {
 						}]
 					});
 					requestAnimationFrame(() => {
-						expect(widget._searchUrl).to.equal('/enrollments/users/169?parentOrganizations=1,2,3&sort=Current&search=&bustCache=');
+						expect(widget._fetchUrl).to.equal('/enrollments/users/169?parentOrganizations=1,2,3&sort=Current&search=&bustCache=');
 						done();
 					});
 				});
@@ -274,7 +274,7 @@ describe('d2l-all-courses', function() {
 						}]
 					});
 					requestAnimationFrame(() => {
-						expect(widget._searchUrl).to.equal('/enrollments/users/169?parentOrganizations=4,5,6&sort=Current&search=&bustCache=');
+						expect(widget._fetchUrl).to.equal('/enrollments/users/169?parentOrganizations=4,5,6&sort=Current&search=&bustCache=');
 						done();
 					});
 				});
@@ -294,7 +294,7 @@ describe('d2l-all-courses', function() {
 						}]
 					});
 					requestAnimationFrame(() => {
-						expect(widget._searchUrl).to.equal('/enrollments/users/169?parentOrganizations=1,2,3,4,5,6&sort=Current&search=&bustCache=');
+						expect(widget._fetchUrl).to.equal('/enrollments/users/169?parentOrganizations=1,2,3,4,5,6&sort=Current&search=&bustCache=');
 						done();
 					});
 				});
@@ -325,7 +325,7 @@ describe('d2l-all-courses', function() {
 						}]
 					});
 					requestAnimationFrame(() => {
-						expect(widget._searchUrl).to.equal('/enrollments/users/169?parentOrganizations=1,3&roles=456&bustCache=');
+						expect(widget._fetchUrl).to.equal('/enrollments/users/169?parentOrganizations=1,3&roles=456&bustCache=');
 						done();
 					});
 				});
@@ -380,7 +380,7 @@ describe('d2l-all-courses', function() {
 						}]
 					});
 					setTimeout(() => {
-						expect(widget._searchUrl).to.equal('/applyRoles?sort=LastAccessed&roles=2&bustCache=');
+						expect(widget._fetchUrl).to.equal('/applyRoles?sort=LastAccessed&roles=2&bustCache=');
 						done();
 					}, 50);
 				});
@@ -412,7 +412,7 @@ describe('d2l-all-courses', function() {
 						}]
 					});
 					setTimeout(() => {
-						expect(widget._searchUrl).to.equal('/applyRoles?sort=LastAccessed&roles=1,3&bustCache=');
+						expect(widget._fetchUrl).to.equal('/applyRoles?sort=LastAccessed&roles=1,3&bustCache=');
 						done();
 					}, 50);
 				});
@@ -455,7 +455,7 @@ describe('d2l-all-courses', function() {
 						}]
 					});
 					setTimeout(() => {
-						expect(widget._searchUrl).to.equal('/applyRoles?sort=LastAccessed&roles=2&bustCache=');
+						expect(widget._fetchUrl).to.equal('/applyRoles?sort=LastAccessed&roles=2&bustCache=');
 						done();
 					}, 50);
 				});
@@ -478,7 +478,7 @@ describe('d2l-all-courses', function() {
 				});
 			});
 
-			it('should clear expected _searchUrl params', function(done) {
+			it('should clear expected _fetchUrl params', function(done) {
 				Object.assign(widget._actionParams, {
 					parentOrganizations: '123',
 					roles: '456',
@@ -500,7 +500,7 @@ describe('d2l-all-courses', function() {
 				};
 				fireEvent(widget.shadowRoot.querySelector('d2l-my-courses-filter'), 'd2l-my-courses-filter-clear');
 				requestAnimationFrame(() => {
-					expect(widget._searchUrl).to.equal('/enrollments/users/169?parentOrganizations=&roles=&sort=LastAccessed&bustCache=');
+					expect(widget._fetchUrl).to.equal('/enrollments/users/169?parentOrganizations=&roles=&sort=LastAccessed&bustCache=');
 					done();
 				});
 			});
@@ -524,7 +524,7 @@ describe('d2l-all-courses', function() {
 				};
 				fireEvent(widget.shadowRoot.querySelector('d2l-my-courses-filter'), 'd2l-my-courses-filter-clear');
 				requestAnimationFrame(() => {
-					expect(widget._searchUrl).to.equal('/enrollments/users/169?parentOrganizations=123&roles=&bustCache=');
+					expect(widget._fetchUrl).to.equal('/enrollments/users/169?parentOrganizations=123&roles=&bustCache=');
 					done();
 				});
 			});
@@ -548,7 +548,7 @@ describe('d2l-all-courses', function() {
 				};
 				fireEvent(widget.shadowRoot.querySelector('d2l-my-courses-filter'), 'd2l-my-courses-filter-clear');
 				requestAnimationFrame(() => {
-					expect(widget._searchUrl).to.equal('/enrollments/users/169?parentOrganizations=123&roles=&bustCache=');
+					expect(widget._fetchUrl).to.equal('/enrollments/users/169?parentOrganizations=123&roles=&bustCache=');
 					done();
 				});
 			});
@@ -572,7 +572,7 @@ describe('d2l-all-courses', function() {
 				};
 				fireEvent(widget.shadowRoot.querySelector('d2l-my-courses-filter'), 'd2l-my-courses-filter-clear');
 				requestAnimationFrame(() => {
-					expect(widget._searchUrl).to.equal('/enrollments/users/169?parentOrganizations=&roles=456&bustCache=');
+					expect(widget._fetchUrl).to.equal('/enrollments/users/169?parentOrganizations=&roles=456&bustCache=');
 					done();
 				});
 			});
@@ -580,24 +580,24 @@ describe('d2l-all-courses', function() {
 	});
 
 	describe('Sorting', function() {
-		it('should set the _searchUrl', function(done) {
+		it('should set the _fetchUrl', function(done) {
 			fireEvent(widget.shadowRoot.querySelector('d2l-sort-by-dropdown'), 'd2l-sort-by-dropdown-change', {
 				value: 'LastAccessed'
 			});
 			requestAnimationFrame(() => {
-				expect(widget._searchUrl).to.include('/enrollments/users/169?parentOrganizations=&sort=LastAccessed&search=');
+				expect(widget._fetchUrl).to.include('/enrollments/users/169?parentOrganizations=&sort=LastAccessed&search=');
 				done();
 			});
 		});
 	});
 
 	describe('Searching', function() {
-		it('should set the _searchUrl', function(done) {
+		it('should set the _fetchUrl', function(done) {
 			fireEvent(widget.shadowRoot.querySelector('d2l-my-courses-search'), 'd2l-my-courses-search-change', {
 				value: 'testing'
 			});
 			requestAnimationFrame(() => {
-				expect(widget._searchUrl).to.include('/enrollments/users/169?parentOrganizations=&sort=Current&search=testing');
+				expect(widget._fetchUrl).to.include('/enrollments/users/169?parentOrganizations=&sort=Current&search=testing');
 				done();
 			});
 		});
@@ -750,11 +750,11 @@ describe('d2l-all-courses', function() {
 			};
 
 			fireEvent(sortDropdown, 'd2l-sort-by-dropdown-change', event);
-			expect(widget._searchUrl).to.contain('sort=OrgUnitCode,OrgUnitId');
+			expect(widget._fetchUrl).to.contain('sort=OrgUnitCode,OrgUnitId');
 
 			widget._onSimpleOverlayClosed();
 			requestAnimationFrame(() => {
-				expect(widget._searchUrl).to.contain('sort=Current');
+				expect(widget._fetchUrl).to.contain('sort=Current');
 				done();
 			});
 		});
@@ -808,10 +808,10 @@ describe('d2l-all-courses', function() {
 
 		});
 
-		it('should set the _searchUrl based on the selected tab\'s action', function(done) {
+		it('should set the _fetchUrl based on the selected tab\'s action', function(done) {
 			widget.shadowRoot.querySelector('d2l-tabs').dispatchEvent(new CustomEvent('d2l-tab-panel-selected'));
 			requestAnimationFrame(() => {
-				expect(widget._searchUrl.indexOf('/example/foo?autoPinCourses=false&embedDepth=0&sort=Current&search=&bustCache=') !== -1).to.be.true;
+				expect(widget._fetchUrl.indexOf('/example/foo?autoPinCourses=false&embedDepth=0&sort=Current&search=&bustCache=') !== -1).to.be.true;
 				done();
 			});
 		});

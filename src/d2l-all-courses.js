@@ -91,11 +91,6 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 			_isSearched: Boolean,
 			// Object containing the last response from an enrollments fetch
 			_lastEnrollmentCollectionResponse: Object,
-			// URL to fetch enrollments, set by filtering, sorting, searching, and selecting a tab
-			_searchUrl: {
-				type: String,
-				observer: '_fetchEnrollments'
-			},
 			_selectedTabId: String,
 			_showAdvancedSearchLink: {
 				type: Boolean,
@@ -294,8 +289,8 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		if (this.tabSearchActions.length > 0) {
 			this._bustCacheToken = Math.random();
 			const actionName = this._selectedTabId.replace('all-courses-tab-', '');
-			if (!newValue.isPinned && actionName === Actions.enrollments.searchMyPinnedEnrollments && this._searchUrl) {
-				this._searchUrl = this._appendOrUpdateBustCacheQueryString(this._searchUrl);
+			if (!newValue.isPinned && actionName === Actions.enrollments.searchMyPinnedEnrollments && this._enrollmentsSearchAction) {
+				this._updateEnrollments(this._enrollmentsSearchAction);
 			}
 		}
 
@@ -307,7 +302,7 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		// (triggered by _onTabSelected and set back to true in _handleNewEnrollmentsEntity).
 		// The exception to this is when the overlay is closed then reopened - we want
 		// to immediately show the already-loaded content.
-		this._showContent = !!this._searchUrl;
+		this._showContent = !!this._enrollmentsSearchAction;
 
 		this.shadowRoot.querySelector('#all-courses').open();
 
@@ -352,18 +347,14 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		this._actionParams.sort = sortData.action;
 		this._actionParams.promotePins = sortData.promotePins;
 
-		this._searchUrl = this._appendOrUpdateBustCacheQueryString(
-			createActionUrl(this._enrollmentsSearchAction, this._actionParams)
-		);
+		this._updateEnrollments(this._enrollmentsSearchAction);
 	}
 
 	_onSearchChange(e) {
 		this._isSearched = !!e.detail.value;
-
 		this._actionParams.search = encodeURIComponent(e.detail.value);
-		this._searchUrl = this._appendOrUpdateBustCacheQueryString(
-			createActionUrl(this._enrollmentsSearchAction, this._actionParams)
-		);
+
+		this._updateEnrollments(this._enrollmentsSearchAction);
 	}
 
 	_onFilterChange(e) {
@@ -385,9 +376,7 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 			const semesterDepartmentFilters = selectedSemesters.concat(selectedDepartments);
 
 			this._actionParams.parentOrganizations = semesterDepartmentFilters.join(',');
-			this._searchUrl = this._appendOrUpdateBustCacheQueryString(
-				createActionUrl(this._enrollmentsSearchAction, this._actionParams)
-			);
+			this._updateEnrollments(this._enrollmentsSearchAction);
 		}
 	}
 
@@ -416,9 +405,8 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 			Actions.enrollments.roleFilters.applyRoleFilters
 		);
 
-		const actionUrl = createActionUrl(applyAction);
 		this._actionParams.roles = applyAction.getFieldByName('roles').value;
-		this._searchUrl = this._appendOrUpdateBustCacheQueryString(actionUrl);
+		this._updateEnrollments(applyAction);
 	}
 
 	_onFilterClear() {
@@ -427,20 +415,17 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 			semesters: 0,
 			roles: 0
 		};
-
 		this._clearParentOrganizationsAndRolesParams();
 
-		this._searchUrl = this._appendOrUpdateBustCacheQueryString(
-			createActionUrl(this._enrollmentsSearchAction, this._actionParams)
-		);
+		this._updateEnrollments(this._enrollmentsSearchAction);
 	}
 
 	_onSimpleOverlayOpening() {
 		if (this._hasEnrollmentsChanged) {
 			this._hasEnrollmentsChanged = false;
 			this._bustCacheToken = Math.random();
-			if (this._searchUrl) {
-				this._searchUrl = this._appendOrUpdateBustCacheQueryString(this._searchUrl);
+			if (this._enrollmentsSearchAction) {
+				this._updateEnrollments(this._enrollmentsSearchAction);
 			}
 		}
 	}
@@ -470,7 +455,7 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		}
 	}
 
-	// Triggered when the tabs are first rendered, which then fetches the enrollment data by setting _searchUrl
+	// Triggered when the tabs are first rendered, which then fetches the enrollments
 	_onTabSelected(e) {
 		e.stopPropagation();
 
@@ -491,10 +476,14 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		}
 
 		this._showTabContent = false;
+		this._updateEnrollments(tabAction.enrollmentsSearchAction);
+	}
 
-		this._searchUrl = this._appendOrUpdateBustCacheQueryString(
-			createActionUrl(tabAction.enrollmentsSearchAction, this._actionParams)
+	async _updateEnrollments(searchAction) {
+		const url = this._appendOrUpdateBustCacheQueryString(
+			createActionUrl(searchAction, this._actionParams)
 		);
+		this._fetchEnrollments(url);
 	}
 
 	async _fetchEnrollments(url) {

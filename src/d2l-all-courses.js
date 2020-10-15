@@ -479,14 +479,14 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		this._updateEnrollments(tabAction.enrollmentsSearchAction);
 	}
 
-	async _updateEnrollments(searchAction) {
+	_updateEnrollments(searchAction) {
 		const url = this._appendOrUpdateBustCacheQueryString(
 			createActionUrl(searchAction, this._actionParams)
 		);
 		this._fetchEnrollments(url);
 	}
 
-	async _fetchEnrollments(url) {
+	_fetchEnrollments(url) {
 		entityFactory(EnrollmentCollectionEntity, url, this.token, entity => {
 			if (entity) {
 				this._handleNewEnrollmentsEntity(entity);

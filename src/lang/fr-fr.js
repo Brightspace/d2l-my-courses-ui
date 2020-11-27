@@ -3,7 +3,7 @@
 export default {
 	"advancedSearch": "Recherche avancée",
 	"allCourses": "Tous les cours",
-	"allTab": "Tous",
+	"allTab": "Tout",
 	"changeImage": "Modifier l’image",
 	"closeSimpleOverlayAltText": "Fermer la boîte de dialogue",
 	"courseSearchInputPlaceholder": "Rechercher un cours",

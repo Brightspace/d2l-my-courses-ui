@@ -35,7 +35,7 @@
     "sinon": "^9",
     "wct-browser-legacy": "^1.0.1"
   },
-  "version": "11.11.3",
+  "version": "11.34.0",
   "main": "d2l-my-courses.js",
   "dependencies": {
     "@brightspace-ui/core": "^1",

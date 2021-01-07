@@ -53,7 +53,7 @@
     "d2l-image-selector": "Brightspace/image-selector#semver:^4",
     "d2l-localize-behavior": "BrightspaceUI/localize-behavior#semver:^2",
     "d2l-menu": "BrightspaceUI/menu#semver:^2",
-    "d2l-organization-hm-behavior": "Brightspace/organization-hm-behavior#semver:^3",
+    "d2l-organization-hm-behavior": "Brightspace/organization-hm-behavior#semver:^4",
     "d2l-polymer-siren-behaviors": "Brightspace/polymer-siren-behaviors#semver:^1",
     "d2l-search-widget": "Brightspace/d2l-search-widget-ui#semver:^5",
     "d2l-simple-overlay": "Brightspace/simple-overlay.git#semver:^3",

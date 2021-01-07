@@ -194,7 +194,7 @@ describe('d2l-my-courses-filter', () => {
 			component.filterCategories = [semesterFilterType];
 			await component.updateComplete;
 
-			const category = component.shadowRoot.querySelector('d2l-filter-dropdown-category');
+			const category = component.shadowRoot.querySelector('d2l-labs-filter-dropdown-category');
 			const loadingSpinner = category.querySelector('d2l-loading-spinner');
 
 			expect(loadingSpinner).to.not.be.null;
@@ -279,7 +279,7 @@ describe('d2l-my-courses-filter', () => {
 			expect(component._hasBeenOpened).to.be.false;
 			expect(component.filterCategories[0].optionsLoaded).to.be.false;
 
-			const filter = component.shadowRoot.querySelector('d2l-filter-dropdown');
+			const filter = component.shadowRoot.querySelector('d2l-labs-filter-dropdown');
 			filter.dispatchEvent(new CustomEvent('d2l-dropdown-open'));
 
 			await timeout(0);
@@ -295,7 +295,7 @@ describe('d2l-my-courses-filter', () => {
 
 			component.filterCategories[0].optionsLoaded = true;
 
-			const filter = component.shadowRoot.querySelector('d2l-filter-dropdown');
+			const filter = component.shadowRoot.querySelector('d2l-labs-filter-dropdown');
 			filter.dispatchEvent(new CustomEvent('d2l-dropdown-open'));
 
 			await timeout(0);
@@ -313,8 +313,8 @@ describe('d2l-my-courses-filter', () => {
 			expect(component.filterCategories[0].optionsLoaded).to.be.false;
 			expect(component.filterCategories[0].options.length).to.be.empty;
 
-			const category = component.shadowRoot.querySelector('d2l-filter-dropdown-category');
-			category.dispatchEvent(new CustomEvent('d2l-filter-dropdown-category-selected', {
+			const category = component.shadowRoot.querySelector('d2l-labs-filter-dropdown-category');
+			category.dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-category-selected', {
 				detail: {
 					categoryKey: 'semesters'
 				}
@@ -336,8 +336,8 @@ describe('d2l-my-courses-filter', () => {
 
 			component._hasBeenOpened = true;
 
-			const category = component.shadowRoot.querySelector('d2l-filter-dropdown-category');
-			category.dispatchEvent(new CustomEvent('d2l-filter-dropdown-category-selected', {
+			const category = component.shadowRoot.querySelector('d2l-labs-filter-dropdown-category');
+			category.dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-category-selected', {
 				detail: {
 					categoryKey: 'semesters'
 				}
@@ -347,7 +347,7 @@ describe('d2l-my-courses-filter', () => {
 			expect(component.filterCategories[0].optionsLoaded).to.be.true;
 			expect(component.filterCategories[0].options.length).to.equal(1);
 
-			category.dispatchEvent(new CustomEvent('d2l-filter-dropdown-category-selected', {
+			category.dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-category-selected', {
 				detail: {
 					categoryKey: 'roles'
 				}
@@ -366,7 +366,7 @@ describe('d2l-my-courses-filter', () => {
 			component._onDropdownOpen();
 			await timeout(0);
 
-			const category = component.shadowRoot.querySelector('d2l-filter-dropdown-category');
+			const category = component.shadowRoot.querySelector('d2l-labs-filter-dropdown-category');
 			expect(category.disableSearch).to.be.true;
 		});
 
@@ -376,7 +376,7 @@ describe('d2l-my-courses-filter', () => {
 			component._onDropdownOpen();
 			await timeout(0);
 
-			const category = component.shadowRoot.querySelector('d2l-filter-dropdown-category');
+			const category = component.shadowRoot.querySelector('d2l-labs-filter-dropdown-category');
 			expect(category.disableSearch).to.be.true;
 		});
 
@@ -386,7 +386,7 @@ describe('d2l-my-courses-filter', () => {
 			component._onDropdownOpen();
 			await timeout(0);
 
-			const category = component.shadowRoot.querySelector('d2l-filter-dropdown-category');
+			const category = component.shadowRoot.querySelector('d2l-labs-filter-dropdown-category');
 			expect(category.disableSearch).to.be.false;
 		});
 
@@ -406,8 +406,8 @@ describe('d2l-my-courses-filter', () => {
 			component.filterCategories[0].selectedOptions.push('/semester/2');
 			await component.requestUpdate();
 
-			const category = component.shadowRoot.querySelector('d2l-filter-dropdown-category');
-			category.dispatchEvent(new CustomEvent('d2l-filter-dropdown-category-searched', {
+			const category = component.shadowRoot.querySelector('d2l-labs-filter-dropdown-category');
+			category.dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-category-searched', {
 				detail: {
 					categoryKey: 'semesters',
 					value: '1'
@@ -429,8 +429,8 @@ describe('d2l-my-courses-filter', () => {
 			component._onDropdownOpen();
 			await timeout(0);
 
-			const category = component.shadowRoot.querySelector('d2l-filter-dropdown-category');
-			category.dispatchEvent(new CustomEvent('d2l-filter-dropdown-category-searched', {
+			const category = component.shadowRoot.querySelector('d2l-labs-filter-dropdown-category');
+			category.dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-category-searched', {
 				detail: {
 					categoryKey: 'semesters',
 					value: 'test'
@@ -452,14 +452,14 @@ describe('d2l-my-courses-filter', () => {
 			component._onDropdownOpen();
 			await timeout(0);
 
-			const category = component.shadowRoot.querySelectorAll('d2l-filter-dropdown-category');
+			const category = component.shadowRoot.querySelectorAll('d2l-labs-filter-dropdown-category');
 			expect(category[0].selectedOptionCount).to.equal(0);
 			expect(category[1].selectedOptionCount).to.equal(0);
 			expect(component.filterCategories[0].selectedOptions).to.be.empty;
 			expect(component.filterCategories[1].selectedOptions).to.be.empty;
 			expect(component._totalSelectedCount).to.equal(0);
 
-			category[0].dispatchEvent(new CustomEvent('d2l-filter-dropdown-option-change', {
+			category[0].dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'semesters',
 					menuItemKey: '/semester/1',
@@ -474,7 +474,7 @@ describe('d2l-my-courses-filter', () => {
 			expect(component.filterCategories[1].selectedOptions).to.be.empty;
 			expect(component._totalSelectedCount).to.equal(1);
 
-			category[1].dispatchEvent(new CustomEvent('d2l-filter-dropdown-option-change', {
+			category[1].dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'roles',
 					menuItemKey: 'Student',
@@ -495,14 +495,14 @@ describe('d2l-my-courses-filter', () => {
 			await component.updateComplete;
 			component._onDropdownOpen();
 
-			component._onFilterDropdownOptionChange(new CustomEvent('d2l-filter-dropdown-option-change', {
+			component._onFilterDropdownOptionChange(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'semesters',
 					menuItemKey: '/semester/1',
 					selected: true
 				}
 			}));
-			component._onFilterDropdownOptionChange(new CustomEvent('d2l-filter-dropdown-option-change', {
+			component._onFilterDropdownOptionChange(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'roles',
 					menuItemKey: 'Student',
@@ -511,14 +511,14 @@ describe('d2l-my-courses-filter', () => {
 			}));
 			await timeout(0);
 
-			const category = component.shadowRoot.querySelectorAll('d2l-filter-dropdown-category');
+			const category = component.shadowRoot.querySelectorAll('d2l-labs-filter-dropdown-category');
 			expect(category[0].selectedOptionCount).to.equal(1);
 			expect(category[1].selectedOptionCount).to.equal(1);
 			expect(component.filterCategories[0].selectedOptions).to.deep.equal(['/semester/1']);
 			expect(component.filterCategories[1].selectedOptions).to.deep.equal(['Student']);
 			expect(component._totalSelectedCount).to.equal(2);
 
-			category[0].dispatchEvent(new CustomEvent('d2l-filter-dropdown-option-change', {
+			category[0].dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'semesters',
 					menuItemKey: '/semester/1',
@@ -533,7 +533,7 @@ describe('d2l-my-courses-filter', () => {
 			expect(component.filterCategories[1].selectedOptions).to.deep.equal(['Student']);
 			expect(component._totalSelectedCount).to.equal(1);
 
-			category[1].dispatchEvent(new CustomEvent('d2l-filter-dropdown-option-change', {
+			category[1].dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'roles',
 					menuItemKey: 'Student',
@@ -554,7 +554,7 @@ describe('d2l-my-courses-filter', () => {
 			await component.updateComplete;
 			component._onDropdownOpen();
 
-			component._onFilterDropdownOptionChange(new CustomEvent('d2l-filter-dropdown-option-change', {
+			component._onFilterDropdownOptionChange(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'semesters',
 					menuItemKey: '/semester/1',
@@ -565,7 +565,7 @@ describe('d2l-my-courses-filter', () => {
 			await timeout(0);
 			expect(component.filterCategories[0].selectedOptions).to.deep.equal(['/semester/1']);
 
-			component._onFilterDropdownOptionChange(new CustomEvent('d2l-filter-dropdown-option-change', {
+			component._onFilterDropdownOptionChange(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'semesters',
 					menuItemKey: '/semester/1',
@@ -592,7 +592,7 @@ describe('d2l-my-courses-filter', () => {
 			}
 
 			setTimeout(() => {
-				component._onFilterDropdownOptionChange(new CustomEvent('d2l-filter-dropdown-option-change', {
+				component._onFilterDropdownOptionChange(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 					detail: {
 						categoryKey: 'semesters',
 						menuItemKey: '/semester/1',
@@ -624,14 +624,14 @@ describe('d2l-my-courses-filter', () => {
 			await component.updateComplete;
 			component._onDropdownOpen();
 
-			component._onFilterDropdownOptionChange(new CustomEvent('d2l-filter-dropdown-option-change', {
+			component._onFilterDropdownOptionChange(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'semesters',
 					menuItemKey: '/semester/1',
 					selected: true
 				}
 			}));
-			component._onFilterDropdownOptionChange(new CustomEvent('d2l-filter-dropdown-option-change', {
+			component._onFilterDropdownOptionChange(new CustomEvent('d2l-labs-filter-dropdown-option-change', {
 				detail: {
 					categoryKey: 'roles',
 					menuItemKey: 'Student',
@@ -641,15 +641,15 @@ describe('d2l-my-courses-filter', () => {
 			await timeout(0);
 		});
 		it('should reset the counts back to 0 and the selectedOptions array back to empty', async() => {
-			const filter = component.shadowRoot.querySelector('d2l-filter-dropdown');
-			const category = component.shadowRoot.querySelectorAll('d2l-filter-dropdown-category');
+			const filter = component.shadowRoot.querySelector('d2l-labs-filter-dropdown');
+			const category = component.shadowRoot.querySelectorAll('d2l-labs-filter-dropdown-category');
 			expect(category[0].selectedOptionCount).to.equal(1);
 			expect(category[1].selectedOptionCount).to.equal(1);
 			expect(component.filterCategories[0].selectedOptions).to.deep.equal(['/semester/1']);
 			expect(component.filterCategories[1].selectedOptions).to.deep.equal(['Student']);
 			expect(component._totalSelectedCount).to.equal(2);
 
-			filter.dispatchEvent(new CustomEvent('d2l-filter-dropdown-cleared'));
+			filter.dispatchEvent(new CustomEvent('d2l-labs-filter-dropdown-cleared'));
 
 			await timeout(0);
 			expect(category[0].selectedOptionCount).to.equal(0);
@@ -660,7 +660,7 @@ describe('d2l-my-courses-filter', () => {
 		});
 
 		it('should do the same when the public function is called', async() => {
-			const category = component.shadowRoot.querySelectorAll('d2l-filter-dropdown-category');
+			const category = component.shadowRoot.querySelectorAll('d2l-labs-filter-dropdown-category');
 			expect(category[0].selectedOptionCount).to.equal(1);
 			expect(category[1].selectedOptionCount).to.equal(1);
 			expect(component.filterCategories[0].selectedOptions).to.deep.equal(['/semester/1']);

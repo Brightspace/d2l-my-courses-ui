@@ -4,9 +4,9 @@ Lit web component for the my courses filter.
 */
 
 import '@brightspace-ui/core/components/loading-spinner/loading-spinner.js';
-import 'd2l-facet-filter-sort/components/d2l-filter-dropdown/d2l-filter-dropdown.js';
-import 'd2l-facet-filter-sort/components/d2l-filter-dropdown/d2l-filter-dropdown-category.js';
-import 'd2l-facet-filter-sort/components/d2l-filter-dropdown/d2l-filter-dropdown-option.js';
+import '@brightspace-ui-labs/facet-filter-sort/components/filter-dropdown/filter-dropdown.js';
+import '@brightspace-ui-labs/facet-filter-sort/components/filter-dropdown/filter-dropdown-category.js';
+import '@brightspace-ui-labs/facet-filter-sort/components/filter-dropdown/filter-dropdown-option.js';
 import { createActionUrl, fetchSirenEntity } from '../d2l-utility-helpers.js';
 import { css, html, LitElement } from 'lit-element';
 import { bodyCompactStyles } from '@brightspace-ui/core/components/typography/styles.js';
@@ -56,17 +56,17 @@ class MyCoursesFilter extends MyCoursesLocalizeMixin(LitElement) {
 
 	render() {
 		return html`
-			<d2l-filter-dropdown
+			<d2l-labs-filter-dropdown
 				@d2l-dropdown-open="${this._onDropdownOpen}"
-				@d2l-filter-dropdown-cleared="${this._onFilterDropdownCleared}"
+				@d2l-labs-filter-dropdown-cleared="${this._onFilterDropdownCleared}"
 				min-width="350"
 				total-selected-option-count="${this._totalSelectedCount}">
 
 				${this.filterCategories.map(category => html`
-					<d2l-filter-dropdown-category
-						@d2l-filter-dropdown-category-selected="${this._onFilterDropdownCategorySelected}"
-						@d2l-filter-dropdown-category-searched="${this._onFilterDropdownCategorySearched}"
-						@d2l-filter-dropdown-option-change="${this._onFilterDropdownOptionChange}"
+					<d2l-labs-filter-dropdown-category
+						@d2l-labs-filter-dropdown-category-selected="${this._onFilterDropdownCategorySelected}"
+						@d2l-labs-filter-dropdown-category-searched="${this._onFilterDropdownCategorySearched}"
+						@d2l-labs-filter-dropdown-option-change="${this._onFilterDropdownOptionChange}"
 						key="${category.key}"
 						category-text="${ifDefined(category.name)}"
 						?disable-search="${this._hasFiltersClass(category) || (!category.isSearched && category.options && category.options.length === 0)}"
@@ -75,11 +75,11 @@ class MyCoursesFilter extends MyCoursesLocalizeMixin(LitElement) {
 						${category.optionsLoaded ? html`
 							${category.options && category.options.length > 0 ? html`
 								${category.options.map(option => html`
-									<d2l-filter-dropdown-option
+									<d2l-labs-filter-dropdown-option
 										?selected="${category.selectedOptions.findIndex(optionKey => optionKey === option.key) > -1}"
 										text="${ifDefined(option.name)}"
 										value="${option.key}">
-									</d2l-filter-dropdown-option>
+									</d2l-labs-filter-dropdown-option>
 								`)}` : html`
 								<div class="d2l-my-courses-filter-no-options-text d2l-body-compact">
 									${category.isSearched ? this.localize('noSearchResults') : category.noOptionsText}
@@ -88,9 +88,9 @@ class MyCoursesFilter extends MyCoursesLocalizeMixin(LitElement) {
 						` : html`
 							<d2l-loading-spinner></d2l-loading-spinner>
 						`}
-					</d2l-filter-dropdown-category>
+					</d2l-labs-filter-dropdown-category>
 				`)}
-			</d2l-filter-dropdown>
+			</d2l-labs-filter-dropdown>
 		`;
 	}
 

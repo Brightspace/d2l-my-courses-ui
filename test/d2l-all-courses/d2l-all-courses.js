@@ -581,7 +581,7 @@ describe('d2l-all-courses', function() {
 
 	describe('Sorting', function() {
 		it('should set the _searchUrl', function(done) {
-			fireEvent(widget.shadowRoot.querySelector('d2l-sort-by-dropdown'), 'd2l-sort-by-dropdown-change', {
+			fireEvent(widget.shadowRoot.querySelector('d2l-labs-sort-by-dropdown'), 'd2l-labs-sort-by-dropdown-change', {
 				value: 'LastAccessed'
 			});
 			requestAnimationFrame(() => {
@@ -742,14 +742,14 @@ describe('d2l-all-courses', function() {
 		});
 
 		it('should clear sort', function(done) {
-			const sortDropdown = widget.shadowRoot.querySelector('d2l-sort-by-dropdown');
+			const sortDropdown = widget.shadowRoot.querySelector('d2l-labs-sort-by-dropdown');
 
 			const event = {
 				selected: true,
 				value: 'OrgUnitCode'
 			};
 
-			fireEvent(sortDropdown, 'd2l-sort-by-dropdown-change', event);
+			fireEvent(sortDropdown, 'd2l-labs-sort-by-dropdown-change', event);
 			expect(widget._searchUrl).to.contain('sort=OrgUnitCode,OrgUnitId');
 
 			widget._onSimpleOverlayClosed();

@@ -9,8 +9,8 @@ import '@brightspace-ui/core/components/link/link.js';
 import '@brightspace-ui/core/components/loading-spinner/loading-spinner.js';
 import '@brightspace-ui/core/components/tabs/tabs.js';
 import '@brightspace-ui/core/components/tabs/tab-panel.js';
-import 'd2l-facet-filter-sort/components/d2l-sort-by-dropdown/d2l-sort-by-dropdown.js';
-import 'd2l-facet-filter-sort/components/d2l-sort-by-dropdown/d2l-sort-by-dropdown-option.js';
+import '@brightspace-ui-labs/facet-filter-sort/components/sort-by-dropdown/sort-by-dropdown.js';
+import '@brightspace-ui-labs/facet-filter-sort/components/sort-by-dropdown/sort-by-dropdown-option.js';
 import 'd2l-simple-overlay/d2l-simple-overlay.js';
 import './d2l-my-courses-card-grid.js';
 import './search-filter/d2l-my-courses-search.js';
@@ -195,11 +195,11 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 					justify-content: flex-end;
 				}
 				d2l-my-courses-filter,
-				d2l-sort-by-dropdown {
+				d2l-labs-sort-by-dropdown {
 					margin-left: 0.5rem;
 				}
 				:host(:dir(rtl)) d2l-my-courses-filter,
-				:host(:dir(rtl)) d2l-sort-by-dropdown {
+				:host(:dir(rtl)) d2l-labs-sort-by-dropdown {
 					margin-left: 0;
 					margin-right: 0.5rem;
 				}
@@ -236,14 +236,14 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 								filter-categories="[[_filterCategories]]">
 							</d2l-my-courses-filter>
 
-							<d2l-sort-by-dropdown align="end" label="[[localize('sorting.sortBy')]]" value="Default" on-d2l-sort-by-dropdown-change="_onSortOrderChanged">
-								<d2l-sort-by-dropdown-option value="Default" text="[[localize('sorting.sortDefault')]]"></d2l-sort-by-dropdown-option>
-								<d2l-sort-by-dropdown-option value="OrgUnitName" text="[[localize('sorting.sortCourseName')]]"></d2l-sort-by-dropdown-option>
-								<d2l-sort-by-dropdown-option value="OrgUnitCode" text="[[localize('sorting.sortCourseCode')]]"></d2l-sort-by-dropdown-option>
-								<d2l-sort-by-dropdown-option value="PinDate" text="[[localize('sorting.sortDatePinned')]]"></d2l-sort-by-dropdown-option>
-								<d2l-sort-by-dropdown-option value="LastAccessed" text="[[localize('sorting.sortLastAccessed')]]"></d2l-sort-by-dropdown-option>
-								<d2l-sort-by-dropdown-option value="EnrollmentDate" text="[[localize('sorting.sortEnrollmentDate')]]"></d2l-sort-by-dropdown-option>
-							</d2l-sort-by-dropdown>
+							<d2l-labs-sort-by-dropdown align="end" label="[[localize('sorting.sortBy')]]" value="Default" on-d2l-labs-sort-by-dropdown-change="_onSortOrderChanged">
+								<d2l-labs-sort-by-dropdown-option value="Default" text="[[localize('sorting.sortDefault')]]"></d2l-labs-sort-by-dropdown-option>
+								<d2l-labs-sort-by-dropdown-option value="OrgUnitName" text="[[localize('sorting.sortCourseName')]]"></d2l-labs-sort-by-dropdown-option>
+								<d2l-labs-sort-by-dropdown-option value="OrgUnitCode" text="[[localize('sorting.sortCourseCode')]]"></d2l-labs-sort-by-dropdown-option>
+								<d2l-labs-sort-by-dropdown-option value="PinDate" text="[[localize('sorting.sortDatePinned')]]"></d2l-labs-sort-by-dropdown-option>
+								<d2l-labs-sort-by-dropdown-option value="LastAccessed" text="[[localize('sorting.sortLastAccessed')]]"></d2l-labs-sort-by-dropdown-option>
+								<d2l-labs-sort-by-dropdown-option value="EnrollmentDate" text="[[localize('sorting.sortEnrollmentDate')]]"></d2l-labs-sort-by-dropdown-option>
+							</d2l-labs-sort-by-dropdown>
 						</div>
 					</div>
 
@@ -459,7 +459,7 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 
 		this.shadowRoot.querySelector('d2l-my-courses-search').clear();
 		this.shadowRoot.querySelector('d2l-my-courses-filter').clear();
-		this.shadowRoot.querySelector('d2l-sort-by-dropdown-option[value=Default]').click();
+		this.shadowRoot.querySelector('d2l-labs-sort-by-dropdown-option[value=Default]').click();
 
 		this.dispatchEvent(new CustomEvent('d2l-all-courses-close'));
 	}

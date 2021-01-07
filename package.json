@@ -58,7 +58,7 @@
     "d2l-search-widget": "Brightspace/d2l-search-widget-ui#semver:^5",
     "d2l-simple-overlay": "Brightspace/simple-overlay.git#semver:^3",
     "d2l-typography": "BrightspaceUI/typography#semver:^7",
-    "intersection-observer": "^0.5.1",
+    "intersection-observer": "^0.12.0",
     "lit-element": "^2",
     "siren-parser": "^8.0.0",
     "siren-sdk": "BrightspaceHypermediaComponents/siren-sdk#semver:^1"

@@ -163,7 +163,7 @@ describe('d2l-my-courses', () => {
 	});
 
 	it('should have search pinned enrollments action and hide the only saved search action', () => {
-		sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({previouslyShown: true});
+		sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({ previouslyShown: true });
 		component._enrollmentsSearchAction = searchAction;
 		component._pinnedTabAction = searchPinnedEnrollmentsAction;
 		component._onPromotedSearchEntityChange();
@@ -171,7 +171,7 @@ describe('d2l-my-courses', () => {
 	});
 
 	it('should have search pinned enrollments action with two saved search actions', () => {
-		sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({previouslyShown: true});
+		sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({ previouslyShown: true });
 		component._promotedSearchEntity = new PromotedSearchEntity(promotedSearchMultipleResponse);
 		component._enrollmentsSearchAction = searchAction;
 		component._pinnedTabAction = searchPinnedEnrollmentsAction;
@@ -231,7 +231,7 @@ describe('d2l-my-courses', () => {
 		});
 
 		it('should not add the pinned action if the cache says the pinned tab was previously hidden', () => {
-			sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({previouslyShown: false});
+			sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({ previouslyShown: false });
 			const verifyStub = sandbox.stub(component, '_verifyPinnedTab');
 
 			const resultActions = component._getPinTabAndAllTabActions();
@@ -242,7 +242,7 @@ describe('d2l-my-courses', () => {
 		});
 
 		it('should add the pinned action if the cache says the pinned tab was previously shown', () => {
-			sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({previouslyShown: true});
+			sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({ previouslyShown: true });
 			const verifyStub = sandbox.stub(component, '_verifyPinnedTab');
 
 			const resultActions = component._getPinTabAndAllTabActions();
@@ -254,7 +254,7 @@ describe('d2l-my-courses', () => {
 		});
 
 		it('should add the pinned tab if we verify there actually is a pinned course', done => {
-			sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({previouslyShown: false});
+			sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({ previouslyShown: false });
 			setupGetPinnedEnrollmentsStub(true);
 			const verifySpy = sandbox.spy(component, '_verifyPinnedTab');
 
@@ -274,7 +274,7 @@ describe('d2l-my-courses', () => {
 		});
 
 		it('should remove the pinned tab if we verify there actually is no pinned courses', done => {
-			sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({previouslyShown: true});
+			sandbox.stub(component, '_tryGetItemLocalStorage').withArgs('myCourses.pinnedTab').returns({ previouslyShown: true });
 			setupGetPinnedEnrollmentsStub(false);
 			const verifySpy = sandbox.spy(component, '_verifyPinnedTab');
 
@@ -310,29 +310,29 @@ describe('d2l-my-courses', () => {
 					expect(component._tabSearchActions.length).to.equal(2);
 					expect(allCoursesSpliceStub).to.not.have.been.called;
 					expect(contentRefreshStub).to.have.been.called;
-					expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', {'previouslyShown': true});
+					expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', { 'previouslyShown': true });
 					done();
 				}, 0);
 			});
 			it('should add the pinned tab to all-courses as well if it has been opened already', () => {
 				const allCourses = component._getAllCoursesComponent();
 				const allCoursesSpliceStub = sandbox.stub(allCourses, 'splice');
-				component._tabSearchActions = [{ name: 'search-my-enrollments'}];
+				component._tabSearchActions = [{ name: 'search-my-enrollments' }];
 				component._openAllCoursesOverlay();
 
 				component._addPinnedTab();
 
 				expect(allCoursesSpliceStub).to.have.been.calledOnce;
-				expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', {'previouslyShown': true});
+				expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', { 'previouslyShown': true });
 			});
 			it('should only add the pinned tab if it is not already there', () => {
 				const spliceStub = sandbox.stub(component, 'splice');
-				component._tabSearchActions = [{ name: 'search-my-enrollments'}, { name: 'search-my-pinned-enrollments'}];
+				component._tabSearchActions = [{ name: 'search-my-enrollments' }, { name: 'search-my-pinned-enrollments' }];
 
 				component._addPinnedTab();
 
 				expect(spliceStub).to.not.have.been.called;
-				expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', {'previouslyShown': true});
+				expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', { 'previouslyShown': true });
 			});
 		});
 
@@ -357,29 +357,29 @@ describe('d2l-my-courses', () => {
 					expect(component._tabSearchActions.length).to.equal(1);
 					expect(allCoursesSpliceStub).to.not.have.been.called;
 					expect(contentRefreshStub).to.have.been.called;
-					expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', {'previouslyShown': false});
+					expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', { 'previouslyShown': false });
 					done();
 				}, 0);
 			});
 			it('should remove the pinned tab from all-courses as well if it has been opened already', () => {
 				const allCourses = component._getAllCoursesComponent();
 				const allCoursesSpliceStub = sandbox.stub(allCourses, 'splice');
-				component._tabSearchActions = [{ name: 'search-my-enrollments'}, { name: 'search-my-pinned-enrollments'}];
+				component._tabSearchActions = [{ name: 'search-my-enrollments' }, { name: 'search-my-pinned-enrollments' }];
 				component._openAllCoursesOverlay();
 
 				component._removePinnedTab();
 
 				expect(allCoursesSpliceStub).to.have.been.calledOnce;
-				expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', {'previouslyShown': false});
+				expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', { 'previouslyShown': false });
 			});
 			it('should only remove the pinned tab if it exists', () => {
 				const spliceStub = sandbox.stub(component, 'splice');
-				component._tabSearchActions = [{ name: 'search-my-enrollments'}];
+				component._tabSearchActions = [{ name: 'search-my-enrollments' }];
 
 				component._removePinnedTab();
 
 				expect(spliceStub).to.not.have.been.called;
-				expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', {'previouslyShown': false});
+				expect(setLocalStorageStub).to.have.been.calledWith('myCourses.pinnedTab', { 'previouslyShown': false });
 			});
 		});
 	});
@@ -483,25 +483,25 @@ describe('d2l-my-courses', () => {
 
 		it('should add the course image alert after receiving a failure result (after a timeout)', function() {
 			clock = sinon.useFakeTimers();
-			const setCourseImageEvent = { detail: { status: 'failure'} };
+			const setCourseImageEvent = { detail: { status: 'failure' } };
 			component._onSetCourseImage(setCourseImageEvent);
 			clock.tick(1001);
 			expect(component._showImageError).to.be.true;
 		});
 
 		it('should not add a course image failure alert when a request to set the image succeeds', function() {
-			const setCourseImageEvent = { detail: { status: 'success'} };
+			const setCourseImageEvent = { detail: { status: 'success' } };
 			component._onSetCourseImage(setCourseImageEvent);
 			expect(component._showImageError).to.be.false;
 		});
 
 		it('should remove a course image failure alert when a request to set the image is made', function() {
 			clock = sinon.useFakeTimers();
-			let setCourseImageEvent = { detail: { status: 'failure'} };
+			let setCourseImageEvent = { detail: { status: 'failure' } };
 			component._onSetCourseImage(setCourseImageEvent);
 			clock.tick(1001);
 			expect(component._showImageError).to.be.true;
-			setCourseImageEvent = { detail: { status: 'set'} };
+			setCourseImageEvent = { detail: { status: 'set' } };
 			component._onSetCourseImage(setCourseImageEvent);
 			expect(component._showImageError).to.be.false;
 		});
@@ -543,7 +543,7 @@ describe('d2l-my-courses', () => {
 				// Prevents the _searchPath of the image selector from being null
 				component.imageCatalogLocation = '/foo';
 				fetchStub = sandbox.stub(window.D2L.Siren.EntityStore, 'fetch');
-				fetchStub.withArgs('/foo', sinon.match.string).returns(Promise.resolve({entity: {}}));
+				fetchStub.withArgs('/foo', sinon.match.string).returns(Promise.resolve({ entity: {} }));
 				event = new CustomEvent('open-change-image-view', {
 					detail: {
 						organization: window.D2L.Hypermedia.Siren.Parse({
@@ -664,7 +664,7 @@ describe('d2l-my-courses', () => {
 
 		describe('d2l-my-courses-content-open-all-courses', () => {
 			it('should remove an existing course image failure alert and prep all courses for opening', () => {
-				const tabSearchActions = [{name: 'testing', href: 'something'}];
+				const tabSearchActions = [{ name: 'testing', href: 'something' }];
 				component._showImageError = true;
 				component._tabSearchActions = tabSearchActions;
 
@@ -771,8 +771,8 @@ describe('d2l-my-courses', () => {
 
 			[
 				{ },
-				{orgUnitId: '1234', isPinned: false },
-				{orgUnitId: '5678', isPinned: true }
+				{ orgUnitId: '1234', isPinned: false },
+				{ orgUnitId: '5678', isPinned: true }
 			].forEach(initialChangedCourseEnrollment => {
 				it(`should update the _changedCourseEnrollment property from ${JSON.stringify(initialChangedCourseEnrollment)}, and pass to content and all courses`, () => {
 					const stubContent = sandbox.stub(component._getContentComponent(), 'courseEnrollmentChanged');
@@ -807,8 +807,8 @@ describe('d2l-my-courses', () => {
 			});
 
 			[
-				{orgUnitId: '1234', isPinned: false },
-				{orgUnitId: '5678', isPinned: true }
+				{ orgUnitId: '1234', isPinned: false },
+				{ orgUnitId: '5678', isPinned: true }
 			].forEach(eventDetail => {
 				it(`should handle pinned tab accordingly when the changed course was ${eventDetail.isPinned ? 'pinned' : 'unpinned'}`, () => {
 					const stubAddPinnedTab = sandbox.stub(component, '_addPinnedTab');

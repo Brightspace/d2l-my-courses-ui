@@ -213,25 +213,25 @@ describe('d2l-all-courses-legacy', function() {
 
 		it('should add an alert after setting the course image results in failure (after a timeout)', function() {
 			clock = sinon.useFakeTimers();
-			var setCourseImageEvent = { detail: { status: 'failure'} };
+			var setCourseImageEvent = { detail: { status: 'failure' } };
 			widget._onSetCourseImage(setCourseImageEvent);
 			clock.tick(1001);
 			expect(widget._alertsView).to.include(setCourseImageFailureAlert);
 		});
 
 		it('should not add a setCourseImageFailure warning alert when a request to set the image succeeds', function() {
-			var setCourseImageEvent = { detail: { status: 'success'} };
+			var setCourseImageEvent = { detail: { status: 'success' } };
 			widget._onSetCourseImage(setCourseImageEvent);
 			expect(widget._alertsView).not.to.include(setCourseImageFailureAlert);
 		});
 
 		it('should remove a setCourseImageFailure warning alert when a request to set the image is made', function() {
 			clock = sinon.useFakeTimers();
-			var setCourseImageEvent = { detail: { status: 'failure'} };
+			var setCourseImageEvent = { detail: { status: 'failure' } };
 			widget._onSetCourseImage(setCourseImageEvent);
 			clock.tick(1001);
 			expect(widget._alertsView).to.include(setCourseImageFailureAlert);
-			setCourseImageEvent = { detail: { status: 'set'} };
+			setCourseImageEvent = { detail: { status: 'set' } };
 			widget._onSetCourseImage(setCourseImageEvent);
 			expect(widget._alertsView).not.to.include(setCourseImageFailureAlert);
 		});

@@ -349,7 +349,7 @@ class MyCoursesContent extends StatusMixin(MyCoursesLocalizeBehavior(PolymerElem
 
 			enrollmentEntity.onOrganizationChange((org) => {
 				const enrollmentCardStatusDetails = {
-					status: {closed: org && org.isAfterEndDate()},
+					status: { closed: org && org.isAfterEndDate() },
 					enrollmentUrl: url
 				};
 				this._setEnrollmentCardStatus(enrollmentCardStatusDetails);

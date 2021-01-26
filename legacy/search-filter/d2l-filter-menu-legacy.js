@@ -214,7 +214,7 @@ Polymer({
 			? 'semesters'
 			: !this._departmentsTabHidden ? 'departments' : 'roles';
 
-		this._selectTab({ target: { dataset: { tabName: defaultTab }}});
+		this._selectTab({ target: { dataset: { tabName: defaultTab } } });
 
 		return Promise.all([
 			this.$.semestersTab.load(),

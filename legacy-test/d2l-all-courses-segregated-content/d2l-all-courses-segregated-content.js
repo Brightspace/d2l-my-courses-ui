@@ -107,9 +107,9 @@ describe('d2l-all-courses-segregated-content', function() {
 		it('should remove all existing alerts when enrollment alerts are updated', function() {
 			widget._addAlert('error', 'testError', 'this is a test');
 			widget._addAlert('warning', 'testWarning', 'this is another test');
-			expect(widget._alertsView).to.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
+			expect(widget._alertsView).to.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test' });
 			widget._updateEnrollmentAlerts(true);
-			expect(widget._alertsView).to.not.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
+			expect(widget._alertsView).to.not.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test' });
 		});
 
 		[

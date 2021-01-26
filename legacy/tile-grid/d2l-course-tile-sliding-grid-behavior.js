@@ -175,7 +175,7 @@ D2L.MyCourses.CourseTileSlidingGridBehavior = {
 		if (!insert) {
 			this.__slide_resizeContainer(delay + 100);
 		} else {
-			this.updateStyles({'--insertion-delay': (delay + 300) + 'ms'});
+			this.updateStyles({ '--insertion-delay': (delay + 300) + 'ms' });
 		}
 	},
 

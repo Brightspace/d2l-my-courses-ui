@@ -246,8 +246,8 @@ describe('d2l-filter-menu-legacy', function() {
 		});
 
 		[
-			{ path: '_semesterFilters', target: 'semesters', otherPath: '_departmentFilters', name: 'semester', otherName: 'departments'},
-			{ path: '_departmentFilters', target: 'departments', otherPath: '_semesterFilters', name: 'department', otherName: 'semesters'}
+			{ path: '_semesterFilters', target: 'semesters', otherPath: '_departmentFilters', name: 'semester', otherName: 'departments' },
+			{ path: '_departmentFilters', target: 'departments', otherPath: '_semesterFilters', name: 'department', otherName: 'semesters' }
 		].forEach(function(testCase) {
 			describe('when ' + testCase.name + ' filters change', function() {
 				it('should fire a d2l-filter-menu-change event', function(done) {

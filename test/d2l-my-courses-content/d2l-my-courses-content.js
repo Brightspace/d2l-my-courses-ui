@@ -19,7 +19,7 @@ describe('d2l-my-courses-content', () => {
 
 	function SetupFetchStub(url, entity) {
 		fetchStub.withArgs(sinon.match(url), sinon.match.string)
-			.returns(Promise.resolve({entity: entity}));
+			.returns(Promise.resolve({ entity: entity }));
 	}
 
 	beforeEach(done => {

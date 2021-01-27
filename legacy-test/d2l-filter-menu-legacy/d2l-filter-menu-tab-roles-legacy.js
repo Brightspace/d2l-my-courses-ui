@@ -183,7 +183,7 @@ describe('d2l-filter-menu-tab-roles-legacy', function() {
 		});
 
 		it('should combine entries for filters with the same title attribute', function() {
-			component._parseFilterItems({ entities: [getFilter('foo'), getFilter('foo') ]});
+			component._parseFilterItems({ entities: [getFilter('foo'), getFilter('foo') ] });
 
 			expect(component._filterTitles.length).to.equal(1);
 		});

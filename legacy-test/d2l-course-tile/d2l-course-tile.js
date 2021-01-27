@@ -494,7 +494,7 @@ describe('<d2l-course-tile>', function() {
 
 			it('sets the icon to a checkmark', function() {
 				expect(widget._iconDetails).to.deep.equal(
-					{ className: 'checkmark', iconName: 'd2l-tier2:check'}
+					{ className: 'checkmark', iconName: 'd2l-tier2:check' }
 				);
 			});
 
@@ -535,7 +535,7 @@ describe('<d2l-course-tile>', function() {
 
 			it('sets the icon to an X', function() {
 				expect(widget._iconDetails).to.deep.equal(
-					{ className: 'fail-icon', iconName: 'd2l-tier3:close'}
+					{ className: 'fail-icon', iconName: 'd2l-tier3:close' }
 				);
 			});
 

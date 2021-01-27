@@ -19,7 +19,7 @@ class MyCoursesFilter extends MyCoursesLocalizeMixin(LitElement) {
 		return {
 			filterCategories: { type: Array },
 			_hasBeenOpened: { attribute: false, type: Boolean },
-			_totalSelectedCount: { attribute: false, type: Number}
+			_totalSelectedCount: { attribute: false, type: Number }
 		};
 	}
 

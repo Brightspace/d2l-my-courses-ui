@@ -492,7 +492,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 				content.requestRefresh();
 			});
 		}
-		this._trySetItemLocalStorage('myCourses.pinnedTab', {'previouslyShown': true});
+		this._trySetItemLocalStorage('myCourses.pinnedTab', { 'previouslyShown': true });
 	}
 	_removePinnedTab() {
 		const pinnedTabIndex = this._tabSearchActions.findIndex(action => action.name === this._pinnedTabAction.name);
@@ -509,7 +509,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 				content.requestRefresh();
 			});
 		}
-		this._trySetItemLocalStorage('myCourses.pinnedTab', {'previouslyShown': false});
+		this._trySetItemLocalStorage('myCourses.pinnedTab', { 'previouslyShown': false });
 	}
 	_tryGetItemLocalStorage(itemName) {
 		try {

@@ -2,6 +2,7 @@
   "extends": "brightspace/lit-config",
   "rules": {
     "no-prototype-builtins": 0,
-    "lit/no-legacy-template-syntax": 0
+    "lit/no-legacy-template-syntax": 0,
+    "sort-class-members/sort-class-members": 0
   }
 }

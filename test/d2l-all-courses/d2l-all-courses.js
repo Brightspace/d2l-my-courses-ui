@@ -74,7 +74,7 @@ describe('d2l-all-courses', function() {
 		widget.shadowRoot.querySelector('d2l-tabs').addEventListener('d2l-tab-panel-selected', afterTabsReady);
 
 		widget._selectedTabId = 'all-courses-tab-search-my-enrollments';
-		widget.tabSearchActions = [{name: 'search-my-enrollments'}];
+		widget.tabSearchActions = [{ name: 'search-my-enrollments' }];
 	});
 
 	afterEach(function() {
@@ -361,12 +361,12 @@ describe('d2l-all-courses', function() {
 					});
 				});
 				it('applies selected role filters', function(done) {
-					const afterFilterAdd = {...roleFiltersEntity,
-						...{entities: [getFilter('Student', '1'), getFilter('Instructor', '2', true), getFilter('Student', '3')]}
+					const afterFilterAdd = { ...roleFiltersEntity,
+						...{ entities: [getFilter('Student', '1'), getFilter('Instructor', '2', true), getFilter('Student', '3')] }
 					};
 					afterFilterAdd.actions[0].fields[0].value = '2';
-					fetchStub.withArgs(sinon.match({url: sinon.match(/\/addRole2$/)})).returns(Promise.resolve(
-						new Response(new Blob([JSON.stringify(afterFilterAdd, null, 2)], {type : 'application/json'}))
+					fetchStub.withArgs(sinon.match({ url: sinon.match(/\/addRole2$/) })).returns(Promise.resolve(
+						new Response(new Blob([JSON.stringify(afterFilterAdd, null, 2)], { type : 'application/json' }))
 					));
 					widget._roleFiltersEntity = roleFiltersEntity;
 					fireEvent(widget.shadowRoot.querySelector('d2l-my-courses-filter'), 'd2l-my-courses-filter-change', {
@@ -386,19 +386,19 @@ describe('d2l-all-courses', function() {
 				});
 
 				it('properly combines filters of the same name', function(done) {
-					const afterFirstFilterAdd = {...roleFiltersEntity,
-						...{entities: [getFilter('Student', '1', true), getFilter('Instructor', '2'), getFilter('Student', '3')]}
+					const afterFirstFilterAdd = { ...roleFiltersEntity,
+						...{ entities: [getFilter('Student', '1', true), getFilter('Instructor', '2'), getFilter('Student', '3')] }
 					};
 					afterFirstFilterAdd.actions[0].fields[0].value = '1';
-					const afterSecondFilterAdd = {...roleFiltersEntity,
-						...{entities: [getFilter('Student', '1', true), getFilter('Instructor', '2'), getFilter('Student', '3', true)]}
+					const afterSecondFilterAdd = { ...roleFiltersEntity,
+						...{ entities: [getFilter('Student', '1', true), getFilter('Instructor', '2'), getFilter('Student', '3', true)] }
 					};
 					afterSecondFilterAdd.actions[0].fields[0].value = '1,3';
-					fetchStub.withArgs(sinon.match({url: sinon.match(/\/addRole1$/)})).returns(Promise.resolve(
-						new Response(new Blob([JSON.stringify(afterFirstFilterAdd, null, 2)], {type : 'application/json'}))
+					fetchStub.withArgs(sinon.match({ url: sinon.match(/\/addRole1$/) })).returns(Promise.resolve(
+						new Response(new Blob([JSON.stringify(afterFirstFilterAdd, null, 2)], { type : 'application/json' }))
 					));
-					fetchStub.withArgs(sinon.match({url: sinon.match(/\/addRole3$/)})).returns(Promise.resolve(
-						new Response(new Blob([JSON.stringify(afterSecondFilterAdd, null, 2)], {type : 'application/json'}))
+					fetchStub.withArgs(sinon.match({ url: sinon.match(/\/addRole3$/) })).returns(Promise.resolve(
+						new Response(new Blob([JSON.stringify(afterSecondFilterAdd, null, 2)], { type : 'application/json' }))
 					));
 					widget._roleFiltersEntity = roleFiltersEntity;
 					fireEvent(widget.shadowRoot.querySelector('d2l-my-courses-filter'), 'd2l-my-courses-filter-change', {
@@ -429,19 +429,19 @@ describe('d2l-all-courses', function() {
 							}]
 						}]
 					});
-					const afterFirstFilterRemove = {...roleFiltersAppliedEntity,
-						...{entities: [getFilter('Student', '1'), getFilter('Instructor', '2', true), getFilter('Student', '3', true)]}
+					const afterFirstFilterRemove = { ...roleFiltersAppliedEntity,
+						...{ entities: [getFilter('Student', '1'), getFilter('Instructor', '2', true), getFilter('Student', '3', true)] }
 					};
 					afterFirstFilterRemove.actions[0].fields[0].value = '2,3';
-					const afterSecondFilterRemove = {...roleFiltersAppliedEntity,
-						...{entities: [getFilter('Student', '1'), getFilter('Instructor', '2', true), getFilter('Student', '3')]}
+					const afterSecondFilterRemove = { ...roleFiltersAppliedEntity,
+						...{ entities: [getFilter('Student', '1'), getFilter('Instructor', '2', true), getFilter('Student', '3')] }
 					};
 					afterSecondFilterRemove.actions[0].fields[0].value = '2';
-					fetchStub.withArgs(sinon.match({url: sinon.match(/\/removeRole1$/)})).returns(Promise.resolve(
-						new Response(new Blob([JSON.stringify(afterFirstFilterRemove, null, 2)], {type : 'application/json'}))
+					fetchStub.withArgs(sinon.match({ url: sinon.match(/\/removeRole1$/) })).returns(Promise.resolve(
+						new Response(new Blob([JSON.stringify(afterFirstFilterRemove, null, 2)], { type : 'application/json' }))
 					));
-					fetchStub.withArgs(sinon.match({url: sinon.match(/\/removeRole3$/)})).returns(Promise.resolve(
-						new Response(new Blob([JSON.stringify(afterSecondFilterRemove, null, 2)], {type : 'application/json'}))
+					fetchStub.withArgs(sinon.match({ url: sinon.match(/\/removeRole3$/) })).returns(Promise.resolve(
+						new Response(new Blob([JSON.stringify(afterSecondFilterRemove, null, 2)], { type : 'application/json' }))
 					));
 					widget._roleFiltersEntity = roleFiltersAppliedEntity;
 					fireEvent(widget.shadowRoot.querySelector('d2l-my-courses-filter'), 'd2l-my-courses-filter-change', {
@@ -831,7 +831,7 @@ describe('d2l-all-courses', function() {
 			widget._onTabSelected({
 				type: 'd2l-tab-panel-selected',
 				stopPropagation: function() {},
-				composedPath: function() { return [{id: '67890'}]; }
+				composedPath: function() { return [{ id: '67890' }]; }
 			});
 
 			expect(widget.tabSearchActions[0].selected).to.be.false;

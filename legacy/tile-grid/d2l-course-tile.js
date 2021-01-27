@@ -267,6 +267,8 @@ Polymer({
 				}
 			}.bind(this);
 
+			var observer = new IntersectionObserver(observerCallback);
+
 			// Small shim for Edge/IE/Safari
 			var delayFunction = window.requestIdleCallback || setTimeout;
 			delayFunction(function() {
@@ -280,7 +282,6 @@ Polymer({
 				this._load = true;
 			}.bind(this));
 
-			var observer = new IntersectionObserver(observerCallback);
 			observer.observe(tileContainerEl);
 		}.bind(this));
 	},
@@ -332,7 +333,7 @@ Polymer({
 				// this.enrollment with the modified one
 				this.enrollment = enrollment;
 				this.pinned = this.enrollment.hasClass(Classes.enrollments.pinned);
-				if (!this.animate) this.fire('tile-remove-complete', {enrollment: this.enrollment, pinned: this.pinned});
+				if (!this.animate) this.fire('tile-remove-complete', { enrollment: this.enrollment, pinned: this.pinned });
 			}.bind(this))
 			.catch(function() {
 				// Just revert back to whatever pin state we already had stored
@@ -484,8 +485,8 @@ Polymer({
 			this.toggleClass(successClass, success, tileContainer);
 			this.toggleClass(failureClass, !success, tileContainer);
 			this._iconDetails = success ?
-				{ className: 'checkmark', iconName: 'd2l-tier2:check'} :
-				{ className: 'fail-icon', iconName: 'd2l-tier3:close'};
+				{ className: 'checkmark', iconName: 'd2l-tier2:check' } :
+				{ className: 'fail-icon', iconName: 'd2l-tier3:close' };
 
 			// Remove the icon after a bit of time
 			setTimeout(function() {
@@ -517,7 +518,7 @@ Polymer({
 		this.pinClickHandler();
 	},
 	_hoverPinMenuItem: function() {
-		this._onUnpinHover({detail: {hoverState: true}});
+		this._onUnpinHover({ detail: { hoverState: true } });
 		this._hoverCourseTile();
 	},
 	_pinPressHandler: function(e) {
@@ -531,11 +532,11 @@ Polymer({
 		}
 
 		if (e.animationName.indexOf('scale-and-fade-out') > -1) {
-			this.fire('tile-remove-complete', {enrollment: this.enrollment, pinned: this._pendingPinAction});
+			this.fire('tile-remove-complete', { enrollment: this.enrollment, pinned: this._pendingPinAction });
 		} else if (e.animationName.indexOf('scale-and-fade-in') > -1) {
 			this.toggleClass('animate-insertion', false, this);
 			this.toggleClass('animation-complete', true, this);
-			this.fire('tile-insert-complete', {enrollment: this.enrollment, pinned: this._pendingPinAction});
+			this.fire('tile-insert-complete', { enrollment: this.enrollment, pinned: this._pendingPinAction });
 		} else if (e.animationName.indexOf('tile-pre-insertion') > -1) {
 			this.toggleClass('animate-insertion', true, this);
 		}
@@ -653,13 +654,13 @@ Polymer({
 
 		this._notificationDate = this.formatDateTime(
 			dateObj,
-			{'format': 'medium'}
+			{ 'format': 'medium' }
 		);
 		var courseEndedTerm = (type === 'courseEnded') ? 'overlay.courseEndedOn' : 'overlay.courseStartingOn';
 		this._courseNotificationLabel = this.localize(
 			courseEndedTerm,
 			'dateTime',
-			this.formatDate(dateObj, {format: 'MMMM d, yyyy'}) + ' ' + this.formatTime(dateObj)
+			this.formatDate(dateObj, { format: 'MMMM d, yyyy' }) + ' ' + this.formatTime(dateObj)
 		);
 		this.toggleClass('notification-overlay-active', true, this.$$('.tile-container'));
 		this.$$('#courseNotificationLabel').setAttribute('aria-hidden', 'false');
@@ -687,7 +688,7 @@ Polymer({
 		if (this.hasCourseInfoUrl) {
 			this.dispatchEvent(new CustomEvent(
 				'started-inactive',
-				{ bubbles: true, composed: true, details: { type: 'add' }}
+				{ bubbles: true, composed: true, details: { type: 'add' } }
 			));
 			this.toggleClass('warning-circle', true, this.$$('.alert-color-circle'));
 		}
@@ -716,7 +717,7 @@ Polymer({
 		if (pinned === false && this.isStartedInactive) {
 			this.dispatchEvent(new CustomEvent(
 				'started-inactive',
-				{ bubbles: true, composed: true, details: { type: 'remove' }}
+				{ bubbles: true, composed: true, details: { type: 'remove' } }
 			));
 		}
 	},
@@ -732,7 +733,7 @@ Polymer({
 		}
 	},
 	_unhoverPinMenuItem: function() {
-		this._onUnpinHover({detail: {hoverState: false}});
+		this._onUnpinHover({ detail: { hoverState: false } });
 	},
 	_getCanChangeCourseImage: function(organization) {
 		return organization && organization.getActionByName(Actions.organizations.setCatalogImage);

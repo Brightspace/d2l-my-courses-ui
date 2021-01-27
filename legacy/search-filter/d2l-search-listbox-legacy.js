@@ -154,7 +154,7 @@ Polymer({
 		if (e.detail.event === 'keydown' && this.keyboardEventMatchesKeys(e, 'space')) {
 			e.preventDefault();
 			if (this.focusedItem && !this.focusedItem.hasAttribute('disabled')) {
-				this.fire('iron-activate', {item: this.focusedItem});
+				this.fire('iron-activate', { item: this.focusedItem });
 			}
 		}
 	},

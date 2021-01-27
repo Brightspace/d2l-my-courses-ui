@@ -352,9 +352,9 @@ describe('d2l-my-courses-content-animated', function() {
 		it('should remove all existing alerts when enrollment alerts are updated', function() {
 			widget._addAlert('error', 'testError', 'this is a test');
 			widget._addAlert('warning', 'testWarning', 'this is another test');
-			expect(widget._alertsView).to.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
+			expect(widget._alertsView).to.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test' });
 			widget._enrollmentsChanged(true, true);
-			expect(widget._alertsView).to.not.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test'});
+			expect(widget._alertsView).to.not.include({ alertName: 'testError', alertType: 'error', alertMessage: 'this is a test' });
 		});
 	});
 
@@ -383,25 +383,25 @@ describe('d2l-my-courses-content-animated', function() {
 
 		it('should add a setCourseImageFailure warning alert when a request to set the image fails', function() {
 			clock = sinon.useFakeTimers();
-			var setCourseImageEvent = { detail: { status: 'failure'} };
+			var setCourseImageEvent = { detail: { status: 'failure' } };
 			widget._onSetCourseImage(setCourseImageEvent);
 			clock.tick(1001);
 			expect(widget._alertsView).to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'Sorry, we\'re unable to change your image right now. Please try again later.' });
 		});
 
 		it('should not add a setCourseImageFailure warning alert when a request to set the image succeeds', function() {
-			var setCourseImageEvent = { detail: { status: 'success'} };
+			var setCourseImageEvent = { detail: { status: 'success' } };
 			widget._onSetCourseImage(setCourseImageEvent);
 			expect(widget._alertsView).not.to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'Sorry, we\'re unable to change your image right now. Please try again later.' });
 		});
 
 		it('should remove a setCourseImageFailure warning alert when a request to set the image is made', function() {
 			clock = sinon.useFakeTimers();
-			var setCourseImageEvent = { detail: { status: 'failure'} };
+			var setCourseImageEvent = { detail: { status: 'failure' } };
 			widget._onSetCourseImage(setCourseImageEvent);
 			clock.tick(1001);
 			expect(widget._alertsView).to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'Sorry, we\'re unable to change your image right now. Please try again later.' });
-			setCourseImageEvent = { detail: { status: 'set'} };
+			setCourseImageEvent = { detail: { status: 'set' } };
 			widget._onSetCourseImage(setCourseImageEvent);
 			expect(widget._alertsView).not.to.include({ alertName: 'setCourseImageFailure', alertType: 'warning', alertMessage: 'Sorry, we\'re unable to change your image right now. Please try again later.' });
 		});

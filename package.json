@@ -23,10 +23,11 @@
   "author": "D2L Corporation",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@babel/core": "^7",
+    "@babel/eslint-parser": "^7",
     "@webcomponents/webcomponentsjs": "^2",
-    "babel-eslint": "^10",
     "eslint": "^7",
-    "eslint-config-brightspace": "^0.12.0",
+    "eslint-config-brightspace": "^0.13",
     "eslint-plugin-html": "^6",
     "eslint-plugin-lit": "^1",
     "eslint-plugin-sort-class-members": "^1",

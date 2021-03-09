@@ -31,6 +31,6 @@ export default {
 	"sorting.sortDatePinned": "Dyddiad Pinio",
 	"sorting.sortDefault": "Diofyn",
 	"sorting.sortEnrollmentDate": "Dyddiad Cofrestru",
-	"sorting.sortLastAccessed": "Gwelwyd Ddiwethaf",
+	"sorting.sortLastAccessed": "Gwelwyd Diwethaf",
 	"viewAllCourses": "Gweld Pob Cwrs"
 };

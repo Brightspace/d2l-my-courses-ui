@@ -31,6 +31,6 @@ export default {
 	"sorting.sortDatePinned": "Datum vastgepind",
 	"sorting.sortDefault": "Standaard",
 	"sorting.sortEnrollmentDate": "Inschrijvingsdatum",
-	"sorting.sortLastAccessed": "Laatst geopend",
+	"sorting.sortLastAccessed": "Laatste aanmelding",
 	"viewAllCourses": "Alle cursussen weergeven"
 };

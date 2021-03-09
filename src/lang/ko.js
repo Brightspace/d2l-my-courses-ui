@@ -30,7 +30,7 @@ export default {
 	"sorting.sortCourseName": "강의 이름",
 	"sorting.sortDatePinned": "고정된 날짜",
 	"sorting.sortDefault": "기본값",
-	"sorting.sortEnrollmentDate": "등록 날짜",
+	"sorting.sortEnrollmentDate": "등록일",
 	"sorting.sortLastAccessed": "최종 접속",
 	"viewAllCourses": "모든 강의 보기"
 };

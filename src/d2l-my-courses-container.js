@@ -6,12 +6,12 @@ Component for when the `d2l.Tools.MyCoursesWidget.UpdatedSortLogic` config varia
 
 */
 
+import '@brightspace-ui/core/components/dialog/dialog-fullscreen.js';
 import '@brightspace-ui/core/components/loading-spinner/loading-spinner.js';
 import '@brightspace-ui/core/components/tabs/tabs.js';
 import '@brightspace-ui/core/components/tabs/tab-panel.js';
 import '@polymer/iron-scroll-threshold/iron-scroll-threshold.js';
 import 'd2l-image-selector/d2l-basic-image-selector.js';
-import 'd2l-simple-overlay/d2l-simple-overlay.js';
 import './d2l-all-courses.js';
 import './d2l-my-courses-content.js';
 import { createActionUrl, getEntityIdentifier, getOrgUnitIdFromHref, parseEntity } from './d2l-utility-helpers.js';
@@ -137,10 +137,8 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 				token="[[token]]">
 			</d2l-all-courses>
 			
-			<d2l-simple-overlay id="basic-image-selector-overlay"
-				title-name="[[localize('changeImage')]]"
-				close-simple-overlay-alt-text="[[localize('closeSimpleOverlayAltText')]]"
-				with-backdrop
+			<d2l-dialog-fullscreen id="basic-image-selector-dialog"
+				title-text="[[localize('changeImage')]]"
 				restore-focus-on-close>
 				<iron-scroll-threshold
 					id="image-selector-threshold"
@@ -151,7 +149,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 					organization="[[_setImageOrg]]"
 					course-image-upload-cb="[[courseImageUploadCb]]">
 				</d2l-basic-image-selector>
-			</d2l-simple-overlay>`;
+			</d2l-dialog-fullscreen>`;
 	}
 
 	constructor() {
@@ -168,7 +166,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 
 		document.body.addEventListener('d2l-course-pinned-change', this._onCourseEnrollmentChange);
 
-		this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-overlay'].scrollRegion;
+		this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-dialog'].scrollRegion;
 
 		let ouTypeIds = []; // default value
 		try {
@@ -189,7 +187,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 	// If it's a catalog image this is handled by the enrollment card
 	courseImageUploadCompleted(success) {
 		if (success) {
-			this.$['basic-image-selector-overlay'].close();
+			this.$['basic-image-selector-dialog'].close();
 
 			const contentComponent = this._getContentComponent();
 			if (contentComponent) {
@@ -220,10 +218,11 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 			this._setImageOrg = parseEntity(e.detail.organization);
 		}
 
-		this.$['basic-image-selector-overlay'].open();
+		this.$['basic-image-selector-dialog'].open();
 	}
 	_onSetCourseImage(e) {
-		this.$['basic-image-selector-overlay'].close();
+		this.$['basic-image-selector-dialog'].close();
+
 		this._showImageError = false;
 		if (e && e.detail) {
 			if (e.detail.status === 'failure') {

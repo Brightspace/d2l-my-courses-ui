@@ -5,13 +5,13 @@ Polymer-based web component for the all courses overlay.
 
 import '@polymer/iron-scroll-threshold/iron-scroll-threshold.js';
 import '@brightspace-ui/core/components/alert/alert.js';
+import '@brightspace-ui/core/components/dialog/dialog-fullscreen.js';
 import '@brightspace-ui/core/components/link/link.js';
 import '@brightspace-ui/core/components/loading-spinner/loading-spinner.js';
 import '@brightspace-ui/core/components/tabs/tabs.js';
 import '@brightspace-ui/core/components/tabs/tab-panel.js';
 import '@brightspace-ui-labs/facet-filter-sort/components/sort-by-dropdown/sort-by-dropdown.js';
 import '@brightspace-ui-labs/facet-filter-sort/components/sort-by-dropdown/sort-by-dropdown-option.js';
-import 'd2l-simple-overlay/d2l-simple-overlay.js';
 import './d2l-my-courses-card-grid.js';
 import './search-filter/d2l-my-courses-search.js';
 import { createActionUrl, fetchSirenEntity } from './d2l-utility-helpers.js';
@@ -208,14 +208,10 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 				}
 			</style>
 
-			<d2l-simple-overlay
+			<d2l-dialog-fullscreen
 				id="all-courses"
-				on-d2l-simple-overlay-opening="_onSimpleOverlayOpening"
-				on-d2l-simple-overlay-closed="_onSimpleOverlayClosed"
-				close-simple-overlay-alt-text="[[localize('closeSimpleOverlayAltText')]]"
 				restore-focus-on-close
-				title-name="[[localize('allCourses')]]"
-				with-backdrop>
+				title-text="[[localize('allCourses')]]">
 
 				<div hidden$="[[!_showContent]]">
 					<iron-scroll-threshold id="all-courses-scroll-threshold" on-lower-threshold="_onAllCoursesLowerThreshold">
@@ -268,7 +264,7 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 				</div>
 				<d2l-loading-spinner hidden$="[[_showContent]]" size="100">
 				</d2l-loading-spinner>
-			</d2l-simple-overlay>`;
+			</d2l-dialog-fullscreen>`;
 	}
 
 	ready() {
@@ -282,6 +278,8 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 			search: '',
 			sort: this._sortMap.Default.action
 		};
+		this.addEventListener('d2l-dialog-open', this._onSimpleOverlayOpening);
+		this.addEventListener('d2l-dialog-close', this._onSimpleOverlayClosed);
 	}
 
 	/*

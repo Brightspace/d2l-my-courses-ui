@@ -3,7 +3,7 @@
 export default {
 	"advancedSearch": "Búsqueda avanzada",
 	"allCourses": "Todos los cursos",
-	"allTab": "Todos",
+	"allTab": "Todas",
 	"changeImage": "Cambiar imagen",
 	"closeSimpleOverlayAltText": "Cerrar el cuadro de diálogo",
 	"courseSearchInputPlaceholder": "Buscar un curso",
@@ -26,11 +26,11 @@ export default {
 	"recentSearches": "Búsquedas recientes",
 	"search.searchCourses": "Buscar cursos",
 	"sorting.sortBy": "Ordenar por",
-	"sorting.sortCourseCode": "Código de curso",
+	"sorting.sortCourseCode": "Código del curso",
 	"sorting.sortCourseName": "Nombre del curso",
 	"sorting.sortDatePinned": "Fecha de anclaje",
 	"sorting.sortDefault": "Predeterminado",
 	"sorting.sortEnrollmentDate": "Fecha de inscripción",
-	"sorting.sortLastAccessed": "Último acceso",
+	"sorting.sortLastAccessed": "Último acceso el",
 	"viewAllCourses": "Ver todos los cursos"
 };

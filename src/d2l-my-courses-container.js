@@ -218,10 +218,12 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 			this._setImageOrg = parseEntity(e.detail.organization);
 		}
 
-		this.$['basic-image-selector-overlay'].open();
+		const dialog = this.shadowRoot.querySelector('d2l-dialog-fullscreen');
+		dialog.opened = true;
 	}
 	_onSetCourseImage(e) {
-		this.$['basic-image-selector-overlay'].close();
+		const dialog = this.shadowRoot.querySelector('d2l-dialog-fullscreen');
+		dialog.opened = false;
 		this._showImageError = false;
 		if (e && e.detail) {
 			if (e.detail.status === 'failure') {

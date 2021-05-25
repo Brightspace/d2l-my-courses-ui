@@ -137,8 +137,8 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 				token="[[token]]">
 			</d2l-all-courses>
 			
-			<d2l-dialog-fullscreen id="basic-image-selector-dialog"
-				title-text="[[localize('changeImage')]]"
+			<d2l-dialog-fullscreen id="basic-image-selector-overlay"
+				title-text="[[localize('changeImage')]]change"
 				restore-focus-on-close>
 				<iron-scroll-threshold
 					id="image-selector-threshold"
@@ -166,7 +166,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 
 		document.body.addEventListener('d2l-course-pinned-change', this._onCourseEnrollmentChange);
 
-		this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-dialog'].scrollRegion;
+		this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-overlay'].scrollRegion;
 
 		let ouTypeIds = []; // default value
 		try {
@@ -187,7 +187,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 	// If it's a catalog image this is handled by the enrollment card
 	courseImageUploadCompleted(success) {
 		if (success) {
-			this.$['basic-image-selector-dialog'].close();
+			this.$['basic-image-selector-overlay'].close();
 
 			const contentComponent = this._getContentComponent();
 			if (contentComponent) {
@@ -218,11 +218,10 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 			this._setImageOrg = parseEntity(e.detail.organization);
 		}
 
-		this.$['basic-image-selector-dialog'].open();
+		this.$['basic-image-selector-overlay'].open();
 	}
 	_onSetCourseImage(e) {
-		this.$['basic-image-selector-dialog'].close();
-
+		this.$['basic-image-selector-overlay'].close();
 		this._showImageError = false;
 		if (e && e.detail) {
 			if (e.detail.status === 'failure') {

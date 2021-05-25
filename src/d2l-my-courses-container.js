@@ -138,7 +138,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 			</d2l-all-courses>
 			
 			<d2l-dialog-fullscreen id="basic-image-selector-overlay"
-				title-text="[[localize('changeImage')]]change"
+				title-text="[[localize('changeImage')]]"
 				restore-focus-on-close>
 				<iron-scroll-threshold
 					id="image-selector-threshold"
@@ -187,7 +187,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 	// If it's a catalog image this is handled by the enrollment card
 	courseImageUploadCompleted(success) {
 		if (success) {
-			this.$['basic-image-selector-overlay'].close();
+			this._setDialogOpen(false);
 
 			const contentComponent = this._getContentComponent();
 			if (contentComponent) {
@@ -218,12 +218,10 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 			this._setImageOrg = parseEntity(e.detail.organization);
 		}
 
-		const dialog = this.shadowRoot.querySelector('d2l-dialog-fullscreen');
-		dialog.opened = true;
+		this._setDialogOpen(true);
 	}
 	_onSetCourseImage(e) {
-		const dialog = this.shadowRoot.querySelector('d2l-dialog-fullscreen');
-		dialog.opened = false;
+		this._setDialogOpen(false);
 		this._showImageError = false;
 		if (e && e.detail) {
 			if (e.detail.status === 'failure') {
@@ -232,6 +230,13 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 				}, 1000); // delay until the tile fail icon animation begins to kick in (1 sec delay)
 			}
 		}
+	}
+
+	_setDialogOpen(open) {
+		const dialog = this.shadowRoot.querySelector('d2l-dialog-fullscreen');
+		dialog.opened = open;
+		const imageSelector = this.shadowRoot.querySelector('d2l-basic-image-selector');
+		open ? imageSelector.initializeSearch() : imageSelector.clearSearch();
 	}
 
 	_getContentComponent() {

@@ -5,7 +5,6 @@ export default {
 	"allCourses": "Alle cursussen",
 	"allTab": "Alle",
 	"changeImage": "Afbeelding wijzigen",
-	"closeSimpleOverlayAltText": "Dialoogvenster sluiten",
 	"courseSearchInputPlaceholder": "Een cursus zoeken",
 	"error.settingImage": "Uw afbeelding kan op dit moment niet worden gewijzigd. Probeer het later opnieuw.",
 	"filtering.noDepartments": "U hebt geen {department}-filters.",

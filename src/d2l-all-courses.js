@@ -210,8 +210,9 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 
 			<d2l-dialog-fullscreen
 				id="all-courses"
-				restore-focus-on-close
-				title-text="[[localize('allCourses')]]">
+				title-text="[[localize('allCourses')]]"
+				on-d2l-dialog-open="_onDialogOpening"
+     			on-d2l-dialog-close="_onDialogClosed">
 
 				<div hidden$="[[!_showContent]]">
 					<iron-scroll-threshold id="all-courses-scroll-threshold" on-lower-threshold="_onAllCoursesLowerThreshold">
@@ -278,8 +279,6 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 			search: '',
 			sort: this._sortMap.Default.action
 		};
-		this.addEventListener('d2l-dialog-open', this._onSimpleOverlayOpening);
-		this.addEventListener('d2l-dialog-close', this._onSimpleOverlayClosed);
 	}
 
 	/*
@@ -438,7 +437,7 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		);
 	}
 
-	_onSimpleOverlayOpening() {
+	_onDialogOpening() {
 		if (this._hasEnrollmentsChanged) {
 			this._hasEnrollmentsChanged = false;
 			this._bustCacheToken = Math.random();
@@ -448,7 +447,7 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		}
 	}
 
-	_onSimpleOverlayClosed() {
+	_onDialogClosed() {
 		this._actionParams.search = '';
 		this._actionParams.sort = this._sortMap.Default.action;
 		this._actionParams.promotePins = this._sortMap.Default.promotePins;

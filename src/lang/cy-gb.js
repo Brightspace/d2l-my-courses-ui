@@ -5,7 +5,6 @@ export default {
 	"allCourses": "Pob Cwrs",
 	"allTab": "Pob un",
 	"changeImage": "Newid y Ddelwedd",
-	"closeSimpleOverlayAltText": "Cau’r Dialog",
 	"courseSearchInputPlaceholder": "Dod o hyd i gwrs",
 	"error.settingImage": "Mae’n ddrwg gennym, ni allwn newid eich delwedd ar hyn o bryd. Rhowch gynnig arall arni’n hwyrach.",
 	"filtering.noDepartments": "Nid oes gennych unrhyw hidlyddion {department}.",

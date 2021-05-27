@@ -5,7 +5,6 @@ export default {
 	"allCourses": "Tüm Dersler",
 	"allTab": "Tümü",
 	"changeImage": "Görüntüyü Değiştir",
-	"closeSimpleOverlayAltText": "Diyaloğu Kapat",
 	"courseSearchInputPlaceholder": "Ders bul",
 	"error.settingImage": "Üzgünüz; şu anda görüntünüzü değiştiremiyoruz. Lütfen daha sonra tekrar deneyin.",
 	"filtering.noDepartments": "Herhangi bir {department} filtreniz yok.",

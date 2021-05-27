@@ -5,7 +5,6 @@ export default {
 	"allCourses": "所有課程",
 	"allTab": "全部",
 	"changeImage": "變更影像",
-	"closeSimpleOverlayAltText": "關閉對話方塊",
 	"courseSearchInputPlaceholder": "尋找課程",
 	"error.settingImage": "抱歉，我們現在無法變更您的影像。請稍後再試。",
 	"filtering.noDepartments": "您沒有任何 {department} 篩選器。",

@@ -138,8 +138,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 			</d2l-all-courses>
 			
 			<d2l-dialog-fullscreen id="basic-image-selector-overlay"
-				title-text="[[localize('changeImage')]]"
-				restore-focus-on-close>
+				title-text="[[localize('changeImage')]]">
 				<iron-scroll-threshold
 					id="image-selector-threshold"
 					on-lower-threshold="_onChangeImageLowerThreshold">

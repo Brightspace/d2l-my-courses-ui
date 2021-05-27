@@ -5,7 +5,6 @@ export default {
 	"allCourses": "Alle kurser",
 	"allTab": "Alle",
 	"changeImage": "Skift billede",
-	"closeSimpleOverlayAltText": "Luk dialogboks",
 	"courseSearchInputPlaceholder": "Find et kursus",
 	"error.settingImage": "Vi kan desværre ikke ændre dit billede lige nu. Prøv igen senere.",
 	"filtering.noDepartments": "Du har ikke nogen {department}-filtre.",

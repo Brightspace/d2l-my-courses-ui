@@ -5,7 +5,6 @@ export default {
 	"allCourses": "Alla kurser",
 	"allTab": "Alla",
 	"changeImage": "Ändra bild",
-	"closeSimpleOverlayAltText": "Stäng dialogruta",
 	"courseSearchInputPlaceholder": "Hitta en kurs",
 	"error.settingImage": "Vi kan inte ändra din bild just nu. Försök igen senare.",
 	"filtering.noDepartments": "Du har inga filter för {department}.",

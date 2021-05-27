@@ -5,7 +5,6 @@ export default {
 	"allCourses": "Alle Kurse",
 	"allTab": "Alle",
 	"changeImage": "Bild ändern",
-	"closeSimpleOverlayAltText": "Dialogfeld schließen",
 	"courseSearchInputPlaceholder": "Kurs finden",
 	"error.settingImage": "Entschuldigung, wir können Ihr Bild zurzeit nicht ändern. Versuchen Sie es später erneut.",
 	"filtering.noDepartments": "Sie haben keine {department}-Filter ausgewählt.",

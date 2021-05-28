@@ -571,7 +571,7 @@ describe('d2l-my-courses', () => {
 			});
 
 			it('should open the course image overlay', done => {
-				const spy = sandbox.spy(component.$['basic-image-selector-overlay'], 'open');
+				const spy = sandbox.spy(component.shadowRoot.querySelector('d2l-basic-image-selector'), 'initializeSearch');
 
 				component.addEventListener('open-change-image-view', function() {
 					setTimeout(() => {
@@ -626,8 +626,7 @@ describe('d2l-my-courses', () => {
 		describe('set-course-image', () => {
 
 			it('should close the image-selector overlay', done => {
-				const spy = sandbox.spy(component.$['basic-image-selector-overlay'], 'close');
-
+				const spy = sandbox.spy(component.shadowRoot.querySelector('d2l-basic-image-selector'), 'clearSearch');
 				const event = new CustomEvent('set-course-image');
 				component.dispatchEvent(event);
 

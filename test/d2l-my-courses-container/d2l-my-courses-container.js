@@ -571,11 +571,13 @@ describe('d2l-my-courses', () => {
 			});
 
 			it('should open the course image overlay', done => {
+				component.shadowRoot.querySelector('d2l-dialog-fullscreen').opened = false;
 				const spy = sandbox.spy(component.shadowRoot.querySelector('d2l-basic-image-selector'), 'initializeSearch');
 
 				component.addEventListener('open-change-image-view', function() {
 					setTimeout(() => {
 						expect(spy).to.have.been.called;
+						expect(component.shadowRoot.querySelector('d2l-dialog-fullscreen').opened).to.equal(true);
 						done();
 					}, 0);
 				});
@@ -626,12 +628,14 @@ describe('d2l-my-courses', () => {
 		describe('set-course-image', () => {
 
 			it('should close the image-selector overlay', done => {
+				component.shadowRoot.querySelector('d2l-dialog-fullscreen').opened = true;
 				const spy = sandbox.spy(component.shadowRoot.querySelector('d2l-basic-image-selector'), 'clearSearch');
 				const event = new CustomEvent('set-course-image');
 				component.dispatchEvent(event);
 
 				setTimeout(() => {
 					expect(spy).to.have.been.called;
+					expect(component.shadowRoot.querySelector('d2l-dialog-fullscreen').opened).to.equal(false);
 					done();
 				});
 			});

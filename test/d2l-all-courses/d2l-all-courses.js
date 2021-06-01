@@ -693,7 +693,7 @@ describe('d2l-all-courses', function() {
 				roles: '456'
 			});
 
-			widget._onSimpleOverlayClosed();
+			widget._onDialogClosed();
 
 			requestAnimationFrame(() => {
 				expect(widget._actionParams.search).to.be.equal('');
@@ -710,7 +710,7 @@ describe('d2l-all-courses', function() {
 			const spy = sandbox.spy(search, 'clear');
 
 			search._getSearchInput().value = 'foo';
-			widget._onSimpleOverlayClosed();
+			widget._onDialogClosed();
 
 			requestAnimationFrame(() => {
 				expect(spy.called).to.be.true;
@@ -728,7 +728,7 @@ describe('d2l-all-courses', function() {
 				roles: 5
 			};
 
-			widget._onSimpleOverlayClosed();
+			widget._onDialogClosed();
 
 			requestAnimationFrame(() => {
 				expect(spy.called).to.be.true;
@@ -752,7 +752,7 @@ describe('d2l-all-courses', function() {
 			fireEvent(sortDropdown, 'd2l-labs-sort-by-dropdown-change', event);
 			expect(widget._searchUrl).to.contain('sort=OrgUnitCode,OrgUnitId');
 
-			widget._onSimpleOverlayClosed();
+			widget._onDialogClosed();
 			requestAnimationFrame(() => {
 				expect(widget._searchUrl).to.contain('sort=Current');
 				done();

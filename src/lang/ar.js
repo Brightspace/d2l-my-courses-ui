@@ -5,7 +5,6 @@ export default {
 	"allCourses": "كل المقررات التعليمية",
 	"allTab": "الكل",
 	"changeImage": "تغيير الصورة",
-	"closeSimpleOverlayAltText": "إغلاق مربع الحوار",
 	"courseSearchInputPlaceholder": "العثور على مقرر تعليمي",
 	"error.settingImage": "عذرًا، يتعذّر علينا تغيير صورتك الآن. يُرجى إعادة المحاولة لاحقًا.",
 	"filtering.noDepartments": "ليس لديك أي عوامل تصفية لـ {department}.",

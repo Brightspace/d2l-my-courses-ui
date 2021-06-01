@@ -5,7 +5,6 @@ export default {
 	"allCourses": "모든 강의",
 	"allTab": "모두",
 	"changeImage": "이미지 변경",
-	"closeSimpleOverlayAltText": "대화 상자 닫기",
 	"courseSearchInputPlaceholder": "강의 찾기",
 	"error.settingImage": "지금은 이미지를 변경할 수 없습니다. 나중에 다시 시도하십시오.",
 	"filtering.noDepartments": "{department} 필터가 없습니다.",

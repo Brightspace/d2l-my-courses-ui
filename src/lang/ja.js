@@ -5,7 +5,6 @@ export default {
 	"allCourses": "すべてのコース",
 	"allTab": "すべて",
 	"changeImage": "イメージの変更",
-	"closeSimpleOverlayAltText": "ダイアログを閉じる",
 	"courseSearchInputPlaceholder": "コースの検索",
 	"error.settingImage": "申し訳ありません。現在イメージを変更することはできません。後でもう一度試してください。",
 	"filtering.noDepartments": "{department} フィルタがありません。",

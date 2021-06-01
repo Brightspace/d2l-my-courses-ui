@@ -5,7 +5,6 @@ export default {
 	"allCourses": "Alle undervisningsenheter",
 	"allTab": "All",
 	"changeImage": "Endre bilde",
-	"closeSimpleOverlayAltText": "Lukk dialogboks",
 	"courseSearchInputPlaceholder": "Finn en undervisningsenhet",
 	"error.settingImage": "Vi kan ikke endre bildet ditt akkurat nå. Prøv igjen senere.",
 	"filtering.noDepartments": "You do not have any {department} filters.",

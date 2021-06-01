@@ -5,7 +5,6 @@ export default {
 	"allCourses": "Kaikki kurssit",
 	"allTab": "All",
 	"changeImage": "Vaihda kuva",
-	"closeSimpleOverlayAltText": "Sulje valintaikkuna",
 	"courseSearchInputPlaceholder": "Etsi kurssi",
 	"error.settingImage": "Kuvaa ei voi vaihtaa juuri nyt. Yritä myöhemmin uudelleen.",
 	"filtering.noDepartments": "Sinulla ei ole suodattimia ({department}).",

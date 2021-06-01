@@ -6,12 +6,12 @@ Component for when the `d2l.Tools.MyCoursesWidget.UpdatedSortLogic` config varia
 
 */
 
+import '@brightspace-ui/core/components/dialog/dialog-fullscreen.js';
 import '@brightspace-ui/core/components/loading-spinner/loading-spinner.js';
 import '@brightspace-ui/core/components/tabs/tabs.js';
 import '@brightspace-ui/core/components/tabs/tab-panel.js';
 import '@polymer/iron-scroll-threshold/iron-scroll-threshold.js';
 import 'd2l-image-selector/d2l-basic-image-selector.js';
-import 'd2l-simple-overlay/d2l-simple-overlay.js';
 import './d2l-all-courses.js';
 import './d2l-my-courses-content.js';
 import { createActionUrl, getEntityIdentifier, getOrgUnitIdFromHref, parseEntity } from './d2l-utility-helpers.js';
@@ -137,11 +137,8 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 				token="[[token]]">
 			</d2l-all-courses>
 			
-			<d2l-simple-overlay id="basic-image-selector-overlay"
-				title-name="[[localize('changeImage')]]"
-				close-simple-overlay-alt-text="[[localize('closeSimpleOverlayAltText')]]"
-				with-backdrop
-				restore-focus-on-close>
+			<d2l-dialog-fullscreen id="basic-image-selector-overlay"
+				title-text="[[localize('changeImage')]]">
 				<iron-scroll-threshold
 					id="image-selector-threshold"
 					on-lower-threshold="_onChangeImageLowerThreshold">
@@ -151,7 +148,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 					organization="[[_setImageOrg]]"
 					course-image-upload-cb="[[courseImageUploadCb]]">
 				</d2l-basic-image-selector>
-			</d2l-simple-overlay>`;
+			</d2l-dialog-fullscreen>`;
 	}
 
 	constructor() {
@@ -189,7 +186,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 	// If it's a catalog image this is handled by the enrollment card
 	courseImageUploadCompleted(success) {
 		if (success) {
-			this.$['basic-image-selector-overlay'].close();
+			this._setDialogOpen(false);
 
 			const contentComponent = this._getContentComponent();
 			if (contentComponent) {
@@ -220,10 +217,10 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 			this._setImageOrg = parseEntity(e.detail.organization);
 		}
 
-		this.$['basic-image-selector-overlay'].open();
+		this._setDialogOpen(true);
 	}
 	_onSetCourseImage(e) {
-		this.$['basic-image-selector-overlay'].close();
+		this._setDialogOpen(false);
 		this._showImageError = false;
 		if (e && e.detail) {
 			if (e.detail.status === 'failure') {
@@ -232,6 +229,13 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 				}, 1000); // delay until the tile fail icon animation begins to kick in (1 sec delay)
 			}
 		}
+	}
+
+	_setDialogOpen(open) {
+		const dialog = this.shadowRoot.querySelector('d2l-dialog-fullscreen');
+		dialog.opened = open;
+		const imageSelector = this.shadowRoot.querySelector('d2l-basic-image-selector');
+		open ? imageSelector.initializeSearch() : imageSelector.clearSearch();
 	}
 
 	_getContentComponent() {

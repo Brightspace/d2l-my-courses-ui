@@ -10,8 +10,8 @@ import '@brightspace-ui/core/components/dialog/dialog-fullscreen.js';
 import '@brightspace-ui/core/components/loading-spinner/loading-spinner.js';
 import '@brightspace-ui/core/components/tabs/tabs.js';
 import '@brightspace-ui/core/components/tabs/tab-panel.js';
-import '@polymer/iron-scroll-threshold/iron-scroll-threshold.js';
 import 'd2l-image-selector/d2l-basic-image-selector.js';
+import 'intersection-observer/intersection-observer.js';
 import './d2l-all-courses.js';
 import './d2l-my-courses-content.js';
 import { createActionUrl, getEntityIdentifier, getOrgUnitIdFromHref, parseEntity } from './d2l-utility-helpers.js';
@@ -139,15 +139,12 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 			
 			<d2l-dialog-fullscreen id="basic-image-selector-overlay"
 				title-text="[[localize('changeImage')]]">
-				<iron-scroll-threshold
-					id="image-selector-threshold"
-					on-lower-threshold="_onChangeImageLowerThreshold">
-				</iron-scroll-threshold>
 				<d2l-basic-image-selector
 					image-catalog-location="[[imageCatalogLocation]]"
 					organization="[[_setImageOrg]]"
 					course-image-upload-cb="[[courseImageUploadCb]]">
 				</d2l-basic-image-selector>
+				<div id="scrollThreshold"></div>
 			</d2l-dialog-fullscreen>`;
 	}
 
@@ -161,11 +158,11 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 
 		this.addEventListener('open-change-image-view', this._onOpenChangeImageView);
 		this.addEventListener('set-course-image', this._onSetCourseImage);
-		this.addEventListener('clear-image-scroll-threshold', this._onClearImageScrollThreshold);
+		this._observer = new IntersectionObserver(this._onChangeImageLowerThreshold.bind(this));
+		this._observer.observe(this.$['scrollThreshold']);
 
 		document.body.addEventListener('d2l-course-pinned-change', this._onCourseEnrollmentChange);
 
-		this.$['image-selector-threshold'].scrollTarget = this.$['basic-image-selector-overlay'].scrollRegion;
 
 		let ouTypeIds = []; // default value
 		try {
@@ -179,6 +176,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 
 	disconnectedCallback() {
 		document.body.removeEventListener('d2l-course-pinned-change', this._onCourseEnrollmentChange);
+		this._observer.unobserve(this.$['scrollThreshold']);
 		super.disconnectedCallback();
 	}
 
@@ -206,11 +204,16 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 	/*
 	* Changing Course Image Functions
 	*/
-	_onChangeImageLowerThreshold() {
-		this.shadowRoot.querySelector('d2l-basic-image-selector').loadMore(this.$['image-selector-threshold']);
-	}
-	_onClearImageScrollThreshold() {
-		this.$['image-selector-threshold'].clearTriggers();
+	_onChangeImageLowerThreshold(entries) {
+		for (var i = 0; i < entries.length; i++) {
+			// Chrome/FF immediately call the callback when we observer.observe()
+			// so we need to also make sure the image is visible for that first run
+			// see https://bugs.chromium.org/p/chromium/issues/detail?id=713819
+			if (entries[i].intersectionRatio > 0) {
+				this.shadowRoot.querySelector('d2l-basic-image-selector').loadMore(this.$['image-selector-threshold']);
+				break;
+			}
+		}
 	}
 	_onOpenChangeImageView(e) {
 		if (e.detail.organization) {

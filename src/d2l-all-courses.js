@@ -3,7 +3,6 @@
 Polymer-based web component for the all courses overlay.
 */
 
-import '@polymer/iron-scroll-threshold/iron-scroll-threshold.js';
 import '@brightspace-ui/core/components/alert/alert.js';
 import '@brightspace-ui/core/components/dialog/dialog-fullscreen.js';
 import '@brightspace-ui/core/components/link/link.js';
@@ -12,6 +11,7 @@ import '@brightspace-ui/core/components/tabs/tabs.js';
 import '@brightspace-ui/core/components/tabs/tab-panel.js';
 import '@brightspace-ui-labs/facet-filter-sort/components/sort-by-dropdown/sort-by-dropdown.js';
 import '@brightspace-ui-labs/facet-filter-sort/components/sort-by-dropdown/sort-by-dropdown-option.js';
+import 'intersection-observer/intersection-observer.js';
 import './d2l-my-courses-card-grid.js';
 import './search-filter/d2l-my-courses-search.js';
 import { createActionUrl, fetchSirenEntity } from './d2l-utility-helpers.js';
@@ -215,8 +215,6 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
      			on-d2l-dialog-close="_onDialogClosed">
 
 				<div hidden$="[[!_showContent]]">
-					<iron-scroll-threshold id="all-courses-scroll-threshold" on-lower-threshold="_onAllCoursesLowerThreshold">
-					</iron-scroll-threshold>
 
 					<div id="search-and-filter">
 						<div id="search-and-link">
@@ -260,6 +258,7 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 						</template>
 					</d2l-tabs>
 
+					<div id="scrollThreshold"></div>
 					<d2l-loading-spinner id="lazyLoadSpinner" hidden$="[[!_hasMoreEnrollments]]" size="100">
 					</d2l-loading-spinner>
 				</div>
@@ -279,6 +278,17 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 			search: '',
 			sort: this._sortMap.Default.action
 		};
+	}
+
+	connectedCallback(){
+		super.connectedCallback();
+		this._observer = new IntersectionObserver(this._onAllCoursesLowerThreshold.bind(this));
+		this._observer.observe(this.$['scrollThreshold']);
+	}
+
+	disconnectedCallback(){
+		this._observer.unobserve(this.$['scrollThreshold']);
+		super.disconnectedCallback();
 	}
 
 	/*
@@ -306,9 +316,6 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		this._showContent = !!this._searchUrl;
 
 		this.shadowRoot.querySelector('#all-courses').open();
-
-		this.$['all-courses-scroll-threshold'].scrollTarget = this.$['all-courses'].scrollRegion;
-		this.$['all-courses-scroll-threshold'].clearTriggers();
 	}
 
 	// After a user-uploaded image is set, this is called to try to update the image
@@ -327,20 +334,29 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 	* Listeners
 	*/
 
-	_onAllCoursesLowerThreshold() {
-		if (this.$['all-courses'].opened && this._lastEnrollmentCollectionResponse) {
-			const nextHref = this._lastEnrollmentCollectionResponse.getNextEnrollmentHref();
-
-			if (nextHref) {
-				this.$.lazyLoadSpinner.scrollIntoView();
-				entityFactory(EnrollmentCollectionEntity, nextHref, this.token, entity => {
-					if (entity) {
-						this._updateFilteredEnrollments(entity, true);
+	_onAllCoursesLowerThreshold(entries) {
+		for (var i = 0; i < entries.length; i++) {
+			// Chrome/FF immediately call the callback when we observer.observe()
+			// so we need to also make sure the image is visible for that first run
+			// see https://bugs.chromium.org/p/chromium/issues/detail?id=713819
+			if (entries[i].intersectionRatio > 0) {
+				if (this.$['all-courses'].opened && this._lastEnrollmentCollectionResponse) {
+					const nextHref = this._lastEnrollmentCollectionResponse.getNextEnrollmentHref();
+		
+					if (nextHref) {
+						this.$.lazyLoadSpinner.scrollIntoView();
+						entityFactory(EnrollmentCollectionEntity, nextHref, this.token, entity => {
+							if (entity) {
+								this._updateFilteredEnrollments(entity, true);
+							}
+						});
 					}
-				});
+				}
+				break;
 			}
 		}
 	}
+
 
 	_onOrgUnitTypeIdsChange(newValue) {
 		if (this._actionParams) {
@@ -636,7 +652,6 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 
 		requestAnimationFrame(() => {
 			window.dispatchEvent(new Event('resize')); // doing this older edge browser will get ms-grid style assigned
-			this.$['all-courses-scroll-threshold'].clearTriggers();
 		});
 	}
 

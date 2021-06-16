@@ -209,7 +209,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 			// so we need to also make sure the image is visible for that first run
 			// see https://bugs.chromium.org/p/chromium/issues/detail?id=713819
 			if (entries[i].intersectionRatio > 0) {
-				this.shadowRoot.querySelector('d2l-basic-image-selector').loadMore(this.$['image-selector-threshold']);
+				this.shadowRoot.querySelector('d2l-basic-image-selector').loadMore();
 				break;
 			}
 		}

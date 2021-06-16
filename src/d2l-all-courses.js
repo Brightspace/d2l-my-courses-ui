@@ -280,13 +280,13 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 		};
 	}
 
-	connectedCallback(){
+	connectedCallback() {
 		super.connectedCallback();
 		this._observer = new IntersectionObserver(this._onAllCoursesLowerThreshold.bind(this));
 		this._observer.observe(this.$['scrollThreshold']);
 	}
 
-	disconnectedCallback(){
+	disconnectedCallback() {
 		this._observer.unobserve(this.$['scrollThreshold']);
 		super.disconnectedCallback();
 	}
@@ -335,14 +335,14 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 	*/
 
 	_onAllCoursesLowerThreshold(entries) {
-		for (var i = 0; i < entries.length; i++) {
+		for (let i = 0; i < entries.length; i++) {
 			// Chrome/FF immediately call the callback when we observer.observe()
 			// so we need to also make sure the image is visible for that first run
 			// see https://bugs.chromium.org/p/chromium/issues/detail?id=713819
 			if (entries[i].intersectionRatio > 0) {
 				if (this.$['all-courses'].opened && this._lastEnrollmentCollectionResponse) {
 					const nextHref = this._lastEnrollmentCollectionResponse.getNextEnrollmentHref();
-		
+
 					if (nextHref) {
 						this.$.lazyLoadSpinner.scrollIntoView();
 						entityFactory(EnrollmentCollectionEntity, nextHref, this.token, entity => {
@@ -356,7 +356,6 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 			}
 		}
 	}
-
 
 	_onOrgUnitTypeIdsChange(newValue) {
 		if (this._actionParams) {

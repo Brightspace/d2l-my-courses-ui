@@ -163,7 +163,6 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 
 		document.body.addEventListener('d2l-course-pinned-change', this._onCourseEnrollmentChange);
 
-
 		let ouTypeIds = []; // default value
 		try {
 			ouTypeIds = JSON.parse(this.orgUnitTypeIds).value;
@@ -205,7 +204,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 	* Changing Course Image Functions
 	*/
 	_onChangeImageLowerThreshold(entries) {
-		for (var i = 0; i < entries.length; i++) {
+		for (let i = 0; i < entries.length; i++) {
 			// Chrome/FF immediately call the callback when we observer.observe()
 			// so we need to also make sure the image is visible for that first run
 			// see https://bugs.chromium.org/p/chromium/issues/detail?id=713819

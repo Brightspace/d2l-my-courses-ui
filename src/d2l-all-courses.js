@@ -260,7 +260,10 @@ class AllCourses extends MyCoursesLocalizeBehavior(PolymerElement) {
 						</template>
 					</d2l-tabs>
 
-					<d2l-loading-spinner id="lazyLoadSpinner" hidden$="[[!_hasMoreEnrollments]]" size="100">
+					<d2l-loading-spinner
+					id="lazyLoadSpinner"
+					 hidden$="[[!_hasMoreEnrollments]]"
+					 size="100">
 					</d2l-loading-spinner>
 				</div>
 				<d2l-loading-spinner hidden$="[[_showContent]]" size="100">

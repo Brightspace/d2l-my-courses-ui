@@ -35,7 +35,7 @@
     "sinon": "^11",
     "wct-browser-legacy": "^1.0.1"
   },
-  "version": "11.37.1",
+  "version": "11.37.2",
   "main": "d2l-my-courses.js",
   "dependencies": {
     "@brightspace-ui-labs/facet-filter-sort": "^4",

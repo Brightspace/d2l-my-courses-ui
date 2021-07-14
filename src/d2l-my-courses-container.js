@@ -144,7 +144,7 @@ class MyCoursesContainer extends MyCoursesLocalizeBehavior(PolymerElement) {
 					organization="[[_setImageOrg]]"
 					course-image-upload-cb="[[courseImageUploadCb]]">
 				</d2l-basic-image-selector>
-				<div id="scrollThreshold"></div>
+				<div id="scrollThreshold" style="height: 1px"></div>
 			</d2l-dialog-fullscreen>`;
 	}
 
